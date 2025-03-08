@@ -26,8 +26,9 @@ public class CommonEvents {
                 type = Quest.Type.TASKING;
             }
             Quest quest = QuestManager.getQuest(entityId, type);
-            if(quest != null) {
-                BteMobsMod.sendToClient(new ShowDialogPacket(event.getTarget().getId(), event.getTarget().getDisplayName().getString(), quest), (ServerPlayer) event.getEntity());
+            if(quest != null && event.getTarget() instanceof BteAbstractEntity) {
+                BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) event.getTarget();
+                BteMobsMod.sendToClient(new ShowDialogPacket(event.getTarget().getId(), bteAbstractEntity.getNpcType(), quest), (ServerPlayer) event.getEntity());
                 if(event.getTarget() instanceof BteAbstractEntity) ((BteAbstractEntity) event.getTarget()).getInteractedPlayers().add(event.getEntity().getUUID());
             }
         }

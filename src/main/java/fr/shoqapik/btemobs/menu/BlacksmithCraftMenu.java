@@ -50,14 +50,14 @@ public class BlacksmithCraftMenu extends RecipeBookMenu<BlacksmithCraftContainer
         this.player = inventory.player;
         this.entityId = entityId;
 
-        // X: 59 PRIMEIRA | 80 SEGUNDA | 101 TERCEIRA
-        // Y: 9 PRIEMIRA | 29 SEGUNDA | 50 TERCEIRA
-        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 80, 9));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 101, 9));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 59, 29));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 3, 80, 29));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 4, 101, 29));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 5, 80, 50));
+		// X: 62 PRIMEIRA | 80 SEGUNDA | 98 TERCEIRA
+		// Y: 20 PRIMEIRA | 38 SEGUNDA
+        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 62, 20));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 80, 20));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 98, 20));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 3, 62, 38));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 4, 80, 38));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 5, 98, 38));
 
 
         for(int k = 0; k < 3; ++k) {

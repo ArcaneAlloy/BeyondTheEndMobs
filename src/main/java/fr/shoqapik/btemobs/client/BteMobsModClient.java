@@ -62,7 +62,7 @@ public class BteMobsModClient {
     }
 
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.entityName, msg.quest));
+        Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest));
     }
 
     public static void handleToggleCraftButtonPacket(ToggleCraftButton msg, Supplier<NetworkEvent.Context> ctx) {
