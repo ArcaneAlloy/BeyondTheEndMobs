@@ -1,0 +1,17 @@
+{
+  "type": "bte_mobs:explorer_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 15
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "minecraft:gold_ingot"
+  }
+}

@@ -1,7 +1,6 @@
 package fr.shoqapik.btemobs.packets;
 
 import fr.shoqapik.btemobs.client.BteMobsModClient;
-import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.quests.Quest;
 import fr.shoqapik.btemobs.quests.QuestAnswer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,12 +15,12 @@ import java.util.function.Supplier;
 
 public class ShowDialogPacket {
     public int entityId;
-    public BteNpcType bteNpcType;
+    public String entityName;
     public Quest quest;
 
-    public ShowDialogPacket(int entityId, BteNpcType bteNpcType, Quest quest) {
+    public ShowDialogPacket(int entityId, String entityName, Quest quest) {
         this.entityId = entityId;
-        this.bteNpcType = bteNpcType;
+        this.entityName = entityName;
         this.quest = quest;
     }
 
@@ -35,14 +34,14 @@ public class ShowDialogPacket {
 
     public static ShowDialogPacket decode(FriendlyByteBuf packetBuffer) {
         int entityId = packetBuffer.readInt();
-        String bteNpcType = packetBuffer.readUtf();
+        String entityName = packetBuffer.readUtf();
         Quest quest = Quest.decode(packetBuffer);
-        return new ShowDialogPacket(entityId, BteNpcType.valueOf(bteNpcType), quest);
+        return new ShowDialogPacket(entityId, entityName, quest);
     }
 
     public static void encode(ShowDialogPacket msg, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeInt(msg.entityId);
-        packetBuffer.writeUtf(msg.bteNpcType.name());
+        packetBuffer.writeUtf(msg.entityName);
         Quest.encode(msg.quest, packetBuffer);
     }
 

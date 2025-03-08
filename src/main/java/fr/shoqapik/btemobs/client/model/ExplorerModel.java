@@ -1,26 +1,24 @@
 package fr.shoqapik.btemobs.client.model;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.entity.BlacksmithEntity;
 import fr.shoqapik.btemobs.entity.ExplorerEntity;
-import fr.shoqapik.btemobs.entity.WarlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class ExplorerModel extends AnimatedGeoModel<ExplorerEntity> {
-
+public class ExplorerModel<T extends ExplorerEntity> extends AnimatedGeoModel<T> {
     @Override
-    public ResourceLocation getModelResource(ExplorerEntity explorerEntity) {
-        return new ResourceLocation(BteMobsMod.MODID, "geo/blacksmith.geo.json");
+    public ResourceLocation getModelResource(T object) {
+        return new ResourceLocation(BteMobsMod.MODID,"geo/antonio.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(ExplorerEntity explorerEntity) {
-        return new ResourceLocation(BteMobsMod.MODID, "textures/entity/blacksmith.png");
+    public ResourceLocation getTextureResource(T object) {
+        return new ResourceLocation(BteMobsMod.MODID,"textures/entity/explorer/explorer.png");
+
     }
 
     @Override
-    public ResourceLocation getAnimationResource(ExplorerEntity explorerEntity) {
-        return new ResourceLocation(BteMobsMod.MODID, "animations/blacksmith.animation.json");
+    public ResourceLocation getAnimationResource(T animatable) {
+        return new ResourceLocation(BteMobsMod.MODID,"animations/explorer.animation.json");
     }
 }

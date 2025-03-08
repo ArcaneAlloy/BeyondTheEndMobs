@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -58,7 +59,7 @@ public class BteMobsMod {
         BteMobsEntities.register(bus);
         BteMobsRecipeSerializers.register(bus);
         BteMobsRecipeTypes.register(bus);
-
+        BteMobsBlocks.ITEMS.register(bus);
         SoundManager.SOUND_EVENTS.register(bus);
 
         INSTANCE.registerMessage(0, ShowDialogPacket.class, ShowDialogPacket::encode, ShowDialogPacket::decode, ShowDialogPacket::handle);
@@ -67,6 +68,12 @@ public class BteMobsMod {
         INSTANCE.registerMessage(3, CraftItemPacket.class, CraftItemPacket::encode, CraftItemPacket::decode, CraftItemPacket::handle);
         INSTANCE.registerMessage(4, ToggleCraftButton.class, ToggleCraftButton::encode, ToggleCraftButton::decode, ToggleCraftButton::handle);
         INSTANCE.registerMessage(5, RenameItemPacket.class, RenameItemPacket::encode, RenameItemPacket::decode, RenameItemPacket::handle);
+
+        INSTANCE.registerMessage(6, StartCraftingItemPacket.class, StartCraftingItemPacket::encode, StartCraftingItemPacket::decode, StartCraftingItemPacket::handle);
+        INSTANCE.registerMessage(7, BlockUpdatePacket.class, BlockUpdatePacket::encode, BlockUpdatePacket::decode, BlockUpdatePacket::handle);
+        INSTANCE.registerMessage(8, PlaceItemRecipePacket.class, PlaceItemRecipePacket::encode, PlaceItemRecipePacket::decode, PlaceItemRecipePacket::handle);
+        INSTANCE.registerMessage(9, SyncPacket.class, SyncPacket::encode, SyncPacket::decode, SyncPacket::handle);
+
     }
 
     public static <MSG> void sendToClient(MSG message, ServerPlayer player) {
@@ -76,6 +83,11 @@ public class BteMobsMod {
     public static <MSG> void sendToServer(MSG message) {
         INSTANCE.sendToServer(message);
     }
+
+    public static <MSG> void sendToAllTracking(MSG message, LivingEntity entity) {
+        INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+    }
+
 
     public static void handleActionPacket(ActionPacket msg, Supplier<NetworkEvent.Context> ctx) {
         if(msg.actionType.equals("open_craft")){

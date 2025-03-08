@@ -66,6 +66,14 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
         super(entityType, level);
     }
 
+    /*@Override
+    protected InteractionResult mobInteract(Player p_21472_, InteractionHand p_21473_) {
+        if(!p_21472_.isLocalPlayer()) {
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.PASS;
+    }*/
+
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
@@ -106,26 +114,28 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
 
         // TODO: Most probably this will have to be moved to the specific entity. As different entities have different ways of crafting.
         if(isCrafting()) {
-            if(!this.level.isClientSide) {
-                if(animationTickCount == 54 || animationTickCount == 88 || animationTickCount == 115) {
-                    ((ServerLevel)this.level).sendParticles(ParticleTypes.CRIT, workBlock.getX() + 0.5D, workBlock.getY() + 1.1D, workBlock.getZ() + 0.5D, 6, 0.1D, 0.3D, 0.1D, 0.1D);
-                    ((ServerLevel)this.level).playSound(null, workBlock, SoundManager.HAMMER.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            if(workBlock!=null){
+                if(!this.level.isClientSide) {
+                    if(animationTickCount == 54 || animationTickCount == 88 || animationTickCount == 115) {
+                        ((ServerLevel)this.level).sendParticles(ParticleTypes.CRIT, workBlock.getX() + 0.5D, workBlock.getY() + 1.1D, workBlock.getZ() + 0.5D, 6, 0.1D, 0.3D, 0.1D, 0.1D);
+                        ((ServerLevel)this.level).playSound(null, workBlock, SoundManager.HAMMER.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                    }
                 }
-            }
 
-            if(animationTickCount == 115) {
-                BlockEntity blockEntity = this.level.getBlockEntity(this.workBlock);
-                if(blockEntity instanceof BteAbstractWorkBlockEntity) {
-                    blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get().insertItem(0, getCraftItem().copy(), false);
+                if(animationTickCount == 115) {
+                    BlockEntity blockEntity = this.level.getBlockEntity(this.workBlock);
+                    if(blockEntity instanceof BteAbstractWorkBlockEntity) {
+                        blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get().insertItem(0, getCraftItem().copy(), false);
+                    }
+                    setCraftItem(ItemStack.EMPTY);
                 }
-                setCraftItem(ItemStack.EMPTY);
-            }
 
-            if(animationTickCount >= 173) {
-                setCrafting(false);
-                animationTickCount = 0;
+                if(animationTickCount >= 173) {
+                    setCrafting(false);
+                    animationTickCount = 0;
+                }
+                animationTickCount++;
             }
-            animationTickCount++;
         }
     }
 

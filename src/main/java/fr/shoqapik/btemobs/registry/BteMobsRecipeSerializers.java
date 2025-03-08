@@ -3,6 +3,7 @@ package fr.shoqapik.btemobs.registry;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.recipe.BlacksmithRecipe;
 import fr.shoqapik.btemobs.recipe.BlacksmithUpgradeRecipe;
+import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,6 +18,8 @@ public class BteMobsRecipeSerializers {
             BlacksmithRecipe.Serializer::new);
     public static final RegistryObject<RecipeSerializer<BlacksmithUpgradeRecipe>> BLACKSMITH_UPGRADE_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("blacksmith_upgrade",
             BlacksmithUpgradeRecipe.Serializer::new);
+    public static final RegistryObject<RecipeSerializer<ExplorerRecipe>> EXPLORER_RECIPE = RECIPE_SERIALIZERS.register("explorer_recipe", ExplorerRecipe.Serializer::new);
+
 
     public static void register(IEventBus bus) {
         RECIPE_SERIALIZERS.register(bus);

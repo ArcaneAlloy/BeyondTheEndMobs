@@ -2,8 +2,10 @@ package fr.shoqapik.btemobs.client;
 
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.client.gui.BlacksmithRepairScreen;
+import fr.shoqapik.btemobs.client.gui.ExplorerTableScreen;
 import fr.shoqapik.btemobs.client.gui.QuestDialogScreen;
 import fr.shoqapik.btemobs.client.gui.BlacksmithCraftScreen;
+import fr.shoqapik.btemobs.client.renderer.blockentity.ExplorerTableBlockRenderer;
 import fr.shoqapik.btemobs.client.renderer.blockentity.MagmaForgeBlockEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.BlacksmithEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.DruidEntityRenderer;
@@ -21,6 +23,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -38,6 +41,7 @@ public class BteMobsModClient {
     public static void clientSetup(FMLClientSetupEvent event) {
         MenuScreens.register(BteMobsContainers.BLACKSMITH_CRAFT_MENU.get(), BlacksmithCraftScreen::new);
         MenuScreens.register(BteMobsContainers.BLACKSMITH_REPAIR_MENU.get(), BlacksmithRepairScreen::new);
+        MenuScreens.register(BteMobsContainers.EXPLORER_TABLE_MENU.get(), ExplorerTableScreen::new);
     }
 
     @SubscribeEvent
@@ -46,6 +50,7 @@ public class BteMobsModClient {
         event.registerEntityRenderer(BteMobsEntities.WARLOCK_ENTITY.get(), WarlockEntityRenderer::new);
         event.registerEntityRenderer(BteMobsEntities.EXPLORER_ENTITY.get(), ExplorerEntityRenderer::new);
         event.registerEntityRenderer(BteMobsEntities.DRUID_ENTITY.get(), DruidEntityRenderer::new);
+        BlockEntityRenderers.register(BteMobsBlockEntities.EXPLORER_TABLE_ENTITY.get(), ExplorerTableBlockRenderer::new);
         event.registerBlockEntityRenderer(BteMobsBlockEntities.MAGMA_FORGE.get(), MagmaForgeBlockEntityRenderer::new);
     }
 
@@ -57,7 +62,7 @@ public class BteMobsModClient {
     }
 
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest));
+        Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.entityName, msg.quest));
     }
 
     public static void handleToggleCraftButtonPacket(ToggleCraftButton msg, Supplier<NetworkEvent.Context> ctx) {

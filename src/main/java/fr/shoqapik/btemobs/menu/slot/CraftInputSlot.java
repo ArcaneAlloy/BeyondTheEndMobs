@@ -12,11 +12,11 @@ public class CraftInputSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack p_40231_) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean mayPickup(Player p_40228_) {
-        return false;
+        return true;
     }
 }

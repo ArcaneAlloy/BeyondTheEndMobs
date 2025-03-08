@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.button.CustomButton;
-import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.packets.ActionPacket;
 import fr.shoqapik.btemobs.quests.Quest;
 import fr.shoqapik.btemobs.quests.QuestAnswer;
@@ -31,12 +30,11 @@ import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 public class QuestDialogScreen extends Screen {
 
-    public static final ResourceLocation DIALOGS_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/default.png");
+    public static final ResourceLocation DIALOGS_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs.png");
     private static final Logger log = LoggerFactory.getLogger(QuestDialogScreen.class);
     protected int imageWidth = 254;
     protected int imageHeight = 80;
@@ -44,7 +42,7 @@ public class QuestDialogScreen extends Screen {
     protected int topPos;
 
     private int entityId;
-    private BteNpcType bteNpcType;
+    private String entityname;
     private Quest quest;
     private boolean typing;
     private int letterIndex;
@@ -55,14 +53,17 @@ public class QuestDialogScreen extends Screen {
     private List<Button> buttons = new ArrayList<>();
     private boolean declined;
 
+    private ResourceLocation texture;
+    private ResourceLocation texture2;
+
 /*    private Button acceptQuestButton;
     private Button declineQuestButton;
   */
 
-    public QuestDialogScreen(int entityId, BteNpcType bteNpcType, Quest quest) {
-        super(Component.literal(bteNpcType.name().toLowerCase(Locale.ROOT)));
+    public QuestDialogScreen(int entityId, String entityName, Quest quest) {
+        super(Component.literal(entityName));
         this.entityId = entityId;
-        this.bteNpcType = bteNpcType;
+        this.entityname = entityName;
         this.quest = quest;
     }
 
@@ -79,11 +80,60 @@ public class QuestDialogScreen extends Screen {
         for (QuestAnswer questAnswer : this.quest.getAnswers()) {
             if (index > 3) break;
 
-            ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
-            ResourceLocation foregroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/%s.png", bteNpcType.name().toLowerCase(Locale.ROOT), questAnswer.getAction().toLowerCase(Locale.ROOT)));
+            texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/cross_anna.png");
+
+            // Determina la textura según entityname
+            if (entityname.equals("Noah")) {
+                texture = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/button_anna.png");
+                if (questAnswer.getAction().equals("open_craft")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/craft_anna.png");
+                }
+                else if (questAnswer.getAction().equals("open_repair")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/repair_anna.png");
+                }
+                else if (questAnswer.getAction().equals("wip")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/cross_anna.png");
+                }
+
+            } else if (entityname.equals("Antonio")) {
+                texture = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/button_anna.png");
+                if (questAnswer.getAction().equals("open_craft")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/craft_anna.png");
+                }
+                else if (questAnswer.getAction().equals("open_repair")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/repair_anna.png");
+                }
+                else if (questAnswer.getAction().equals("wip")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/cross_anna.png");
+                }
+
+            } else if (entityname.equals("Oriana")) {
+                texture = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/button_anna.png");
+                if (questAnswer.getAction().equals("open_craft")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/craft_anna.png");
+                }
+                else if (questAnswer.getAction().equals("open_repair")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/repair_anna.png");
+                }
+                else if (questAnswer.getAction().equals("wip")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/cross_anna.png");
+                }
+
+            } else {
+                texture = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/button_anna.png");
+                if (questAnswer.getAction().equals("open_craft")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/craft_anna.png");
+                }
+                else if (questAnswer.getAction().equals("open_repair")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/repair_anna.png");
+                }
+                else if (questAnswer.getAction().equals("wip")){
+                    texture2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/extra_textures/cross_anna.png");
+                }
+            }
 
             buttons.add(this.addRenderableWidget(new CustomButton(
-                    backgroundTexture, foregroundTexture,
+                    texture,texture2,
                     x,
                     y + index * 25,
                     100,
@@ -134,7 +184,18 @@ public class QuestDialogScreen extends Screen {
         // Render background
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/dialogs/%s.png", bteNpcType.name().toLowerCase(Locale.ROOT))));
+        if (entityname.equals("Noah")){
+            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs_noah.png"));
+        }
+        else if (entityname.equals("Antonio")){
+            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs_antonio.png"));
+        }
+        else if (entityname.equals("Oriana")){
+            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs_oriana.png"));
+        }
+        else{
+            RenderSystem.setShaderTexture(0, DIALOGS_LOCATION);
+        }
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model":"bte_mobs:block/explorer_table" },
+    "facing=east": { "model":"bte_mobs:block/explorer_table", "y": 90 },
+    "facing=south": { "model":"bte_mobs:block/explorer_table", "y": 180 },
+    "facing=west": { "model":"bte_mobs:block/explorer_table", "y": 270 }
+  }
+}
