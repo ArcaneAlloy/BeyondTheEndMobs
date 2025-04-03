@@ -5,6 +5,7 @@ import fr.shoqapik.btemobs.blockentity.ExplorerTableBlockEntity;
 import fr.shoqapik.btemobs.recipe.api.RecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -202,5 +203,16 @@ public class ExplorerRecipe implements Recipe<ExplorerTableBlockEntity> {
             p_44554_.requiredItems.toNetwork(p_44553_);
             p_44553_.writeItem(p_44554_.craftedItem);
         }
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients(){
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+
+        for (ItemStack stack : this.requiredItems.getItems()) {
+            ingredients.add(Ingredient.of(stack));
+        }
+
+        return ingredients;
     }
 }

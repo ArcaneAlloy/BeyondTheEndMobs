@@ -21,6 +21,7 @@ public class BteMobsRecipeTypes {
                     return "blacksmith";
                 }
             });
+
     public static final RegistryObject<RecipeType<BlacksmithUpgradeRecipe>> BLACKSMITH_UPGRADE_RECIPE = RECIPE_TYPES.register("blacksmith_upgrade",
             () -> new RecipeType<>() {
                 public String toString() {
