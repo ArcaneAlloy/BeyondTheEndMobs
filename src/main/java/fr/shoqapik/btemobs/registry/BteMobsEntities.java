@@ -24,7 +24,6 @@ public class BteMobsEntities {
             () -> EntityType.Builder.of(WarlockEntity::new, MobCategory.CREATURE)
                     .sized(0.6F, 1.8F).fireImmune().updateInterval(1).build(BteMobsMod.MODID + ":warlock"));
 
-
     public static final RegistryObject<EntityType<ExplorerEntity>> EXPLORER_ENTITY = ENTITIES.register("explorer",
             () -> EntityType.Builder.of(ExplorerEntity::new, MobCategory.CREATURE)
                     .sized(0.6F, 1.8F).fireImmune().updateInterval(1).build(BteMobsMod.MODID + ":explorer"));

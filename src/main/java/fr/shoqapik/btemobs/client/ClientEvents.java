@@ -21,6 +21,7 @@ public class ClientEvents {
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
         if(minecraft.player != null) {
             Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("BLACKSMITH"), true);
+            Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("WARLOCK"), true);
 
             Inventory inventory = minecraft.player.getInventory();
             if (inventory.getTimesChanged() != previousTimesChanged) {

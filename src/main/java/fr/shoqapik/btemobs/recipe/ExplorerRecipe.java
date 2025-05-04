@@ -2,7 +2,7 @@ package fr.shoqapik.btemobs.recipe;
 
 import com.google.gson.*;
 import fr.shoqapik.btemobs.blockentity.ExplorerTableBlockEntity;
-import fr.shoqapik.btemobs.recipe.api.RecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.core.NonNullList;
@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 
 
 public class ExplorerRecipe implements Recipe<ExplorerTableBlockEntity> {
-    private final RecipeCategory category;
+    private final BteRecipeCategory category;
     protected final ResourceLocation id;
     private final int tier;
     private final Ingredient requiredItems;
@@ -36,7 +36,7 @@ public class ExplorerRecipe implements Recipe<ExplorerTableBlockEntity> {
         this.craftedItem = craftedItem;
         this.requiredItems=ingredient;
         this.tier=tier;
-        this.category=RecipeCategory.ALL;
+        this.category= BteRecipeCategory.ALL;
     }
 
     public int getTier() {
@@ -47,7 +47,7 @@ public class ExplorerRecipe implements Recipe<ExplorerTableBlockEntity> {
         return requiredItems;
     }
 
-    public RecipeCategory getCategory() {
+    public BteRecipeCategory getCategory() {
         return category;
     }
 

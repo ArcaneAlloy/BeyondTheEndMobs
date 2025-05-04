@@ -1,10 +1,7 @@
 package fr.shoqapik.btemobs.client;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.client.gui.BlacksmithRepairScreen;
-import fr.shoqapik.btemobs.client.gui.ExplorerTableScreen;
-import fr.shoqapik.btemobs.client.gui.QuestDialogScreen;
-import fr.shoqapik.btemobs.client.gui.BlacksmithCraftScreen;
+import fr.shoqapik.btemobs.client.gui.*;
 import fr.shoqapik.btemobs.client.renderer.blockentity.ExplorerTableBlockRenderer;
 import fr.shoqapik.btemobs.client.renderer.blockentity.MagmaForgeBlockEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.BlacksmithEntityRenderer;
@@ -12,7 +9,6 @@ import fr.shoqapik.btemobs.client.renderer.entity.DruidEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.ExplorerEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.WarlockEntityRenderer;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
-import fr.shoqapik.btemobs.entity.ExplorerEntity;
 import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
 import fr.shoqapik.btemobs.packets.*;
 import fr.shoqapik.btemobs.registry.BteMobsBlockEntities;
@@ -41,6 +37,7 @@ public class BteMobsModClient {
     public static void clientSetup(FMLClientSetupEvent event) {
         MenuScreens.register(BteMobsContainers.BLACKSMITH_CRAFT_MENU.get(), BlacksmithCraftScreen::new);
         MenuScreens.register(BteMobsContainers.BLACKSMITH_REPAIR_MENU.get(), BlacksmithRepairScreen::new);
+        MenuScreens.register(BteMobsContainers.WARLOCK_CRAFT_MENU.get(), WarlockCraftScreen::new);
         MenuScreens.register(BteMobsContainers.EXPLORER_TABLE_MENU.get(), ExplorerTableScreen::new);
     }
 

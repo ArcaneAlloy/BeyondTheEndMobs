@@ -1,8 +1,10 @@
 package fr.shoqapik.btemobs;
 
-import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
+import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
+import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
 import fr.shoqapik.btemobs.menu.provider.BlacksmithCraftProvider;
+import fr.shoqapik.btemobs.menu.provider.WarlockCraftProvider;
 import fr.shoqapik.btemobs.packets.*;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.*;
@@ -88,8 +90,13 @@ public class BteMobsMod {
 
 
     public static void handleActionPacket(ActionPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        if(msg.actionType.equals("open_craft")){
-            NetworkHooks.openScreen(ctx.get().getSender(), new BlacksmithCraftProvider(msg.entityId));
+        if(msg.actionType.equals("open_craft")) {
+            BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
+            if(bteAbstractEntity == null) return;
+            switch (bteAbstractEntity.getNpcType()) {
+                case BLACKSMITH -> NetworkHooks.openScreen(ctx.get().getSender(), new BlacksmithCraftProvider(msg.entityId));
+                case WARLOCK -> NetworkHooks.openScreen(ctx.get().getSender(), new WarlockCraftProvider(msg.entityId));
+            }
         }
         if(msg.actionType.equals("open_repair")) {
             NetworkHooks.openScreen(ctx.get().getSender(), new SimpleMenuProvider((id, inventory, player) -> {
@@ -105,6 +112,7 @@ public class BteMobsMod {
         List<BteAbstractRecipe> list = new ArrayList<>();
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()));
         for(BteAbstractRecipe recipe : list) {
             if(ctx.get().getSender().getRecipeBook().contains(recipe.getId())) continue;
             List<Item> items = new ArrayList<>();
@@ -119,8 +127,8 @@ public class BteMobsMod {
     }
 
     public static void handleCraftItemPacket(CraftItemPacket msg, Supplier<NetworkEvent.Context> ctx){
-        if(ctx.get().getSender().containerMenu instanceof BlacksmithCraftMenu){
-            BlacksmithCraftMenu menu = (BlacksmithCraftMenu) ctx.get().getSender().containerMenu;
+        if(ctx.get().getSender().containerMenu instanceof BteAbstractCraftMenu){
+            BteAbstractCraftMenu menu = (BteAbstractCraftMenu) ctx.get().getSender().containerMenu;
             Optional<? extends Recipe<?>> recipe = Optional.empty();
             if(msg.recipe != null) recipe = ctx.get().getSender().getServer().getRecipeManager().byKey(msg.recipe);
             menu.craftItemServer(ctx.get().getSender(), recipe);

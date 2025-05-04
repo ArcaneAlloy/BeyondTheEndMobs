@@ -1,6 +1,6 @@
 package fr.shoqapik.btemobs.packets;
 
-import fr.shoqapik.btemobs.menu.container.explorer_menu.TableExplorerMenu;
+import fr.shoqapik.btemobs.menu.TableExplorerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;

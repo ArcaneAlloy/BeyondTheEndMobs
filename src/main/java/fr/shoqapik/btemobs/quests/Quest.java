@@ -29,7 +29,7 @@ public class Quest {
     }
 
     public ResourceLocation getEntityId() {
-        if(entityIdLocation ==null){
+        if(entityIdLocation == null) {
             entityIdLocation = ResourceLocation.tryParse(entityId);
 
         }

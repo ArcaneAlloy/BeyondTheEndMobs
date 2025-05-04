@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class BlacksmithRepairMenu extends ItemCombinerMenu {
 
-    public static final int MAX_NAME_LENGTH = 50;
     public int repairItemCountCost;
     private String itemName;
 

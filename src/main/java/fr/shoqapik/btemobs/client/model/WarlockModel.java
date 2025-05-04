@@ -1,7 +1,6 @@
 package fr.shoqapik.btemobs.client.model;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.entity.BlacksmithEntity;
 import fr.shoqapik.btemobs.entity.WarlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;

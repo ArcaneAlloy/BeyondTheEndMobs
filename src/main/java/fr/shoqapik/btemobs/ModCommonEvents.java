@@ -1,12 +1,9 @@
 package fr.shoqapik.btemobs;
 
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
-import fr.shoqapik.btemobs.quests.Quest;
-import fr.shoqapik.btemobs.quests.QuestManager;
 import fr.shoqapik.btemobs.recipe.BteIngredientSerializer;
 import fr.shoqapik.btemobs.registry.BteMobsEntities;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

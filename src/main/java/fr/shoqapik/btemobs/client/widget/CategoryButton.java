@@ -3,7 +3,7 @@ package fr.shoqapik.btemobs.client.widget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.recipe.api.RecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -15,8 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 public class CategoryButton extends SmithStateSwitchingButton{
     private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
 
-    private RecipeCategory category;
-    public CategoryButton(RecipeCategory category) {
+    private BteRecipeCategory category;
+    public CategoryButton(BteRecipeCategory category) {
         super(0, 0, 35, 27, false);
         this.category = category;
         this.initTextureValues(88, 180, 35, 0, CRAFTING_TABLE_LOCATION);
@@ -55,7 +55,7 @@ public class CategoryButton extends SmithStateSwitchingButton{
         p_100454_.renderAndDecorateFakeItem(category.item, this.x + 9+i, this.y + 5);
     }
 
-    public RecipeCategory getCategory() {
+    public BteRecipeCategory getCategory() {
         return category;
     }
 }

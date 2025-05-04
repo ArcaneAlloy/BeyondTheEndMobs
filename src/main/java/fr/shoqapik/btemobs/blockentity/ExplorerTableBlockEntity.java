@@ -1,6 +1,6 @@
 package fr.shoqapik.btemobs.blockentity;
 
-import fr.shoqapik.btemobs.menu.container.explorer_menu.TableExplorerMenu;
+import fr.shoqapik.btemobs.menu.TableExplorerMenu;
 import fr.shoqapik.btemobs.registry.BteMobsBlockEntities;
 import fr.shoqapik.btemobs.registry.BteMobsBlocks;
 import net.minecraft.core.BlockPos;

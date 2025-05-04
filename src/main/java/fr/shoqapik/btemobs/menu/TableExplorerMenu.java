@@ -1,4 +1,4 @@
-package fr.shoqapik.btemobs.menu.container.explorer_menu;
+package fr.shoqapik.btemobs.menu;
 
 import fr.shoqapik.btemobs.blockentity.ExplorerTableBlockEntity;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;

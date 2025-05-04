@@ -2,9 +2,9 @@
 package fr.shoqapik.btemobs.recipe;
 
 import com.google.gson.JsonObject;
-import fr.shoqapik.btemobs.menu.container.BlacksmithCraftContainer;
+import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
-import fr.shoqapik.btemobs.recipe.api.RecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -18,13 +18,13 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
 
-    public BlacksmithUpgradeRecipe(ResourceLocation resourceLocation, RecipeCategory category, int tier, Ingredient base, NonNullList<Ingredient> ingredients, ItemStack result) {
-        super(resourceLocation, category, tier, ingredients, result);
+    public BlacksmithUpgradeRecipe(ResourceLocation resourceLocation, BteRecipeCategory category, Ingredient base, NonNullList<Ingredient> ingredients, ItemStack result) {
+        super(resourceLocation, category, ingredients, result);
         ingredients.add(0, base);
     }
 
     @Override
-    public ItemStack assemble(BlacksmithCraftContainer pInv) {
+    public ItemStack assemble(BteAbstractCraftContainer pInv) {
         ItemStack itemstack = this.result.copy();
         CompoundTag compoundtag = pInv.getItem(0).getTag();
         if (compoundtag != null) {
@@ -48,8 +48,9 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
     public static class Serializer extends AbstractSerializer<BlacksmithUpgradeRecipe> {
         @Override
         public BlacksmithUpgradeRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+            int tier = json.get("tier").getAsInt();
             Ingredient base = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "base"));
-            return fromJson(recipeId, json, base);
+            return fromJson(recipeId, json, tier, base);
         }
 
         @Override
@@ -66,8 +67,13 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
         }
 
         @Override
-        protected BlacksmithUpgradeRecipe of(ResourceLocation resourceLocation, RecipeCategory category, int tier, NonNullList<Ingredient> ingredients, ItemStack result, Object... objects) {
-            return new BlacksmithUpgradeRecipe(resourceLocation, category, tier, (Ingredient)objects[0], ingredients, result);
+        public boolean hasResultItem() {
+            return true;
+        }
+
+        @Override
+        protected BlacksmithUpgradeRecipe of(ResourceLocation resourceLocation, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result, Object... objects) {
+            return new BlacksmithUpgradeRecipe(resourceLocation, category, (Ingredient)objects[1], ingredients, result);
         }
     }
 }

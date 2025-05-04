@@ -3,10 +3,9 @@ package fr.shoqapik.btemobs.registry;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
-import fr.shoqapik.btemobs.menu.container.explorer_menu.TableExplorerMenu;
-import net.minecraft.world.entity.player.Inventory;
+import fr.shoqapik.btemobs.menu.TableExplorerMenu;
+import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,6 +22,9 @@ public class BteMobsContainers {
             .register("blacksmith_craft", () -> new MenuType<>((id, inventory) -> new BlacksmithCraftMenu(id, inventory, 0)));
     public static final RegistryObject<MenuType<BlacksmithRepairMenu>> BLACKSMITH_REPAIR_MENU = CONTAINERS
             .register("blacksmith_repair", () -> new MenuType<>((id, inventory) -> new BlacksmithRepairMenu(id, inventory)));
+
+    public static final RegistryObject<MenuType<WarlockCraftMenu>> WARLOCK_CRAFT_MENU = CONTAINERS
+            .register("warlock_craft", () -> new MenuType<>((id, inventory) -> new WarlockCraftMenu(id, inventory, 0)));
 
     public static final RegistryObject<MenuType<TableExplorerMenu>> EXPLORER_TABLE_MENU = registerMenuType(TableExplorerMenu::new,"explorer_table_menu");
 

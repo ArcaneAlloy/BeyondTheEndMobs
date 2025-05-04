@@ -7,11 +7,11 @@ import fr.shoqapik.btemobs.client.widget.CategoryButton;
 import fr.shoqapik.btemobs.client.widget.ExplorerTableRecipeButton;
 import fr.shoqapik.btemobs.client.widget.SmithStateSwitchingButton;
 import fr.shoqapik.btemobs.entity.ExplorerEntity;
-import fr.shoqapik.btemobs.menu.container.explorer_menu.TableExplorerMenu;
+import fr.shoqapik.btemobs.menu.TableExplorerMenu;
 import fr.shoqapik.btemobs.packets.PlaceItemRecipePacket;
 import fr.shoqapik.btemobs.packets.StartCraftingItemPacket;
 import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
-import fr.shoqapik.btemobs.recipe.api.RecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMenu> {
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
-    private RecipeCategory currentCategory = RecipeCategory.ALL;
+    private BteRecipeCategory currentCategory = BteRecipeCategory.ALL;
     private EditBox searchBox;
     private String previousSearchText = "";
     private List<ExplorerTableRecipeButton> buttonList = new ArrayList<ExplorerTableRecipeButton>();
@@ -67,7 +67,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         this.backButton = new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true);
         this.backButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
         tabButtons.clear();
-        this.tabButtons.add(new CategoryButton(RecipeCategory.ALL));
+        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL));
         this.currentRecipe=null;
         refreshButtons();
         updateTabs();

@@ -9,18 +9,22 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 
-public class BlacksmithCraftContainer implements Container, StackedContentsCompatible {
+public class BteAbstractCraftContainer implements Container, StackedContentsCompatible {
 
     private final NonNullList<ItemStack> items;
     private final int width;
     private final int height;
     private final AbstractContainerMenu menu;
 
-    public BlacksmithCraftContainer(AbstractContainerMenu p_39325_, int p_39326_, int p_39327_) {
-        this.items = NonNullList.withSize(p_39326_ * p_39327_, ItemStack.EMPTY);
-        this.menu = p_39325_;
-        this.width = p_39326_;
-        this.height = p_39327_;
+    public BteAbstractCraftContainer(AbstractContainerMenu menu, int width, int height) {
+        this(menu, width, height, width * height);
+    }
+
+    public BteAbstractCraftContainer(AbstractContainerMenu menu, int width, int height, int size) {
+        this.items = NonNullList.withSize(size, ItemStack.EMPTY);
+        this.menu = menu;
+        this.width = width;
+        this.height = height;
     }
 
     public int getContainerSize() {

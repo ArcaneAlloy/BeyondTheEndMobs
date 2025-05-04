@@ -3,7 +3,7 @@ package fr.shoqapik.btemobs.recipe.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import fr.shoqapik.btemobs.menu.container.BlacksmithCraftContainer;
+import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -16,18 +16,16 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
-public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContainer> {
+public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContainer> {
 
     private final ResourceLocation resourceLocation;
-    protected final RecipeCategory category;
-    protected final int tier;
+    protected final BteRecipeCategory category;
     protected final NonNullList<Ingredient> ingredients;
     protected final ItemStack result;
 
-    public BteAbstractRecipe(ResourceLocation resourceLocation, RecipeCategory category, int tier, NonNullList<Ingredient> ingredients, ItemStack result) {
+    public BteAbstractRecipe(ResourceLocation resourceLocation, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result) {
         this.resourceLocation = resourceLocation;
         this.category = category;
-        this.tier = tier;
         this.ingredients = ingredients;
         this.result = result;
     }
@@ -37,12 +35,8 @@ public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContain
         return this.resourceLocation;
     }
 
-    public RecipeCategory getCategory() {
+    public BteRecipeCategory getCategory() {
         return this.category;
-    }
-
-    public int getTier() {
-        return this.tier;
     }
 
     @Override
@@ -56,7 +50,7 @@ public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContain
     }
 
     @Override
-    public boolean matches(BlacksmithCraftContainer inventory, Level level) {
+    public boolean matches(BteAbstractCraftContainer inventory, Level level) {
         for(Ingredient ingredient : getIngredients()) {
             boolean hasEnough = false;
 
@@ -74,7 +68,7 @@ public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContain
     }
 
     @Override
-    public ItemStack assemble(BlacksmithCraftContainer inventory) {
+    public ItemStack assemble(BteAbstractCraftContainer inventory) {
         return this.getResultItem().copy();
     }
 
@@ -106,8 +100,7 @@ public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContain
         }
 
         protected T fromJson(ResourceLocation recipeId, JsonObject json, Object... objects) {
-            RecipeCategory category = RecipeCategory.valueOf(json.get("category").getAsString());
-            int tier = json.get("tier").getAsInt();
+            BteRecipeCategory category = BteRecipeCategory.valueOf(json.get("category").getAsString());
             NonNullList<Ingredient> nonnulllist = itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
 
             if (nonnulllist.isEmpty()) {
@@ -115,8 +108,8 @@ public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContain
             } else if (nonnulllist.size() > 6) {
                 throw new JsonParseException("Too many ingredients for bte recipe. The maximum is 6.");
             } else {
-                ItemStack itemstack = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true, true);
-                return of(recipeId, category, tier, nonnulllist, itemstack, objects);
+                ItemStack itemstack = hasResultItem() ? CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true, true) : ItemStack.EMPTY;
+                return of(recipeId, category, nonnulllist, itemstack, objects);
             }
         }
 
@@ -140,8 +133,7 @@ public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContain
         }
 
         protected T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf pBuffer, Object... objects) {
-            RecipeCategory category = RecipeCategory.valueOf(pBuffer.readUtf());
-            int tier = pBuffer.readInt();
+            BteRecipeCategory category = BteRecipeCategory.valueOf(pBuffer.readUtf());
 
             int i = pBuffer.readVarInt();
             NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
@@ -150,23 +142,24 @@ public abstract class BteAbstractRecipe implements Recipe<BlacksmithCraftContain
                 nonnulllist.set(j, Ingredient.fromNetwork(pBuffer));
             }
 
-            ItemStack itemstack = pBuffer.readItem();
-            return of(recipeId, category, tier, nonnulllist, itemstack);
+            ItemStack itemstack = hasResultItem() ? pBuffer.readItem() : ItemStack.EMPTY;
+            return of(recipeId, category, nonnulllist, itemstack);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf pBuffer, T recipe) {
             pBuffer.writeUtf(recipe.getCategory().name());
-            pBuffer.writeInt(recipe.getTier());
             pBuffer.writeVarInt(recipe.ingredients.size());
 
             for(Ingredient ingredient : recipe.ingredients) {
                 ingredient.toNetwork(pBuffer);
             }
 
-            pBuffer.writeItem(recipe.result);
+            if(hasResultItem()) pBuffer.writeItem(recipe.result);
         }
 
-        protected abstract T of(ResourceLocation resourceLocation, RecipeCategory category, int tier, NonNullList<Ingredient> ingredients, ItemStack result, Object... objects);
+        public abstract boolean hasResultItem();
+
+        protected abstract T of(ResourceLocation resourceLocation, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result, Object... objects);
     }
 }
