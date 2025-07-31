@@ -9,10 +9,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 
 import java.awt.*;
+import java.util.Locale;
 
 public class CustomButton extends Button {
     private final ResourceLocation texture;
     private final ResourceLocation texture2;
+    private boolean isLock=false;
 
     public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height, Component message, OnPress onPress) {
         super(x, y, width, height, message, onPress);
@@ -28,6 +30,9 @@ public class CustomButton extends Button {
             RenderSystem.setShaderColor(0.7f, 0.7f, 0.7f, 1.0f); // Oscurece (70% de brillo)
         } else {
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f); // Color normal
+        }
+        if(this.isLock){
+            RenderSystem.setShaderColor(0.3f, 0.3f, 0.3f, 1.0f); // Color normal
         }
 
         blit(poseStack, this.x, this.y, 0, 0, this.width, this.height, this.width, this.height);
@@ -46,6 +51,24 @@ public class CustomButton extends Button {
         }
 
         // Renderizar el texto
-        drawCenteredString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 0xFFFFFF);
+        if(this.isLock){
+            ResourceLocation foregroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/explorer/candado.png"));
+            int iconWidth = this.height/3 * 2;  // Ancho de la segunda textura
+            int iconHeight = this.height/3 * 2; // Altura de la segunda textura
+            int iconX = this.x + this.width/2 - iconWidth/2;
+            int iconY = this.y + this.height/2 - iconHeight/2;
+
+            // Vincula y renderiza la segunda textura (el ícono)
+            RenderSystem.setShaderTexture(0, foregroundTexture);
+            blit(poseStack, iconX, iconY, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
+
+        }else {
+            drawCenteredString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 0xFFFFFF);
+        }
     }
+
+    public void setIsLock(boolean flag){
+        this.isLock=flag;
+    }
+
 }

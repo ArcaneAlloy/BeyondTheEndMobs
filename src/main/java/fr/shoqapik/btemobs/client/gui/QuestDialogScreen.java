@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.button.CustomButton;
+import fr.shoqapik.btemobs.client.BteMobsModClient;
 import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.packets.ActionPacket;
 import fr.shoqapik.btemobs.quests.Quest;
@@ -90,10 +91,13 @@ public class QuestDialogScreen extends Screen {
                     20,
                     Component.literal(questAnswer.getFormattedAwnser()),
                     (p_95981_) -> {
-                        if (!questAnswer.getAction().equals("wip")) {
+                        if (questAnswer.getAction().equals("rumor")) {
+                            Minecraft.getInstance().setScreen(null);
+                            BteMobsModClient.handleRumorsPacket(this.entityId);
+                        }else if(!questAnswer.getAction().equals("wip")){
                             Minecraft.getInstance().setScreen(null);
                             BteMobsMod.sendToServer(new ActionPacket(entityId, questAnswer.getAction()));
-                        } else {
+                        }else {
                             this.quest.getDialogs().add("Not implemented yet! Come back later.");
                             this.page = page + 1;
                             this.declined = true;

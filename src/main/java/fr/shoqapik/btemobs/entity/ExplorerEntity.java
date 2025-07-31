@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -49,7 +50,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     public final AnimationFactory factory = GeckoLibUtil.createFactory(this);
@@ -67,6 +70,10 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     public ExplorerEntity(EntityType<? extends Mob> p_21368_, Level p_21369_) {
         super(p_21368_, p_21369_);
         this.lookControl = new ExplorerLookControl(this);
+    }
+
+    public BlockPos getTablePos() {
+        return tablePos;
     }
 
     @Override
@@ -106,6 +113,14 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
         this.setYBodyRot(this.getAttachFace().toYRot());
     }
 
+    public void openCraftGui(ServerPlayer player){
+        if(this.getTablePos()==null)return;
+        BlockState state = this.level.getBlockState(this.getTablePos());
+        if(state.getBlock() instanceof ExplorerTableBlock explorerTableBlock){
+            explorerTableBlock.openContainer(this.level,this.getTablePos(),player);
+        }
+    }
+
     @Override
     public void handleEntityEvent(byte p_21375_) {
         if(p_21375_==4){
@@ -131,6 +146,11 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     public void startCrafting(ItemStack stack){
         this.resultItem=stack;
         this.setCrafting(true);
+    }
+
+    @Override
+    public List<UUID> getInteractedPlayers() {
+        return List.of();
     }
 
     @Override

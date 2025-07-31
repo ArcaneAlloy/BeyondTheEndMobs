@@ -51,7 +51,7 @@ public class ExplorerTableBlock extends BaseEntityBlock {
         super.onPlace(p_60566_, p_60567_, p_60568_, p_60569_, p_60570_);
     }
 
-    protected void openContainer(Level p_49777_, BlockPos p_49778_, Player p_49779_) {
+    public void openContainer(Level p_49777_, BlockPos p_49778_, Player p_49779_) {
         BlockState state=p_49777_.getBlockState(p_49778_);
         BlockEntity blockentity;
         if(state.getValue(HALF)==DoubleBlockHalf.LOWER){
@@ -82,14 +82,10 @@ public class ExplorerTableBlock extends BaseEntityBlock {
         } else {
             ExplorerTableBlockEntity table=this.getTableEntity(p_48707_, p_48708_, p_48709_);
             if(table!=null){
-                if(table.getItem().isEmpty() && canOpen(p_48707_,table)){
-                    this.openContainer(p_48707_, p_48708_, p_48709_);
-                }else {
-                    if(p_48706_.getValue(HALF)==DoubleBlockHalf.LOWER &&
-                            p_48709_.getInventory().add(table.getItem().copy())){
-                        table.setItem(ItemStack.EMPTY);
-                        BteMobsMod.sendToClient(new BlockUpdatePacket(p_48708_), (ServerPlayer) p_48709_);
-                    }
+                if(p_48706_.getValue(HALF)==DoubleBlockHalf.LOWER &&
+                        p_48709_.getInventory().add(table.getItem().copy())){
+                    table.setItem(ItemStack.EMPTY);
+                    BteMobsMod.sendToClient(new BlockUpdatePacket(p_48708_), (ServerPlayer) p_48709_);
                 }
             }
             return InteractionResult.CONSUME;

@@ -1,6 +1,7 @@
 package fr.shoqapik.btemobs.client;
 
 import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.block.ExplorerTableBlock;
 import fr.shoqapik.btemobs.client.gui.*;
 import fr.shoqapik.btemobs.client.renderer.blockentity.ExplorerTableBlockRenderer;
 import fr.shoqapik.btemobs.client.renderer.blockentity.MagmaForgeBlockEntityRenderer;
@@ -9,8 +10,12 @@ import fr.shoqapik.btemobs.client.renderer.entity.DruidEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.ExplorerEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.WarlockEntityRenderer;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
+import fr.shoqapik.btemobs.entity.BteNpcType;
+import fr.shoqapik.btemobs.entity.ExplorerEntity;
 import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
+import fr.shoqapik.btemobs.menu.TableExplorerMenu;
 import fr.shoqapik.btemobs.packets.*;
+import fr.shoqapik.btemobs.quests.RumorsManager;
 import fr.shoqapik.btemobs.registry.BteMobsBlockEntities;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
 import fr.shoqapik.btemobs.registry.BteMobsEntities;
@@ -21,12 +26,14 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
+import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.function.Supplier;
 
@@ -56,10 +63,15 @@ public class BteMobsModClient {
             BteAbstractEntity entity = (BteAbstractEntity) Minecraft.getInstance().level.getEntity(msg.entityId);
             entity.setCrafting(true);
         }
+
     }
 
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
         Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest));
+    }
+
+    public static void handleRumorsPacket(int id) {
+        Minecraft.getInstance().setScreen(new RumorsScreen(id, BteNpcType.EXPLORER, RumorsManager.getRumors()));
     }
 
     public static void handleToggleCraftButtonPacket(ToggleCraftButton msg, Supplier<NetworkEvent.Context> ctx) {
