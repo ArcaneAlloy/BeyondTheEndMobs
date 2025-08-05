@@ -40,7 +40,7 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
         this.recipeBookComponent.setVisible(true);
 
-        this.craftButton = new Button(this.leftPos + 120, (this.height / 2 - this.imageHeight / 2) + 66, 65, 20, Component.literal("Craft"), new Button.OnPress() {
+        this.craftButton = new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
             @Override
             public void onPress(Button button) {
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
