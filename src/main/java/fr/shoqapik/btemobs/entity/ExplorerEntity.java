@@ -24,8 +24,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -38,7 +36,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -69,7 +66,7 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     });
     public ExplorerEntity(EntityType<? extends Mob> p_21368_, Level p_21369_) {
         super(p_21368_, p_21369_);
-        this.lookControl = new ExplorerLookControl(this);
+        this.lookControl = new NpcLookControl(this);
     }
 
     public BlockPos getTablePos() {
@@ -287,19 +284,12 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
 
     @Override
     protected BodyRotationControl createBodyControl() {
-        return new ExplorerBodyRotationControl(this);
+        return new NPCBodyRotationControl(this);
     }
 
     @Override
     public boolean isPushedByFluid(FluidType type) {
         return false;
-    }
-
-
-    public static AttributeSupplier.Builder getExplorerAttributes() {
-        return Mob.createMobAttributes().add(ForgeMod.ENTITY_GRAVITY.get(), 1.5f)
-                .add(Attributes.MAX_HEALTH, 25.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.7246D);
     }
 
     @Override
@@ -321,17 +311,21 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
         return this.factory;
     }
 
-    static class ExplorerBodyRotationControl extends BodyRotationControl {
-        public ExplorerBodyRotationControl(Mob p_149816_) {
+    static class NPCBodyRotationControl extends BodyRotationControl {
+        private final Mob mob;
+
+        public NPCBodyRotationControl(Mob p_149816_) {
             super(p_149816_);
+            this.mob = p_149816_;
         }
 
         public void clientTick() {
+            this.mob.yBodyRot = this.mob.getYRot();
         }
     }
 
-    class ExplorerLookControl extends LookControl {
-        public ExplorerLookControl(Mob p_149820_) {
+    class NpcLookControl extends LookControl {
+        public NpcLookControl(Mob p_149820_) {
             super(p_149820_);
         }
 

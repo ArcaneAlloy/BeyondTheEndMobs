@@ -5,6 +5,7 @@ import fr.shoqapik.btemobs.recipe.BlacksmithRecipe;
 import fr.shoqapik.btemobs.recipe.BlacksmithUpgradeRecipe;
 import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
+import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -20,6 +21,7 @@ public class BteMobsRecipeSerializers {
     public static final RegistryObject<RecipeSerializer<WarlockRecipe>> WARLOCK_SERIALIZER = RECIPE_SERIALIZERS.register("warlock", WarlockRecipe.Serializer::new);
     public static final RegistryObject<RecipeSerializer<ExplorerRecipe>> EXPLORER_RECIPE = RECIPE_SERIALIZERS.register("explorer_recipe", ExplorerRecipe.Serializer::new);
 
+    public static final RegistryObject<RecipeSerializer<DruidRecipe>> DRUID_RECIPE = RECIPE_SERIALIZERS.register("druid_recipe", DruidRecipe.Serializer::new);
 
     public static void register(IEventBus bus) {
         RECIPE_SERIALIZERS.register(bus);

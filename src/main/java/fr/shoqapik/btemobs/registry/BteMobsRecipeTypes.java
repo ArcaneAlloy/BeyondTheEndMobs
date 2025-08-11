@@ -5,6 +5,7 @@ import fr.shoqapik.btemobs.recipe.BlacksmithRecipe;
 import fr.shoqapik.btemobs.recipe.BlacksmithUpgradeRecipe;
 import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
+import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -36,6 +37,13 @@ public class BteMobsRecipeTypes {
     });
 
     public static final RegistryObject<RecipeType<ExplorerRecipe>> EXPLORER_RECIPE_TYPE = RECIPE_TYPES.register("explorer_recipe_type", ()-> new RecipeType<>() {
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+    });
+
+    public static final RegistryObject<RecipeType<DruidRecipe>> DRUID_RECIPE_TYPE = RECIPE_TYPES.register("druid_recipe_type", ()-> new RecipeType<>() {
         @Override
         public int hashCode() {
             return super.hashCode();

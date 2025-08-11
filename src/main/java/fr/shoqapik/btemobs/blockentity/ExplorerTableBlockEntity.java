@@ -148,7 +148,7 @@ public class ExplorerTableBlockEntity extends BaseContainerBlockEntity implement
         if(!this.getItem().isEmpty()){
             CompoundTag tag1=new CompoundTag();
             this.getItem().save(tag1);
-            p_187461_.put("item",tag1);
+            p_187461_.put("craftingItem",tag1);
         }
     }
 
@@ -158,8 +158,8 @@ public class ExplorerTableBlockEntity extends BaseContainerBlockEntity implement
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(p_155080_, this.items);
         this.id=p_155080_.getInt("id");
-        if(p_155080_.contains("item",10)){
-            this.item= ItemStack.of(p_155080_.getCompound("item"));
+        if(p_155080_.contains("craftingItem",10)){
+            this.item= ItemStack.of(p_155080_.getCompound("craftingItem"));
         }
     }
 

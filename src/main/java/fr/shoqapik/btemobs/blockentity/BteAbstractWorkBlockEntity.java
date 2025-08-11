@@ -14,7 +14,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Block entity for the different support blocks of each npc. It is used for placing the item in the block once crafted.
+ * Block entity for the different support blocks of each npc. It is used for placing the craftingItem in the block once crafted.
  */
 public abstract class BteAbstractWorkBlockEntity extends BlockEntity {
 

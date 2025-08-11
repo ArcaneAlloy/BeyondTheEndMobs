@@ -1,10 +1,7 @@
 package fr.shoqapik.btemobs.registry;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
-import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
-import fr.shoqapik.btemobs.menu.TableExplorerMenu;
-import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
+import fr.shoqapik.btemobs.menu.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -27,6 +24,7 @@ public class BteMobsContainers {
             .register("warlock_craft", () -> new MenuType<>((id, inventory) -> new WarlockCraftMenu(id, inventory, 0)));
 
     public static final RegistryObject<MenuType<TableExplorerMenu>> EXPLORER_TABLE_MENU = registerMenuType(TableExplorerMenu::new,"explorer_table_menu");
+    public static final RegistryObject<MenuType<DruidMenu>> DRUID_MENU = registerMenuType(DruidMenu::new,"druid_menu");
 
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory,
                                                                                                   String name) {

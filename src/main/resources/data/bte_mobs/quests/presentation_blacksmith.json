@@ -1,0 +1,18 @@
+{
+  "entityId": "bte_mobs:blacksmith",
+  "type": "PRESENTATION",
+  "dialogs": [
+    "¡Saludos, viajero!"
+  ],
+  "answers": [
+    {
+      "formattedText": "Quiero craftear",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "Seguire explorando.",
+      "action": "wip"
+    }
+
+  ]
+}

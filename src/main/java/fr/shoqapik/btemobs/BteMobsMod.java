@@ -1,16 +1,15 @@
 package fr.shoqapik.btemobs;
 
-import fr.shoqapik.btemobs.client.gui.RumorsScreen;
+import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
-import fr.shoqapik.btemobs.entity.BteNpcType;
+import fr.shoqapik.btemobs.entity.DruidEntity;
 import fr.shoqapik.btemobs.entity.ExplorerEntity;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
 import fr.shoqapik.btemobs.menu.provider.BlacksmithCraftProvider;
 import fr.shoqapik.btemobs.menu.provider.WarlockCraftProvider;
 import fr.shoqapik.btemobs.packets.*;
-import fr.shoqapik.btemobs.quests.Rumor;
-import fr.shoqapik.btemobs.quests.RumorsManager;
+import fr.shoqapik.btemobs.rumors.Rumor;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.*;
 import fr.shoqapik.btemobs.sound.SoundManager;
@@ -25,7 +24,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -42,7 +40,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static fr.shoqapik.btemobs.client.BteMobsModClient.handleRumorsPacket;
 
 @Mod(BteMobsMod.MODID)
 public class BteMobsMod {
@@ -58,6 +55,8 @@ public class BteMobsMod {
     public static double yq=0;
     public static double zq=0;
     public static Rumor.UnlockLevel unlockLevel = Rumor.UnlockLevel.OVERWORLD;
+    public static PageCompendium.UnlockLevel unlockLevel1 = PageCompendium.UnlockLevel.OVERWORLD;
+
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(MODID, "main"),
             () -> PROTOCOL_VERSION,
@@ -88,6 +87,8 @@ public class BteMobsMod {
         INSTANCE.registerMessage(7, BlockUpdatePacket.class, BlockUpdatePacket::encode, BlockUpdatePacket::decode, BlockUpdatePacket::handle);
         INSTANCE.registerMessage(8, PlaceItemRecipePacket.class, PlaceItemRecipePacket::encode, PlaceItemRecipePacket::decode, PlaceItemRecipePacket::handle);
         INSTANCE.registerMessage(9, SyncPacket.class, SyncPacket::encode, SyncPacket::decode, SyncPacket::handle);
+        INSTANCE.registerMessage(10, PartItemPacket.class, PartItemPacket::encode, PartItemPacket::decode, PartItemPacket::handle);
+        INSTANCE.registerMessage(11, DirectionPacket.class, DirectionPacket::encode, DirectionPacket::decode, DirectionPacket::handle);
 
     }
 
@@ -112,11 +113,10 @@ public class BteMobsMod {
                 case BLACKSMITH -> NetworkHooks.openScreen(ctx.get().getSender(), new BlacksmithCraftProvider(msg.entityId));
                 case WARLOCK -> NetworkHooks.openScreen(ctx.get().getSender(), new WarlockCraftProvider(msg.entityId));
                 case EXPLORER -> ((ExplorerEntity)bteAbstractEntity).openCraftGui(ctx.get().getSender());
+                case DRUID -> ((DruidEntity)bteAbstractEntity).openCraftGui(ctx.get().getSender());
             }
         }
-        if(msg.actionType.equals("rumor")){
 
-        }
         if(msg.actionType.equals("open_repair")) {
             NetworkHooks.openScreen(ctx.get().getSender(), new SimpleMenuProvider((id, inventory, player) -> {
                 Entity entity = ctx.get().getSender().getLevel().getEntity(msg.entityId);
@@ -168,4 +168,6 @@ public class BteMobsMod {
             }
         }
     }
+
+
 }

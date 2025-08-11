@@ -1,0 +1,14 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ALL",
+  "tier": 2,
+  "ingredients": [
+    { "item": "minecraft:stick" },
+    { "item": "minecraft:iron_ingot" },
+    { "item": "minecraft:stick" }
+  ],
+  "result": {
+    "item": "minecraft:iron_sword",
+    "count": 1
+  }
+}

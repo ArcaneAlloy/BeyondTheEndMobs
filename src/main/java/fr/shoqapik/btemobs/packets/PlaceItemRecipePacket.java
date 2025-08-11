@@ -1,5 +1,6 @@
 package fr.shoqapik.btemobs.packets;
 
+import fr.shoqapik.btemobs.menu.DruidMenu;
 import fr.shoqapik.btemobs.menu.TableExplorerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +26,10 @@ public class PlaceItemRecipePacket {
     public static void handlePlaceRecipePacket(PlaceItemRecipePacket msg, Supplier<NetworkEvent.Context> ctx){
         if(ctx.get().getSender().containerMenu instanceof TableExplorerMenu){
             TableExplorerMenu menu = (TableExplorerMenu) ctx.get().getSender().containerMenu;
+            menu.placeRecipe(ctx.get().getSender(), msg.result);
+        }
+        if(ctx.get().getSender().containerMenu instanceof DruidMenu){
+            DruidMenu menu = (DruidMenu) ctx.get().getSender().containerMenu;
             menu.placeRecipe(ctx.get().getSender(), msg.result);
         }
     }

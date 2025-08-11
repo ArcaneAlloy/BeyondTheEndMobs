@@ -1,4 +1,4 @@
-package fr.shoqapik.btemobs.quests;
+package fr.shoqapik.btemobs.rumors;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +26,12 @@ public class ExplorerTableRecipeButton extends AbstractWidget {
     private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
 
     private Minecraft minecraft = Minecraft.getInstance();
-    private ExplorerRecipe recipe;
+    private Recipe<?> recipe;
     private ItemStack recipeStack;
     private Map<String,Integer> requieredStacks = new HashMap<>();
 
     public boolean hasEnough = false;
-    public ExplorerTableRecipeButton(int x, int y, ExplorerRecipe recipe) {
+    public ExplorerTableRecipeButton(int x, int y, Recipe<?> recipe) {
         super(x, y, 25, 25, CommonComponents.EMPTY);
         this.recipe = recipe;
         if(recipe.getResultItem() == null) {
@@ -89,7 +90,7 @@ public class ExplorerTableRecipeButton extends AbstractWidget {
                 list.add(Component.literal(entry.getValue().toString() + " x " + entry.getKey()));
             }
         }else{
-            list.add(Component.literal("Click to place items"));
+            list.add(Component.literal("Click to place inventory"));
         }
         return list;
     }
@@ -99,7 +100,7 @@ public class ExplorerTableRecipeButton extends AbstractWidget {
     }
 
 
-    public ExplorerRecipe getRecipe() {
+    public Recipe<?> getRecipe() {
         return recipe;
     }
 }

@@ -49,7 +49,7 @@ public class ExplorerEntityRenderer<T extends ExplorerEntity> extends ExtendedGe
     @Nullable
     @Override
     protected ItemStack getHeldItemForBone(String boneName, T animatable) {
-        return Objects.equals(boneName, "item") && animatable.craftingTime<55 && animatable.craftingTime>35 ? animatable.resultItem : null;
+        return Objects.equals(boneName, "craftingItem") && animatable.craftingTime<55 && animatable.craftingTime>35 ? animatable.resultItem : null;
     }
 
     @Override

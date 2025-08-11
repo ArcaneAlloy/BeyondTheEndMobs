@@ -1,6 +1,7 @@
 package fr.shoqapik.btemobs.client;
 
 import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.client.model.OrbModel;
 import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
@@ -10,6 +11,7 @@ import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,7 +30,11 @@ public class ModClientEvents {
         registerBookCategories(BteNpcType.WARLOCK, List.of(), event);
         registerRecipeCategoryLookups(BteNpcType.WARLOCK, List.of(BteMobsRecipeTypes.WARLOCK_RECIPE.get()), event);
     }
+    @SubscribeEvent
+    public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(OrbModel.LAYER_LOCATION,OrbModel::createBodyLayer);
 
+    }
     private static void registerBookCategories(BteNpcType npcType, List<RecipeBookCategories> vanillaCategories, RegisterRecipeBookCategoriesEvent event) {
         RecipeBookType recipeBookType = RecipeBookType.create(npcType.name());
         List<RecipeBookCategories> recipeBookCategories = new ArrayList<>();

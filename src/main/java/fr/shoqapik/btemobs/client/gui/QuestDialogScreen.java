@@ -97,6 +97,10 @@ public class QuestDialogScreen extends Screen {
                         }else if(!questAnswer.getAction().equals("wip")){
                             Minecraft.getInstance().setScreen(null);
                             BteMobsMod.sendToServer(new ActionPacket(entityId, questAnswer.getAction()));
+                            if(BteNpcType.DRUID == this.bteNpcType){
+                                BteMobsModClient.handleClearItem(this.entityId);
+
+                            }
                         }else {
                             this.quest.getDialogs().add("Not implemented yet! Come back later.");
                             this.page = page + 1;

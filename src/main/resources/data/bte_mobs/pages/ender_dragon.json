@@ -1,0 +1,7 @@
+{
+  "title": "Paraglier",
+  "unlockLevel": "OVERWORLD",
+  "entityId" : "minecraft:ender_dragon",
+  "description": "Es un dragon.",
+  "extraYRot" : 180
+}

@@ -138,10 +138,11 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
 
     @Override
     public void handlePlacement(boolean placeAll, Recipe<?> recipe, ServerPlayer player) {
+
         for(int i = 0; i < this.craftSlots.getContainerSize(); i++) {
-            Slot slot = getSlot(i);
-            if(slot.hasItem()) {
-                player.getInventory().add(slot.getItem());
+            ItemStack stack = this.craftSlots.getItem(i);
+            if(!stack.isEmpty()) {
+                player.getInventory().add(stack.copy());
             }
         }
 

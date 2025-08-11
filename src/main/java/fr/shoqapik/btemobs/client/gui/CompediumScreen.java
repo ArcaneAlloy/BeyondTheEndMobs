@@ -5,8 +5,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.button.CustomButton;
+import fr.shoqapik.btemobs.client.widget.EntityPage;
+import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.entity.BteNpcType;
-import fr.shoqapik.btemobs.rumors.Rumor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -18,17 +20,20 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
-public class RumorsScreen extends Screen {
+public class CompediumScreen extends Screen {
 
     public static final ResourceLocation DIALOGS_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/default.png");
-    private static final Logger log = LoggerFactory.getLogger(RumorsScreen.class);
+    private static final Logger log = LoggerFactory.getLogger(CompediumScreen.class);
     protected int imageWidth = 254;
     protected int imageHeight = 80;
     protected int leftPos;
@@ -38,16 +43,17 @@ public class RumorsScreen extends Screen {
     protected int scrolledY=0;
     private int entityId;
     private BteNpcType bteNpcType;
-    private List<Rumor> rumors;
-    private Rumor currentRumor=null;
+    private List<PageCompendium> rumors;
+    private PageCompendium currentPageCompendium=null;
     private List<Button> buttons = new ArrayList<>();
 
-    public RumorsScreen(int entityId, BteNpcType bteNpcType, List<Rumor> rumors) {
+    public CompediumScreen(int entityId, BteNpcType bteNpcType, List<PageCompendium> rumors) {
         super(Component.literal(bteNpcType.name().toLowerCase(Locale.ROOT)));
         this.entityId = entityId;
         this.bteNpcType = bteNpcType;
         this.rumors = rumors;
     }
+
 
     @Override
     protected void init() {
@@ -57,21 +63,21 @@ public class RumorsScreen extends Screen {
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
 
-        for (Rumor rumor : this.rumors) {
+        for (PageCompendium page : this.rumors) {
 
             ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
 
-            boolean isUnlock = rumor.getUnlockLevel().isUnlocked(BteMobsMod.unlockLevel);
+            boolean isUnlock = page.getUnlockLevel().isUnlocked(BteMobsMod.unlockLevel1);
             CustomButton button = new CustomButton(
                     backgroundTexture, null ,
                     0,
                     0,
                     100,
                     20,
-                    Component.literal(rumor.getTitle()),
+                    Component.literal(page.getTitle()),
                     (p_95981_) -> {
                         if(isUnlock){
-                            this.currentRumor=rumor;
+                            this.currentPageCompendium = page;
                         }
                     }
             );
@@ -92,13 +98,14 @@ public class RumorsScreen extends Screen {
         this.addRenderableWidget(this.up);
         this.addRenderableWidget(this.down);
         this.layoutButtons();
+
         super.init();
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
 
-        if(this.currentRumor!=null){
+        if(this.currentPageCompendium!=null){
             // Render background
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
@@ -113,17 +120,26 @@ public class RumorsScreen extends Screen {
             int x = (int) (this.leftPos - (this.width / 8) + 90);
             int y = (int) (this.height - this.imageHeight - 130);
 
-            GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
+
+            //GuiComponent.drawCenteredString(poseStack, font, "PageCompendiums", x + imageWidth / 2, y + 5, 16777215);
 
 
-            drawWordWrap(Component.literal(this.currentRumor.getDescription()), x + 17, y + 30, 240 - 20, 16777215, font, poseStack);
+            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(this.currentPageCompendium.getEntityId().split(":")[0],this.currentPageCompendium.getEntityId().split(":")[1]));
+            if(type!=null){
 
+                EntityPage page = new EntityPage(type);
+                GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
+                drawWordWrap(Component.literal(this.currentPageCompendium.getDescription()), x + 17, y + 30, 240 - 20, 2829099, font, poseStack);
+                page.render(this.currentPageCompendium,poseStack,x+134,y-63,mouseX,mouseY);
+
+            }
 
             poseStack.popPose();
         }
 
         super.render(poseStack, mouseX, mouseY, partialTick);
     }
+
 
     private void layoutButtons() {
         int x = (int) (this.leftPos - (this.width / 8) - 22);
@@ -186,6 +202,8 @@ public class RumorsScreen extends Screen {
     public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
         return super.mouseClicked(p_94695_, p_94696_, p_94697_);
     }
+
+
 
     @Override
     public boolean isPauseScreen() {

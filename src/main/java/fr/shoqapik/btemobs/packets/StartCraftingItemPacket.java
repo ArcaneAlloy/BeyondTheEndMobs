@@ -1,10 +1,15 @@
 package fr.shoqapik.btemobs.packets;
 
+import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.entity.DruidEntity;
 import fr.shoqapik.btemobs.entity.ExplorerEntity;
+import fr.shoqapik.btemobs.entity.ItemPart;
 import fr.shoqapik.btemobs.menu.TableExplorerMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -20,8 +25,20 @@ public class StartCraftingItemPacket {
     }
 
     public static void handle(StartCraftingItemPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() ->
-                handlePlaceRecipePacket(msg, ctx)
+        ctx.get().enqueueWork(() ->{
+            if(ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT){
+                BteMobsMod.LOGGER.debug("Entro al pack.");
+                assert Minecraft.getInstance().level!=null;
+                Entity entity = Minecraft.getInstance().level.getEntity(msg.id);
+                if(entity instanceof ItemPart part){
+                    BteMobsMod.LOGGER.debug("se seteo el item nuevo");
+                    part.item=msg.result;
+                }
+            }else {
+                handlePlaceRecipePacket(msg, ctx);
+            }
+
+        }
         );
         ctx.get().setPacketHandled(true);
     }
@@ -31,6 +48,11 @@ public class StartCraftingItemPacket {
         if(entity instanceof ExplorerEntity explorer){
             explorer.startCrafting(msg.result);
         }
+        if(entity instanceof DruidEntity druid){
+            druid.startCrafting(msg.result);
+            druid.clearContent();
+        }
+
         if(ctx.get().getSender().containerMenu instanceof TableExplorerMenu menu){
             menu.craftSlots.items.clear();
         }

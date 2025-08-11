@@ -1,7 +1,6 @@
 package fr.shoqapik.btemobs.client;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.block.ExplorerTableBlock;
 import fr.shoqapik.btemobs.client.gui.*;
 import fr.shoqapik.btemobs.client.renderer.blockentity.ExplorerTableBlockRenderer;
 import fr.shoqapik.btemobs.client.renderer.blockentity.MagmaForgeBlockEntityRenderer;
@@ -9,13 +8,12 @@ import fr.shoqapik.btemobs.client.renderer.entity.BlacksmithEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.DruidEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.ExplorerEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.WarlockEntityRenderer;
-import fr.shoqapik.btemobs.entity.BteAbstractEntity;
-import fr.shoqapik.btemobs.entity.BteNpcType;
-import fr.shoqapik.btemobs.entity.ExplorerEntity;
+import fr.shoqapik.btemobs.compendium.PageCompendium;
+import fr.shoqapik.btemobs.compendium.PagesManager;
+import fr.shoqapik.btemobs.entity.*;
 import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
-import fr.shoqapik.btemobs.menu.TableExplorerMenu;
 import fr.shoqapik.btemobs.packets.*;
-import fr.shoqapik.btemobs.quests.RumorsManager;
+import fr.shoqapik.btemobs.rumors.RumorsManager;
 import fr.shoqapik.btemobs.registry.BteMobsBlockEntities;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
 import fr.shoqapik.btemobs.registry.BteMobsEntities;
@@ -26,14 +24,12 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.function.Supplier;
 
@@ -46,6 +42,8 @@ public class BteMobsModClient {
         MenuScreens.register(BteMobsContainers.BLACKSMITH_REPAIR_MENU.get(), BlacksmithRepairScreen::new);
         MenuScreens.register(BteMobsContainers.WARLOCK_CRAFT_MENU.get(), WarlockCraftScreen::new);
         MenuScreens.register(BteMobsContainers.EXPLORER_TABLE_MENU.get(), ExplorerTableScreen::new);
+        MenuScreens.register(BteMobsContainers.DRUID_MENU.get(), DruidScreen::new);
+
     }
 
     @SubscribeEvent
@@ -63,7 +61,6 @@ public class BteMobsModClient {
             BteAbstractEntity entity = (BteAbstractEntity) Minecraft.getInstance().level.getEntity(msg.entityId);
             entity.setCrafting(true);
         }
-
     }
 
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
@@ -71,9 +68,18 @@ public class BteMobsModClient {
     }
 
     public static void handleRumorsPacket(int id) {
-        Minecraft.getInstance().setScreen(new RumorsScreen(id, BteNpcType.EXPLORER, RumorsManager.getRumors()));
+        BteAbstractEntity entity = (BteAbstractEntity) Minecraft.getInstance().level.getEntity(id);
+        if(entity instanceof ExplorerEntity){
+            Minecraft.getInstance().setScreen(new RumorsScreen(id, BteNpcType.EXPLORER, RumorsManager.getRumors()));
+        }else {
+            Minecraft.getInstance().setScreen(new CompediumScreen(id, BteNpcType.DRUID, PagesManager.getPages()));
+        }
     }
+    public static void handleClearItem(int id) {
+        DruidEntity entity = (DruidEntity) Minecraft.getInstance().level.getEntity(id);
+        entity.clearOrSpawnItem(Minecraft.getInstance().player);
 
+    }
     public static void handleToggleCraftButtonPacket(ToggleCraftButton msg, Supplier<NetworkEvent.Context> ctx) {
         Screen screen = Minecraft.getInstance().screen;
         if(screen != null && screen instanceof BlacksmithCraftScreen) {

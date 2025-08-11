@@ -6,12 +6,14 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.client.widget.CategoryButton;
 import fr.shoqapik.btemobs.client.widget.ExplorerTableRecipeButton;
 import fr.shoqapik.btemobs.client.widget.SmithStateSwitchingButton;
+import fr.shoqapik.btemobs.entity.DruidEntity;
 import fr.shoqapik.btemobs.entity.ExplorerEntity;
+import fr.shoqapik.btemobs.menu.DruidMenu;
 import fr.shoqapik.btemobs.menu.TableExplorerMenu;
 import fr.shoqapik.btemobs.packets.PlaceItemRecipePacket;
 import fr.shoqapik.btemobs.packets.StartCraftingItemPacket;
-import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -28,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMenu> {
+public class DruidScreen extends AbstractContainerScreen<DruidMenu> {
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
     private BteRecipeCategory currentCategory = BteRecipeCategory.ALL;
     private EditBox searchBox;
@@ -36,13 +38,13 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     private List<ExplorerTableRecipeButton> buttonList = new ArrayList<ExplorerTableRecipeButton>();
     private StateSwitchingButton forwardButton;
     private StateSwitchingButton backButton;
-    private List<ExplorerRecipe> categoryRecipes = new ArrayList<>();
-    public ExplorerRecipe currentRecipe;
+    private List<DruidRecipe> categoryRecipes = new ArrayList<>();
+    public DruidRecipe currentRecipe;
     private int page = 0;
     private ExplorerTableRecipeButton hoveredButton;
     private List<CategoryButton> tabButtons = new ArrayList<>();
     private Button craftButton;
-    public ExplorerTableScreen(TableExplorerMenu p_97741_, Inventory p_97742_, Component p_97743_) {
+    public DruidScreen(DruidMenu p_97741_, Inventory p_97742_, Component p_97743_) {
         super(p_97741_, p_97742_, p_97743_);
         this.imageWidth = 329;
         this.imageHeight = 166;
@@ -52,7 +54,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
 
     protected void init() {
         super.init();
-        this.categoryRecipes = this.minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get());
+        this.categoryRecipes = this.minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get());
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
@@ -74,7 +76,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         this.craftButton = new Button(i + 250, j + 60, 65, 20, Component.literal("Craft"), p_93751_ -> {
             if(this.currentRecipe!=null){
                 Entity entity=Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
-                if(entity instanceof ExplorerEntity e){
+                if(entity instanceof DruidEntity e){
                     ItemStack stack=this.menu.assemble(this.currentRecipe);
                     e.startCrafting(stack);
                     BteMobsMod.sendToServer(new StartCraftingItemPacket(stack,e.getId()));
@@ -91,7 +93,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         int j = (this.height - 166) / 2;
         if(page < 0) page = 0;
         if(page * 20 > categoryRecipes.size()) page -= 1;
-        categoryRecipes =new ArrayList<>( this.minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
+        categoryRecipes =new ArrayList<>( this.minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get()));
         removeLockedRecipes();
         if(!searchBox.getValue().isEmpty()){
             filterRecipes();
@@ -99,7 +101,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         this.buttonList.clear();
         for(int index = page * 20; index < (page+1) * 20; ++index) {
             if(index >= categoryRecipes.size()) break;
-            ExplorerRecipe recipe = categoryRecipes.get(index);
+            DruidRecipe recipe = categoryRecipes.get(index);
             ExplorerTableRecipeButton button = new ExplorerTableRecipeButton(i+11, j+31, recipe);
             int moduloIndex = index % 20;
             button.setPosition(i + 6 + 25 * (moduloIndex % 5), j + 31 + 25 * (moduloIndex / 5));
@@ -122,8 +124,8 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     }
 
     private void removeLockedRecipes(){
-        /*List<ExplorerRecipe> toRemove = new ArrayList<>();
-        for(ExplorerRecipe recipe : categoryRecipes){
+        /*List<DruidRecipe> toRemove = new ArrayList<>();
+        for(DruidRecipe recipe : categoryRecipes){
             if(!ClientRecipeLocker.get().hasRecipe(recipe.getResultItem())) {
                 toRemove.add(recipe);
             }
@@ -134,13 +136,13 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     }
 
     private void filterRecipes(){
-        List<ExplorerRecipe> toRemove = new ArrayList<>();
-        for(ExplorerRecipe recipe : categoryRecipes){
+        List<DruidRecipe> toRemove = new ArrayList<>();
+        for(DruidRecipe recipe : categoryRecipes){
             if(!recipe.getResultItem().getDisplayName().getString().toLowerCase().contains(this.searchBox.getValue().toLowerCase())) {
                 toRemove.add(recipe);
             }
         }
-        for (ExplorerRecipe recipe : toRemove){
+        for (DruidRecipe recipe : toRemove){
             categoryRecipes.remove(recipe);
         }
     }
@@ -204,7 +206,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     protected void containerTick() {
         super.containerTick();
         boolean flag=false;
-        for (ExplorerRecipe recipe : this.categoryRecipes){
+        for (DruidRecipe recipe : this.categoryRecipes){
             if(this.menu.recipeMatches(recipe) && this.hasExplorerFree()){
                 flag=true;
                 this.currentRecipe= recipe;
@@ -220,8 +222,8 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     }
 
     public boolean hasExplorerFree(){
-        Entity entity =Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
-        return entity instanceof ExplorerEntity explorer && !explorer.isCrafting() && entity.isAlive();
+        Entity entity = Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
+        return entity instanceof DruidEntity explorer && !explorer.isCrafting() && entity.isAlive();
     }
 
     @Override
@@ -253,7 +255,8 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         for(ExplorerTableRecipeButton button : buttonList) {
             if (button.mouseClicked(p_97748_, p_97749_, p_97750_) && button.hasEnough && this.hasExplorerFree()) {
                 BteMobsMod.sendToServer(new PlaceItemRecipePacket(button.getRecipe().getResultItem()));
-                this.currentRecipe= (ExplorerRecipe) button.getRecipe();
+                this.menu.placeRecipe(this.minecraft.player,button.getRecipe().getResultItem());
+                this.currentRecipe= (DruidRecipe) button.getRecipe();
                 this.craftButton.active = true;
             }
         }

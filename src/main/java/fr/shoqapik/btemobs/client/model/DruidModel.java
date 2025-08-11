@@ -9,16 +9,16 @@ public class DruidModel extends AnimatedGeoModel<DruidEntity> {
 
     @Override
     public ResourceLocation getModelResource(DruidEntity druidEntity) {
-        return new ResourceLocation(BteMobsMod.MODID, "geo/blacksmith.geo.json");
+        return new ResourceLocation(BteMobsMod.MODID, "geo/oriana.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(DruidEntity druidEntity) {
-        return new ResourceLocation(BteMobsMod.MODID, "textures/entity/blacksmith.png");
+        return new ResourceLocation(BteMobsMod.MODID, "textures/entity/druid/druid.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(DruidEntity druidEntity) {
-        return new ResourceLocation(BteMobsMod.MODID, "animations/blacksmith.animation.json");
+        return new ResourceLocation(BteMobsMod.MODID, "animations/oriana.animation.json");
     }
 }

@@ -3,6 +3,7 @@ package fr.shoqapik.btemobs.registry;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.block.ExplorerTableBlock;
 import fr.shoqapik.btemobs.block.MagmaForgeBlock;
+import fr.shoqapik.btemobs.block.OrianaOakBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -27,6 +28,9 @@ public class BteMobsBlocks {
             () -> new MagmaForgeBlock(BlockBehaviour.Properties.of(Material.HEAVY_METAL, MaterialColor.METAL).noOcclusion().lightLevel((state) -> 9)));
     public static final RegistryObject<Block> EXPLORER_TABLE = registerBlock("explorer_table",
             () -> new ExplorerTableBlock(BlockBehaviour.Properties.copy(Blocks.ACACIA_PLANKS))
+    );
+    public static final RegistryObject<Block> ORIANA_OAK = registerBlock("oriana_oak",
+            () -> new OrianaOakBlock(BlockBehaviour.Properties.copy(Blocks.ACACIA_PLANKS))
     );
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block){

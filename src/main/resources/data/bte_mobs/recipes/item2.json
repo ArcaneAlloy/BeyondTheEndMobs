@@ -8,14 +8,10 @@
     {
       "item": "minecraft:gold_ingot",
       "count": 4
-    },
-    {
-      "item": "minecraft:netherite_ingot",
-      "count": 4
     }
   ],
   "tier": 1,
   "result": {
-    "item": "minecraft:enchanted_golden_apple"
+    "item": "minecraft:netherite_ingot"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "title": "Iron Golem",
+  "unlockLevel": "OVERWORLD",
+  "entityId" : "minecraft:iron_golem",
+  "description": "Es un golem.",
+  "extraYRot" : 0
+
+}
