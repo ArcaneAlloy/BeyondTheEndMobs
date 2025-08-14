@@ -67,7 +67,7 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
     @Override
     public boolean matches(SimpleContainer p_44002_, Level p_44003_) {
         ItemStack bottle = p_44002_.getItem(2);
-        return PotionUtils.getPotion(bottle)==Potions.WATER && p_44002_.getItem(3).is(ingredientPrimary.getItem());
+        return bottle.is(Items.GLASS_BOTTLE) && p_44002_.getItem(3).is(ingredientPrimary.getItem());
     }
 
     @Override
@@ -105,7 +105,7 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
     }
     @Override
     public ItemStack getResultItem() {
-        return PotionUtils.setPotion(new ItemStack(Items.POTION), Registry.POTION.get(new ResourceLocation(effect.split("")[0],effect.split(":")[1])));
+        return PotionUtils.setPotion(new ItemStack(Items.POTION), Registry.POTION.get(new ResourceLocation(effect.split(":")[0],effect.split(":")[1])));
     }
 
     @Override

@@ -46,32 +46,32 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
         this.addSlot(new CraftInputSlot(container, 0, 210, 18){
             @Override
             public boolean mayPlace(ItemStack itemStack) {
-                return itemStack.is(Items.REDSTONE);
+                return itemStack.is(Items.REDSTONE) && WarlockPotionMenu.this.craftSlots.getItem(1).isEmpty();
             }
         });
         this.addSlot(new CraftInputSlot(container, 1, 210, 39){
             @Override
             public boolean mayPlace(ItemStack itemStack) {
-                return itemStack.is(Items.GLOWSTONE_DUST);
+                return itemStack.is(Items.GLOWSTONE_DUST) && WarlockPotionMenu.this.craftSlots.getItem(0).isEmpty();
             }
         });
         this.addSlot(new CraftInputSlot(container, 2, 233, 23){
             @Override
             public boolean mayPlace(ItemStack itemStack) {
-                return PotionUtils.getPotion(itemStack)==Potions.WATER;
+                return itemStack.is(Items.GLASS_BOTTLE);
             }
         });
         this.addSlot(new CraftInputSlot(container, 3, 233,45));
         this.addSlot(new CraftInputSlot(container, 4, (int) 255, (int) (18)){
             @Override
             public boolean mayPlace(ItemStack itemStack) {
-                return itemStack.is(Items.GUNPOWDER);
+                return itemStack.is(Items.GUNPOWDER) && WarlockPotionMenu.this.craftSlots.getItem(5).isEmpty();
             }
         });
         this.addSlot(new CraftInputSlot(container, 5, 255, (38)){
             @Override
             public boolean mayPlace(ItemStack itemStack) {
-                return itemStack.is(Items.DRAGON_BREATH);
+                return itemStack.is(Items.DRAGON_BREATH) && WarlockPotionMenu.this.craftSlots.getItem(4).isEmpty();
             }
         });
 
@@ -104,7 +104,8 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
                 }else if (!glowing.isEmpty()){
                     glowing.shrink(1);
                     WarlockPotionMenu.this.craftSlots.setItem(1,glowing);
-                }else if (!gunpowder.isEmpty()){
+                }
+                if (!gunpowder.isEmpty()){
                     gunpowder.shrink(1);
                     WarlockPotionMenu.this.craftSlots.setItem(4,gunpowder);
                 }else if (!dragonBreath.isEmpty()){
@@ -147,7 +148,7 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
                     return;
                 }
                 SimpleContainer container1 = WarlockPotionMenu.this.craftSlots;
-                if(PotionUtils.getPotion(container1.getItem(2))==Potions.WATER){
+                if(container1.getItem(2).is(Items.GLASS_BOTTLE)){
                     ItemStack result = assemble(optionalRecipe.get());
                     container1.setItem(6, result);
                 }else {
@@ -273,7 +274,7 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
                         inventory.removeItem(stack);
                         hasIngredientPrimary = true;
                     }
-                    if(!hasBottle && PotionUtils.getPotion(stack) == Potions.WATER){
+                    if(!hasBottle && stack.is(Items.GLASS_BOTTLE)){
                         craftSlots.setItem(2,stack.copy());
                         inventory.removeItem(stack);
                         hasBottle = true;
