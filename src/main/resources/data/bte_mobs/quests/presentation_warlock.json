@@ -1,0 +1,21 @@
+{
+  "entityId": "bte_mobs:warlock",
+  "type": "PRESENTATION",
+  "dialogs": [
+    "¡Saludos, viajero!"
+  ],
+  "answers": [
+    {
+      "formattedText": "Quiero craftear",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "Alquimia",
+      "action": "potion"
+    },
+    {
+      "formattedText": "Seguire explorando.",
+      "action": "wip"
+    }
+  ]
+}

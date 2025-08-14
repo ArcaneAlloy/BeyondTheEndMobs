@@ -91,6 +91,10 @@ public class QuestDialogScreen extends Screen {
                     20,
                     Component.literal(questAnswer.getFormattedAwnser()),
                     (p_95981_) -> {
+                        if (questAnswer.getAction().equals("potion")) {
+                            Minecraft.getInstance().setScreen(null);
+                            BteMobsModClient.handleRumorsPacket(this.entityId);
+                        }
                         if (questAnswer.getAction().equals("rumor")) {
                             Minecraft.getInstance().setScreen(null);
                             BteMobsModClient.handleRumorsPacket(this.entityId);
@@ -99,7 +103,6 @@ public class QuestDialogScreen extends Screen {
                             BteMobsMod.sendToServer(new ActionPacket(entityId, questAnswer.getAction()));
                             if(BteNpcType.DRUID == this.bteNpcType){
                                 BteMobsModClient.handleClearItem(this.entityId);
-
                             }
                         }else {
                             this.quest.getDialogs().add("Not implemented yet! Come back later.");

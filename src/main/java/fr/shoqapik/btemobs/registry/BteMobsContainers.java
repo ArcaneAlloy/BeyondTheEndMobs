@@ -25,6 +25,7 @@ public class BteMobsContainers {
 
     public static final RegistryObject<MenuType<TableExplorerMenu>> EXPLORER_TABLE_MENU = registerMenuType(TableExplorerMenu::new,"explorer_table_menu");
     public static final RegistryObject<MenuType<DruidMenu>> DRUID_MENU = registerMenuType(DruidMenu::new,"druid_menu");
+    public static final RegistryObject<MenuType<WarlockPotionMenu>> POTION_MENU = registerMenuType(WarlockPotionMenu::new,"potion_menu");
 
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory,
                                                                                                   String name) {

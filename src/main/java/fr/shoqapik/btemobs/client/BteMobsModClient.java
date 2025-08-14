@@ -43,6 +43,7 @@ public class BteMobsModClient {
         MenuScreens.register(BteMobsContainers.WARLOCK_CRAFT_MENU.get(), WarlockCraftScreen::new);
         MenuScreens.register(BteMobsContainers.EXPLORER_TABLE_MENU.get(), ExplorerTableScreen::new);
         MenuScreens.register(BteMobsContainers.DRUID_MENU.get(), DruidScreen::new);
+        MenuScreens.register(BteMobsContainers.POTION_MENU.get(), WarlockPotionCraftScreen::new);
 
     }
 
@@ -66,7 +67,6 @@ public class BteMobsModClient {
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
         Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest));
     }
-
     public static void handleRumorsPacket(int id) {
         BteAbstractEntity entity = (BteAbstractEntity) Minecraft.getInstance().level.getEntity(id);
         if(entity instanceof ExplorerEntity){

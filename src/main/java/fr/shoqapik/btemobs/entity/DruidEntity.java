@@ -467,10 +467,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @Nullable Direction pDirection) {
         return false;
     }
-    public void openCraftGui(ServerPlayer player){
-        this.clearOrSpawnItem(player);
-        this.openMenu((MenuProvider) this,player);
-    }
+
 
     public void clearOrSpawnItem(Player player){
         if(this.craftingItem.item != null){
@@ -478,6 +475,11 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
                 this.craftingItem.item = null;
             }
         }
+    }
+
+    public void openCraftGui(ServerPlayer player){
+        this.clearOrSpawnItem(player);
+        this.openMenu((MenuProvider) this,player);
     }
 
     public OptionalInt openMenu(@javax.annotation.Nullable MenuProvider pMenu,ServerPlayer serverPlayer) {
@@ -549,9 +551,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     public void setChanged() {
 
     }
-    public int getData(int index){
-        return this.dataAccess.get(index);
-    }
+
     @Override
     public boolean stillValid(Player pPlayer) {
         return false;

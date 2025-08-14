@@ -123,7 +123,8 @@ public class TableExplorerMenu extends AbstractContainerMenu {
         for(int i = 0; i < 6; i++){
             Slot slot = getSlot(i);
             if(slot.hasItem()){
-                player.getInventory().add(slot.getItem());
+                player.getInventory().add(slot.getItem().copy());
+                slot.set(ItemStack.EMPTY);
             }
         }
         if(optionalRecipe.isPresent()){
