@@ -28,7 +28,7 @@ public class ExplorerTableRecipeButton extends AbstractWidget {
     private Minecraft minecraft = Minecraft.getInstance();
     private Recipe<?> recipe;
     private ItemStack recipeStack;
-    private Map<String,Integer> requieredStacks = new HashMap<>();
+    public Map<String,Integer> requieredStacks = new HashMap<>();
 
     public boolean hasEnough = false;
     public ExplorerTableRecipeButton(int x, int y, Recipe<?> recipe) {
@@ -79,6 +79,7 @@ public class ExplorerTableRecipeButton extends AbstractWidget {
     public ItemStack getRecipeStack() {
         return recipeStack;
     }
+
 
     public List<Component> getTooltipText(Screen p_100478_) {
         ItemStack itemstack = this.recipeStack;

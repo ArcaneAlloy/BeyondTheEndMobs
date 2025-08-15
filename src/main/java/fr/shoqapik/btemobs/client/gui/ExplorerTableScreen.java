@@ -12,6 +12,7 @@ import fr.shoqapik.btemobs.packets.PlaceItemRecipePacket;
 import fr.shoqapik.btemobs.packets.StartCraftingItemPacket;
 import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -162,6 +163,10 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         for(ExplorerTableRecipeButton button : buttonList) {
             button.render(p_97795_, p_97796_, p_97797_, p_97798_);
             if(button.isHoveredOrFocused()){
+                ExplorerRecipe recipe = (ExplorerRecipe) button.getRecipe();
+                for (ItemStack stack : recipe.getRequiredItems().getItems()){
+                    button.requieredStacks.put(stack.getItem().toString(),stack.getCount());
+                }
                 hoveredButton = button;
             }
         }

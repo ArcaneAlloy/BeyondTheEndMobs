@@ -93,7 +93,7 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
             WarlockPotionRecipe recipe = categoryRecipes.get(index);
             ExplorerTableRecipeButton button = new ExplorerTableRecipeButton(i+11, j+31, recipe);
             int moduloIndex = index % 20;
-            button.setPosition(i + 6 + 25 * (moduloIndex % 5), j + 31 + 25 * (moduloIndex / 5));
+            button.setPosition(i + 25 * (moduloIndex % 5), j + 31 + 25 * (moduloIndex / 5));
             buttonList.add(button);
             button.setHasEnough(recipe.hasItems(this.minecraft.player,this.menu.craftSlots));
         }
@@ -151,8 +151,10 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
         }
         hoveredButton = null;
         for(ExplorerTableRecipeButton button : buttonList) {
-            button.render(p_97795_, p_97796_, p_97797_, p_97798_);
+            button.render(p_97795_, p_97796_ , p_97797_, p_97798_);
             if(button.isHoveredOrFocused()){
+                WarlockPotionRecipe recipe = (WarlockPotionRecipe) button.getRecipe();
+                button.requieredStacks.put(recipe.getIngredientPrimary().getItem().toString(),recipe.getIngredientPrimary().getCount());
                 hoveredButton = button;
             }
         }

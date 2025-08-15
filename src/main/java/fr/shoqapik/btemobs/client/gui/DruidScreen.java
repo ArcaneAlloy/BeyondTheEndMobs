@@ -164,6 +164,10 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> {
         for(ExplorerTableRecipeButton button : buttonList) {
             button.render(p_97795_, p_97796_, p_97797_, p_97798_);
             if(button.isHoveredOrFocused()){
+                DruidRecipe recipe = (DruidRecipe) button.getRecipe();
+                for (ItemStack stack : recipe.getRequiredItems().getItems()){
+                    button.requieredStacks.put(stack.getItem().toString(),stack.getCount());
+                }
                 hoveredButton = button;
             }
         }
