@@ -90,6 +90,7 @@ public class BteMobsMod {
         INSTANCE.registerMessage(9, SyncPacket.class, SyncPacket::encode, SyncPacket::decode, SyncPacket::handle);
         INSTANCE.registerMessage(10, PartItemPacket.class, PartItemPacket::encode, PartItemPacket::decode, PartItemPacket::handle);
         INSTANCE.registerMessage(11, DirectionPacket.class, DirectionPacket::encode, DirectionPacket::decode, DirectionPacket::handle);
+        INSTANCE.registerMessage(12, PlaceGhostRecipePacket.class, PlaceGhostRecipePacket::encode, PlaceGhostRecipePacket::decode, PlaceGhostRecipePacket::handle);
 
     }
 

@@ -29,33 +29,7 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
         this.experience = DataSlot.standalone();
         this.addDataSlot(this.experience);
 
-        // X: 11 PRIMEIRA | 29 SEGUNDA | 47 TERCEIRA | 90 QUARTA | 148 QUINTA (RESULT)
-		// Y: 25 PRIMEIRA
-        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 11, 25));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 29, 25));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 47, 25));
 
-        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 90, 25)); // Base Item
-
-        this.addSlot(new Slot(this.resultSlots, 0, 148, 25) {
-            public boolean mayPlace(ItemStack itemStack) {
-                return false;
-            }
-
-            public boolean mayPickup(Player player) {
-                if(player.level.isClientSide) return false;
-                List<Recipe> recipes = getCraftableRecipes((ServerPlayer)player);
-                if(recipes.isEmpty()) return false;
-                return hasRequirementsForCraft(recipes.get(0));
-            }
-
-            public void onTake(Player player, ItemStack itemStack) {
-                if(player.level.isClientSide) return;
-                WarlockCraftMenu.this.baseSlots.getItem(0).shrink(1);
-                craftItemServer((ServerPlayer) player, Optional.empty());
-                WarlockCraftMenu.this.experience.set(0);
-            }
-        });
 
         this.addSlotListener(new ContainerListener() {
             @Override
@@ -80,6 +54,37 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
 
             @Override
             public void dataChanged(AbstractContainerMenu abstractContainerMenu, int i, int i1) {}
+        });
+    }
+
+    @Override
+    public void initCraftingSlot() {
+        // X: 11 PRIMEIRA | 29 SEGUNDA | 47 TERCEIRA | 90 QUARTA | 148 QUINTA (RESULT)
+        // Y: 25 PRIMEIRA
+        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 11, 25));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 29, 25));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 47, 25));
+
+        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 90, 25)); // Base Item
+
+        this.addSlot(new Slot(this.resultSlots, 0, 148, 25) {
+            public boolean mayPlace(ItemStack itemStack) {
+                return false;
+            }
+
+            public boolean mayPickup(Player player) {
+                if(player.level.isClientSide) return false;
+                List<Recipe> recipes = getCraftableRecipes((ServerPlayer)player);
+                if(recipes.isEmpty()) return false;
+                return hasRequirementsForCraft(recipes.get(0));
+            }
+
+            public void onTake(Player player, ItemStack itemStack) {
+                if(player.level.isClientSide) return;
+                WarlockCraftMenu.this.baseSlots.getItem(0).shrink(1);
+                craftItemServer((ServerPlayer) player, Optional.empty());
+                WarlockCraftMenu.this.experience.set(0);
+            }
         });
     }
 

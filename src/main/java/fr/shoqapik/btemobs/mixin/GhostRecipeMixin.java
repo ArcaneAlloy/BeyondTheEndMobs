@@ -1,6 +1,7 @@
 package fr.shoqapik.btemobs.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import fr.shoqapik.btemobs.BteMobsMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.GhostRecipe;
 import net.minecraft.client.renderer.entity.ItemRenderer;

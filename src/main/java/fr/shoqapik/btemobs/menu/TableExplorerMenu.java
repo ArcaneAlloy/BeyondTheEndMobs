@@ -1,11 +1,14 @@
 package fr.shoqapik.btemobs.menu;
 
+import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.blockentity.ExplorerTableBlockEntity;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;
+import fr.shoqapik.btemobs.packets.PlaceGhostRecipePacket;
 import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -117,7 +120,7 @@ public class TableExplorerMenu extends AbstractContainerMenu {
     }
 
 
-    public void placeRecipe(Player player,ItemStack item) {
+    public void placeRecipe(ServerPlayer player, ItemStack item) {
         Optional<ExplorerRecipe> optionalRecipe = player.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()).stream().filter(e->e.getResultItem().getItem()==item.getItem()).findFirst();
 
         for(int i = 0; i < 6; i++){
@@ -147,6 +150,8 @@ public class TableExplorerMenu extends AbstractContainerMenu {
                     this.slotsChanged(this.craftSlots);
                     index ++;
                 }
+            }else {
+                BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
             }
         }
     }

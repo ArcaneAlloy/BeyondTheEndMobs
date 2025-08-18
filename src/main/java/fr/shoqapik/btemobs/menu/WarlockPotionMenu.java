@@ -2,6 +2,7 @@ package fr.shoqapik.btemobs.menu;
 
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;
+import fr.shoqapik.btemobs.packets.PlaceGhostRecipePacket;
 import fr.shoqapik.btemobs.recipe.WarlockPotionRecipe;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.List;
 import java.util.Optional;
@@ -246,7 +248,7 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
     }
 
 
-    public void placeRecipe(Player player,ItemStack item) {
+    public void placeRecipe(ServerPlayer player, ItemStack item) {
         Optional<WarlockPotionRecipe> optionalRecipe = player.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get()).stream().filter(e->{
             return e.getIngredientPrimary().getItem()==item.getItem();
         }).findFirst();
@@ -283,6 +285,8 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
                         break;
                     }
                 }
+            }else {
+                BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
             }
         }
     }

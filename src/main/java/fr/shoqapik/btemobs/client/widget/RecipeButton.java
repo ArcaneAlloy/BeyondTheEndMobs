@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExplorerTableRecipeButton extends AbstractWidget {
+public class RecipeButton extends AbstractWidget {
     private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
 
     private Minecraft minecraft = Minecraft.getInstance();
@@ -31,7 +30,7 @@ public class ExplorerTableRecipeButton extends AbstractWidget {
     public Map<String,Integer> requieredStacks = new HashMap<>();
 
     public boolean hasEnough = false;
-    public ExplorerTableRecipeButton(int x, int y, Recipe<?> recipe) {
+    public RecipeButton(int x, int y, Recipe<?> recipe) {
         super(x, y, 25, 25, CommonComponents.EMPTY);
         this.recipe = recipe;
         if(recipe.getResultItem() == null) {
@@ -42,7 +41,7 @@ public class ExplorerTableRecipeButton extends AbstractWidget {
 
     }
 
-    public ExplorerTableRecipeButton(int p_93629_, int p_93630_, int p_93631_, int p_93632_, Component p_93633_) {
+    public RecipeButton(int p_93629_, int p_93630_, int p_93631_, int p_93632_, Component p_93633_) {
         super(p_93629_, p_93630_, p_93631_, p_93632_, p_93633_);
     }
 

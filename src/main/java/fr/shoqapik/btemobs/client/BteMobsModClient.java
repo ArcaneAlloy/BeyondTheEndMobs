@@ -13,6 +13,7 @@ import fr.shoqapik.btemobs.compendium.PagesManager;
 import fr.shoqapik.btemobs.entity.*;
 import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
 import fr.shoqapik.btemobs.packets.*;
+import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
 import fr.shoqapik.btemobs.rumors.RumorsManager;
 import fr.shoqapik.btemobs.registry.BteMobsBlockEntities;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
@@ -89,13 +90,16 @@ public class BteMobsModClient {
 
     public static void handlePlaceGhostRecipe(PlaceGhostRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         AbstractContainerMenu containerMenu = Minecraft.getInstance().player.containerMenu;
-        if (containerMenu.containerId == msg.getContainerId() && containerMenu instanceof BlacksmithCraftMenu) {
+        if (containerMenu.containerId == msg.getContainerId()) {
             Minecraft.getInstance().getConnection().getRecipeManager().byKey(msg.getRecipe()).ifPresent((recipe) -> {
                 if (Minecraft.getInstance().screen instanceof RecipeUpdateListener) {
                     RecipeBookComponent recipebookcomponent = ((RecipeUpdateListener)Minecraft.getInstance().screen).getRecipeBookComponent();
                     recipebookcomponent.setupGhostRecipe(recipe, containerMenu.slots);
                 }
 
+                if(Minecraft.getInstance().screen instanceof IGhostRecipe screen1){
+                    screen1.setupGhostRecipe(recipe,containerMenu.slots);
+                }
             });
         }
     }

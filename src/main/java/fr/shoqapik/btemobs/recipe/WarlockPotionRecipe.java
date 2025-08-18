@@ -89,19 +89,11 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
 
     public boolean hasItems(Player player,SimpleContainer craftContainer){
         Inventory inventory = player.getInventory();
-        ItemStack potion = getPotion(inventory);
-        return (inventory.contains(ingredientPrimary) || craftContainer.hasAnyMatching(e->e.getItem()==ingredientPrimary.getItem())) && (potion!=null || getPotion(craftContainer)!=null);
+        return (inventory.contains(ingredientPrimary) || craftContainer.hasAnyMatching(e->e.getItem()==ingredientPrimary.getItem())) && (inventory.contains(new ItemStack(Items.GLASS_BOTTLE)) || craftContainer.hasAnyMatching(e->e.is(Items.GLASS_BOTTLE)));
     }
 
-    public ItemStack getPotion(Container inventory){
-        ItemStack potion = null;
-        for(int i=0 ; i<inventory.getContainerSize(); i++){
-            if(PotionUtils.getPotion(inventory.getItem(i))==Potions.WATER){
-                potion=inventory.getItem(i);
-                break;
-            }
-        }
-        return potion;
+    public boolean hasItems(Inventory inventory){
+        return (inventory.contains(ingredientPrimary)) && (inventory.contains(new ItemStack(Items.GLASS_BOTTLE)));
     }
     @Override
     public ItemStack getResultItem() {

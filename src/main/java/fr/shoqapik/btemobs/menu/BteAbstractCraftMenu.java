@@ -43,7 +43,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
         this.player = inventory.player;
         this.entityId = entityId;
         this.craftSlots = new BteAbstractCraftContainer(this, width, height, size);
-
+        this.initCraftingSlot();
         for(int k = 0; k < 3; ++k) {
             for(int i1 = 0; i1 < 9; ++i1) {
                 this.addSlot(new Slot(inventory, i1 + k * 9 + 9, 8 + i1 * 18, 84 + k * 18));
@@ -73,6 +73,10 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
             @Override
             public void dataChanged(AbstractContainerMenu containerMenu, int slotIndex, int itemStack) {}
         });
+    }
+
+    public void initCraftingSlot(){
+
     }
 
     public abstract List<RecipeType<? extends BteAbstractRecipe>> getRecipeTypes();

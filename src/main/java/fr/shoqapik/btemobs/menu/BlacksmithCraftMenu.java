@@ -14,8 +14,12 @@ public class BlacksmithCraftMenu extends BteAbstractCraftMenu {
 
     public BlacksmithCraftMenu(int id, Inventory inventory, int entityId) {
         super(BteMobsContainers.BLACKSMITH_CRAFT_MENU.get(), id, inventory, entityId, 3, 3);
-		// X: 62 PRIMEIRA | 80 SEGUNDA | 98 TERCEIRA
-		// Y: 20 PRIMEIRA | 38 SEGUNDA
+
+    }
+
+    public void initCraftingSlot(){
+        // X: 62 PRIMEIRA | 80 SEGUNDA | 98 TERCEIRA
+        // Y: 20 PRIMEIRA | 38 SEGUNDA
         this.addSlot(new CraftInputSlot(this.craftSlots, 0, 62, 20));
         this.addSlot(new CraftInputSlot(this.craftSlots, 1, 80, 20));
         this.addSlot(new CraftInputSlot(this.craftSlots, 2, 98, 20));

@@ -15,6 +15,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
+import java.util.List;
+import java.util.UUID;
+
 public class BlacksmithEntity extends BteAbstractEntity {
 
     public BlacksmithEntity(EntityType<? extends Mob> entityType, Level level) {
@@ -24,6 +27,9 @@ public class BlacksmithEntity extends BteAbstractEntity {
     @Override
     public BteNpcType getNpcType() {
         return BteNpcType.BLACKSMITH;
+    }
+    public List<UUID> getInteractedPlayers() {
+        return List.of();
     }
 
     @Override
