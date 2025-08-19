@@ -147,6 +147,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
             ItemStack stack = this.craftSlots.getItem(i);
             if(!stack.isEmpty()) {
                 player.getInventory().add(stack.copy());
+                this.craftSlots.setItem(i,ItemStack.EMPTY);
             }
         }
 

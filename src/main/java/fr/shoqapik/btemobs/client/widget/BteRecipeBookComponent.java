@@ -22,7 +22,9 @@ public class BteRecipeBookComponent extends RecipeBookComponent {
             this.ghostRecipe.addIngredient(recipe.addition, (pSlots.get(1)).x, (pSlots.get(1)).y);
         }
         for (int i = 0 ; i < pRecipe.getIngredients().size() ; i++){
-            this.ghostRecipe.addIngredient(pRecipe.getIngredients().get(i),pSlots.get(i).x,pSlots.get(i).y);
+            if(this.menu.getSlot(i).getItem().isEmpty()){
+                this.ghostRecipe.addIngredient(pRecipe.getIngredients().get(i),pSlots.get(i).x,pSlots.get(i).y);
+            }
         }
     }
 }

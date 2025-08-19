@@ -84,12 +84,7 @@ public class RecipeButton extends AbstractWidget {
         ItemStack itemstack = this.recipeStack;
         List<Component> list = Lists.newArrayList(p_100478_.getTooltipFromItem(itemstack));
         if(list.size() > 1) list.add(Component.literal(""));
-        if(!hasEnough) {
-            list.add(Component.literal("Bring me the following:"));
-            for (Map.Entry<String, Integer> entry : requieredStacks.entrySet()) {
-                list.add(Component.literal(entry.getValue().toString() + " x " + entry.getKey()));
-            }
-        }else{
+        if(hasEnough) {
             list.add(Component.literal("Click to place inventory"));
         }
         return list;

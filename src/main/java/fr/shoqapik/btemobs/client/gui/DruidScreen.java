@@ -371,7 +371,9 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
     public void setupGhostRecipe(Recipe<?> pRecipe, List<Slot> pSlots) {
         this.ghostRecipe.setRecipe(pRecipe);
         for (int i = 0 ; i < pRecipe.getIngredients().size() ; i++){
-            this.ghostRecipe.addIngredient(pRecipe.getIngredients().get(i),pSlots.get(i).x,pSlots.get(i).y);
+            if(this.menu.craftSlots.getItem(i).isEmpty()){
+                this.ghostRecipe.addIngredient(pRecipe.getIngredients().get(i),pSlots.get(i).x,pSlots.get(i).y);
+            }
         }
     }
     public void renderGhostRecipe(PoseStack pPoseStack, int pLeftPos, int pTopPos, boolean p_100326_, float pPartialTick) {
