@@ -255,6 +255,8 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
 
         renderTooltip(p_97795_, p_97796_, p_97797_);
         this.craftButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
+        this.renderGhostRecipeTooltip(p_97795_, this.leftPos, this.topPos, p_97796_,p_97797_);
+
     }
 
     public void renderTooltip(PoseStack p_100418_, int p_100419_, int p_100420_) {
@@ -278,6 +280,23 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
         return ONLY_CRAFTABLES_TOOLTIP;
     }
 
+    private void renderGhostRecipeTooltip(PoseStack pPoseStack, int p_100376_, int p_100377_, int pMouseX, int pMouseY) {
+        ItemStack itemstack = null;
+
+        for(int i = 0; i < this.ghostRecipe.size(); ++i) {
+            GhostRecipe.GhostIngredient ghostrecipe$ghostingredient = this.ghostRecipe.get(i);
+            int j = ghostrecipe$ghostingredient.getX() + p_100376_;
+            int k = ghostrecipe$ghostingredient.getY() + p_100377_;
+            if (pMouseX >= j && pMouseY >= k && pMouseX < j + 16 && pMouseY < k + 16) {
+                itemstack = ghostrecipe$ghostingredient.getItem();
+            }
+        }
+
+        if (itemstack != null && this.minecraft.screen != null) {
+            this.minecraft.screen.renderComponentTooltip(pPoseStack, this.minecraft.screen.getTooltipFromItem(itemstack), pMouseX, pMouseY, itemstack);
+        }
+
+    }
     @Override
     protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
