@@ -77,13 +77,13 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
-        this.searchBox = new EditBox(this.minecraft.font, i + 20, j + 18, 80, 9 + 5, Component.translatable("itemGroup.search"));
+        this.searchBox = new EditBox(this.minecraft.font, i + 20, j + 14, 80, 9 + 5, Component.translatable("itemGroup.search"));
         this.searchBox.setMaxLength(50);
         this.searchBox.setBordered(false);
         this.searchBox.setVisible(true);
         this.searchBox.setTextColor(16777215);
         this.searchBox.setValue(s);
-        this.filterButton = new StateSwitchingButton(i + 100, j + 12, 26, 16, this.book.isFiltering(RecipeBookType.CRAFTING));
+        this.filterButton = new StateSwitchingButton(i + 105, j + 12, 26, 16, this.book.isFiltering(RecipeBookType.CRAFTING));
         this.initFilterButtonTextures();
         this.forwardButton = new SmithStateSwitchingButton(i + 93, j + 137, 12, 17, false);
         this.forwardButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
@@ -231,7 +231,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         if (!this.searchBox.isFocused() && this.searchBox.getValue().isEmpty()) {
-            drawString(p_97795_, this.minecraft.font, SEARCH_HINT, i + 20, j + 18, -1);
+            drawString(p_97795_, this.minecraft.font, SEARCH_HINT, i + 20, j + 14, -1);
         } else {
             this.searchBox.render(p_97795_, p_97796_, p_97797_, p_97798_);
         }
