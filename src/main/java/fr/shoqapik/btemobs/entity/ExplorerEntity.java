@@ -146,11 +146,6 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     }
 
     @Override
-    public List<UUID> getInteractedPlayers() {
-        return List.of();
-    }
-
-    @Override
     protected InteractionResult mobInteract(Player p_21472_, InteractionHand p_21473_) {
         if(!p_21472_.isLocalPlayer()) {
             /*if (p_21472_.getItemInHand(p_21473_).getItem() == NpcItems.NPC_WRENCH.get()) {

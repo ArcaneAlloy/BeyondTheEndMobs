@@ -1,0 +1,24 @@
+{
+  "entityId": "bte_mobs:explorer",
+  "type": "PRESENTATION",
+  "dialogs": [
+    "I cannot believe it! The great hero!",
+    "Hi! I'm Anna and I will be the one to provide you with the best gear known in the entire Overworld!",
+    "If you don't see it already im the blacksmith and I will craft, repair and upgrade all kind of weapons, tools and armor of your need",
+    "So good luck out there hero."
+  ],
+  "answers": [
+    {
+      "formattedText": "Craft an item!",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "Repair an item!",
+      "action": "rumor"
+    },
+    {
+      "formattedText": "Maybe later",
+      "action": "wip"
+    }
+  ]
+}

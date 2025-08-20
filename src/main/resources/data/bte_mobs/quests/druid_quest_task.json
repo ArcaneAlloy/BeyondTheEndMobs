@@ -1,0 +1,21 @@
+{
+  "entityId": "bte_mobs:druid",
+  "type": "TASKING",
+  "dialogs": [
+    "What can I do for you?"
+  ],
+  "answers": [
+    {
+      "formattedText": "Craft an item!",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "Repair an item!",
+      "action": "open_repair"
+    },
+    {
+      "formattedText": "Maybe later",
+      "action": "wip"
+    }
+  ]
+}

@@ -448,10 +448,6 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     }
 
 
-    @Override
-    public List<UUID> getInteractedPlayers() {
-        return List.of();
-    }
 
     @Override
     public @Nullable PartEntity<?>[] getParts() {

@@ -1,12 +1,12 @@
 {
   "entityId": "bte_mobs:warlock",
-  "type": "PRESENTATION",
+  "type": "TASKING",
   "dialogs": [
-    "¡Saludos, viajero!"
+    "What can I do for you?"
   ],
   "answers": [
     {
-      "formattedText": "Quiero craftear",
+      "formattedText": "Enchant an item!",
       "action": "open_craft"
     },
     {
@@ -14,7 +14,7 @@
       "action": "potion"
     },
     {
-      "formattedText": "Seguire explorando.",
+      "formattedText": "Maybe later",
       "action": "wip"
     }
   ]

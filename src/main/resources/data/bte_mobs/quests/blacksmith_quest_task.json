@@ -1,0 +1,21 @@
+{
+  "entityId": "bte_mobs:blacksmith",
+  "type": "TASKING",
+  "dialogs": [
+    "Heeeello hero! Do you have something new to work it?"
+  ],
+  "answers": [
+    {
+      "formattedText": "Craft an item!",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "Repair an item!",
+      "action": "open_repair"
+    },
+    {
+      "formattedText": "Maybe later",
+      "action": "wip"
+    }
+  ]
+}

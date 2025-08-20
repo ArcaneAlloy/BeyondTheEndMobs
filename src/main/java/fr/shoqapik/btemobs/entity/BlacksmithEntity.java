@@ -28,9 +28,6 @@ public class BlacksmithEntity extends BteAbstractEntity {
     public BteNpcType getNpcType() {
         return BteNpcType.BLACKSMITH;
     }
-    public List<UUID> getInteractedPlayers() {
-        return List.of();
-    }
 
     @Override
     public Block getWorkBlock() {

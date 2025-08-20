@@ -62,11 +62,6 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     }
 
     @Override
-    public List<UUID> getInteractedPlayers() {
-        return List.of();
-    }
-
-    @Override
     public BteNpcType getNpcType() {
         return BteNpcType.WARLOCK;
     }

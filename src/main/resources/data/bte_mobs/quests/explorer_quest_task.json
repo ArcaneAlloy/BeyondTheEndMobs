@@ -1,22 +1,21 @@
 {
   "entityId": "bte_mobs:explorer",
-  "type": "PRESENTATION",
+  "type": "TASKING",
   "dialogs": [
-    "¡Saludos, viajero!"
+    "What can I do for you?"
   ],
   "answers": [
     {
-      "formattedText": "Quiero craftear",
+      "formattedText": "Craft an item!",
       "action": "open_craft"
     },
     {
-      "formattedText": "Tengo una consulta.",
+      "formattedText": "Repair an item!",
       "action": "rumor"
     },
     {
-      "formattedText": "Seguire explorando.",
+      "formattedText": "Maybe later",
       "action": "wip"
     }
-
   ]
 }

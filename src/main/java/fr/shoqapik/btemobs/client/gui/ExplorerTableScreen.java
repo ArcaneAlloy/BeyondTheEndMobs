@@ -15,6 +15,7 @@ import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
 import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -42,6 +43,8 @@ import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
 
 public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMenu> implements IGhostRecipe {
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
+    private static final Component SEARCH_HINT = Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
+
     private BteRecipeCategory currentCategory = BteRecipeCategory.ALL;
     private EditBox searchBox;
     private String previousSearchText = "";
@@ -74,7 +77,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
-        this.searchBox = new EditBox(this.minecraft.font, i + 15, j + 14, 80, 9 + 5, Component.translatable("itemGroup.search"));
+        this.searchBox = new EditBox(this.minecraft.font, i + 20, j + 18, 80, 9 + 5, Component.translatable("itemGroup.search"));
         this.searchBox.setMaxLength(50);
         this.searchBox.setBordered(false);
         this.searchBox.setVisible(true);
@@ -228,7 +231,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         if (!this.searchBox.isFocused() && this.searchBox.getValue().isEmpty()) {
-            drawString(p_97795_, this.minecraft.font, "Search recipe", i + 25, j + 14, -1);
+            drawString(p_97795_, this.minecraft.font, SEARCH_HINT, i + 20, j + 18, -1);
         } else {
             this.searchBox.render(p_97795_, p_97796_, p_97797_, p_97798_);
         }
