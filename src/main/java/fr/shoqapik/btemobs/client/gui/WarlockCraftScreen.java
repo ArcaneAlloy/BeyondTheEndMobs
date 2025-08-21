@@ -3,12 +3,13 @@ package fr.shoqapik.btemobs.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
-import fr.shoqapik.btemobs.recipe.WarlockRecipe;
-import net.minecraft.ChatFormatting;
+import fr.shoqapik.btemobs.packets.LastClickedRecipeUpdatePacket;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.Iterator;
 
 
 public class WarlockCraftScreen extends BteAbstractCraftScreen<WarlockCraftMenu> {
@@ -28,6 +29,7 @@ public class WarlockCraftScreen extends BteAbstractCraftScreen<WarlockCraftMenu>
     protected void init() {
         super.init();
         this.craftButton.visible = false;
+        System.out.println("????? WHY IS THIS NOT FKING WORKING");
     }
 
     @Override
@@ -37,7 +39,7 @@ public class WarlockCraftScreen extends BteAbstractCraftScreen<WarlockCraftMenu>
             this.renderExperience(pPoseStack);
         }
 
-        if (this.minecraft.screen != null && !this.recipeBookComponent.recipeBookPage.overlay.isVisible()) {
+        /*if (this.minecraft.screen != null && !this.recipeBookComponent.recipeBookPage.overlay.isVisible()) {
             for(RecipeButton button : this.recipeBookComponent.recipeBookPage.buttons) {
                 if(button.getCollection() == null) continue;
                 if(button.getRecipe() instanceof WarlockRecipe) {
@@ -52,7 +54,22 @@ public class WarlockCraftScreen extends BteAbstractCraftScreen<WarlockCraftMenu>
                     pPoseStack.popPose();
                 }
             }
+        }*/
+    }
+
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (this.minecraft.screen != null && !this.recipeBookComponent.recipeBookPage.overlay.isVisible()) {
+            Iterator var6 = this.recipeBookComponent.recipeBookPage.buttons.iterator();
+
+            while(var6.hasNext()) {
+                RecipeButton button = (RecipeButton)var6.next();
+                if (button.mouseClicked(pMouseX, pMouseY, pButton)) {
+                    BteMobsMod.sendToServer(new LastClickedRecipeUpdatePacket(button.getRecipe()));
+                }
+            }
         }
+
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     public void renderExperience(PoseStack pPoseStack) {

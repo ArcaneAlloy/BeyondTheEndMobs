@@ -24,6 +24,7 @@ public class WarlockCraftProvider implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+        System.out.println("IS IT WORKING?");
         return new WarlockCraftMenu(p_39954_, p_39956_.getInventory(), entityId);
     }
 }

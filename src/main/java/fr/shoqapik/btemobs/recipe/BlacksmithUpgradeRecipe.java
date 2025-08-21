@@ -1,4 +1,3 @@
-
 package fr.shoqapik.btemobs.recipe;
 
 import com.google.gson.JsonObject;

@@ -20,16 +20,17 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
 
     protected final BteAbstractCraftContainer baseSlots = new BteAbstractCraftContainer(this, 1, 1, 1);
     protected final ResultContainer resultSlots = new ResultContainer();
-
     public final DataSlot experience;
+
+    public Optional<? extends Recipe<?>> clickedRecipe = Optional.empty();
 
     public WarlockCraftMenu(int id, Inventory inventory, int entityId) {
         super(BteMobsContainers.WARLOCK_CRAFT_MENU.get(), id, inventory, entityId, 4, 1, 5);
 
+        System.out.println("WTF?");
+
         this.experience = DataSlot.standalone();
         this.addDataSlot(this.experience);
-
-
 
         this.addSlotListener(new ContainerListener() {
             @Override
@@ -43,7 +44,11 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
                     WarlockCraftMenu.this.experience.set(0);
                     return;
                 }
-                ItemStack result = assembleResult(recipes.get(0));
+                Recipe<?> recipe = recipes.get(0);
+                if (clickedRecipe.isPresent() && recipes.contains(clickedRecipe.get())) {
+                    recipe = clickedRecipe.get();
+                }
+                ItemStack result = assembleResult(recipe);
                 WarlockCraftMenu.this.resultSlots.setItem(0, result);
                 if(recipes.get(0) instanceof WarlockRecipe && !result.isEmpty()) {
                     WarlockCraftMenu.this.experience.set(((WarlockRecipe)recipes.get(0)).getExperience());
@@ -82,8 +87,9 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
             public void onTake(Player player, ItemStack itemStack) {
                 if(player.level.isClientSide) return;
                 WarlockCraftMenu.this.baseSlots.getItem(0).shrink(1);
-                craftItemServer((ServerPlayer) player, Optional.empty());
+                craftItemServer((ServerPlayer) player, WarlockCraftMenu.this.clickedRecipe);
                 WarlockCraftMenu.this.experience.set(0);
+                WarlockCraftMenu.this.clickedRecipe = Optional.empty();
             }
         });
     }

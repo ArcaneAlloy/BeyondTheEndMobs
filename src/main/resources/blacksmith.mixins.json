@@ -8,6 +8,7 @@
   ],
   "client": [
     "GhostRecipeMixin",
+    "RecipeButtonMixin",
     "RecipeCollectionMixin"
   ],
   "injectors": {

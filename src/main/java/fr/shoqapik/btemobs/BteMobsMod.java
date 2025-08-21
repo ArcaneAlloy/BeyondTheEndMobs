@@ -7,6 +7,7 @@ import fr.shoqapik.btemobs.entity.ExplorerEntity;
 import fr.shoqapik.btemobs.entity.WarlockEntity;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
+import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
 import fr.shoqapik.btemobs.menu.provider.BlacksmithCraftProvider;
 import fr.shoqapik.btemobs.menu.provider.WarlockCraftProvider;
 import fr.shoqapik.btemobs.packets.*;
@@ -38,6 +39,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.PrintStream;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -91,7 +93,7 @@ public class BteMobsMod {
         INSTANCE.registerMessage(10, PartItemPacket.class, PartItemPacket::encode, PartItemPacket::decode, PartItemPacket::handle);
         INSTANCE.registerMessage(11, DirectionPacket.class, DirectionPacket::encode, DirectionPacket::decode, DirectionPacket::handle);
         INSTANCE.registerMessage(12, PlaceGhostRecipePacket.class, PlaceGhostRecipePacket::encode, PlaceGhostRecipePacket::decode, PlaceGhostRecipePacket::handle);
-
+        INSTANCE.registerMessage(13, LastClickedRecipeUpdatePacket.class, LastClickedRecipeUpdatePacket::encode, LastClickedRecipeUpdatePacket::decode, LastClickedRecipeUpdatePacket::handle);
     }
 
     public static <MSG> void sendToClient(MSG message, ServerPlayer player) {
@@ -111,6 +113,7 @@ public class BteMobsMod {
         if(msg.actionType.equals("open_craft")) {
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity == null) return;
+            System.out.println("OPENING " + bteAbstractEntity.getNpcType().name());
             switch (bteAbstractEntity.getNpcType()) {
                 case BLACKSMITH -> NetworkHooks.openScreen(ctx.get().getSender(), new BlacksmithCraftProvider(msg.entityId));
                 case WARLOCK -> NetworkHooks.openScreen(ctx.get().getSender(), new WarlockCraftProvider(msg.entityId));
@@ -175,6 +178,21 @@ public class BteMobsMod {
             if (s.length() <= 50) {
                 repairMenu.setItemName(s);
             }
+        }
+    }
+
+    public static void handleLastClickedRecipeUpdatePacket(LastClickedRecipeUpdatePacket msg, Supplier<NetworkEvent.Context> ctx) {
+        AbstractContainerMenu menu = ctx.get().getSender().containerMenu;
+        if (menu instanceof WarlockCraftMenu warlockMenu) {
+            if (!warlockMenu.stillValid(ctx.get().getSender())) {
+                LOGGER.debug("Player {} interacted with invalid menu {}", ((NetworkEvent.Context) ctx.get()).getSender(), warlockMenu);
+                return;
+            }
+
+            Optional<? extends Recipe<?>> recipe = Optional.empty();
+            if (msg.recipe != null) recipe = ctx.get().getSender().getServer().getRecipeManager().byKey(msg.recipe);
+
+            warlockMenu.clickedRecipe = recipe;
         }
     }
 
