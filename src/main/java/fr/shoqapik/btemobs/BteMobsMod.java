@@ -113,7 +113,6 @@ public class BteMobsMod {
         if(msg.actionType.equals("open_craft")) {
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity == null) return;
-            System.out.println("OPENING " + bteAbstractEntity.getNpcType().name());
             switch (bteAbstractEntity.getNpcType()) {
                 case BLACKSMITH -> NetworkHooks.openScreen(ctx.get().getSender(), new BlacksmithCraftProvider(msg.entityId));
                 case WARLOCK -> NetworkHooks.openScreen(ctx.get().getSender(), new WarlockCraftProvider(msg.entityId));

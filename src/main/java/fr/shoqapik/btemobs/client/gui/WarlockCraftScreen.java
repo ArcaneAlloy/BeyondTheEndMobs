@@ -29,7 +29,6 @@ public class WarlockCraftScreen extends BteAbstractCraftScreen<WarlockCraftMenu>
     protected void init() {
         super.init();
         this.craftButton.visible = false;
-        System.out.println("????? WHY IS THIS NOT FKING WORKING");
     }
 
     @Override

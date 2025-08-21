@@ -18,16 +18,14 @@ import java.util.Optional;
 
 public class WarlockCraftMenu extends BteAbstractCraftMenu {
 
-    protected final BteAbstractCraftContainer baseSlots = new BteAbstractCraftContainer(this, 1, 1, 1);
-    protected final ResultContainer resultSlots = new ResultContainer();
+    protected BteAbstractCraftContainer baseSlots;
+    protected ResultContainer resultSlots;
     public final DataSlot experience;
 
     public Optional<? extends Recipe<?>> clickedRecipe = Optional.empty();
 
     public WarlockCraftMenu(int id, Inventory inventory, int entityId) {
         super(BteMobsContainers.WARLOCK_CRAFT_MENU.get(), id, inventory, entityId, 4, 1, 5);
-
-        System.out.println("WTF?");
 
         this.experience = DataSlot.standalone();
         this.addDataSlot(this.experience);
@@ -64,13 +62,16 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
 
     @Override
     public void initCraftingSlot() {
+        baseSlots = new BteAbstractCraftContainer(this, 1, 1, 1);
+        resultSlots = new ResultContainer();
+
         // X: 11 PRIMEIRA | 29 SEGUNDA | 47 TERCEIRA | 90 QUARTA | 148 QUINTA (RESULT)
         // Y: 25 PRIMEIRA
         this.addSlot(new CraftInputSlot(this.craftSlots, 0, 11, 25));
         this.addSlot(new CraftInputSlot(this.craftSlots, 1, 29, 25));
         this.addSlot(new CraftInputSlot(this.craftSlots, 2, 47, 25));
 
-        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 90, 25)); // Base Item
+        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 90, 25));
 
         this.addSlot(new Slot(this.resultSlots, 0, 148, 25) {
             public boolean mayPlace(ItemStack itemStack) {
