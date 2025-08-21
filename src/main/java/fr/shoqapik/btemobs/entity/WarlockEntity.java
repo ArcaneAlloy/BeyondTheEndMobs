@@ -137,7 +137,7 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     }
 
     public void openCraftGui(ServerPlayer player){
-        this.openMenu((MenuProvider) this,player);
+        this.openMenu(this,player);
     }
 
     public OptionalInt openMenu(@javax.annotation.Nullable MenuProvider pMenu, ServerPlayer serverPlayer) {

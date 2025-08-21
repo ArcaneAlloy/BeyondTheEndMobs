@@ -128,6 +128,7 @@ public class BteMobsMod {
                 return new BlacksmithRepairMenu(id, inventory);
             }, Component.literal("Repair")));
         }
+
         if(msg.actionType.equals("potion")){
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity instanceof WarlockEntity warlockEntity){
