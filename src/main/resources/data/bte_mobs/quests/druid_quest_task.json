@@ -11,7 +11,7 @@
     },
     {
       "formattedText": "Repair an item!",
-      "action": "open_repair"
+      "action": "rumor"
     },
     {
       "formattedText": "Maybe later",
