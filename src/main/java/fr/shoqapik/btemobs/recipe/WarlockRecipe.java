@@ -1,8 +1,10 @@
 package fr.shoqapik.btemobs.recipe;
 
 import com.google.gson.JsonObject;
+import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
+import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,6 +33,7 @@ public class WarlockRecipe extends BteAbstractRecipe {
         this.experience = experience;
     }
 
+
     public Enchantment getEnchantment() {
         return enchantment;
     }
@@ -56,8 +59,13 @@ public class WarlockRecipe extends BteAbstractRecipe {
     }
 
     @Override
+    public boolean canCraftInDimensions(int pWidth, int pHeight) {
+        return true;
+    }
+
+    @Override
     public RecipeSerializer<?> getSerializer() {
-        return new Serializer();
+        return BteMobsRecipeSerializers.WARLOCK_SERIALIZER.get();
     }
 
     @Override

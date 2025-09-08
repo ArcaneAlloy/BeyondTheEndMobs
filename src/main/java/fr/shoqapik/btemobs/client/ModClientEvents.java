@@ -24,24 +24,24 @@ public class ModClientEvents {
 
     @SubscribeEvent
     public static void onRegisterRecipeBookCategory(RegisterRecipeBookCategoriesEvent event) {
-        registerBookCategories(BteNpcType.BLACKSMITH, List.of(RecipeBookCategories.SMITHING), event);
+        registerBookCategories(RecipeBookType.create("BLACKSMITH"),BteNpcType.BLACKSMITH, List.of(RecipeBookCategories.SMITHING), event);
         registerRecipeCategoryLookups(BteNpcType.BLACKSMITH, List.of(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get(), BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()), event);
 
-        registerBookCategories(BteNpcType.WARLOCK, List.of(), event);
+        registerBookCategories(BteMobsMod.WARLOCK,BteNpcType.WARLOCK, List.of(), event);
         registerRecipeCategoryLookups(BteNpcType.WARLOCK, List.of(BteMobsRecipeTypes.WARLOCK_RECIPE.get()), event);
+
     }
     @SubscribeEvent
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(OrbModel.LAYER_LOCATION,OrbModel::createBodyLayer);
 
     }
-    private static void registerBookCategories(BteNpcType npcType, List<RecipeBookCategories> vanillaCategories, RegisterRecipeBookCategoriesEvent event) {
-        RecipeBookType recipeBookType = RecipeBookType.create(npcType.name());
+    private static void registerBookCategories(RecipeBookType type,BteNpcType npcType, List<RecipeBookCategories> vanillaCategories, RegisterRecipeBookCategoriesEvent event) {
         List<RecipeBookCategories> recipeBookCategories = new ArrayList<>();
         for(BteRecipeCategory category : BteRecipeCategory.values(npcType)) {
             recipeBookCategories.add(RecipeBookCategories.create(npcType.name() + "_" + category.name(), category.item));
         }
-        event.registerBookCategories(recipeBookType, recipeBookCategories);
+        event.registerBookCategories(type, recipeBookCategories);
 
         recipeBookCategories.addAll(vanillaCategories);
         recipeBookCategories.remove(BteRecipeCategory.ALL.getVanillaCategory(npcType));
@@ -55,6 +55,7 @@ public class ModClientEvents {
                     if(recipe instanceof WarlockRecipe) System.out.println("REGISTERING FINDER FOR " + recipe.getId().toString());
                     return RecipeBookCategories.valueOf(npcType.name() + "_" + ((BteAbstractRecipe)recipe).getCategory().name());
                 }
+
                 return null;
             });
         }

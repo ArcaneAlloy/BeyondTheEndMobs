@@ -94,7 +94,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         this.currentRecipe=null;
         refreshButtons();
         updateTabs();
-        this.craftButton = new Button(i + 250, j + 60, 65, 20, Component.literal("Craft"), p_93751_ -> {
+        this.craftButton = new Button(this.leftPos + 290, (this.height / 2 - this.imageHeight / 2) + 64, 35, 14, Component.literal("Craft"), p_93751_ -> {
             if(this.currentRecipe!=null){
                 Entity entity=Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
                 if(entity instanceof ExplorerEntity e){
@@ -318,8 +318,6 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     }
 
     protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
-        this.font.draw(p_97808_, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-        this.font.draw(p_97808_, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
 
     @Override

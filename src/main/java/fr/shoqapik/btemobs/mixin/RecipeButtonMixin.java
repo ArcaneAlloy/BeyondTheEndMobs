@@ -53,6 +53,5 @@ public class RecipeButtonMixin {
 
             Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(pStack, pX, pY);
         }
-
     }
 }

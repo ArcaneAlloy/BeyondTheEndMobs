@@ -36,12 +36,12 @@ public class TableExplorerMenu extends AbstractContainerMenu {
         this.data=data;
         this.id=data.get(0);
         this.craftSlots= container;
-        this.addSlot(new CraftInputSlot(container, 0, 233,9));
-        this.addSlot(new CraftInputSlot(container, 1, 254,9));
-        this.addSlot(new CraftInputSlot(container, 2, 212,29));
-        this.addSlot(new CraftInputSlot(container, 3, 233,29));
-        this.addSlot(new CraftInputSlot(container, 4, 254,29));
-        this.addSlot(new CraftInputSlot(container, 5, 233,50));
+        this.addSlot(new CraftInputSlot(container, 0, 215,20));
+        this.addSlot(new CraftInputSlot(container, 1, 233,20));
+        this.addSlot(new CraftInputSlot(container, 2, 251,20));
+        this.addSlot(new CraftInputSlot(container, 3, 215,38));
+        this.addSlot(new CraftInputSlot(container, 4, 233,38));
+        this.addSlot(new CraftInputSlot(container, 5, 251,38));
 
         this.level = p_39357_.player.level;
         for(int k = 0; k < 3; ++k) {

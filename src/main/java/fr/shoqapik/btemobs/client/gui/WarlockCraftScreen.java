@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
 import fr.shoqapik.btemobs.packets.LastClickedRecipeUpdatePacket;
+import fr.shoqapik.btemobs.recipe.WarlockRecipe;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +40,8 @@ public class WarlockCraftScreen extends BteAbstractCraftScreen<WarlockCraftMenu>
             this.renderExperience(pPoseStack);
         }
 
-        /*if (this.minecraft.screen != null && !this.recipeBookComponent.recipeBookPage.overlay.isVisible()) {
+        /*this.recipeBookComponent.recipeBookPage.getRecipeBook();
+        if (this.minecraft.screen != null && !this.recipeBookComponent.recipeBookPage.overlay.isVisible()) {
             for(RecipeButton button : this.recipeBookComponent.recipeBookPage.buttons) {
                 if(button.getCollection() == null) continue;
                 if(button.getRecipe() instanceof WarlockRecipe) {

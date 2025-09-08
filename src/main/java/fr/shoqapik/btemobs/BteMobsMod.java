@@ -23,8 +23,10 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -60,6 +62,7 @@ public class BteMobsMod {
     public static Rumor.UnlockLevel unlockLevel = Rumor.UnlockLevel.OVERWORLD;
     public static PageCompendium.UnlockLevel unlockLevel1 = PageCompendium.UnlockLevel.OVERWORLD;
 
+    public static final RecipeBookType WARLOCK =RecipeBookType.create("WARLOCK");
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(MODID, "main"),
             () -> PROTOCOL_VERSION,
@@ -68,6 +71,7 @@ public class BteMobsMod {
     );
 
     public BteMobsMod() {
+        WARLOCK.init();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
         BteMobsBlockEntities.register(bus);
@@ -147,11 +151,9 @@ public class BteMobsMod {
         for(BteAbstractRecipe recipe : list) {
             if(ctx.get().getSender().getRecipeBook().contains(recipe.getId())) continue;
             List<Item> items = new ArrayList<>();
-            recipe.getIngredients().stream().map(ingredient -> ingredient.getItems()).forEach(item -> items.addAll(Arrays.stream(item).map(ItemStack::getItem).toList()));
+            recipe.getIngredients().stream().map(Ingredient::getItems).forEach(item -> items.addAll(Arrays.stream(item).map(ItemStack::getItem).toList()));
 
-            for(ItemStack stack : ctx.get().getSender().getInventory().items) {
-                if(items.contains(stack.getItem())) recipes.add(recipe);
-            }
+            recipes.add(recipe);
         }
 
         ctx.get().getSender().awardRecipes(recipes);

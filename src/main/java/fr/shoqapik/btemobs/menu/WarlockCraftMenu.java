@@ -1,5 +1,6 @@
 package fr.shoqapik.btemobs.menu;
 
+import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
@@ -38,7 +39,8 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
                 if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
                 List<Recipe> recipes = getCraftableRecipes((ServerPlayer)player);
                 if(recipes.isEmpty()) {
-                    WarlockCraftMenu.this.resultSlots.setItem(0, ItemStack.EMPTY);                    WarlockCraftMenu.this.experience.set(0);
+                    WarlockCraftMenu.this.resultSlots.setItem(0, ItemStack.EMPTY);
+                    WarlockCraftMenu.this.experience.set(0);
                     WarlockCraftMenu.this.experience.set(0);
                     return;
                 }
@@ -102,7 +104,7 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
 
     @Override
     public RecipeBookType getRecipeBookType() {
-        return RecipeBookType.valueOf("WARLOCK");
+        return BteMobsMod.WARLOCK;
     }
 
     @Override

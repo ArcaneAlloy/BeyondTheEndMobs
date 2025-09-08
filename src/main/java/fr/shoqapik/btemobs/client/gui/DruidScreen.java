@@ -41,7 +41,7 @@ import java.util.List;
 import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
 
 public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements IGhostRecipe {
-    public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
+    public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/druid_screen.png");
     private static final Component SEARCH_HINT = Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
 
     private BteRecipeCategory currentCategory = BteRecipeCategory.ALL;
@@ -93,7 +93,7 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
         this.currentRecipe=null;
         refreshButtons();
         updateTabs();
-        this.craftButton = new Button(i + 250, j + 60, 65, 20, Component.literal("Craft"), p_93751_ -> {
+        this.craftButton = new Button(this.leftPos + 290, (this.height / 2 - this.imageHeight / 2) + 64, 35, 14, Component.literal("Craft"), p_93751_ -> {
             if(this.currentRecipe!=null){
                 Entity entity=Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
                 if(entity instanceof DruidEntity e){
@@ -311,8 +311,6 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
     }
 
     protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
-        this.font.draw(p_97808_, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-        this.font.draw(p_97808_, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
 
     @Override

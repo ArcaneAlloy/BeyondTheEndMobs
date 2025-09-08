@@ -77,7 +77,7 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
             }
         });
 
-        this.addSlot(new Slot(container, 6, 308, 46) {
+        this.addSlot(new Slot(container, 6, 305, 34) {
             public boolean mayPlace(ItemStack itemStack) {
                 return false;
             }

@@ -26,7 +26,7 @@ public class BteMobsRecipeTypes {
         }
     });
 
-    public static final RegistryObject<RecipeType<WarlockRecipe>> WARLOCK_RECIPE = RECIPE_TYPES.register("warlock", ()-> new RecipeType<>() {
+    public static final RegistryObject<RecipeType<WarlockRecipe>> WARLOCK_RECIPE = RECIPE_TYPES.register("warlock_recipe", ()-> new RecipeType<>() {
         @Override
         public int hashCode() {
             return super.hashCode();
