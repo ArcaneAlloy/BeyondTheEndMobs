@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 2,
+  "base": {
+    "item": "minecraft:iron_boots"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "quark:bonded_leather",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:climbing_boots"
+  }
+}

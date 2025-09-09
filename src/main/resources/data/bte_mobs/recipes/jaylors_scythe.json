@@ -1,0 +1,23 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 4,
+    "base": {
+      "item": "dungeons_gear:frost_scythe"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "alexsmobs:soul_heart",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:netherite_ingot",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:jailors_scythe"
+    }
+  }

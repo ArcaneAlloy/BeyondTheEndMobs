@@ -1,6 +1,6 @@
 {
   "entityId": "bte_mobs:warlock",
-  "type": "PRESENTATION",
+  "type": "TASKING",
   "dialogs": [
     "I cannot believe it! The great hero!",
     "Hi! I'm Anna and I will be the one to provide you with the best gear known in the entire Overworld!",
@@ -9,7 +9,7 @@
   ],
   "answers": [
     {
-      "formattedText": "Craft an item!",
+      "formattedText": "Enchant an item!",
       "action": "open_craft"
     },
     {

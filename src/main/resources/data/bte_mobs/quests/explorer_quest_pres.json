@@ -2,10 +2,11 @@
   "entityId": "bte_mobs:explorer",
   "type": "PRESENTATION",
   "dialogs": [
-    "I cannot believe it! The great hero!",
-    "Hi! I'm Anna and I will be the one to provide you with the best gear known in the entire Overworld!",
-    "If you don't see it already im the blacksmith and I will craft, repair and upgrade all kind of weapons, tools and armor of your need",
-    "So good luck out there hero."
+    "Well, well. What do we have here?\nThe only thing I couldn't track:\nThe Legendary Hero.",
+    "I don't know if you've introduced yourself to the others, but I'm Antonio, and I'm dedicated to exploration.",
+    "I've traveled through every dimension,\nand I know every corner of them.",
+    "If you need help finding a place or need to know about a creature, just ask me.",
+    "We're really glad you showed up.\n\nGood luck."
   ],
   "answers": [
     {

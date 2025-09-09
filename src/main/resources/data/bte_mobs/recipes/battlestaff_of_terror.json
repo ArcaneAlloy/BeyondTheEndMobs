@@ -1,0 +1,33 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 3,
+    "base": {
+      "item": "dungeons_gear:battlestaff"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:iron_ingot",
+        "count": 2
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:obsidian",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:gunpowder",
+        "count": 2
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "savage_and_ravage:creeper_spores",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:battlestaff_of_terror"
+    }
+  }

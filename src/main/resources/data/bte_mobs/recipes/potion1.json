@@ -1,8 +1,0 @@
-{
-  "type": "bte_mobs:warlock_potion_recipe",
-  "potion_effect": "minecraft:healing",
-  "tier": 1,
-  "ingredient": {
-    "item": "minecraft:stick"
-  }
-}

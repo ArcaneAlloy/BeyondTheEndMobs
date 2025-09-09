@@ -1,8 +1,0 @@
-{
-  "title": "Pig",
-  "unlockLevel": "OVERWORLD",
-  "entityId" : "minecraft:pig",
-  "description": "Es un cerdo.",
-  "extraYRot" : 0
-
-}

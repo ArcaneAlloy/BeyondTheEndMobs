@@ -1,0 +1,25 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 4,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:witherite_ingot",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:redstone_block",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:gunpowder",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "cataclysm:wither_assault_shoulder_weapon"
+  }
+}

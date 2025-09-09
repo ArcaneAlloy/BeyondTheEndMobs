@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "TOOLS",
+  "enchantment": "minecraft:efficiency",
+  "level": 4,
+  "experience": 10,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:gold_ingot",
+      "count": 4
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:stick",
+      "count": 2
+    }
+  ]
+}

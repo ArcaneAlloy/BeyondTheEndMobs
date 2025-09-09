@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 5,
+  "base": {
+    "item": "minecraft:diamond_chestplate"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_wither_skeleton_rib",
+      "count": 10
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_wither_skeleton_arms",
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "mutantmore:mutant_wither_skeleton_chestplate"
+  }
+}

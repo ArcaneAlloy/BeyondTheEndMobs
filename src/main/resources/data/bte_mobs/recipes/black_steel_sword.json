@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 2,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:black_steel_ingot",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:stick",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "cataclysm:black_steel_sword"
+  }
+}

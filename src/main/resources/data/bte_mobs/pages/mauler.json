@@ -1,0 +1,7 @@
+{
+  "title": "Mauler",
+  "unlockLevel": "OVERWORLD",
+  "entityId" : "illagerrevolutionmod:mauler",
+  "description": "The Mauler can be found in a Raid.\n\nThey can be tamed by feeding them enough rotten flesh.\n\nOnce tamed they are allowed to being equipped with Mauler Armor of different tiers: Iron, Gold, Diamond, Illagium and Netherite.",
+  "extraYRot" : 0
+}

@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 2,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:iron_nugget",
+      "count": 8
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "minecraft:chainmail_chestplate"
+  }
+}

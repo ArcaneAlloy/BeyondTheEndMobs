@@ -1,0 +1,28 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 5,
+    "base": {
+      "item": "mutantmore:husk_hammer"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "cataclysm:ignitium_ingot",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "cataclysm:black_steel_ingot",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "mutantmore:mutant_blaze_core",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "cataclysm:the_immolator"
+    }
+  }

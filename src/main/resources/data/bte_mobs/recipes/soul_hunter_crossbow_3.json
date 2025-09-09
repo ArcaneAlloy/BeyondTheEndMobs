@@ -1,0 +1,18 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 5,
+    "base": {
+      "item": "dungeons_gear:nautical_crossbow"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "alexsmobs:soul_heart",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:soul_hunter_crossbow"
+    }
+  }

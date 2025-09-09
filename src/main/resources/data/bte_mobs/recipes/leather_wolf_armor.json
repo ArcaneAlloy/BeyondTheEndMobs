@@ -1,0 +1,13 @@
+ {
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 12
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "revampedwolf:leather_wolf_armor"
+  }
+}

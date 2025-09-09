@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 3,
+  "base": {
+    "item": "minecraft:shield"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "twilightforest:knightmetal_ingot",
+      "count": 8
+    }
+  ],
+  "result": {
+    "item": "twilightforest:knightmetal_shield"
+  }
+}

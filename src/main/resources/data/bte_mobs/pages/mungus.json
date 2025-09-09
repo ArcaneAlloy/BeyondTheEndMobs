@@ -1,0 +1,7 @@
+{
+  "title": "Mungus",
+  "unlockLevel": "OVERWORLD",
+  "entityId" : "alexsmobs:mungus",
+  "description": "The Mungus can be found in the Mushroom Fields biome.\n\nThey will randomly shed Mungal Spores.\n\nMungus with Mushrooms on their head will fire beams at Mushrooms. If the Mushrooms are placed on Mycelium or Podzol, the beam turns them into large Mushrooms. Otherwise, the Mushrooms spread to adjacent blocks.",
+  "extraYRot" : 0
+}

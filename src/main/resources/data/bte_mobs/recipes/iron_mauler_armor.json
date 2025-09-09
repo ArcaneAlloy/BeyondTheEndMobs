@@ -1,0 +1,13 @@
+{
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "illagerrevolutionmod:mauler_armor_iron"
+  }
+}

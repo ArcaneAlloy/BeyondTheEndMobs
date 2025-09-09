@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 3,
+  "base": {
+    "item": "minecraft:diamond_chestplate"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "quark:violet_corundum_cluster",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:renegade_chestplate"
+  }
+}

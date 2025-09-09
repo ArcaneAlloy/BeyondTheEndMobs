@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 4,
+  "base": {
+    "item": "minecraft:netherite_boots"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:prismarine_shard",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "monstersandmushrooms:guardian_boots"
+  }
+}

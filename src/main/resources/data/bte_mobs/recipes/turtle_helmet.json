@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:scute",
+      "count": 5
+    }
+  ],
+  "result": {
+    "item": "minecraft:turtle_helmet"
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 3,
+    "base": {
+      "item": "dungeons_gear:cutlass"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:gold_ingot",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:iron_ingot",
+        "count": 2
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:dancers_sword"
+    }
+  }

@@ -1,21 +1,18 @@
- {
-  "type": "bte_mobs:druid_recipe",
-  "ingredients": [
-    {
-      "item": "minecraft:iron_ingot",
-      "count": 4
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 4,
+    "base": {
+      "item": "minecraft:diamond_sword"
     },
-    {
-      "item": "minecraft:gold_ingot",
-      "count": 4
-    },
-    {
-      "item": "minecraft:netherite_ingot",
-      "count": 4
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:netherite_ingot",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "minecraft:netherite_sword"
     }
-  ],
-  "tier": 1,
-  "result": {
-    "item": "minecraft:enchanted_golden_apple"
   }
-}

@@ -1,0 +1,13 @@
+{
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 9
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "illagerrevolutionmod:scrapper_armor_iron"
+  }
+}
