@@ -2,6 +2,7 @@ package fr.shoqapik.btemobs;
 
 import fr.shoqapik.btemobs.compendium.PagesManager;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
+import fr.shoqapik.btemobs.packets.CheckUnlockRecipePacket;
 import fr.shoqapik.btemobs.packets.ShowDialogPacket;
 import fr.shoqapik.btemobs.quests.Quest;
 import fr.shoqapik.btemobs.quests.QuestManager;
@@ -9,16 +10,19 @@ import fr.shoqapik.btemobs.rumors.RumorsManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
+
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEvents {
-
     @SubscribeEvent
     public static void entityClickEvent(PlayerInteractEvent.EntityInteract event) {
         if(event.getHand() != InteractionHand.MAIN_HAND) return;
@@ -35,6 +39,12 @@ public class CommonEvents {
                 BteMobsMod.sendToClient(new ShowDialogPacket(event.getTarget().getId(), bteAbstractEntity.getNpcType(), quest), (ServerPlayer) event.getEntity());
                 bteAbstractEntity.getInteractedPlayers().add(event.getEntity().getUUID());
             }
+        }
+    }
+    @SubscribeEvent
+    public static void onAdvancementEarn(AdvancementEvent.AdvancementEarnEvent event){
+        if (event.getEntity().level.isClientSide){
+            BteMobsMod.sendToServer(new CheckUnlockRecipePacket());
         }
     }
 
@@ -55,10 +65,7 @@ public class CommonEvents {
             }
             BteMobsMod.LOGGER.debug("Y :" + BteMobsMod.y);
         }
-        if(event.getItemStack().is(Items.PRISMARINE_SHARD)){
-            BteMobsMod.y+=0.1D;
-
-            BteMobsMod.LOGGER.debug("Z :" + BteMobsMod.z);
+        if(event.getLevel().isClientSide && event.getItemStack().is(Items.ENDER_EYE)){
         }
 
         if(event.getItemStack().is(Items.HEART_OF_THE_SEA)){

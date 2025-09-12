@@ -1,5 +1,7 @@
 package fr.shoqapik.btemobs;
 
+import mc.duzo.beyondtheend.capabilities.PortalPlayer;
+import com.patataprojects.anvilchanges.repairs.AnvilRepairSet;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import fr.shoqapik.btemobs.entity.DruidEntity;
@@ -11,23 +13,27 @@ import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
 import fr.shoqapik.btemobs.menu.provider.BlacksmithCraftProvider;
 import fr.shoqapik.btemobs.menu.provider.WarlockCraftProvider;
 import fr.shoqapik.btemobs.packets.*;
+import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.rumors.Rumor;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.*;
 import fr.shoqapik.btemobs.sound.SoundManager;
+import mc.duzo.beyondtheend.common.DimensionUtil;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -37,11 +43,11 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.PrintStream;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -59,10 +65,9 @@ public class BteMobsMod {
     public static double xq=0;
     public static double yq=0;
     public static double zq=0;
+    public static int eyes = 0;
     public static Rumor.UnlockLevel unlockLevel = Rumor.UnlockLevel.OVERWORLD;
     public static PageCompendium.UnlockLevel unlockLevel1 = PageCompendium.UnlockLevel.OVERWORLD;
-
-    public static final RecipeBookType WARLOCK =RecipeBookType.create("WARLOCK");
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(MODID, "main"),
             () -> PROTOCOL_VERSION,
@@ -71,7 +76,6 @@ public class BteMobsMod {
     );
 
     public BteMobsMod() {
-        WARLOCK.init();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
         BteMobsBlockEntities.register(bus);
@@ -98,6 +102,18 @@ public class BteMobsMod {
         INSTANCE.registerMessage(11, DirectionPacket.class, DirectionPacket::encode, DirectionPacket::decode, DirectionPacket::handle);
         INSTANCE.registerMessage(12, PlaceGhostRecipePacket.class, PlaceGhostRecipePacket::encode, PlaceGhostRecipePacket::decode, PlaceGhostRecipePacket::handle);
         INSTANCE.registerMessage(13, LastClickedRecipeUpdatePacket.class, LastClickedRecipeUpdatePacket::encode, LastClickedRecipeUpdatePacket::decode, LastClickedRecipeUpdatePacket::handle);
+        INSTANCE.registerMessage(14,SyncUnlockLevelPacket.class,SyncUnlockLevelPacket::encode,SyncUnlockLevelPacket::decode,SyncUnlockLevelPacket::handle);
+    }
+
+    public static List<EnchantType> getEnchantType (){
+        List<EnchantType> types = new ArrayList<>();
+        List<WarlockRecipe> recipes = getWarlockRecipe();
+        for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS.getValues()){
+            if(recipes.stream().anyMatch(warlockRecipe -> warlockRecipe.getEnchantment()==enchantment)){
+                types.add(new EnchantType(Component.translatable(enchantment.getDescriptionId())));
+            }
+        }
+        return types;
     }
 
     public static <MSG> void sendToClient(MSG message, ServerPlayer player) {
@@ -135,7 +151,7 @@ public class BteMobsMod {
         if(msg.actionType.equals("potion")){
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity instanceof WarlockEntity warlockEntity){
-                warlockEntity.openCraftGui(ctx.get().getSender());
+                warlockEntity.openPotionGui(ctx.get().getSender());
             }
 
         }
@@ -147,7 +163,6 @@ public class BteMobsMod {
         List<BteAbstractRecipe> list = new ArrayList<>();
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()));
         for(BteAbstractRecipe recipe : list) {
             if(ctx.get().getSender().getRecipeBook().contains(recipe.getId())) continue;
             List<Item> items = new ArrayList<>();
@@ -157,6 +172,38 @@ public class BteMobsMod {
         }
 
         ctx.get().getSender().awardRecipes(recipes);
+
+        List<Recipe<?>> recipes1 = new ArrayList<>();
+        List<WarlockRecipe> recipes2  = getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get());
+
+        for (WarlockRecipe recipe : recipes2){
+            if(ServerData.get().isUnlock(recipe)) continue;
+            boolean flag = false;
+            if(ctx.get().getSender().getInventory().items.stream().anyMatch(e->ServerData.get().getUnlockRecipe(recipe).is(e))){
+                ServerData.get().getUnlockRecipe(recipe).setWasFound(true);
+            }
+            PortalPlayer player = PortalPlayer.get(ctx.get().getSender()).orElse(null);
+
+            if(ServerData.get().getUnlockRecipe(recipe).wasFound && player.getEyesEarn()>=recipe.getNeedEyes()){
+
+                ServerData.get().getUnlockRecipe(recipe).isLock = false;
+                flag = true;
+            }
+            if(flag){
+                recipes1.add(recipe);
+            }
+        }
+        ctx.get().getSender().awardRecipes(recipes1);
+    }
+
+    public static List<WarlockRecipe> getWarlockRecipe(){
+        List<WarlockRecipe> recipes = new ArrayList<>();
+        for (UnlockRecipe recipe : ServerData.get().getStructureManager()){
+            if(!recipe.isLock && recipe.wasFound){
+                recipes.add((WarlockRecipe) recipe.recipe);
+            }
+        }
+        return recipes;
     }
 
     public static void handleCraftItemPacket(CraftItemPacket msg, Supplier<NetworkEvent.Context> ctx){
@@ -196,6 +243,9 @@ public class BteMobsMod {
 
             warlockMenu.clickedRecipe = recipe;
         }
+    }
+    public static MinecraftServer getServer() {
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
 

@@ -35,7 +35,7 @@ public class CompediumScreen extends Screen {
     public static final ResourceLocation DIALOGS_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/default.png");
     private static final Logger log = LoggerFactory.getLogger(CompediumScreen.class);
     protected int imageWidth = 254;
-    protected int imageHeight = 80;
+    protected int imageHeight = 168;
     protected int leftPos;
     protected int topPos;
     protected Button up;
@@ -61,7 +61,7 @@ public class CompediumScreen extends Screen {
         this.buttons.clear();
         this.clearWidgets();
         this.leftPos = (this.width - this.imageWidth) / 2;
-        this.topPos = (this.height - this.imageHeight) / 2;
+        this.topPos = (this.height - 80) / 2;
 
         for (PageCompendium page : this.rumors) {
 
@@ -86,12 +86,12 @@ public class CompediumScreen extends Screen {
 
         }
 
-        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - this.imageHeight)-150,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
+        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)-150,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
             scrolledY = Math.max(0,scrolledY-1);
             this.layoutButtons();
         });
 
-        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - this.imageHeight)+45,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
+        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)+45,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
             scrolledY=Math.min(this.rumors.size(),this.scrolledY+1);
             this.layoutButtons();
         });
@@ -109,7 +109,7 @@ public class CompediumScreen extends Screen {
             // Render background
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/dialogs/%s.png", bteNpcType.name().toLowerCase(Locale.ROOT))));
+            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/dialogs/oriana_tdialogo_extendido.png")));
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -118,7 +118,7 @@ public class CompediumScreen extends Screen {
             RenderSystem.enableDepthTest();
 
             int x = (int) (this.leftPos - (this.width / 8) + 90);
-            int y = (int) (this.height - this.imageHeight - 130);
+            int y = (int) (this.height - 80 - 130);
 
 
             //GuiComponent.drawCenteredString(poseStack, font, "PageCompendiums", x + imageWidth / 2, y + 5, 16777215);
@@ -130,9 +130,9 @@ public class CompediumScreen extends Screen {
                 EntityPage page = new EntityPage(type);
                 GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
                 drawWordWrap(Component.literal(this.currentPageCompendium.getDescription()), x + 17, y + 30, 240 - 20, 2829099, font, poseStack);
-                page.render(this.currentPageCompendium,poseStack,x+134,y-63,mouseX,mouseY);
+                page.render(this.currentPageCompendium,poseStack,x+210,y-80,mouseX,mouseY);
 
-            }
+            }                                                                       
 
             poseStack.popPose();
         }
@@ -143,7 +143,7 @@ public class CompediumScreen extends Screen {
 
     private void layoutButtons() {
         int x = (int) (this.leftPos - (this.width / 8) - 22);
-        int yStart = (int) (this.height - this.imageHeight - 130);
+        int yStart = (int) (this.height - 80 - 130);
 
         int visibleStartIndex = scrolledY;
         int visibleEndIndex = Math.min(scrolledY + 7, rumors.size());

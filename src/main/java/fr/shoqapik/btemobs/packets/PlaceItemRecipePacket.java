@@ -2,6 +2,7 @@ package fr.shoqapik.btemobs.packets;
 
 import fr.shoqapik.btemobs.menu.DruidMenu;
 import fr.shoqapik.btemobs.menu.TableExplorerMenu;
+import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
 import fr.shoqapik.btemobs.menu.WarlockPotionMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +36,10 @@ public class PlaceItemRecipePacket {
         }
         if(ctx.get().getSender().containerMenu instanceof WarlockPotionMenu){
             WarlockPotionMenu potionMenu = (WarlockPotionMenu) ctx.get().getSender().containerMenu;
+            potionMenu.placeRecipe(ctx.get().getSender(),msg.result);
+        }
+        if(ctx.get().getSender().containerMenu instanceof WarlockCraftMenu){
+            WarlockCraftMenu potionMenu = (WarlockCraftMenu) ctx.get().getSender().containerMenu;
             potionMenu.placeRecipe(ctx.get().getSender(),msg.result);
         }
     }

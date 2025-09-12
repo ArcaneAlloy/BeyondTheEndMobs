@@ -27,11 +27,9 @@ public class StartCraftingItemPacket {
     public static void handle(StartCraftingItemPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() ->{
             if(ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT){
-                BteMobsMod.LOGGER.debug("Entro al pack.");
                 assert Minecraft.getInstance().level!=null;
                 Entity entity = Minecraft.getInstance().level.getEntity(msg.id);
                 if(entity instanceof ItemPart part){
-                    BteMobsMod.LOGGER.debug("se seteo el item nuevo");
                     part.item=msg.result;
                 }
             }else {

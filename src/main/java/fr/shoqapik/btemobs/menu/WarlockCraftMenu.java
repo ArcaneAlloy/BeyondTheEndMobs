@@ -3,121 +3,120 @@ package fr.shoqapik.btemobs.menu;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;
+import fr.shoqapik.btemobs.packets.PlaceGhostRecipePacket;
+import fr.shoqapik.btemobs.recipe.WarlockPotionRecipe;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+
 import java.util.List;
 import java.util.Optional;
 
-public class WarlockCraftMenu extends BteAbstractCraftMenu {
+public class WarlockCraftMenu extends AbstractContainerMenu {
+    public SimpleContainer craftSlots;
 
     protected BteAbstractCraftContainer baseSlots;
-    protected ResultContainer resultSlots;
+    public ResultContainer resultSlots;
     public final DataSlot experience;
-
+    public final Level level;
     public Optional<? extends Recipe<?>> clickedRecipe = Optional.empty();
+    public final int entityId;
 
     public WarlockCraftMenu(int id, Inventory inventory, int entityId) {
-        super(BteMobsContainers.WARLOCK_CRAFT_MENU.get(), id, inventory, entityId, 4, 1, 5);
-
+        super(BteMobsContainers.WARLOCK_CRAFT_MENU.get(),id);
+        this.initCraftingSlot();
         this.experience = DataSlot.standalone();
         this.addDataSlot(this.experience);
-
+        this.entityId = entityId;
         this.addSlotListener(new ContainerListener() {
             @Override
             public void slotChanged(AbstractContainerMenu menu, int i, ItemStack itemStack) {
-                if(player.level.isClientSide) return;
                 if(menu != WarlockCraftMenu.this) return;
-                if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
-                List<Recipe> recipes = getCraftableRecipes((ServerPlayer)player);
-                if(recipes.isEmpty()) {
-                    WarlockCraftMenu.this.resultSlots.setItem(0, ItemStack.EMPTY);
-                    WarlockCraftMenu.this.experience.set(0);
-                    WarlockCraftMenu.this.experience.set(0);
-                    return;
-                }
-                Recipe<?> recipe = recipes.get(0);
-                if (clickedRecipe.isPresent() && recipes.contains(clickedRecipe.get())) {
-                    recipe = clickedRecipe.get();
-                }
-                ItemStack result = assembleResult(recipe);
-                WarlockCraftMenu.this.resultSlots.setItem(0, result);
-                if(recipes.get(0) instanceof WarlockRecipe && !result.isEmpty()) {
-                    WarlockCraftMenu.this.experience.set(((WarlockRecipe)recipes.get(0)).getExperience());
-                } else {
-                    WarlockCraftMenu.this.experience.set(0);
+                if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots
+                        && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
+                Optional<WarlockRecipe> optional = WarlockCraftMenu.this.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
+                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()){
+                    WarlockCraftMenu.this.clickedRecipe = optional;
+                    WarlockCraftMenu.this.experience.set(optional.get().getExperience());
+                    menu.getSlot(4).set(optional.get().assemble(WarlockCraftMenu.this.getTotalContainer()));
+                }else {
+                    WarlockCraftMenu.this.clickedRecipe = null;
+                    menu.getSlot(4).set(ItemStack.EMPTY);
                 }
             }
 
             @Override
             public void dataChanged(AbstractContainerMenu abstractContainerMenu, int i, int i1) {}
         });
-    }
 
-    @Override
+        this.level = inventory.player.level;
+        for(int k = 0; k < 3; ++k) {
+            for(int i1 = 0; i1 < 9; ++i1) {
+                this.addSlot(new Slot(inventory, i1 + k * 9 + 9, 161 + i1 * 18, 84 + k * 18));
+            }
+        }
+
+        for(int l = 0; l < 9; ++l) {
+            this.addSlot(new Slot(inventory, l, 161 + l * 18, 142));
+        }
+    }
     public void initCraftingSlot() {
+        craftSlots = new SimpleContainer(3);
         baseSlots = new BteAbstractCraftContainer(this, 1, 1, 1);
         resultSlots = new ResultContainer();
-
         // X: 11 PRIMEIRA | 29 SEGUNDA | 47 TERCEIRA | 90 QUARTA | 148 QUINTA (RESULT)
         // Y: 25 PRIMEIRA
-        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 11, 25));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 29, 25));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 47, 25));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 164, 25));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 182, 25));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 200, 25));
 
-        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 90, 25));
+        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 243, 25));
 
-        this.addSlot(new Slot(this.resultSlots, 0, 148, 25) {
+        this.addSlot(new Slot(this.resultSlots, 0, 301, 25) {
             public boolean mayPlace(ItemStack itemStack) {
                 return false;
             }
 
             public boolean mayPickup(Player player) {
-                if(player.level.isClientSide) return false;
-                List<Recipe> recipes = getCraftableRecipes((ServerPlayer)player);
-                if(recipes.isEmpty()) return false;
-                return hasRequirementsForCraft(recipes.get(0));
+                return (player.getAbilities().instabuild || player.experienceLevel >= WarlockCraftMenu.this.experience.get()) && WarlockCraftMenu.this.experience.get() > 0;
             }
 
             public void onTake(Player player, ItemStack itemStack) {
-                if(player.level.isClientSide) return;
                 WarlockCraftMenu.this.baseSlots.getItem(0).shrink(1);
-                craftItemServer((ServerPlayer) player, WarlockCraftMenu.this.clickedRecipe);
+                for (int i = 0 ; i < WarlockCraftMenu.this.craftSlots.getContainerSize() ; i++){
+                    ItemStack stack = WarlockCraftMenu.this.craftSlots.getItem(i);
+                    if(!stack.isEmpty()){
+                        stack.shrink(1);
+                    }
+                }
+                player.experienceLevel-=WarlockCraftMenu.this.experience.get();
                 WarlockCraftMenu.this.experience.set(0);
                 WarlockCraftMenu.this.clickedRecipe = Optional.empty();
             }
         });
     }
-
-    @Override
-    public List<RecipeType<? extends BteAbstractRecipe>> getRecipeTypes() {
-        return List.of(BteMobsRecipeTypes.WARLOCK_RECIPE.get());
+    public SimpleContainer getTotalContainer (){
+        return new SimpleContainer(this.craftSlots.getItem(0), this.craftSlots.getItem(1), this.craftSlots.getItem(2), this.baseSlots.getItem(0));
     }
 
-    @Override
-    public RecipeBookType getRecipeBookType() {
-        return BteMobsMod.WARLOCK;
+    public int getEntityId(){
+        return this.entityId;
     }
 
-    @Override
-    public boolean hasRequirementsForCraft(Recipe<?> recipe) {
-        if(recipe instanceof WarlockRecipe) {
-            return player.experienceLevel >= ((WarlockRecipe) recipe).getExperience();
-        } else {
-            return true;
-        }
-    }
-
-    @Override
-    public ItemStack assembleResult(Recipe recipe) {
+    public ItemStack assemble(Recipe recipe) {
         if(recipe instanceof WarlockRecipe) {
             WarlockRecipe warlockRecipe = (WarlockRecipe) recipe;
             ItemStack base = this.baseSlots.getItem(0).copy();
@@ -126,14 +125,83 @@ public class WarlockCraftMenu extends BteAbstractCraftMenu {
             base.enchant(warlockRecipe.getEnchantment(), warlockRecipe.getLevel());
             return base;
         }
-        return super.assembleResult(recipe);
+        return null;
     }
 
     @Override
-    public void placeResult(Recipe<?> recipe, ItemStack result) {
-        if(recipe instanceof WarlockRecipe) {
-            WarlockRecipe warlockRecipe = (WarlockRecipe) recipe;
-            player.giveExperienceLevels(-warlockRecipe.getExperience());
+    public void removed(Player pPlayer) {
+        super.removed(pPlayer);
+        clearContainer(pPlayer,craftSlots);
+        clearContainer(pPlayer,baseSlots);
+    }
+
+
+    public boolean recipeMatches(WarlockRecipe recipe){
+        return recipe.matches(craftSlots,level);
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean stillValid(Player pPlayer) {
+        return true;
+    }
+
+    public void placeRecipe(ServerPlayer player, ItemStack item) {
+        Optional<WarlockRecipe> optionalRecipe = player.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE .get()).stream().filter(e->{
+            return EnchantmentHelper.getTagEnchantmentLevel(e.getEnchantment(),item) == e.getLevel();
+        }).findFirst();
+        for(int i = 0; i < 3; i++){
+            ItemStack slot = craftSlots.getItem(i);
+            if(!slot.isEmpty()){
+                player.getInventory().add(slot);
+                craftSlots.setItem(i,ItemStack.EMPTY);
+            }
+        }
+
+        if(optionalRecipe.isPresent()){
+            WarlockRecipe recipe=optionalRecipe.get();
+            if(recipe.hasItems(player)){
+                int index = 0;
+                for(ItemStack requieredItem: recipe.getRequiredItems().getItems()){
+                    int removed = 0;
+                    ItemStack placeResult = null;
+                    for(ItemStack stack : player.getInventory().items){
+                        if(stack.getItem() == requieredItem.getItem()){
+
+                            if(removed < requieredItem.getCount()) {
+                                boolean finish = false;
+                                int toRemove = requieredItem.getCount() - removed;
+                                if (toRemove > stack.getCount()){
+                                    toRemove = stack.getCount();
+                                }else {
+                                    finish = true;
+                                    placeResult = stack.copy();
+                                    placeResult.setCount(removed==0 ? 1 : removed);
+                                }
+                                stack.shrink(toRemove);
+                                removed += toRemove;
+                                if(finish){
+                                    break;
+                                }
+                            }else {
+                                placeResult = stack.copy();
+                                placeResult.setCount(removed==0 ? 1 : removed);
+                                break;
+                            }
+
+                        }
+                    }
+                    this.craftSlots.setItem(index,placeResult!=null ? placeResult : ItemStack.EMPTY);
+                    this.slotsChanged(this.craftSlots);
+                    index ++;
+                }
+            }else {
+                BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
+            }
         }
     }
 }

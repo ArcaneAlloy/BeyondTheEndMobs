@@ -27,9 +27,6 @@ public class ModClientEvents {
         registerBookCategories(RecipeBookType.create("BLACKSMITH"),BteNpcType.BLACKSMITH, List.of(RecipeBookCategories.SMITHING), event);
         registerRecipeCategoryLookups(BteNpcType.BLACKSMITH, List.of(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get(), BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()), event);
 
-        registerBookCategories(BteMobsMod.WARLOCK,BteNpcType.WARLOCK, List.of(), event);
-        registerRecipeCategoryLookups(BteNpcType.WARLOCK, List.of(BteMobsRecipeTypes.WARLOCK_RECIPE.get()), event);
-
     }
     @SubscribeEvent
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -52,7 +49,6 @@ public class ModClientEvents {
         for (RecipeType<?> recipeType : recipeTypes) {
             event.registerRecipeCategoryFinder(recipeType, (recipe) -> {
                 if(recipe instanceof BteAbstractRecipe) {
-                    if(recipe instanceof WarlockRecipe) System.out.println("REGISTERING FINDER FOR " + recipe.getId().toString());
                     return RecipeBookCategories.valueOf(npcType.name() + "_" + ((BteAbstractRecipe)recipe).getCategory().name());
                 }
 

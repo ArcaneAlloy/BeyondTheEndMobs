@@ -136,7 +136,7 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
         return animationController;
     }
 
-    public void openCraftGui(ServerPlayer player){
+    public void openPotionGui(ServerPlayer player){
         this.openMenu(this,player);
     }
 

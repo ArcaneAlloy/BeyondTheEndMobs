@@ -3,11 +3,12 @@
   "category": "ALL",
   "enchantment": "minecraft:efficiency",
   "texture": "bte_mobs:textures/enchantments/efficiency_2.png",
-  "eyes" : 2,
-  "level": 2,
+  "eyes" : 5,
+  "level": 3,
   "experience": 10,
   "ingredients": [
     { "item": "minecraft:diamond_pickaxe" },
+    { "item": "minecraft:lapis_lazuli" },
     { "item": "minecraft:lapis_lazuli" }
   ]
 }

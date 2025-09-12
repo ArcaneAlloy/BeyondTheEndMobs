@@ -4,6 +4,7 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.network.IContainerFactory;
@@ -21,7 +22,7 @@ public class BteMobsContainers {
             .register("blacksmith_repair", () -> new MenuType<>((id, inventory) -> new BlacksmithRepairMenu(id, inventory)));
 
     public static final RegistryObject<MenuType<WarlockCraftMenu>> WARLOCK_CRAFT_MENU = CONTAINERS
-            .register("warlock_craft", () -> new MenuType<>((id, inventory) -> new WarlockCraftMenu(id, inventory, 0)));
+            .register("warlock_craft", () -> new MenuType<>((id, inventory) -> new WarlockCraftMenu(id, inventory, -1)));
 
     public static final RegistryObject<MenuType<TableExplorerMenu>> EXPLORER_TABLE_MENU = registerMenuType(TableExplorerMenu::new,"explorer_table_menu");
     public static final RegistryObject<MenuType<DruidMenu>> DRUID_MENU = registerMenuType(DruidMenu::new,"druid_menu");

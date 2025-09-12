@@ -3,8 +3,7 @@
   "category": "ALL",
   "enchantment": "minecraft:efficiency",
   "texture": "bte_mobs:textures/enchantments/efficiency_2.png",
-  "eyes" : 2,
-  "level": 2,
+  "level": 1,
   "experience": 10,
   "ingredients": [
     { "item": "minecraft:diamond_pickaxe" },
