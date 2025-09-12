@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:crocodile_scute",
+      "count": 8
+    }
+  ],
+  "result": {
+    "item": "alexsmobs:crocodile_chestplate"
+  }
+}

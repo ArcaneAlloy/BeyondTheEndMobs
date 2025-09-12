@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 5,
+  "base": {
+    "item": "minecraft:diamond_leggings"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_wither_skeleton_limb",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_wither_skeleton_pelvis",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "mutantmore:mutant_wither_skeleton_leggings"
+  }
+}

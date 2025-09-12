@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 4,
+  "base": {
+    "item": "dungeons_gear:soul_fist"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:ender_guardian_arm",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "cataclysm:gauntlet_of_guard"
+  }
+}

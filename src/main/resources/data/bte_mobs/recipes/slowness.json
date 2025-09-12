@@ -3,6 +3,6 @@
   "potion_effect": "minecraft:slowness",
   "tier": 1,
   "ingredient": {
-    "item": "minecraft:compass"
+    "item": "minecraft:soul_sand"
   }
 }

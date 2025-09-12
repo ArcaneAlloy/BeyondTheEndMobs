@@ -1,0 +1,7 @@
+{
+  "title": "Scrounger",
+  "unlockLevel": "OVERWORLD",
+  "entityId" : "illagerrevolutionmod:scrounger",
+  "description": "The Scrounger can be found in a Raid.\n\nThey can be tamed by feeding them enough spider eyes if no Beast Tamers are around.\n\nOnce tamed they are allowed to being equipped with a Scrounger Pouch to carry potions.",
+  "extraYRot" : 0
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:leather",
+      "count": 8
+    }
+  ],
+  "result": {
+    "item": "minecraft:leather_chestplate"
+  }
+}

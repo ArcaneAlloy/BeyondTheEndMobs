@@ -1,0 +1,17 @@
+{
+  "type": "bte_mobs:explorer_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "count": 4
+    },
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "beyondtheendcompass:compass_dungeons_arise_coliseum"
+  }
+}

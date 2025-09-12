@@ -1,0 +1,25 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:moose_antler",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:string",
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "alexsmobs:moose_headgear"
+  }
+}

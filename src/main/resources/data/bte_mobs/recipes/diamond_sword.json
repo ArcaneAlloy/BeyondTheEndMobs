@@ -1,17 +1,17 @@
 {
-  "type": "bte_mobs:explorer_recipe",
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 3,
+  "base": {
+    "item": "minecraft:iron_sword"
+  },
   "ingredients": [
     {
-      "item": "minecraft:gold_ingot",
-      "count": 4
-    },
-    {
-      "item": "minecraft:stick",
-      "count": 1
-
+      "type": "bte_mobs:item",
+      "item": "minecraft:diamond",
+      "count": 2
     }
   ],
-  "tier": 1,
   "result": {
     "item": "minecraft:diamond_sword"
   }

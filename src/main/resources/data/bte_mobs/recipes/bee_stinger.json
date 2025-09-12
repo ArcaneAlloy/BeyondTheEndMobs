@@ -1,0 +1,28 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 3,
+    "base": {
+      "item": "dungeons_gear:rapier"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:honey_block",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:honeycomb_block",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:gold_ingot",
+        "count": 3
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:bee_stinger"
+    }
+  }

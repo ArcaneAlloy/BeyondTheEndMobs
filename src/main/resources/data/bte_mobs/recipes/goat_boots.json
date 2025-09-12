@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 2,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:goat_hide",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:goat_boots"
+  }
+}

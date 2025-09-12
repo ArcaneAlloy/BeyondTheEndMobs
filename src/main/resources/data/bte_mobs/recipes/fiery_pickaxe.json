@@ -1,0 +1,18 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "OTHERS",
+    "tier": 4,
+    "base": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "twilightforest:fiery_blood",
+        "count": 3
+      }
+    ],
+    "result": {
+      "item": "twilightforest:fiery_pickaxe"
+    }
+  }

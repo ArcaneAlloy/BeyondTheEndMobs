@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 4,
+  "base": {
+    "item": "minecraft:netherite_sword"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_wither_skeleton_limb",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_wither_skeleton_rib",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "mutantmore:withered_scimitar"
+  }
+}

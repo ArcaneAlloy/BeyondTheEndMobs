@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 2,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "upgrade_aquatic:thrasher_tooth",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "upgrade_aquatic:prismarine_rod",
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "minecraft:trident"
+  }
+}

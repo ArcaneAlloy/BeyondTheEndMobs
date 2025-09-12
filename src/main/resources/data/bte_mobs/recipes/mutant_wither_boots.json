@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 5,
+  "base": {
+    "item": "minecraft:diamond_boots"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_wither_skeleton_limb",
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "mutantmore:mutant_wither_skeleton_boots"
+  }
+}

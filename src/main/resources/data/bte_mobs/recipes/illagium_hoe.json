@@ -1,0 +1,18 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "OTHERS",
+    "tier": 3,
+    "base": {
+      "item": "minecraft:diamond_hoe"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "illagerrevolutionmod:illagium",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "illagerrevolutionmod:illagium_hoe"
+    }
+  }

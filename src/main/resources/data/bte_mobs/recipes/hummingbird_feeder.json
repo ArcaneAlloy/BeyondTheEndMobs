@@ -1,0 +1,21 @@
+ {
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:glass_bottle",
+      "count": 1
+    },
+    {
+      "item": "minecraft:sunflower",
+      "count": 2
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "alexsmobs:hummingbird_feeder"
+  }
+}

@@ -1,8 +1,0 @@
-{
-  "title": "Cow",
-  "unlockLevel": "OVERWORLD",
-  "entityId" : "minecraft:cow",
-  "description": "Es una vaca",
-  "extraYRot" : 0
-
-}

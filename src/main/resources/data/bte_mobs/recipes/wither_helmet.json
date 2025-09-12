@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 2,
+  "base": {
+    "item": "dungeons_gear:grim_helmet"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "quark:black_corundum_cluster",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:wither_helmet"
+  }
+}

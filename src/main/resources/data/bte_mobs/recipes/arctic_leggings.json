@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 3,
+  "base": {
+    "item": "minecraft:iron_leggings"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "twilightforest:arctic_fur",
+      "count": 7
+    }
+  ],
+  "result": {
+    "item": "twilightforest:arctic_leggings"
+  }
+}

@@ -1,20 +1,19 @@
 {
-  "type": "bte_mobs:explorer_recipe",
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 2,
   "ingredients": [
     {
+      "type": "bte_mobs:item",
       "item": "minecraft:iron_ingot",
       "count": 2
     },
     {
+      "type": "bte_mobs:item",
       "item": "minecraft:stick",
-      "count": 2
-    },
-    {
-      "item": "minecraft:gold_ingot",
       "count": 1
     }
   ],
-  "tier": 1,
   "result": {
     "item": "minecraft:iron_sword"
   }
