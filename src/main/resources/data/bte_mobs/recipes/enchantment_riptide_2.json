@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:riptide",
+  "texture": "bte_mobs:textures/enchantments/riptide_2.png",
+  "eyes": 4,
+  "level": 2,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:prismarine_crystals",
+      "count": 5
+    }
+  ]
+}

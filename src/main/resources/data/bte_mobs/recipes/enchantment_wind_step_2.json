@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:wind_step",
+  "texture": "bte_mobs:textures/enchantments/wind_step_2.png",
+  "eyes": 13,
+  "level": 2,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "alexsmobs:gazelle_horn",
+      "count": 13
+    }
+  ]
+}

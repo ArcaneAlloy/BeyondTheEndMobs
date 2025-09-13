@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:fire_focus",
+  "texture": "bte_mobs:textures/enchantments/fire_focus_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:blaze_powder",
+      "count": 13
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 1
+    }
+  ]
+}

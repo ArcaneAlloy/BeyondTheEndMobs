@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:water_aspect",
+  "texture": "bte_mobs:textures/enchantments/water_aspect_2.png",
+  "eyes": 4,
+  "level": 2,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:sponge",
+      "count": 3
+    }
+  ]
+}

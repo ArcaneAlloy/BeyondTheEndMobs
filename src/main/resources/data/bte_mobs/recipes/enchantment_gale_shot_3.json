@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:gale_shot",
+  "texture": "bte_mobs:textures/enchantments/gale_shot_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "quark:rope",
+      "count": 8
+    }
+  ]
+}

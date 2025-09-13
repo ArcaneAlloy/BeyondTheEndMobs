@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:tempo_theft",
+  "texture": "bte_mobs:textures/enchantments/tempo_theft_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:soul_sand",
+      "count": 13
+    },
+    {
+      "item": "minecraft:sugar",
+      "count": 13
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:sweeping_edge",
+  "texture": "bte_mobs:textures/enchantments/sweeping_edge_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:clay_ball",
+      "count": 5
+    }
+  ]
+}

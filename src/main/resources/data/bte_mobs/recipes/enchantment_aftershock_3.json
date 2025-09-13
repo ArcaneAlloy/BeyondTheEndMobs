@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:aftershock",
+  "texture": "bte_mobs:textures/enchantments/aftershock_3.png",
+  "eyes": 10,
+  "level": 3,
+  "experience": 21,
+  "ingredients": [
+    {
+      "item": "minecraft:gunpowder",
+      "count": 21
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:surprise_gift",
+  "texture": "bte_mobs:textures/enchantments/surprise_gift_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:glistering_melon_slice",
+      "count": 5
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 3
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:fortune",
+  "texture": "bte_mobs:textures/enchantments/fortune_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "count": 3
+    },
+    {
+      "item": "minecraft:emerald",
+      "count": 2
+    }
+  ]
+}

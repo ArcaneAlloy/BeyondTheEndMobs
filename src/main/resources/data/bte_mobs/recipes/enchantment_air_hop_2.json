@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "airhop:air_hop",
+  "texture": "bte_mobs:textures/enchantments/air_hop_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "quark:bottled_cloud",
+      "count": 8
+    }
+  ]
+}
