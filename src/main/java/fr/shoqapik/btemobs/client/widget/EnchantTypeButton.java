@@ -13,9 +13,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +30,14 @@ public class EnchantTypeButton extends AbstractWidget {
 
     private Minecraft minecraft = Minecraft.getInstance();
     private Recipe<?> recipe;
+    private Enchantment enchantment;
     private ItemStack recipeStack;
-    public Map<String,Integer> requieredStacks = new HashMap<>();
     public Component typeEnchant = Component.empty();
     public boolean hasEnough = false;
-    public EnchantTypeButton(int x, int y) {
+    public EnchantTypeButton(int x, int y, Enchantment enchant) {
         super(x, y, 25, 25, CommonComponents.EMPTY);
-        this.recipeStack = new ItemStack(Items.ENCHANTED_BOOK);
+        this.enchantment = enchant;
+        this.recipeStack = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchant,0));
     }
 
     public EnchantTypeButton(int p_93629_, int p_93630_, int p_93631_, int p_93632_, Component p_93633_) {
@@ -79,11 +84,9 @@ public class EnchantTypeButton extends AbstractWidget {
     public List<Component> getTooltipText(Screen p_100478_) {
         ItemStack itemstack = this.recipeStack;
         List<Component> list = Lists.newArrayList(p_100478_.getTooltipFromItem(itemstack));
+        list.remove(enchantment.getFullname(0));
         if(list.size() > 1) list.add(Component.literal(""));
         list.add(getTypeEnchant());
-        if(hasEnough) {
-            list.add(Component.literal("Click to place inventory"));
-        }
         return list;
     }
 

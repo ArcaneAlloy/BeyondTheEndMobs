@@ -149,6 +149,7 @@ dependencies {
 
     runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation fg.deobf("curse.maven:nekos-enchanted-books-441114:6180640")
     implementation fg.deobf("curse.maven:stoneworks-852663:5049592")
     implementation fg.deobf("curse.maven:big-extras-forge-499948:4713352")
     implementation fg.deobf("curse.maven:cataclysmic-combat-880483:5790282")

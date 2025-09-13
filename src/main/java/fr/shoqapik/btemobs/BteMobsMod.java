@@ -110,7 +110,7 @@ public class BteMobsMod {
         List<WarlockRecipe> recipes = getWarlockRecipe();
         for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS.getValues()){
             if(recipes.stream().anyMatch(warlockRecipe -> warlockRecipe.getEnchantment()==enchantment)){
-                types.add(new EnchantType(Component.translatable(enchantment.getDescriptionId())));
+                types.add(new EnchantType(Component.translatable(enchantment.getDescriptionId()),enchantment));
             }
         }
         return types;

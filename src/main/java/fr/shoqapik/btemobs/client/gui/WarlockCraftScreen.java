@@ -125,7 +125,7 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
             enchantTypes = BteMobsMod.getEnchantType();
             for(int index = page * 20; index < (page+1) * 20; ++index) {
                 if(index >= enchantTypes.size()) break;
-                EnchantTypeButton button = new EnchantTypeButton(i+11, j+31);
+                EnchantTypeButton button = new EnchantTypeButton(i+11, j+31,enchantTypes.get(index).enchantment());
                 button.typeEnchant = enchantTypes.get(index).name();
                 int moduloIndex = index % 20;
                 button.setPosition(i + 6 + 25 * (moduloIndex % 5), j + 31 + 25 * (moduloIndex / 5));

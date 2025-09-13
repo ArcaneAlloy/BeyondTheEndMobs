@@ -18,12 +18,14 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -73,9 +75,7 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
 
     @Override
     public ItemStack getResultItem() {
-        ItemStack result = new ItemStack(Items.ENCHANTED_BOOK);
-        result.enchant(enchantment, level);
-        result.getOrCreateTag().putString("texture", this.texture.toString());
+        ItemStack result = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment,level));
         return result;
     }
 
@@ -96,17 +96,23 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
     @Override
     public ItemStack assemble(SimpleContainer pContainer) {
         ItemStack result = pContainer.getItem(3).is(Items.BOOK) ? new ItemStack(Items.ENCHANTED_BOOK) : pContainer.getItem(3).copy();
-        int oldLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment,result);
-        if(oldLevel>level){
-            return ItemStack.EMPTY;
-        }else if(oldLevel>0){
-            CompoundTag tag = getTagEnchantment(enchantment,result);
-            if(tag!=null){
-                EnchantmentHelper.setEnchantmentLevel(tag,level);
-            }
+        if (result.is(Items.ENCHANTED_BOOK)){
+            EnchantedBookItem.addEnchantment(result,new EnchantmentInstance(enchantment,level));
         }else {
-            result.enchant(enchantment, level);
+            int oldLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment,result);
+
+            if(oldLevel>level){
+                return ItemStack.EMPTY;
+            }else if(oldLevel>0){
+                CompoundTag tag = getTagEnchantment(enchantment,result);
+                if(tag!=null){
+                    EnchantmentHelper.setEnchantmentLevel(tag,level);
+                }
+            }else {
+                result.enchant(enchantment, level);
+            }
         }
+
         return result;
     }
     public static CompoundTag getTagEnchantment(Enchantment pEnchantment, ItemStack pStack) {

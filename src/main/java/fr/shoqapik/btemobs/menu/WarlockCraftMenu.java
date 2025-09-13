@@ -50,7 +50,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                 if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots
                         && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
                 Optional<WarlockRecipe> optional = WarlockCraftMenu.this.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
-                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty() && optional.get().getEnchantment().canEnchant(baseSlots.getItem(0)) && baseSlots.getItem(0).getItem().isEnchantable(baseSlots.getItem(0))){
+                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty() && (optional.get().getEnchantment().canEnchant(baseSlots.getItem(0)) || baseSlots.getItem(0).is(Items.BOOK)) || baseSlots.getItem(0).is(Items.ENCHANTED_BOOK)){
                     WarlockCraftMenu.this.clickedRecipe = optional;
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
                     menu.getSlot(4).set(optional.get().assemble(WarlockCraftMenu.this.getTotalContainer()));
