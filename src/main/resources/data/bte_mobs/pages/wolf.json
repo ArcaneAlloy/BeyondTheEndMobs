@@ -2,6 +2,6 @@
   "title": "Wolf",
   "unlockLevel": "OVERWORLD",
   "entityId" : "minecraft:wolf",
-  "description": "A tamed Wolf can be equipped with armor of different levels: Leather, Gold, Iron, Diamond and Netherite.",
+  "description": "A Wolf can be tamed feeding it with\nBones.\n\nA tamed Wolf can be equipped with armor of different levels: Leather, Gold, Iron, Diamond and Netherite.",
   "extraYRot" : 0
 }

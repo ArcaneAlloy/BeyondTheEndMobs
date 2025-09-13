@@ -2,6 +2,6 @@
   "title": "Crimson M. Larva",
   "unlockLevel": "NETHER",
   "entityId" : "alexsmobs:crimson_mosquito",
-  "description": "Crimson Mosquito Larva may be dropped by a Crimson Mosquito on death.\n\nThey can be used to tamed Warped Toads or transform Stradpoles to Straddlers.",
+  "description": "Crimson Mosquito Larva may be \ndropped by a Crimson Mosquito on\ndeath.\n\nThey can be used to tamed Warped Toads or transform Stradpoles to Straddlers.",
   "extraYRot" : 0
 }
