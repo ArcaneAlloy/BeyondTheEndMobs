@@ -17,11 +17,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,16 +97,30 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
             }
 
             public void onTake(Player player, ItemStack itemStack) {
-                WarlockCraftMenu.this.baseSlots.getItem(0).shrink(1);
-                for (int i = 0 ; i < WarlockCraftMenu.this.craftSlots.getContainerSize() ; i++){
-                    ItemStack stack = WarlockCraftMenu.this.craftSlots.getItem(i);
-                    if(!stack.isEmpty()){
-                        stack.shrink(1);
+                if(WarlockCraftMenu.this.clickedRecipe.isPresent() && WarlockCraftMenu.this.clickedRecipe.get() instanceof WarlockRecipe recipe){
+                    WarlockCraftMenu.this.baseSlots.getItem(0).shrink(1);
+                    for (int i = 0 ; i < WarlockCraftMenu.this.craftSlots.getContainerSize() ; i++){
+                        ItemStack stack = WarlockCraftMenu.this.craftSlots.getItem(i);
+                        ItemStack required = getRequiredItem(recipe.requiredItem,stack);
+                        if(!stack.isEmpty() && !required.isEmpty()){
+                            stack.shrink(required.getCount());
+                        }
+                    }
+                    player.experienceLevel-=WarlockCraftMenu.this.experience.get();
+                    WarlockCraftMenu.this.experience.set(0);
+                    WarlockCraftMenu.this.clickedRecipe = Optional.empty();
+                }
+
+            }
+
+            public ItemStack getRequiredItem(Ingredient ingredient , ItemStack stack){
+                for (int i = 0 ; i<ingredient.getItems().length ; i++){
+                    ItemStack stack1 = ingredient.getItems()[i];
+                    if(stack1.getItem() == stack.getItem()){
+                        return stack1;
                     }
                 }
-                player.experienceLevel-=WarlockCraftMenu.this.experience.get();
-                WarlockCraftMenu.this.experience.set(0);
-                WarlockCraftMenu.this.clickedRecipe = Optional.empty();
+                return ItemStack.EMPTY;
             }
         });
     }
