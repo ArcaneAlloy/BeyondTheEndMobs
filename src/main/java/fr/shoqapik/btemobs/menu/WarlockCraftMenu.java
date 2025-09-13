@@ -48,7 +48,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                 if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots
                         && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
                 Optional<WarlockRecipe> optional = WarlockCraftMenu.this.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
-                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()){
+                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty() && optional.get().getEnchantment().canEnchant(baseSlots.getItem(0)) && baseSlots.getItem(0).getItem().isEnchantable(baseSlots.getItem(0))){
                     WarlockCraftMenu.this.clickedRecipe = optional;
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
                     menu.getSlot(4).set(optional.get().assemble(WarlockCraftMenu.this.getTotalContainer()));
@@ -171,7 +171,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                     ItemStack placeResult = null;
                     for(ItemStack stack : player.getInventory().items){
                         if(stack.getItem() == requieredItem.getItem()){
-
+                            BteMobsMod.LOGGER.debug("Count :"+requieredItem.getItem()+" "+requieredItem.getCount());
                             if(removed < requieredItem.getCount()) {
                                 boolean finish = false;
                                 int toRemove = requieredItem.getCount() - removed;
@@ -180,7 +180,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                                 }else {
                                     finish = true;
                                     placeResult = stack.copy();
-                                    placeResult.setCount(removed==0 ? 1 : removed);
+                                    placeResult.setCount(requieredItem.getCount());
                                 }
                                 stack.shrink(toRemove);
                                 removed += toRemove;
@@ -189,7 +189,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                                 }
                             }else {
                                 placeResult = stack.copy();
-                                placeResult.setCount(removed==0 ? 1 : removed);
+                                placeResult.setCount(requieredItem.getCount());
                                 break;
                             }
 
