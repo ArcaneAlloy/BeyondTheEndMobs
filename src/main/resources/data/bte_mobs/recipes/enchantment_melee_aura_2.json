@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:melee_aura",
+  "texture": "bte_mobs:textures/enchantments/melee_aura_2.png",
+  "eyes": 10,
+  "level": 2,
+  "experience": 21,
+  "ingredients": [
+    {
+      "item": "minecraft:dragon_breath",
+      "count": 1
+    },
+    {
+      "item": "alexsmobs:dropbear_claw",
+      "count": 2
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:multi_roll",
+  "texture": "bte_mobs:textures/enchantments/multi_roll_1.png",
+  "eyes": 0,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "alexsmobs:rocky_shell",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:end_step",
+  "texture": "bte_mobs:textures/enchantments/end_step_1.png",
+  "eyes": 13,
+  "level": 1,
+  "experience": 21,
+  "ingredients": [
+    {
+      "item": "minecraft:ender_pearl",
+      "count": 3
+    }
+  ]
+}

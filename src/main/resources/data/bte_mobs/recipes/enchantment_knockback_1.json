@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:knockback",
+  "texture": "bte_mobs:textures/enchantments/knockback_1.png",
+  "eyes": 4,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:slime_ball",
+      "count": 3
+    }
+  ]
+}

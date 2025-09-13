@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:swiftfooted",
+  "texture": "bte_mobs:textures/enchantments/swiftfooted_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:sugar",
+      "count": 13
+    },
+    {
+      "item": "minecraft:rabbit_foot",
+      "count": 3
+    }
+  ]
+}

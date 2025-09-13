@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:thorns",
+  "texture": "bte_mobs:textures/enchantments/thorns_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:cactus",
+      "count": 3
+    }
+  ]
+}

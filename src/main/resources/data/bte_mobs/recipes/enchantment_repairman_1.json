@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "backpacked:repairman",
+  "texture": "bte_mobs:textures/enchantments/repairman_1.png",
+  "eyes": 4,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 32
+    },
+    {
+      "item": "minecraft:experience_bottle",
+      "count": 8
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:detonate",
+  "texture": "bte_mobs:textures/enchantments/detonate_1.png",
+  "eyes": 4,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    }
+  ]
+}

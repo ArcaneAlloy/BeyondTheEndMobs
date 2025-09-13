@@ -1,19 +1,19 @@
 {
   "type": "bte_mobs:warlock",
-  "category": "TOOLS",
+  "category": "ALL",
   "enchantment": "minecraft:efficiency",
+  "texture": "bte_mobs:textures/enchantments/efficiency_4.png",
+  "eyes": 10,
   "level": 4,
-  "experience": 10,
+  "experience": 13,
   "ingredients": [
     {
-      "type": "bte_mobs:item",
-      "item": "minecraft:gold_ingot",
-      "count": 4
+      "item": "minecraft:diamond",
+      "count": 5
     },
     {
-      "type": "bte_mobs:item",
-      "item": "minecraft:stick",
-      "count": 2
+      "item": "minecraft:gold_ingot",
+      "count": 8
     }
   ]
 }

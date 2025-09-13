@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:protection",
+  "texture": "bte_mobs:textures/enchantments/protection_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:fire_charge",
+      "count": 2
+    },
+    {
+      "item": "minecraft:arrow",
+      "count": 3
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    }
+  ]
+}

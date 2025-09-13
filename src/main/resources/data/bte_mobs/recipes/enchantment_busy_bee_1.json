@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:busy_bee",
+  "texture": "bte_mobs:textures/enchantments/busy_bee_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:honey_bottle",
+      "count": 3
+    }
+  ]
+}

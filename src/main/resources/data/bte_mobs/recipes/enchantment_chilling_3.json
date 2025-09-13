@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:chilling",
+  "texture": "bte_mobs:textures/enchantments/chilling_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:fermented_spider_eye",
+      "count": 8
+    }
+  ]
+}

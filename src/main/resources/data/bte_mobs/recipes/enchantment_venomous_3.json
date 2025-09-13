@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:venomous",
+  "texture": "bte_mobs:textures/enchantments/venomous_3.png",
+  "eyes": 10,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "alexsmobs:poison_bottle",
+      "count": 8
+    }
+  ]
+}

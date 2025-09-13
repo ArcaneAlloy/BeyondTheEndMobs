@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "illagerrevolutionmod:insight",
+  "texture": "bte_mobs:textures/enchantments/insight_4.png",
+  "eyes": 0,
+  "level": 4,
+  "experience": 21,
+  "ingredients": [
+    {
+      "item": "minecraft:blaze_powder",
+      "count": 8
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:enigma_resonator",
+  "texture": "bte_mobs:textures/enchantments/enigma_resonator_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "quark:soul_bead",
+      "count": 13
+    }
+  ]
+}

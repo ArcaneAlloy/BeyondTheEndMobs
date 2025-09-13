@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:wild_rage",
+  "texture": "bte_mobs:textures/enchantments/wild_rage_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "alexsmobs:bear_fur",
+      "count": 5
+    }
+  ]
+}

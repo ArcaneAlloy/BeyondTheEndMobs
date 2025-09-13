@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:cooldown",
+  "texture": "bte_mobs:textures/enchantments/cooldown_3.png",
+  "eyes": 0,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:skeleton_skull",
+      "count": 8
+    },
+    {
+      "item": "quark:diamond_heart",
+      "count": 3
+    }
+  ]
+}
