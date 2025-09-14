@@ -88,7 +88,7 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
         }
         if(this.isCrafting()){
             this.craftingTime--;
-            if(this.craftingTime==15){
+            if(this.craftingTime==10){
                 this.finishCrafting();
             }else if(this.craftingTime==0){
                 this.setCrafting(false);
