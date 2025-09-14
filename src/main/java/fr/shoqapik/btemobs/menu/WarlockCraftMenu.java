@@ -1,6 +1,7 @@
 package fr.shoqapik.btemobs.menu;
 
 import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.UnlockRecipe;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;
 import fr.shoqapik.btemobs.packets.PlaceGhostRecipePacket;
@@ -15,11 +16,13 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
@@ -168,7 +171,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
 
     public void placeRecipe(ServerPlayer player, ItemStack item) {
         Optional<WarlockRecipe> optionalRecipe = player.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE .get()).stream().filter(e->{
-            return EnchantmentHelper.getTagEnchantmentLevel(e.getEnchantment(),item) == e.getLevel();
+            return EnchantmentHelper.getEnchantmentLevel(UnlockRecipe.getEnchantTag(item,e.getEnchantment())) == e.getLevel();
         }).findFirst();
         for(int i = 0; i < 3; i++){
             ItemStack slot = craftSlots.getItem(i);
@@ -187,7 +190,6 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                     ItemStack placeResult = null;
                     for(ItemStack stack : player.getInventory().items){
                         if(stack.getItem() == requieredItem.getItem()){
-                            BteMobsMod.LOGGER.debug("Count :"+requieredItem.getItem()+" "+requieredItem.getCount());
                             if(removed < requieredItem.getCount()) {
                                 boolean finish = false;
                                 int toRemove = requieredItem.getCount() - removed;

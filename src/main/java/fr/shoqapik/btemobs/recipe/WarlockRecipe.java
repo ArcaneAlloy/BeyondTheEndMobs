@@ -75,8 +75,7 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
 
     @Override
     public ItemStack getResultItem() {
-        ItemStack result = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment,level));
-        return result;
+        return EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment,level));
     }
 
     @Override
@@ -144,6 +143,16 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
         }
 
         return countItemValid==this.requiredItem.getItems().length && countItemValid==slotFull;
+    }
+    @Override
+    public NonNullList<Ingredient> getIngredients(){
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+
+        for (ItemStack stack : this.requiredItem.getItems()) {
+            ingredients.add(Ingredient.of(stack));
+        }
+
+        return ingredients;
     }
     public boolean hasItems(Player player){
         int countItemValid=0;

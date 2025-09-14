@@ -88,7 +88,7 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
         }
         if(this.isCrafting()){
             this.craftingTime--;
-            if(this.craftingTime==40){
+            if(this.craftingTime==15){
                 this.finishCrafting();
             }else if(this.craftingTime==0){
                 this.setCrafting(false);
@@ -297,8 +297,9 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
                 state.getController().setAnimation(new AnimationBuilder().addAnimation(this.anim == IdleAnim.SIT_1 ? "sit" : "sit_two", ILoopType.EDefaultLoopTypes.LOOP));
             }
 
+            state.getController().transitionLengthTicks = 30;
             return PlayState.CONTINUE;
-        }));
+        })) ;
     }
 
     @Override

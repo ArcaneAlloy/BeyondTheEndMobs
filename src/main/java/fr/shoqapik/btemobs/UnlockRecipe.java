@@ -38,7 +38,7 @@ public class UnlockRecipe {
         }
         return false;
     }
-    public CompoundTag getEnchantTag(ItemStack stack, Enchantment enchantment){
+    public static CompoundTag getEnchantTag(ItemStack stack, Enchantment enchantment){
         ListTag tag = stack.getOrCreateTag().contains("StoredEnchantments") ? stack.getOrCreateTag().getList("StoredEnchantments",10) : null;
         if(tag!=null){
             ResourceLocation resourcelocation = EnchantmentHelper.getEnchantmentId(enchantment);

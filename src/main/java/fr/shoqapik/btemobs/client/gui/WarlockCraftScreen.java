@@ -9,9 +9,11 @@ import fr.shoqapik.btemobs.client.widget.EnchantTypeButton;
 import fr.shoqapik.btemobs.client.widget.RecipeButton;
 import fr.shoqapik.btemobs.client.widget.SmithStateSwitchingButton;
 import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
+import fr.shoqapik.btemobs.packets.PlaceGhostRecipePacket;
 import fr.shoqapik.btemobs.packets.PlaceItemRecipePacket;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.client.Minecraft;
@@ -39,7 +41,7 @@ import java.util.List;
 import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
 
 
-public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu> {
+public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu>  implements IGhostRecipe {
 
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/warlock_screen.png");
     private static final Component SEARCH_HINT = Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
@@ -104,6 +106,7 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
         this.filterButton.initTextureValues(152, 41, 28, 18, RECIPE_BOOK_LOCATION);
     }
     public void setupGhostRecipe(Recipe<?> pRecipe, List<Slot> pSlots) {
+        BteMobsMod.LOGGER.debug("Se esta colocando");
         this.ghostRecipe.setRecipe(pRecipe);
         for (int i = 0 ; i < pRecipe.getIngredients().size() ; i++){
             if(this.menu.craftSlots.getItem(i).isEmpty()){
@@ -217,6 +220,8 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
             categoryRecipes.remove(recipe);
         }*/
     }
+
+
     protected void sendUpdateSettings() {
         if (this.minecraft.getConnection() != null) {
             RecipeBookType recipebooktype = RecipeBookType.CRAFTING;
@@ -472,73 +477,5 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
             return true;
         }
         return super.charTyped(p_94683_, p_94684_);
-    }
-
-    public void renderExperience(PoseStack pPoseStack) {
-        Component component = Component.literal("Enchantment Cost: " + this.menu.experience.get());
-        int x = this.imageWidth - this.font.width(component) + 132;
-        int color = 8453920;
-        if(this.minecraft.player.experienceLevel < this.menu.experience.get()) {
-            color = 16736352;
-        }
-        this.font.drawShadow(pPoseStack, component, x, 98, color);
-    }
-
-    private static String toRoman(int input) {
-        if (input < 1 || input > 3999)
-            return "";
-        StringBuilder s = new StringBuilder();
-        while (input >= 1000) {
-            s.append("M");
-            input -= 1000;        }
-        while (input >= 900) {
-            s.append("CM");
-            input -= 900;
-        }
-        while (input >= 500) {
-            s.append("D");
-            input -= 500;
-        }
-        while (input >= 400) {
-            s.append("CD");
-            input -= 400;
-        }
-        while (input >= 100) {
-            s.append("C");
-            input -= 100;
-        }
-        while (input >= 90) {
-            s.append("XC");
-            input -= 90;
-        }
-        while (input >= 50) {
-            s.append("L");
-            input -= 50;
-        }
-        while (input >= 40) {
-            s.append("XL");
-            input -= 40;
-        }
-        while (input >= 10) {
-            s.append("X");
-            input -= 10;
-        }
-        while (input == 9) {
-            s.append("IX");
-            input -= 9;
-        }
-        while (input >= 5) {
-            s.append("V");
-            input -= 5;
-        }
-        while (input == 4) {
-            s.append("IV");
-            input -= 4;
-        }
-        while (input >= 1) {
-            s.append("I");
-            input -= 1;
-        }
-        return s.toString();
     }
 }
