@@ -1,9 +1,129 @@
 {
+  "warlock_presentation_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:warlock_presentation_0"
+    ]
+  },
+  "warlock_presentation_1": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:warlock_presentation_1"
+    ]
+  },
+  "warlock_presentation_2": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:warlock_presentation_2"
+    ]
+  },
+  "warlock_presentation_3": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:warlock_presentation_3"
+    ]
+  },
+  "warlock_tasking_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:warlock_tasking_0"
+    ]
+  },
+  "explorer_presentation_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:explorer_presentation_0"
+    ]
+  },
+  "explorer_presentation_1": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:explorer_presentation_1"
+    ]
+  },
+  "explorer_presentation_2": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:explorer_presentation_2"
+    ]
+  },
+  "explorer_presentation_3": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:explorer_presentation_3"
+    ]
+  },
+  "explorer_tasking_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:explorer_tasking_0"
+    ]
+  },
   "hammer": {
     "category" : "blocks",
     "subtitle" : "bte_mobs.hammer",
     "sounds": [
       "bte_mobs:hammer"
+    ]
+  },
+  "druid_presentation_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:druid_presentation_0"
+    ]
+  },
+  "druid_presentation_1": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:druid_presentation_1"
+    ]
+  },
+  "druid_presentation_2": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:druid_presentation_2"
+    ]
+  },
+  "druid_presentation_3": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:druid_presentation_3"
+    ]
+  },
+  "druid_tasking_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:druid_tasking_0"
+    ]
+  },
+  "blacksmith_presentation_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:blacksmith_presentation_0"
+    ]
+  },
+  "blacksmith_presentation_1": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:blacksmith_presentation_1"
+    ]
+  },
+  "blacksmith_presentation_2": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:blacksmith_presentation_2"
+    ]
+  },
+  "blacksmith_presentation_3": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:blacksmith_presentation_3"
+    ]
+  },
+  "blacksmith_tasking_0": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:blacksmith_tasking_0"
     ]
   }
 }
