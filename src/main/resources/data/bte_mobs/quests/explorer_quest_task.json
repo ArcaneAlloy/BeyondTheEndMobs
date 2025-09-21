@@ -2,7 +2,7 @@
   "entityId": "bte_mobs:explorer",
   "type": "TASKING",
   "dialogs": [
-    "What can I do for you?"
+    "Ey... Where do we go this time?"
   ],
   "answers": [
     {
@@ -10,7 +10,7 @@
       "action": "open_craft"
     },
     {
-      "formattedText": "Repair an item!",
+      "formattedText": "Guide me!",
       "action": "rumor"
     },
     {

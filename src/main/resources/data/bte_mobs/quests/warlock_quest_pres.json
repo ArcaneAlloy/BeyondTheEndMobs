@@ -1,11 +1,12 @@
 {
   "entityId": "bte_mobs:warlock",
-  "type": "PRESENTATION",
+  "type": "TASKING",
   "dialogs": [
-    "I cannot believe it! The great hero!",
-    "Hi! I'm Anna and I will be the one to provide you with the best gear known in the entire Overworld!",
-    "If you don't see it already im the blacksmith and I will craft, repair and upgrade all kind of weapons, tools and armor of your need",
-    "So good luck out there hero."
+    "Huh? Who's there? Oh, it's you—finally. Took you long enough, didn’t it?",
+    "I'm Noah, sorcerer and alchemist, at your service.",
+    "As you know, a new enemy threatens this reality, and you’ll need my help.",
+    "Bring me tomes of enchantment and the necessary materials, and I’ll enchant your equipment and brew concoctions for you.",
+    "Good luck out there… Hero…"
   ],
   "answers": [
     {
@@ -13,7 +14,7 @@
       "action": "open_craft"
     },
     {
-      "formattedText": "Alquimia",
+      "formattedText": "Brew a Potion!",
       "action": "potion"
     },
     {
