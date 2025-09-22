@@ -2,10 +2,10 @@
   "entityId": "bte_mobs:druid",
   "type": "PRESENTATION",
   "dialogs": [
-    "I cannot believe it! The great hero!",
-    "Hi! I'm Anna and I will be the one to provide you with the best gear known in the entire Overworld!",
-    "If you don't see it already im the blacksmith and I will craft, repair and upgrade all kind of weapons, tools and armor of your need",
-    "So good luck out there hero."
+    "Hmm...? Who are you...?",
+    "A Hero? I never met a hero before, but I guess you're the one I have to guide.",
+    "My name is Oriana, I am in charge of the balance and natural order, as well as the creatures that inhabit the universe.",
+    "Speak to me again, and I will reveal more about these creatures."
   ],
   "answers": [
     {
@@ -13,7 +13,7 @@
       "action": "open_craft"
     },
     {
-      "formattedText": "Repair an item!",
+      "formattedText": "Teach me!",
       "action": "rumor"
     },
     {

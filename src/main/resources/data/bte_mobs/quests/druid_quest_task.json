@@ -2,7 +2,7 @@
   "entityId": "bte_mobs:druid",
   "type": "TASKING",
   "dialogs": [
-    "What can I do for you?"
+    "Oh, I didn't see you. Need anything?"
   ],
   "answers": [
     {
@@ -10,7 +10,7 @@
       "action": "open_craft"
     },
     {
-      "formattedText": "Repair an item!",
+      "formattedText": "Teach me!",
       "action": "rumor"
     },
     {

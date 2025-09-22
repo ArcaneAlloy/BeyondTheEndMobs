@@ -2,7 +2,7 @@
   "entityId": "bte_mobs:warlock",
   "type": "TASKING",
   "dialogs": [
-    "What can I do for you?"
+    "Something of your need?"
   ],
   "answers": [
     {
@@ -10,7 +10,7 @@
       "action": "open_craft"
     },
     {
-      "formattedText": "Alquimia",
+      "formattedText": "Brew a Potion!",
       "action": "potion"
     },
     {
