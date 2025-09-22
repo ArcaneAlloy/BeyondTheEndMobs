@@ -144,6 +144,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     @Override
     public void tick() {
         super.tick();
+        this.setDeltaMovement(new Vec3(0,this.getDeltaMovement().y,0));
 
         if(this.items!=null){
             for(ItemPart part : this.items){

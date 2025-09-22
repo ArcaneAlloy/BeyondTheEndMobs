@@ -46,7 +46,6 @@ public class UnlockRecipe {
                 CompoundTag nbt = tag.getCompound(i);
                 ResourceLocation enchant = EnchantmentHelper.getEnchantmentId(nbt);
                 if(resourcelocation.equals(enchant)){
-                    BteMobsMod.LOGGER.debug("Enchant :"+nbt);
                     return nbt;
                 }
             }

@@ -22,6 +22,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.PlayState;
@@ -91,6 +92,8 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     @Override
     public void tick() {
         super.tick();
+        this.setDeltaMovement(new Vec3(0,this.getDeltaMovement().y,0));
+
         if(summonHandParticlesTick > 0) {
             Level level = this.level;
 

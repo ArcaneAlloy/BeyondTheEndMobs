@@ -76,6 +76,8 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     @Override
     public void tick() {
         super.tick();
+
+        this.setDeltaMovement(new Vec3(0,this.getDeltaMovement().y,0));
         if(this.animIdle>0){
             this.animIdle--;
             if(this.animIdle==0){
@@ -179,7 +181,7 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
             this.setAttachFace(Direction.SOUTH);
             BlockPos pos1=this.blockPosition().south();
             this.setTablePos(pos1);
-            this.setPos(Vec3.atCenterOf(pos1.north()));
+            this.setPos(Vec3.atCenterOf(pos1.north()).add(0,-0.25,0));
             p_21434_.getLevel().setBlock(pos1, state.setValue(ExplorerTableBlock.FACING,Direction.SOUTH),3);
             if(this.level.getBlockEntity(pos1) instanceof ExplorerTableBlockEntity tableBlock){
                 tableBlock.setData(0,this.getId());

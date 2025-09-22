@@ -24,7 +24,7 @@ public class ModClientEvents {
 
     @SubscribeEvent
     public static void onRegisterRecipeBookCategory(RegisterRecipeBookCategoriesEvent event) {
-        registerBookCategories(RecipeBookType.create("BLACKSMITH"),BteNpcType.BLACKSMITH, List.of(RecipeBookCategories.SMITHING), event);
+        registerBookCategories(RecipeBookType.create("BLACKSMITH"),BteNpcType.BLACKSMITH, List.of(), event);
         registerRecipeCategoryLookups(BteNpcType.BLACKSMITH, List.of(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get(), BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()), event);
 
     }

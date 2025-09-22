@@ -73,7 +73,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     protected void init() {
         super.init();
         this.book = minecraft.player.getRecipeBook();
-        this.categoryRecipes = this.minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get());
+        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get());
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
@@ -125,7 +125,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         int j = (this.height - 166) / 2;
         if(page < 0) page = 0;
         if(page * 20 > categoryRecipes.size()) page -= 1;
-        categoryRecipes =new ArrayList<>( this.minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
+        categoryRecipes =new ArrayList<>( BteMobsMod.getListRecipe(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
         removeLockedRecipes();
         if(!searchBox.getValue().isEmpty()){
             filterRecipes();

@@ -112,6 +112,9 @@ public class QuestDialogScreen extends Screen {
                             letterIndex = 0;
                             currentLine = "";
                         }
+                        if(currentDialogSound != null) {
+                            Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+                        }
                     }
             )));
 
@@ -207,6 +210,14 @@ public class QuestDialogScreen extends Screen {
             return super.mouseClicked(p_94695_, p_94696_, p_94697_);
         }
         return true;
+    }
+
+    @Override
+    public void removed() {
+        if(currentDialogSound != null) {
+            Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+        }
+        super.removed();
     }
 
     @Override

@@ -2,16 +2,20 @@ package fr.shoqapik.btemobs;
 
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Data that will be saved to the world in .nbt form
@@ -20,26 +24,39 @@ import java.util.Optional;
  *
  */
 public class ServerData extends SavedData {
-	private List<UnlockRecipe> recipes;
-	public List<UnlockRecipe> getStructureManager() {
+	private Map<RecipeType<?>,List<UnlockRecipe>> recipes;
+	public Map<RecipeType<?>,List<UnlockRecipe>> getRecipesManager() {
 		if (this.recipes == null) {
-			this.recipes = new ArrayList<>();
-
-			for(WarlockRecipe recipe : BteMobsMod.getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get())){
-				this.recipes.add(new UnlockRecipe(recipe,true));
+			Collection<RecipeType<?>> recipeTypes = ForgeRegistries.RECIPE_TYPES.getValues();
+			Map<RecipeType<?>,List<UnlockRecipe>> map = new HashMap<>();
+			for (RecipeType<?> type : recipeTypes){
+				List<UnlockRecipe> recipes = new ArrayList<>();
+				for(Object recipe : getRecipes(type)){
+					recipes.add(new UnlockRecipe((Recipe<?>) recipe,true));
+				}
+				map.put(type,recipes);
 			}
+			this.recipes = map;
 		}
 
 		return this.recipes;
 	}
+	@SuppressWarnings("unchecked")
+	public static List<Recipe<?>> getRecipes(RecipeType<?> type) {
+		return (List<Recipe<?>>) (List<?>)
+				BteMobsMod.getServer().getRecipeManager().getAllRecipesFor((RecipeType) type);
+	}
+	public List<UnlockRecipe> getUnlockRecipesForType(RecipeType<?> type){
+		return getRecipesManager().getOrDefault(type,new ArrayList<>());
+	}
 	public boolean isUnlock(Recipe<?> recipe){
-		Optional<UnlockRecipe> recipe1 = getStructureManager().stream().filter(e->e.recipe==recipe).findFirst();
+		Optional<UnlockRecipe> recipe1 = getUnlockRecipesForType(recipe.getType()).stream().filter(e->e.recipe==recipe).findFirst();
 
 		return recipe1.isPresent() && !recipe1.get().isLock && recipe1.get().wasFound;
 	}
 
 	public UnlockRecipe getUnlockRecipe(Recipe<?> recipe){
-		Optional<UnlockRecipe> recipe1 = getStructureManager().stream().filter(e->e.recipe==recipe).findFirst();
+		Optional<UnlockRecipe> recipe1 = getUnlockRecipesForType(recipe.getType()).stream().filter(e->e.recipe==recipe).findFirst();
 
 		return recipe1.orElse(null);
 	}
@@ -61,27 +78,44 @@ public class ServerData extends SavedData {
 	@Override
 	public CompoundTag save(CompoundTag data) {
 		ListTag listTag=new ListTag();
-		if(!getStructureManager().isEmpty()){
-			for (UnlockRecipe recipe : getStructureManager()){
-				listTag.add(recipe.savedData());
-			}
+		if(!getRecipesManager().isEmpty()){
+			CompoundTag nbt = new CompoundTag();
+			ListTag listRecipe = new ListTag();
+			getRecipesManager().forEach((key,list)->{
+				BteMobsMod.LOGGER.debug("Save type :"+key.toString());
+				nbt.putString("type",key.toString());
+				for (UnlockRecipe recipe : list){
+					listRecipe.add(recipe.savedData());
+				}
+				nbt.put("recipes",listRecipe);
+			});
+			listTag.add(nbt);
 		}
 		data.put("unlockRecipes",listTag);
 		return data;
 	}
 	public static ServerData load(CompoundTag data) {
 		ServerData created = new ServerData();
-		List<UnlockRecipe> list = new ArrayList<>();
+		Map<RecipeType<?>,List<UnlockRecipe>> map = new HashMap<>();
+
 		if(data.contains("unlockRecipes")){
-			CompoundTag tag = data.getCompound("unlockRecipes");
 			ListTag tags = data.getList("unlockRecipes",10);
 			for(int i = 0; i < tags.size() ; i++){
+				List<UnlockRecipe> list = new ArrayList<>();
 				CompoundTag nbt = tags.getCompound(i);
-				UnlockRecipe recipe = new UnlockRecipe(nbt);
-				list.add(recipe);
+				ListTag recipeData = nbt.getList("recipes",10);
+				RecipeType<?> type = ForgeRegistries.RECIPE_TYPES.getValue(new ResourceLocation(nbt.getString("type")));
+				BteMobsMod.LOGGER.debug("load type :"+type.toString());
+
+				for (int j = 0 ; j<recipeData.size() ; j++){
+					CompoundTag tag = recipeData.getCompound(j);
+					UnlockRecipe recipe = new UnlockRecipe(tag);
+					list.add(recipe);
+				}
+				map.put(type,list);
 			}
 		}
-		created.recipes = list;
+		created.recipes = map;
 		return created;
 	}
 
