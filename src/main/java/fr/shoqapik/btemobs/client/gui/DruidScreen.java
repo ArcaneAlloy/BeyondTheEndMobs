@@ -425,4 +425,9 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
        }
        return super.charTyped(p_94683_, p_94684_);
     }
+    @Override
+    public void removed() {
+        super.removed();
+        this.book.setBookSetting(RecipeBookType.CRAFTING,false,false);
+    }
 }

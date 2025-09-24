@@ -91,8 +91,9 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     }
     @Override
     public void tick() {
-        super.tick();
         this.setDeltaMovement(new Vec3(0,this.getDeltaMovement().y,0));
+
+        super.tick();
 
         if(summonHandParticlesTick > 0) {
             Level level = this.level;

@@ -79,6 +79,7 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
     protected void init() {
         super.init();
         this.book = minecraft.player.getRecipeBook();
+
         this.categoryRecipes = BteMobsMod.getWarlockRecipe();
         this.enchantTypes = BteMobsMod.getEnchantType();
         int i = (this.width - 147) / 2 - 86;
@@ -106,7 +107,6 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
         this.filterButton.initTextureValues(152, 41, 28, 18, RECIPE_BOOK_LOCATION);
     }
     public void setupGhostRecipe(Recipe<?> pRecipe, List<Slot> pSlots) {
-        BteMobsMod.LOGGER.debug("Se esta colocando");
         this.ghostRecipe.setRecipe(pRecipe);
         for (int i = 0 ; i < pRecipe.getIngredients().size() ; i++){
             if(this.menu.craftSlots.getItem(i).isEmpty()){
@@ -477,5 +477,11 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
             return true;
         }
         return super.charTyped(p_94683_, p_94684_);
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        this.book.setBookSetting(RecipeBookType.CRAFTING,false,false);
     }
 }

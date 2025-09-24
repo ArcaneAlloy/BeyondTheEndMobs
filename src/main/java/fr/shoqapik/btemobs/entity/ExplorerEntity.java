@@ -75,9 +75,10 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
 
     @Override
     public void tick() {
+        this.setDeltaMovement(new Vec3(0,this.getDeltaMovement().y,0));
+
         super.tick();
 
-        this.setDeltaMovement(new Vec3(0,this.getDeltaMovement().y,0));
         if(this.animIdle>0){
             this.animIdle--;
             if(this.animIdle==0){

@@ -92,7 +92,9 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
         this.backButton = new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true);
         this.backButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
         tabButtons.clear();
-        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL));
+        CategoryButton button = new CategoryButton(BteRecipeCategory.ALL);
+        button.active=true;
+        this.tabButtons.add(button);
         this.currentRecipe=null;
         refreshButtons();
         updateTabs();
@@ -392,5 +394,10 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
         this.ghostRecipe.setRecipe(pRecipe);
         this.ghostRecipe.addIngredient(Ingredient.of(Items.GLASS_BOTTLE),pSlots.get(2).x,pSlots.get(2).y);
         this.ghostRecipe.addIngredient(Ingredient.of(((WarlockPotionRecipe)pRecipe).getIngredientPrimary()),pSlots.get(3).x,pSlots.get(3).y);
+    }
+    @Override
+    public void removed() {
+        super.removed();
+        this.book.setBookSetting(RecipeBookType.CRAFTING,this.book.isFiltering(RecipeBookType.CRAFTING),false);
     }
 }

@@ -96,8 +96,8 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
 
     @Override
     public void tick() {
-        super.tick();
         this.setDeltaMovement(new Vec3(0,this.getDeltaMovement().y,0));
+        super.tick();
 
         if(workBlock == null || !(this.level.getBlockState(workBlock).getBlock() == getWorkBlock())) {
             workBlock = null;
