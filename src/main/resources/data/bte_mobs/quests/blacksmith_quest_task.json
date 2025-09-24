@@ -2,7 +2,7 @@
   "entityId": "bte_mobs:blacksmith",
   "type": "TASKING",
   "dialogs": [
-    "Heeeello hero! Do you have something new to work it?"
+    "You are back! What can I do for you this time?"
   ],
   "answers": [
     {
