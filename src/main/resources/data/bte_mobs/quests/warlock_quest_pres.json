@@ -1,7 +1,6 @@
 {
   "entityId": "bte_mobs:warlock",
   "type": "PRESENTATION",
-
   "dialogs": [
     "Huh? Who's there? Oh, it's you—finally. Took you long enough, didn’t it?",
     "I'm Noah, sorcerer and alchemist, at your service.",
