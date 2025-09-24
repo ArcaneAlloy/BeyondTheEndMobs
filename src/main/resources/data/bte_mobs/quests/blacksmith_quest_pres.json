@@ -2,10 +2,10 @@
   "entityId": "bte_mobs:blacksmith",
   "type": "PRESENTATION",
   "dialogs": [
-    "I cannot believe it! The great hero!",
-    "Hi! I'm Anna and I will be the one to provide you with the best gear known in the entire universe!",
-    "If you don't see it already I'm the blacksmith and I will craft, repair and upgrade all kind of weapons, tools and armor of your need.",
-    "So good luck out there hero."
+    "I cannot believe it! Y-you are here! The great Hero!",
+    "I'm Anna! And this is my forge. Here i will craft to you the best equipment you can ever imagine.",
+    "And if you need to repair or upgrade something just bring it to me along with the materials.",
+    "Have a great adventure and the best of luck, Hero. See you soon!"
   ],
   "answers": [
     {
