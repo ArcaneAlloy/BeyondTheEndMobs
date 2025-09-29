@@ -6,12 +6,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.logging.LogUtils;
+import fr.shoqapik.btemobs.rumors.Rumor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,8 @@ public class PagesManager extends SimpleJsonResourceReloadListener {
                 LOGGER.error("Parsing error loading rumors {}", resourcelocation, jsonparseexception);
             }
         }
+        quests.sort(Comparator.comparingInt(PageCompendium::getOrden));
+
     }
     public static List<PageCompendium> getPages() {
         return quests;

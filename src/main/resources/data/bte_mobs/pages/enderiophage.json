@@ -3,5 +3,6 @@
   "unlockLevel": "END",
   "entityId" : "alexsmobs:enderiophage",
   "description": "The Enderiophage is a virus-like creature that can be found around the End dimension.\n\nif you are not careful enough they will infect you with Ender Flu, a lethal issue that can only be cured eating a Chorus Fruit.\n\nAn Enderiophage may drop a Capsip on death.",
-  "extraYRot" : 0
+  "extraYRot" : 0,
+  "orden": 2
 }

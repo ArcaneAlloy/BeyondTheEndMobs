@@ -3,5 +3,6 @@
   "unlockLevel": "NETHER",
   "entityId" : "alexsmobs:crimson_mosquito",
   "description": "Crimson Mosquito can be found in the Crimson Forest biome.\n\nThey may drop Crimson Mosquito Proboscis on death.\n\nIf they have absorbed the player's\nblood, they may drop Blood Sac on death.",
-  "extraYRot" : 0
+  "extraYRot" : 0,
+  "orden": 0
 }

@@ -12,14 +12,16 @@ public class PageCompendium {
     private String description;
     private String entityId;
     private float extraYRot;
+    private int orden;
     public PageCompendium() {}
 
-    public PageCompendium(String title, UnlockLevel unlockLevel, String dialogs,String entityId,float extraYRot) {
+    public PageCompendium(String title, UnlockLevel unlockLevel, String dialogs,String entityId,float extraYRot,int orden) {
         this.title = title;
         this.unlockLevel= unlockLevel;
         this.description = dialogs;
         this.entityId = entityId;
         this.extraYRot = extraYRot;
+        this.orden = orden;
     }
 
     public String getTitle() {
@@ -42,6 +44,10 @@ public class PageCompendium {
         return extraYRot;
     }
 
+    public int getOrden() {
+        return orden;
+    }
+
     public static void encode(PageCompendium page, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeUtf(page.title);
         packetBuffer.writeUtf(page.getUnlockLevel().name());
@@ -49,6 +55,7 @@ public class PageCompendium {
         packetBuffer.writeUtf(page.description);
         packetBuffer.writeUtf(page.entityId);
         packetBuffer.writeFloat(page.extraYRot);
+        packetBuffer.writeInt(page.orden);
     }
 
     public static PageCompendium decode(FriendlyByteBuf packetBuffer) {
@@ -57,7 +64,8 @@ public class PageCompendium {
         String description = packetBuffer.readUtf();
         String entityId = packetBuffer.readUtf();
         float extraYRot = packetBuffer.readFloat();
-        return new PageCompendium(title, unlockLevel, description,entityId,extraYRot);
+        int orden = packetBuffer.readInt();
+        return new PageCompendium(title, unlockLevel, description,entityId,extraYRot,orden);
     }
 
     public enum UnlockLevel {

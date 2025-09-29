@@ -3,5 +3,6 @@
   "unlockLevel": "END",
   "entityId" : "alexsmobs:void_worm",
   "description": "The Mysterious Worm is a needed item to summon a powerful entity known as the Void Worm.\n\nTo create it you need to place a Capsip and then right click it while you are holding a Crimson Mosquito Larva on your hand.",
-  "extraYRot" : 0
+  "extraYRot" : 0,
+  "orden": 7
 }

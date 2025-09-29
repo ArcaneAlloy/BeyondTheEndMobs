@@ -3,5 +3,6 @@
   "unlockLevel": "OVERWORLD",
   "entityId" : "alexsmobs:fly",
   "description": "Flies can be found over the Overworld.\n\nThey are able to damage Undea Creatures like Skeleton or Zombies.\n\nFlies may drop a Maggot on death.\n\nA Fly will be transform into a Crimson Mosquito if stay enough time in the \nNether.",
-  "extraYRot" : 0
+  "extraYRot" : 0,
+  "orden": 3
 }

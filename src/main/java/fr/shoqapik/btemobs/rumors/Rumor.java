@@ -11,15 +11,16 @@ public class Rumor {
     private String title;
     private UnlockLevel unlockLevel;
     private String description;
-
+    private int orden;
     private transient List<ResourceLocation> dialogSounds;
 
     public Rumor() {}
 
-    public Rumor(String title, UnlockLevel unlockLevel, String dialogs) {
+    public Rumor(String title, UnlockLevel unlockLevel, String dialogs,int orden) {
         this.title = title;
         this.unlockLevel= unlockLevel;
         this.description = dialogs;
+        this.orden = orden;
     }
 
     public String getTitle() {
@@ -32,6 +33,10 @@ public class Rumor {
 
     public String getDescription() {
         return description;
+    }
+
+    public int getOrden() {
+        return orden;
     }
 
     public List<ResourceLocation> getDialogSounds() {
@@ -49,15 +54,15 @@ public class Rumor {
         packetBuffer.writeUtf(rumor.getUnlockLevel().name());
 
         packetBuffer.writeUtf(rumor.description);
-        
+        packetBuffer.writeInt(rumor.orden);
     }
 
     public static Rumor decode(FriendlyByteBuf packetBuffer) {
         String entityId = packetBuffer.readUtf();
         UnlockLevel unlockLevel = UnlockLevel.valueOf(packetBuffer.readUtf());
         String description = packetBuffer.readUtf();
-        
-        return new Rumor(entityId, unlockLevel, description);
+        int orden = packetBuffer.readInt();
+        return new Rumor(entityId, unlockLevel, description,orden);
     }
 
     public enum UnlockLevel {

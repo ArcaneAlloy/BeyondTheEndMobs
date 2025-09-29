@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,7 @@ public class RumorsManager extends SimpleJsonResourceReloadListener {
                 LOGGER.error("Parsing error loading rumors {}", resourcelocation, jsonparseexception);
             }
         }
+        quests.sort(Comparator.comparingInt(Rumor::getOrden));
     }
     public static List<Rumor> getRumors() {
         return quests;

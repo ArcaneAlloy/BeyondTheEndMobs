@@ -3,5 +3,6 @@
   "unlockLevel": "NETHER",
   "entityId" : "alexsmobs:straddler",
   "description": "Straddlers can be found in the Basalt Delta biome.\n\nThey may drop Basalt and Straddlite on death.\n\nThe Straddlite can be combined with Netherite to make a Straddleboard.",
-  "extraYRot" : 0
+  "extraYRot" : 0,
+  "orden": 11
 }

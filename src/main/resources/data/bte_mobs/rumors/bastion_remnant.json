@@ -1,5 +1,7 @@
 {
   "title": "Bastion Remnant",
   "unlockLevel": "NETHER",
+  "orden": 3,
+
   "description": "The Bastion Remnant can be found\naround The Nether.\n\nInside these structures you can find Treasure Chests.\n\nYou will have to search through all of them until you find the Cursed Eye."
 }
