@@ -4,5 +4,5 @@
   "entityId" : "alexsmobs:crimson_mosquito",
   "description": "Crimson Mosquito Larva may be \ndropped by a Crimson Mosquito on\ndeath.\n\nThey can be used to tamed Warped Toads or transform Stradpoles to Straddlers.",
   "extraYRot" : 0,
-  "orden": 1
+  "orden": 10
 }
