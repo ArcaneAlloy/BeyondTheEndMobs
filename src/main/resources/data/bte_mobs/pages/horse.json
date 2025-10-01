@@ -4,5 +4,5 @@
   "entityId" : "minecraft:horse",
   "description": "A tamed Horse can be set as a Personal Horse pressing the P key while you are riding it.\n\nThen while you are in the Overworld you can call it pressing the º key.",
   "extraYRot" : 0,
-  "orden": 4
+  "orden": 1
 }
