@@ -349,7 +349,6 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
 
     protected void renderLabels(PoseStack pPoseStack, int pX, int pY) {
         RenderSystem.disableBlend();
-        super.renderLabels(pPoseStack, pX, pY);
         int i = this.menu.experience.get();
         if (i > 0) {
             int j = 8453920;
@@ -373,6 +372,7 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
                 this.font.drawShadow(pPoseStack, component, (float)k, 69.0F, j);
             }
         }
+        RenderSystem.enableBlend();
     }
 
     @Override

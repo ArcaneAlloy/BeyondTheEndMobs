@@ -115,6 +115,15 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
         return BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get();
     }
 
+    @Override
+    public NonNullList<Ingredient> getIngredients(){
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+
+        ingredients.add(Ingredient.of(ingredientPrimary));
+
+        return ingredients;
+    }
+
     public static class Serializer implements RecipeSerializer<WarlockPotionRecipe> {
         public WarlockPotionRecipe fromJson(ResourceLocation p_44562_, JsonObject p_44563_) {
             String effect = GsonHelper.getAsString(p_44563_,"potion_effect");
