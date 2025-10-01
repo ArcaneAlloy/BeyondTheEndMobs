@@ -398,6 +398,6 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
     @Override
     public void removed() {
         super.removed();
-        this.book.setBookSetting(RecipeBookType.CRAFTING,this.book.isFiltering(RecipeBookType.CRAFTING),false);
+        this.book.setBookSetting(RecipeBookType.CRAFTING,false,false);
     }
 }

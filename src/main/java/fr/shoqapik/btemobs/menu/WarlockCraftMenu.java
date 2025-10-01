@@ -84,13 +84,13 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
         resultSlots = new ResultContainer();
         // X: 11 PRIMEIRA | 29 SEGUNDA | 47 TERCEIRA | 90 QUARTA | 148 QUINTA (RESULT)
         // Y: 25 PRIMEIRA
-        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 164, 25));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 182, 25));
-        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 200, 25));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 0, 194, 7));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 1, 181, 33));
+        this.addSlot(new CraftInputSlot(this.craftSlots, 2, 194, 59));
 
-        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 243, 25));
+        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 233, 33));
 
-        this.addSlot(new Slot(this.resultSlots, 0, 301, 25) {
+        this.addSlot(new Slot(this.resultSlots, 0, 285, 33) {
             public boolean mayPlace(ItemStack itemStack) {
                 return false;
             }
