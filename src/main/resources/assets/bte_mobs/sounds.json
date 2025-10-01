@@ -23,6 +23,12 @@
       "bte_mobs:warlock_presentation_3"
     ]
   },
+  "warlock_presentation_4": {
+    "category": "neutral",
+    "sounds": [
+      "bte_mobs:warlock_presentation_4"
+    ]
+  },
   "warlock_tasking_0": {
     "category": "neutral",
     "sounds": [
