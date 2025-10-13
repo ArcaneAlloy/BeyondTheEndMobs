@@ -19,7 +19,7 @@ public final class SacredPlaceHandler {
 
     public static final ResourceKey<Level> FORGOTTEN_REALM = ResourceKey.create(
             Registry.DIMENSION_REGISTRY,
-            new ResourceLocation("beyondtheend", "the_forgotten_realm")
+            new ResourceLocation("ender_journey", "the_forgotten_realm")
     );
 
     private static final ResourceLocation SACRED_PLACE_ID =
