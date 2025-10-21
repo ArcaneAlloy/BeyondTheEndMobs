@@ -1,0 +1,17 @@
+{
+  "type": "bte_mobs:explorer_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:ender_pearl",
+      "count": 1
+    },
+    {
+      "item": "endrem:witch_pupil",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "endrem:witch_eye"
+  }
+}
