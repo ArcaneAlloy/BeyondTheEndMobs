@@ -1,6 +1,5 @@
 package fr.shoqapik.btemobs;
 
-import mc.duzo.ender_journey.world.dimension.EnderDimensions;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +17,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class SacredPlaceHandler {
 
+    public static final ResourceKey<Level> FORGOTTEN_REALM = ResourceKey.create(
+            Registry.DIMENSION_REGISTRY,
+            new ResourceLocation("ender_journey", "the_forgotten_realm")
+    );
 
     private static final ResourceLocation SACRED_PLACE_ID =
             new ResourceLocation("protectyourstructures", "sacred_place");
@@ -35,8 +38,7 @@ public final class SacredPlaceHandler {
         Player player = e.player;
         Level lvl = player.level;
         if (lvl.isClientSide) return;
-
-        if (!lvl.dimension().equals(EnderDimensions.REALM_KEY)) return;
+        if (!lvl.dimension().equals(FORGOTTEN_REALM)) return;
 
         MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
         if (sacred != null) ensureEffect(player, sacred, 0);
@@ -47,7 +49,7 @@ public final class SacredPlaceHandler {
 
     @SubscribeEvent
     public static void onDimChange(PlayerChangedDimensionEvent e) {
-        if (e.getTo().equals(EnderDimensions.REALM_KEY)) return;
+        if (e.getTo().equals(FORGOTTEN_REALM)) return;
 
         MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
         if (sacred != null) e.getEntity().removeEffect(sacred);
@@ -61,5 +63,6 @@ public final class SacredPlaceHandler {
         if (current == null || current.getAmplifier() != amplifier || current.getDuration() <= REFRESH_THRESHOLD) {
             player.addEffect(new MobEffectInstance(effect, DURATION_TICKS, amplifier, true, false, true));
         }
+        ;
     }
 }
