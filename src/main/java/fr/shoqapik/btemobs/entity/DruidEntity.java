@@ -106,6 +106,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
                 this.craftingItem,this.sample1,this.sample2,this.sample3
         };
         this.setId(ENTITY_COUNTER.getAndAdd(this.items.length+1) + 1);
+        this.createInventory();
     }
     protected void createInventory() {
         SimpleContainer simplecontainer = this.inventory;
@@ -158,6 +159,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
             double body0X =  (0 * cos) + -0.8F *sin;
             double body0Z = (0 * sin )-(-0.8F * cos);
 
+
             Vec3 delta = this.craftingItem.getDeltaMovement();
 
             Vec3 pos = new Vec3(this.craftingItem.getX(), this.craftingItem.getY(), this.craftingItem.getZ());
@@ -174,7 +176,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
 
 
             this.tickPart(this.sample1,cos*1.5F + sin*0.7F,2.1F+Mth.cos(this.tickCount*0.05F)*0.25F,sin*1.5F -cos*0.7F);
-            this.tickPart(this.sample2,-cos*1.5F + sin*0.7F,2.1F+Mth.cos(this.tickCount*0.05F - 15.0F)*0.25F,-sin*1.5F -cos*0.7F);
+            this.tickPart(this.sample2,-(cos*1.5F + sin*0.7F),2.1F+Mth.cos(this.tickCount*0.05F - 15.0F)*0.25F,-(sin*1.5F -cos*0.7F));
             this.tickPart(this.sample3,0,3.1F+Mth.cos(this.tickCount*0.05F - 30.0F)*0.25F,-body0Z);
 
 
@@ -238,9 +240,9 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
             this.setPos(this.tablePos.getX()+0.5F,this.tablePos.getY()+2.7755575615628914E-17,this.tablePos.getZ()+0.6F);
         }
 
-        if(!this.level.isClientSide){
-            this.setYRot(this.getAttachFace().toYRot());
-        }
+        this.setYBodyRot(this.getAttachFace().toYRot());
+        this.setYRot(this.getAttachFace().toYRot());
+        this.setRot(this.getAttachFace().toYRot(),this.getXRot());
     }
 
     public void startCreationCrafting(){
@@ -307,7 +309,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_21434_, DifficultyInstance p_21435_, MobSpawnType p_21436_, @Nullable SpawnGroupData p_21437_, @Nullable CompoundTag p_21438_) {
         BlockState state= BteMobsBlocks.ORIANA_OAK.get().defaultBlockState();
-        this.setAttachFace(Direction.SOUTH);
+        this.setAttachFace(Direction.NORTH);
         BlockPos pos1=this.blockPosition();
         this.setPos(Vec3.atCenterOf(pos1.above(3)));
         if(!this.level.isClientSide){

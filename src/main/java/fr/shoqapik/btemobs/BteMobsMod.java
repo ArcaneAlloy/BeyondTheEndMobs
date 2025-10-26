@@ -1,6 +1,5 @@
 package fr.shoqapik.btemobs;
 
-import mc.duzo.beyondtheend.capabilities.PortalPlayer;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import fr.shoqapik.btemobs.entity.DruidEntity;
@@ -17,6 +16,7 @@ import fr.shoqapik.btemobs.rumors.Rumor;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.*;
 import fr.shoqapik.btemobs.sound.SoundManager;
+import mc.duzo.ender_journey.capabilities.PortalPlayer;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;

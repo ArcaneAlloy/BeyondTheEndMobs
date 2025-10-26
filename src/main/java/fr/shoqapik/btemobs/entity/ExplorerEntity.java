@@ -215,7 +215,7 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
         return this.entityData.get(DATA_ATTACH_FACE_ID);
     }
 
-    private void setAttachFace(Direction p_149789_) {
+    public void setAttachFace(Direction p_149789_) {
         this.entityData.set(DATA_ATTACH_FACE_ID, p_149789_);
     }
 

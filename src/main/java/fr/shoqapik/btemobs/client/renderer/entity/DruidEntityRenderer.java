@@ -8,6 +8,7 @@ import fr.shoqapik.btemobs.client.model.OrbModel;
 import fr.shoqapik.btemobs.entity.DruidEntity;
 import fr.shoqapik.btemobs.entity.ItemPart;
 import fr.shoqapik.btemobs.registry.BteRenderType;
+import mc.duzo.ender_journey.EndersJourney;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -45,12 +46,13 @@ public class DruidEntityRenderer extends GeoEntityRenderer<DruidEntity> {
     
     public void renderItemPart(ItemPart itemPart, DruidEntity druidEntity, PoseStack poseStack, float partialTick, MultiBufferSource bufferSource, int packedLight){
         poseStack.pushPose();
-        double x = druidEntity.getX()- Mth.lerp(partialTick,itemPart.xo,itemPart.getX());
-        double y = druidEntity.getY()-Mth.lerp(partialTick,itemPart.yo,itemPart.getY());
-        double z = druidEntity.getZ()-Mth.lerp(partialTick,itemPart.zo,itemPart.getZ());
+        double x = Mth.lerp(partialTick,itemPart.xo,itemPart.getX()) - druidEntity.getX();
+        double y = Mth.lerp(partialTick,itemPart.yo,itemPart.getY()) - druidEntity.getY();
+        double z = Mth.lerp(partialTick,itemPart.zo,itemPart.getZ()) - druidEntity.getZ();
+
 
         float porcent = itemPart.isSampleItem ? 0.384615F : (itemPart.getCreationTime(partialTick)/25.0F)*0.384615F;
-        poseStack.translate(x,-y+0.1F,z);
+        poseStack.translate(x,y+0.1F,z);
         poseStack.scale(porcent,porcent,porcent);
         poseStack.pushPose();
         poseStack.scale(0.5F,0.5f,0.5f);

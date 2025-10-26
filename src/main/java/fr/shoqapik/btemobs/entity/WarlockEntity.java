@@ -11,6 +11,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EntityType;
@@ -37,6 +40,7 @@ import java.util.OptionalInt;
 import java.util.UUID;
 
 public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer, ContainerListener, MenuProvider {
+    protected static final EntityDataAccessor<Direction> DATA_ATTACH_FACE_ID = SynchedEntityData.defineId(WarlockEntity.class, EntityDataSerializers.DIRECTION);
 
     protected static final AnimationBuilder IDLE_ANIMATION_ONE = new AnimationBuilder().addAnimation("idle_one", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     protected static final AnimationBuilder IDLE_ANIMATION_TWO = new AnimationBuilder().addAnimation("idle_two", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
@@ -127,6 +131,11 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
                 summonHandParticlesTick = 0;
             }
         }
+
+        if(!this.level.isClientSide){
+            this.setYBodyRot(this.getAttachFace().toYRot());
+        }
+
     }
 
     protected AnimationController<? extends BteAbstractEntity> getIdleAnimationController(AnimationData animationData) {
@@ -138,6 +147,13 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
 
         });
         return animationController;
+    }
+    public Direction getAttachFace() {
+        return this.entityData.get(DATA_ATTACH_FACE_ID);
+    }
+
+    public void setAttachFace(Direction p_149789_) {
+        this.entityData.set(DATA_ATTACH_FACE_ID, p_149789_);
     }
 
     public void openPotionGui(ServerPlayer player){
@@ -233,6 +249,12 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     }
 
     @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_ATTACH_FACE_ID,Direction.SOUTH);
+    }
+
+    @Override
     public boolean stillValid(Player pPlayer) {
         return false;
     }
@@ -267,6 +289,8 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
+        pCompound.putByte("AttachFace", (byte)this.getAttachFace().get3DDataValue());
+
         ListTag listtag = new ListTag();
         if(this.inventory!=null){
             for(int i = 0; i < this.inventory.getContainerSize(); ++i) {
@@ -286,6 +310,8 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
+        this.setAttachFace(Direction.from3DDataValue(pCompound.getByte("AttachFace")));
+
         if(this.inventory==null){
             this.createInventory();
         }

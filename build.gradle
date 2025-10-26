@@ -38,10 +38,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'examplemod'
+            property 'forge.enabledGameTestNamespaces', 'bte_mobs'
 
             mods {
-                btemobs {
+                bte_mobs {
                     source sourceSets.main
                 }
             }
@@ -54,10 +54,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'examplemod'
+            property 'forge.enabledGameTestNamespaces', 'bte_mobs'
 
             mods {
-                btemobs {
+                bte_mobs {
                     source sourceSets.main
                 }
             }
@@ -73,10 +73,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'examplemod'
+            property 'forge.enabledGameTestNamespaces', 'bte_mobs'
 
             mods {
-                btemobs {
+                bte_mobs {
                     source sourceSets.main
                 }
             }
@@ -90,10 +90,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'bte_mobs', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                btemobs {
+                bte_mobs {
                     source sourceSets.main
                 }
             }
@@ -140,16 +140,14 @@ repositories {
 dependencies {
 
     minecraft 'net.minecraftforge:forge:1.19.2-43.4.2'
-    implementation fg.deobf('com.github.AstianBK:Enders_Journey:1.0.4')
-
-    implementation fg.deobf("com.patataprojects:anvilchanges:0.5.1-1.19.2")
 
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
 
     runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:nekos-enchanted-books-441114:6180640")
+
+    implementation fg.deobf("com.patataprojects:anvilchanges:0.5.1-1.19.2")
+    implementation fg.deobf("mc.duzo:enders_journey:1.0.3")
     implementation fg.deobf("curse.maven:stoneworks-852663:5049592")
     implementation fg.deobf("curse.maven:big-extras-forge-499948:4713352")
     implementation fg.deobf("curse.maven:cataclysmic-combat-880483:5790282")
@@ -180,14 +178,15 @@ dependencies {
     implementation fg.deobf("curse.maven:architectury-api-419699:5137942")
     implementation fg.deobf("curse.maven:endremastered-404183:4046639")
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.40')
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.40')
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 }
 
 mixin {
-    add sourceSets.main, "blacksmith.refmap.json"
+    add sourceSets.main, "bte_mobs.refmap.json"
 
-    config "blacksmith.mixins.json"
+    config "bte_mobs.mixins.json"
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

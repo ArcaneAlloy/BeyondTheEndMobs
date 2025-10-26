@@ -13,21 +13,25 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.checkerframework.checker.units.qual.C;
 
-@Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientEvents {
 
     private static int previousTimesChanged = 0;
-    private static Minecraft minecraft = Minecraft.getInstance();
+    private static Minecraft minecraft;
 
-    private static boolean alreadySetToTrue = false;
+    private static final boolean alreadySetToTrue = false;
 
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
+        if(minecraft==null){
+            minecraft = Minecraft.getInstance();
+        }
         if(minecraft.player != null) {
             Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("BLACKSMITH"), true);
             //Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("WARLOCK"), true);
