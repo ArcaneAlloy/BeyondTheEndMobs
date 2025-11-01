@@ -40,9 +40,10 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
     private final BteRecipeCategory category;
     protected final ResourceLocation id;
     private final int tier;
-    private final String effect;
+    public final String effect;
     private final ItemStack ingredientPrimary;
-    private final ItemStack result=PotionUtils.setPotion(new ItemStack(Items.POTION), new Potion(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,100,1)));
+    public Item type = Items.POTION;
+    public Item upgrade = Items.AIR;
     public WarlockPotionRecipe(ItemStack stack,ResourceLocation id,String effect, int tier) {
         this.id=id;
         this.ingredientPrimary = stack;
@@ -97,7 +98,7 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
     }
     @Override
     public ItemStack getResultItem() {
-        return PotionUtils.setPotion(new ItemStack(Items.POTION), Registry.POTION.get(new ResourceLocation(effect.split(":")[0],effect.split(":")[1])));
+        return PotionBrewing.mix(new ItemStack(this.upgrade),PotionUtils.setPotion(new ItemStack(this.type), Registry.POTION.get(new ResourceLocation(effect.split(":")[0],effect.split(":")[1]))));
     }
 
     @Override

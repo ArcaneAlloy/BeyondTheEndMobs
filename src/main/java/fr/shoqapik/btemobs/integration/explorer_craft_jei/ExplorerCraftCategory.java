@@ -29,7 +29,7 @@ public class ExplorerCraftCategory implements IRecipeCategory<ExplorerRecipe> {
     private final IDrawable icon;
 
     public ExplorerCraftCategory(IGuiHelper helper){
-        this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 85);
+        this.background = BteMobsMod.getPartialDrawable(helper,TEXTURE);
 
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BteMobsBlocks.EXPLORER_TABLE.get()));
     }

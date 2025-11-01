@@ -15,8 +15,10 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,6 +58,40 @@ public class JEIPlugin implements IModPlugin {
             registration.addRecipes(JEIPlugin.DRUID_CRAFT_TYPE, recipeDruid);
         }
         if (!recipeWarlockPotion.isEmpty()){
+            List<WarlockPotionRecipe> potions = new ArrayList<>();
+            for (WarlockPotionRecipe recipe : recipeWarlockPotion){
+                WarlockPotionRecipe recipe1 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe1.type = Items.SPLASH_POTION;
+                WarlockPotionRecipe recipe2 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe2.type = Items.LINGERING_POTION;
+                WarlockPotionRecipe recipe3 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe3.upgrade = Items.GLOWSTONE_DUST;
+                WarlockPotionRecipe recipe4 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe4.upgrade = Items.REDSTONE;
+
+                WarlockPotionRecipe recipe13 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe13.type = Items.SPLASH_POTION;
+                recipe13.upgrade = Items.GLOWSTONE_DUST;
+                WarlockPotionRecipe recipe14 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe14.type = Items.SPLASH_POTION;
+                recipe14.upgrade = Items.REDSTONE;
+
+                WarlockPotionRecipe recipe23 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe23.type = Items.LINGERING_POTION;
+                recipe23.upgrade = Items.GLOWSTONE_DUST;
+                WarlockPotionRecipe recipe24 = new WarlockPotionRecipe(recipe.getIngredientPrimary(),recipe.getId(),recipe.effect,recipe.getTier());
+                recipe24.type = Items.LINGERING_POTION;
+                recipe24.upgrade = Items.REDSTONE;
+                potions.add(recipe4);
+                potions.add(recipe3);
+                potions.add(recipe1);
+                potions.add(recipe2);
+                potions.add(recipe14);
+                potions.add(recipe13);
+                potions.add(recipe24);
+                potions.add(recipe23);
+            }
+            registration.addRecipes(JEIPlugin.WARLOCK_POTION_TYPE,potions);
             registration.addRecipes(JEIPlugin.WARLOCK_POTION_TYPE, recipeWarlockPotion);
         }
         if(!recipeWarlock.isEmpty()){

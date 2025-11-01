@@ -84,7 +84,7 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
 
         ItemStack output = explorerRecipe.getResultItem();
         if (!output.isEmpty()) {
-            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 31).addItemStack(output);
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 32).addItemStack(output);
         } else {
             System.out.println("⚠️ Advertencia: La receta " + explorerRecipe.getId() + " tiene un resultado vacío.");
         }

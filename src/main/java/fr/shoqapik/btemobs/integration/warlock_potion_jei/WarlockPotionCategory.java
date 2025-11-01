@@ -60,12 +60,29 @@ public class WarlockPotionCategory implements IRecipeCategory<WarlockPotionRecip
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder iRecipeLayoutBuilder, WarlockPotionRecipe explorerRecipe, IFocusGroup iFocusGroup) {
-        List<Ingredient> ingredients = explorerRecipe.getIngredients();
-        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 80, 44)
+        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81, 22)
+                .addIngredients(Ingredient.of(Items.GLASS_BOTTLE));
+        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81, 45)
                 .addIngredients(Ingredient.of(explorerRecipe.getIngredientPrimary()));
         ItemStack output = explorerRecipe.getResultItem();
+        if(explorerRecipe.type.equals(Items.SPLASH_POTION)){
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 104, 18)
+                    .addIngredients(Ingredient.of(Items.GUNPOWDER));
+        }
+        if(explorerRecipe.type.equals(Items.LINGERING_POTION)){
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 104, 38)
+                    .addIngredients(Ingredient.of(Items.DRAGON_BREATH));
+        }
+        if(explorerRecipe.upgrade.equals(Items.GLOWSTONE_DUST)){
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 59, 18)
+                    .addIngredients(Ingredient.of(explorerRecipe.upgrade));
+        }
+        if(explorerRecipe.upgrade.equals(Items.REDSTONE)){
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 59, 38)
+                    .addIngredients(Ingredient.of(explorerRecipe.upgrade));
+        }
         if (!output.isEmpty()) {
-            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 154, 35).addItemStack(output);
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 153, 34).addItemStack(output);
         } else {
             System.out.println("⚠️ Advertencia: La receta " + explorerRecipe.getId() + " tiene un resultado vacío.");
         }
