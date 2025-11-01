@@ -63,6 +63,5 @@ public final class SacredPlaceHandler {
         if (current == null || current.getAmplifier() != amplifier || current.getDuration() <= REFRESH_THRESHOLD) {
             player.addEffect(new MobEffectInstance(effect, DURATION_TICKS, amplifier, true, false, true));
         }
-        ;
     }
 }

@@ -17,6 +17,9 @@ import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.*;
 import fr.shoqapik.btemobs.sound.SoundManager;
 import mc.duzo.ender_journey.capabilities.PortalPlayer;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableBuilder;
+import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
@@ -158,7 +161,14 @@ public class BteMobsMod {
 
         }
     }
+    public static IDrawable getPartialDrawable(IGuiHelper guiHelper,ResourceLocation textures) {
+        int textureWidth = 512;
+        int textureHeight = 512;
 
+        IDrawableBuilder builder = guiHelper.drawableBuilder(textures,152, 0, 176, 83);
+        builder.setTextureSize(textureWidth, textureHeight);
+        return builder.build();
+    }
     public static void handleUnlockRecipePacket(CheckUnlockRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         List<Recipe<?>> recipes1 = new ArrayList<>();
         List<WarlockRecipe> recipes2  = getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get());

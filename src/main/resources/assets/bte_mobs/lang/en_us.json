@@ -2,5 +2,7 @@
   "entity.bte_mobs.blacksmith": "Anna",
   "entity.bte_mobs.warlock": "Noah",
   "entity.bte_mobs.explorer": "Antonio",
-  "entity.bte_mobs.druid": "Oriana"
+  "entity.bte_mobs.druid": "Oriana",
+  "gui.jei.category.warlock_enchant.exp": "Experience",
+  "gui.jei.category.warlock_enchant.eyes": "Eyes"
 }

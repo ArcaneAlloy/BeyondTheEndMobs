@@ -21,6 +21,8 @@ public class JEIExplorerCraftPlugin implements IModPlugin {
     public static RecipeType<ExplorerRecipe> EXPLORER_CRAFT_TYPE =
             new RecipeType<>(ExplorerCraftCategory.UID, ExplorerRecipe.class);
 
+
+
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(BteMobsMod.MODID,"jei_plugin");
