@@ -23,7 +23,7 @@ import java.util.List;
 public class ExplorerCraftCategory implements IRecipeCategory<ExplorerRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(BteMobsMod.MODID, "explorer_recipe");
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/blacksmith_screen.png");
+            new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
 
     private final IDrawable background;
     private final IDrawable icon;

@@ -82,7 +82,6 @@ public class ServerData extends SavedData {
 			getRecipesManager().forEach((key,list)->{
 				CompoundTag tag = new CompoundTag();
 				ListTag recipes = new ListTag();
-				BteMobsMod.LOGGER.debug("Save type :"+key.toString());
 				tag.putString("type",key.toString());
 				for (UnlockRecipe recipe : list){
 					recipes.add(recipe.savedData());
@@ -92,13 +91,11 @@ public class ServerData extends SavedData {
 			});
 		}
 		data.put("unlockRecipes",listTag);
-		BteMobsMod.LOGGER.debug("save type :"+data);
 		return data;
 	}
 	public static ServerData load(CompoundTag data) {
 		ServerData created = new ServerData();
 		Map<RecipeType<?>,List<UnlockRecipe>> map = new HashMap<>();
-		BteMobsMod.LOGGER.debug("load type :"+data);
 
 		if(data.contains("unlockRecipes")){
 			ListTag tags = data.getList("unlockRecipes",10);
@@ -107,7 +104,6 @@ public class ServerData extends SavedData {
 				CompoundTag nbt = tags.getCompound(i);
 				ListTag recipeData = nbt.getList("recipes",10);
 				RecipeType<?> type = ForgeRegistries.RECIPE_TYPES.getValue(new ResourceLocation(nbt.getString("type")));
-				BteMobsMod.LOGGER.debug("load type :"+type.toString());
 
 				for (int j = 0 ; j<recipeData.size() ; j++){
 					CompoundTag tag = recipeData.getCompound(j);

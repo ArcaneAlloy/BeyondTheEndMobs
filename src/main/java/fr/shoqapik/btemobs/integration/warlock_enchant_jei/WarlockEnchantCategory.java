@@ -31,6 +31,10 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
 
     private final IDrawable background;
     private final IDrawable icon;
+    private int[][] slots = {
+        {42,29,42},
+        {7,33,59}
+    };
 
     public WarlockEnchantCategory(IGuiHelper helper){
         this.background = getPartialDrawable(helper,TEXTURE);
@@ -72,12 +76,10 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder iRecipeLayoutBuilder, WarlockRecipe explorerRecipe, IFocusGroup iFocusGroup) {
         List<Ingredient> ingredients = explorerRecipe.getIngredients();
-        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 42 , 7)
-                .addIngredients(ingredients.get(0));
-        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 29 , 33)
-                .addIngredients(ingredients.get(1));
-        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 42 , 59)
-                .addIngredients(ingredients.get(2));
+        for(int i = 0 ; i<ingredients.size() ; i++){
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, slots[0][i] , slots[1][i])
+                    .addIngredients(ingredients.get(i));
+        }
 
         iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81 , 33)
                 .addIngredients(Ingredient.of(new ItemStack(Items.BOOK)));
