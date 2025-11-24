@@ -80,13 +80,11 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
             iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, slots[0][i] , slots[1][i])
                     .addIngredients(ingredients.get(i));
         }
-
-        iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81 , 33)
-                .addIngredients(Ingredient.of(new ItemStack(Items.BOOK)));
-
         ItemStack output = explorerRecipe.getResultItem();
+
         if (!output.isEmpty()) {
-            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 32).addItemStack(output);
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81 , 33)
+                    .addItemStack(output);
         } else {
             System.out.println("⚠️ Advertencia: La receta " + explorerRecipe.getId() + " tiene un resultado vacío.");
         }

@@ -105,12 +105,7 @@ public class QuestDialogScreen extends Screen {
                                 BteMobsModClient.handleClearItem(this.entityId);
                             }
                         }else {
-                            this.quest.getDialogs().add("Not implemented yet! Come back later.");
-                            this.page = page + 1;
-                            this.declined = true;
-                            setButtonsEnabled(false);
-                            letterIndex = 0;
-                            currentLine = "";
+                            Minecraft.getInstance().setScreen(null);
                         }
                         if(currentDialogSound != null) {
                             Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
