@@ -41,8 +41,11 @@ public class ModClientEvents {
         event.registerBookCategories(type, recipeBookCategories);
 
         recipeBookCategories.addAll(vanillaCategories);
-        recipeBookCategories.remove(BteRecipeCategory.ALL.getVanillaCategory(npcType));
-        event.registerAggregateCategory(BteRecipeCategory.ALL.getVanillaCategory(npcType), recipeBookCategories);
+        if(BteRecipeCategory.ALL.getVanillaCategory(npcType)!=null){
+            recipeBookCategories.remove(BteRecipeCategory.ALL.getVanillaCategory(npcType));
+            event.registerAggregateCategory(BteRecipeCategory.ALL.getVanillaCategory(npcType), recipeBookCategories);
+
+        }
     }
 
     private static void registerRecipeCategoryLookups(BteNpcType npcType, List<RecipeType<?>> recipeTypes, RegisterRecipeBookCategoriesEvent event) {

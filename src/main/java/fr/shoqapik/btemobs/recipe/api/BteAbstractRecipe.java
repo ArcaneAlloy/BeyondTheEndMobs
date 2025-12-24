@@ -14,7 +14,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.crafting.CraftingHelper;
+
+import java.util.Arrays;
 
 public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContainer> {
 
@@ -99,8 +103,9 @@ public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContai
             return fromJson(recipeId, json, new Object[0]);
         }
 
+
         protected T fromJson(ResourceLocation recipeId, JsonObject json, Object... objects) {
-            BteRecipeCategory category = BteRecipeCategory.valueOf(json.get("category").getAsString());
+            BteRecipeCategory category = Arrays.stream(BteRecipeCategory.values()).filter(e-> e.name().equals(json.get("category").getAsString())).findFirst().orElse(null);
             NonNullList<Ingredient> nonnulllist = itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
 
             if (nonnulllist.isEmpty()) {

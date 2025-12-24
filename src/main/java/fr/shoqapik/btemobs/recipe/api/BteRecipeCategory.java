@@ -4,10 +4,12 @@ import fr.shoqapik.btemobs.entity.BteNpcType;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
 public enum BteRecipeCategory {
     ALL(new ItemStack(Items.CRAFTING_TABLE), List.of(BteNpcType.values())),
     WEAPONS(new ItemStack(Items.NETHERITE_SWORD), List.of(BteNpcType.BLACKSMITH, BteNpcType.WARLOCK)),
@@ -23,8 +25,16 @@ public enum BteRecipeCategory {
         this.npcs = npcs;
     }
 
-    public RecipeBookCategories getVanillaCategory(BteNpcType npcType) {
-        return RecipeBookCategories.valueOf(npcType.name() + "_" + this.name());
+    public @Nullable RecipeBookCategories getVanillaCategory(BteNpcType npcType) {
+        String enumName = npcType.name() + "_" + this.name();
+
+        for (RecipeBookCategories category : RecipeBookCategories.values()) {
+            if (category.name().equals(enumName)) {
+                return category;
+            }
+        }
+
+        return null;
     }
 
     public static List<BteRecipeCategory> values(BteNpcType npcType) {
