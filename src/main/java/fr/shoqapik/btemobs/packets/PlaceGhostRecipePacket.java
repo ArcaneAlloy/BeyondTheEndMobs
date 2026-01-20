@@ -28,12 +28,18 @@ public class PlaceGhostRecipePacket {
     }
 
     public static void encode(PlaceGhostRecipePacket msg, FriendlyByteBuf packetBuffer) {
-        packetBuffer.writeByte(msg.containerId);
-        packetBuffer.writeResourceLocation(msg.recipe);
+        if(msg.recipe!=null){
+            packetBuffer.writeByte(msg.containerId);
+            packetBuffer.writeResourceLocation(msg.recipe);
+        }
     }
 
     public static PlaceGhostRecipePacket decode(FriendlyByteBuf packetBuffer) {
-        return new PlaceGhostRecipePacket(packetBuffer.readByte(), packetBuffer.readResourceLocation());
+        if(packetBuffer.readableBytes()!=0){
+            return new PlaceGhostRecipePacket(packetBuffer.readByte(), packetBuffer.readResourceLocation());
+        }else {
+            return new PlaceGhostRecipePacket(-1, (ResourceLocation) null);
+        }
     }
 
     public static void handle(PlaceGhostRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
