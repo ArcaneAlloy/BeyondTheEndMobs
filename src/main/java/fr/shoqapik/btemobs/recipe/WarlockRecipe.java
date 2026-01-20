@@ -44,7 +44,6 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
     public final int needEyes;
     public WarlockRecipe(ResourceLocation resourceLocation, BteRecipeCategory category, ResourceLocation enchantment, ResourceLocation texture, int level,int eyes, int experience, Ingredient ingredients) {
         this.enchantment = ForgeRegistries.ENCHANTMENTS.getValue(enchantment);
-        if(this.enchantment == null) throw new IllegalArgumentException("Enchantment '%s' not found".formatted(enchantment));
         this.texture = texture == null ? new ResourceLocation("minecraft:textures/item/enchanted_book.png") : texture;
         this.level = level;
         this.needEyes = eyes;
@@ -207,7 +206,11 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<WarlockRecipe> {
         @Override
         public WarlockRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            ResourceLocation enchantment = new ResourceLocation(json.get("enchantment").getAsString());
+            String enchantId = json.get("enchantment").getAsString();
+            ResourceLocation enchantment = new ResourceLocation(enchantId);
+            Enchantment enchantment1 = ForgeRegistries.ENCHANTMENTS.getDelegate(enchantment).orElseThrow(() -> {
+                return new IllegalStateException("Enchantment: " + enchantId + " does not exist");
+            }).get();
             ResourceLocation texture = null;
             if (json.has("texture")) {
                 texture = new ResourceLocation(json.get("texture").getAsString());
@@ -236,7 +239,11 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
 
         @Override
         public void toNetwork(FriendlyByteBuf pBuffer, WarlockRecipe recipe) {
-            pBuffer.writeResourceLocation(ForgeRegistries.ENCHANTMENTS.getKey(recipe.enchantment));
+            ResourceLocation location = ForgeRegistries.ENCHANTMENTS.getKey(recipe.enchantment);
+            if(location==null){
+                throw new IllegalStateException("Network");
+            }
+            pBuffer.writeResourceLocation(location);
             pBuffer.writeResourceLocation(recipe.texture);
             pBuffer.writeInt(recipe.level);
             pBuffer.writeInt(recipe.experience);
