@@ -30,7 +30,7 @@ public class PlaceGhostRecipePacket {
     public static void encode(PlaceGhostRecipePacket msg, FriendlyByteBuf packetBuffer) {
         if(msg.recipe!=null){
             packetBuffer.writeByte(msg.containerId);
-            packetBuffer.writeResourceLocation(msg.recipe);
+            packetBuffer.writeUtf(msg.recipe.toString());
         }
     }
 

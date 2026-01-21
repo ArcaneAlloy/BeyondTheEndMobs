@@ -42,7 +42,7 @@ public class CraftItemPacket {
 
     public static void encode(CraftItemPacket msg, FriendlyByteBuf packetBuffer) {
         if(msg.recipe != null) {
-            packetBuffer.writeResourceLocation(msg.recipe);
+            //packetBuffer.writeResourceLocation(msg.recipe);
         }
     }
 }
