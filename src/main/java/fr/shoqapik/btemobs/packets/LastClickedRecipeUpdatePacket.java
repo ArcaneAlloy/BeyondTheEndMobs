@@ -42,7 +42,7 @@ public class LastClickedRecipeUpdatePacket {
 
     public static void encode(LastClickedRecipeUpdatePacket msg, FriendlyByteBuf packetBuffer) {
         if(msg.recipe != null) {
-            packetBuffer.writeResourceLocation(msg.recipe);
+            //packetBuffer.writeResourceLocation(msg.recipe);
         }
     }
 }
