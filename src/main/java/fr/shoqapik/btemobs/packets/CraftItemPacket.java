@@ -4,6 +4,8 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -36,13 +38,13 @@ public class CraftItemPacket {
         if(packetBuffer.readableBytes() != 0) {
             return new CraftItemPacket(packetBuffer.readResourceLocation());
         } else {
-            return new CraftItemPacket((Recipe<?>) null);
+            throw new IllegalArgumentException("CraftItemPacket error 111");
         }
     }
 
     public static void encode(CraftItemPacket msg, FriendlyByteBuf packetBuffer) {
         if(msg.recipe != null) {
-            //packetBuffer.writeResourceLocation(msg.recipe);
+            packetBuffer.writeResourceLocation(msg.recipe);
         }
     }
 }

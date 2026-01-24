@@ -354,7 +354,7 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
                     Recipe<?> recipe = button.getRecipe();
                     if (recipe != null ) {
                         this.ghostRecipe.clear();
-                        BteMobsMod.sendToServer(new PlaceGhostRecipePacket(this.menu.containerId,recipe));
+                        //BteMobsMod.sendToServer(new PlaceGhostRecipePacket(this.menu.containerId,recipe));
                     }
                 }
             }

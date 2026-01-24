@@ -107,7 +107,7 @@ public class BteMobsMod {
         INSTANCE.registerMessage(11, DirectionPacket.class, DirectionPacket::encode, DirectionPacket::decode, DirectionPacket::handle);
         INSTANCE.registerMessage(12, PlaceGhostRecipePacket.class, PlaceGhostRecipePacket::encode, PlaceGhostRecipePacket::decode, PlaceGhostRecipePacket::handle);
         INSTANCE.registerMessage(13, LastClickedRecipeUpdatePacket.class, LastClickedRecipeUpdatePacket::encode, LastClickedRecipeUpdatePacket::decode, LastClickedRecipeUpdatePacket::handle);
-        INSTANCE.registerMessage(14,SyncUnlockLevelPacket.class,SyncUnlockLevelPacket::encode,SyncUnlockLevelPacket::decode,SyncUnlockLevelPacket::handle);
+        INSTANCE.registerMessage(13,SyncUnlockLevelPacket.class,SyncUnlockLevelPacket::encode,SyncUnlockLevelPacket::decode,SyncUnlockLevelPacket::handle);
     }
 
     public static List<EnchantType> getEnchantType (){

@@ -4,6 +4,8 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -36,13 +38,13 @@ public class LastClickedRecipeUpdatePacket {
         if(packetBuffer.readableBytes() != 0) {
             return new LastClickedRecipeUpdatePacket(packetBuffer.readResourceLocation());
         } else {
-            return new LastClickedRecipeUpdatePacket((Recipe<?>) null);
+            throw new IllegalArgumentException("LastClickedRecipeUpdatePacket error 112");
         }
     }
 
     public static void encode(LastClickedRecipeUpdatePacket msg, FriendlyByteBuf packetBuffer) {
         if(msg.recipe != null) {
-            //packetBuffer.writeResourceLocation(msg.recipe);
+            packetBuffer.writeResourceLocation(msg.recipe);
         }
     }
 }

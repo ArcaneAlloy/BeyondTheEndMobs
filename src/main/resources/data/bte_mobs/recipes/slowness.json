@@ -1,8 +1,0 @@
-{
-  "type": "bte_mobs:warlock_potion_recipe",
-  "potion_effect": "minecraft:slowness",
-  "tier": 1,
-  "ingredient": {
-    "item": "minecraft:soul_sand"
-  }
-}

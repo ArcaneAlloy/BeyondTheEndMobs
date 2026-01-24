@@ -1,8 +1,0 @@
-{
-  "type": "bte_mobs:warlock_potion_recipe",
-  "potion_effect": "minecraft:regeneration",
-  "tier": 1,
-  "ingredient": {
-    "item": "minecraft:ghast_tear"
-  }
-}

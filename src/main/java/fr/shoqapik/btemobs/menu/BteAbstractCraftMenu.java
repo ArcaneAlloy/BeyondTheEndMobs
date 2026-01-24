@@ -248,7 +248,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
 
     public void craftItemClient(Recipe<?> recipe) {
         //if(selectedRecipe == null) return;
-        BteMobsMod.sendToServer(new CraftItemPacket(recipe));
+        //BteMobsMod.sendToServer(new CraftItemPacket(recipe));
         selectedRecipe = null;
     }
 

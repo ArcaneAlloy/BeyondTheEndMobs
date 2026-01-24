@@ -1,8 +1,0 @@
-{
-  "type": "bte_mobs:warlock_potion_recipe",
-  "potion_effect": "minecraft:night_vision",
-  "tier": 1,
-  "ingredient": {
-    "item": "minecraft:golden_carrot"
-  }
-}

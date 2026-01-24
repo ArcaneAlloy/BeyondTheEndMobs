@@ -31,8 +31,8 @@ public class ServerData extends SavedData {
 			Map<RecipeType<?>,List<UnlockRecipe>> map = new HashMap<>();
 			for (RecipeType<?> type : recipeTypes){
 				List<UnlockRecipe> recipes = new ArrayList<>();
-				for(Object recipe : getRecipes(type)){
-					recipes.add(new UnlockRecipe((Recipe<?>) recipe,true));
+				for(Recipe<?> recipe : getRecipes(type)){
+					recipes.add(new UnlockRecipe(recipe,true));
 				}
 				map.put(type,recipes);
 			}

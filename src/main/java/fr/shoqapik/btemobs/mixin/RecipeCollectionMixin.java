@@ -25,7 +25,8 @@ import java.util.Set;
 @Mixin(RecipeCollection.class)
 public class RecipeCollectionMixin {
 
-    @Shadow @Final public Set<Recipe<?>> craftable;
+    /*@Shadow @Final
+    private Set<Recipe<?>> craftable;
 
     @Shadow @Final private List<Recipe<?>> recipes;
 
@@ -69,4 +70,6 @@ public class RecipeCollectionMixin {
 
         return false;
     }
+
+     */
 }

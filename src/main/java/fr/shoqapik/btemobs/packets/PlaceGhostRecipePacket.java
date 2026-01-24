@@ -4,6 +4,8 @@ import fr.shoqapik.btemobs.client.BteMobsModClient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -22,23 +24,18 @@ public class PlaceGhostRecipePacket {
         this.recipe = pRecipe;
     }
 
-    public PlaceGhostRecipePacket(FriendlyByteBuf pBuffer) {
-        this.containerId = pBuffer.readByte();
-        this.recipe = pBuffer.readResourceLocation();
-    }
-
     public static void encode(PlaceGhostRecipePacket msg, FriendlyByteBuf packetBuffer) {
         if(msg.recipe!=null){
-            //packetBuffer.writeByte(msg.containerId);
-            //packetBuffer.writeResourceLocation(msg.recipe);
+            packetBuffer.writeByte(msg.containerId);
+            packetBuffer.writeResourceLocation(msg.recipe);
         }
     }
 
     public static PlaceGhostRecipePacket decode(FriendlyByteBuf packetBuffer) {
-        if(packetBuffer.readableBytes()!=0){
+        if(packetBuffer.readableBytes()>0){
             return new PlaceGhostRecipePacket(packetBuffer.readByte(), packetBuffer.readResourceLocation());
         }else {
-            return new PlaceGhostRecipePacket(-1, (ResourceLocation) null);
+            throw new IllegalArgumentException("PlaceGhostRecipePacket error 112");
         }
     }
 

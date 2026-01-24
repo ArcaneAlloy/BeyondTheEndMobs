@@ -234,7 +234,7 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
             int experience = pBuffer.readInt();
             int eyes = pBuffer.readInt();
             Ingredient ingredients = Ingredient.fromNetwork(pBuffer);
-            return new WarlockRecipe(recipeId,BteRecipeCategory.ALL,null,null,level,eyes,experience,ingredients);
+            return new WarlockRecipe(recipeId,BteRecipeCategory.ALL,enchantment,texture,level,eyes,experience,ingredients);
         }
 
         @Override

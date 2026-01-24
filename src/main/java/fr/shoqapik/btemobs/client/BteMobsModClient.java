@@ -26,6 +26,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -87,7 +88,6 @@ public class BteMobsModClient {
             ((BlacksmithCraftScreen) screen).setCraftButtonActive(msg.active);
         }
     }
-
     public static void handlePlaceGhostRecipe(PlaceGhostRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         AbstractContainerMenu containerMenu = Minecraft.getInstance().player.containerMenu;
         if (containerMenu.containerId == msg.getContainerId()) {
