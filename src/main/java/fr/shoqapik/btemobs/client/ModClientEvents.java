@@ -8,6 +8,7 @@ import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.client.RecipeBookCategories;
+import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +19,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModClientEvents {
 

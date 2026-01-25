@@ -12,6 +12,7 @@ import fr.shoqapik.btemobs.rumors.Rumor;
 import fr.shoqapik.btemobs.rumors.RumorsManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
+import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -37,7 +38,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
-
+        /*
         if(event.side.isClient()) {
             //Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("BLACKSMITH"), true);
             //Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("WARLOCK"), true);
@@ -63,6 +64,8 @@ public class CommonEvents {
                 BteMobsMod.sendToClient(new SyncUnlockLevelPacket(0),serverPlayer);
             }
         }
+
+         */
     }
 
     @SubscribeEvent
