@@ -86,7 +86,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void onAdvancementEarn(AdvancementEvent.AdvancementEarnEvent event){
         if (event.getEntity().level.isClientSide){
-            //BteMobsMod.sendToServer(new CheckUnlockRecipePacket());
+            BteMobsMod.sendToServer(new CheckUnlockRecipePacket());
         }
     }
 

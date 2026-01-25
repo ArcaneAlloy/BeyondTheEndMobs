@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(GhostRecipe.class)
 public class GhostRecipeMixin {
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;depthFunc(I)V", shift = At.Shift.AFTER, ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
+    /*@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;depthFunc(I)V", shift = At.Shift.AFTER, ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
     public void render(PoseStack pPoseStack, Minecraft pMinecraft, int pLeftPos, int pTopPos, boolean p_100154_, float pPartialTick, CallbackInfo ci, int i, GhostRecipe.GhostIngredient ingredient, int j, int k, ItemStack itemstack, ItemRenderer itemrenderer) {
         if(itemstack.getCount() > 1) {
             itemrenderer.renderGuiItemDecorations(pMinecraft.font, itemstack, j, k);
         }
-    }
+    }*/
 
 }
