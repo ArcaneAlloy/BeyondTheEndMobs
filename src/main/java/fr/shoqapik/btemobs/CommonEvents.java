@@ -38,7 +38,6 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
-        /*
         if(event.side.isClient()) {
             //Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("BLACKSMITH"), true);
             //Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("WARLOCK"), true);
@@ -65,7 +64,7 @@ public class CommonEvents {
             }
         }
 
-         */
+
     }
 
     @SubscribeEvent
@@ -93,45 +92,6 @@ public class CommonEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
-        if(event.getItemStack().is(Items.STICK)){
-            if(event.getEntity().isShiftKeyDown()){
-            }else {
-                BteMobsMod.x-=0.1D;
-            }
-            BteMobsMod.LOGGER.debug("X :" + BteMobsMod.x);
-        }
-
-        if(event.getItemStack().is(Items.BLAZE_ROD)){
-            if(event.getEntity().isShiftKeyDown()){
-            }else {
-                BteMobsMod.y-=0.1D;
-            }
-            BteMobsMod.LOGGER.debug("Y :" + BteMobsMod.y);
-        }
-        if(event.getLevel().isClientSide && event.getItemStack().is(Items.ENDER_EYE)){
-        }
-
-        if(event.getItemStack().is(Items.HEART_OF_THE_SEA)){
-            if(event.getEntity().isShiftKeyDown()){
-            }else {
-                BteMobsMod.x+=0.1D;
-            }
-            BteMobsMod.LOGGER.debug("XQ :" + BteMobsMod.xq);
-        }
-        if(event.getItemStack().is(Items.GOLD_INGOT)){
-            BteMobsMod.z+=0.1D;
-        }
-
-        if(event.getItemStack().is(Items.NETHERITE_INGOT)){
-            BteMobsMod.z-=0.1D;
-        }
-        BteMobsMod.LOGGER.debug("X :" + BteMobsMod.x + " Y :"+BteMobsMod.y+
-                " Z :" + BteMobsMod.z + " XQ :"+BteMobsMod.xq+
-                " YQ :" + BteMobsMod.yq + " ZQ :"+BteMobsMod.zq);
-
-    }
     @SubscribeEvent
     public static void addQuestsData(AddReloadListenerEvent event){
         event.addListener(new QuestManager());

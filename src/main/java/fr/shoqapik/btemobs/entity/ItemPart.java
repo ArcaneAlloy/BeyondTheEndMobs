@@ -105,6 +105,7 @@ public class ItemPart extends PartEntity<DruidEntity> {
     private void selectSampleItem() {
         Optional<DruidRecipe> recipe;
         List<DruidRecipe> listRecipe = this.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get());
+        if(listRecipe.isEmpty())return;
         recipe= Optional.of(listRecipe.get(this.level.random.nextInt(0,listRecipe.size())));
 
         recipe.ifPresent(druidRecipe -> {

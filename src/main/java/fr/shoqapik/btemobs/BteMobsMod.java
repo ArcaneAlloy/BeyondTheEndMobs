@@ -221,6 +221,7 @@ public class BteMobsMod {
 
 
     }
+
     public static <C extends Container,T extends Recipe<C>> void checkStateRecipe(ServerPlayer player,RecipeType<T> type,List<Recipe<?>> recipes){
         List<T> recipes2  = getServer().getRecipeManager().getAllRecipesFor(type);
 
@@ -245,6 +246,7 @@ public class BteMobsMod {
             }
         }
     }
+
     public static<C extends Container,T extends Recipe<C>> List<T> getListRecipe (RecipeType<T> type){
         List<T> recipes = new ArrayList<>();
         for (UnlockRecipe recipe : ServerData.get().getUnlockRecipesForType(type)){
@@ -254,6 +256,7 @@ public class BteMobsMod {
         }
         return recipes;
     }
+
     public static List<WarlockRecipe> getWarlockRecipe(){
         List<WarlockRecipe> recipes = new ArrayList<>();
         for (UnlockRecipe recipe : ServerData.get().getUnlockRecipesForType(BteMobsRecipeTypes.WARLOCK_RECIPE.get())){
