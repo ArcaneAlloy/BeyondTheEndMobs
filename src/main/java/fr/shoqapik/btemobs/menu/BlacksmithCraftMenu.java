@@ -1,5 +1,6 @@
 package fr.shoqapik.btemobs.menu;
 
+import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
@@ -38,6 +39,6 @@ public class BlacksmithCraftMenu extends BteAbstractCraftMenu {
 
     @Override
     public RecipeBookType getRecipeBookType() {
-        return RecipeBookType.valueOf("BLACKSMITH");
+        return BteMobsMod.BLACKSMITH;
     }
 }

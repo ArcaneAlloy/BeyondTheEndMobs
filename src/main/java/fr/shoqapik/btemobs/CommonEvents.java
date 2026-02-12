@@ -39,8 +39,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
         if(event.side.isClient()) {
-            //Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("BLACKSMITH"), true);
-            //Minecraft.getInstance().player.getRecipeBook().setOpen(RecipeBookType.valueOf("WARLOCK"), true);
+            Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, true);
             Inventory inventory = Minecraft.getInstance().player.getInventory();
             if (inventory.getTimesChanged() != previousTimesChanged) {
                 previousTimesChanged = inventory.getTimesChanged();

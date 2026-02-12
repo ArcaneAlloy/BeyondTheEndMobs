@@ -32,6 +32,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -71,6 +72,8 @@ public class BteMobsMod {
     public static double yq=0;
     public static double zq=0;
     public static int eyes = 0;
+    public static final RecipeBookType BLACKSMITH =
+            RecipeBookType.create("BLACKSMITH");
     public static Rumor.UnlockLevel unlockLevel = Rumor.UnlockLevel.OVERWORLD;
     public static PageCompendium.UnlockLevel unlockLevel1 = PageCompendium.UnlockLevel.OVERWORLD;
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(

@@ -22,13 +22,13 @@ import java.util.Arrays;
 
 public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContainer> {
 
-    private final ResourceLocation resourceLocation;
+    private final ResourceLocation id;
     protected final BteRecipeCategory category;
     protected final NonNullList<Ingredient> ingredients;
     protected final ItemStack result;
 
-    public BteAbstractRecipe(ResourceLocation resourceLocation, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result) {
-        this.resourceLocation = resourceLocation;
+    public BteAbstractRecipe(ResourceLocation id, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result) {
+        this.id = id;
         this.category = category;
         this.ingredients = ingredients;
         this.result = result;
@@ -36,135 +36,168 @@ public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContai
 
     @Override
     public ResourceLocation getId() {
-        return this.resourceLocation;
+        return id;
     }
 
     public BteRecipeCategory getCategory() {
-        return this.category;
+        return category;
     }
 
     @Override
     public ItemStack getResultItem() {
-        return this.result;
+        return result;
     }
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        return this.ingredients;
+        return ingredients;
     }
 
     @Override
     public boolean matches(BteAbstractCraftContainer inventory, Level level) {
-        for(Ingredient ingredient : getIngredients()) {
+        return hasRequiredItems(inventory::countItem);
+    }
+
+    public boolean hasItems(Player player) {
+        return hasRequiredItems(player.getInventory()::countItem);
+    }
+
+    private boolean hasRequiredItems(IntCountProvider countProvider) {
+        for (Ingredient ingredient : ingredients) {
             boolean hasEnough = false;
 
-            for(ItemStack itemStack : ingredient.getItems()) {
-                if(inventory.countItem(itemStack.getItem()) == itemStack.getCount()) {
+            for (ItemStack stack : ingredient.getItems()) {
+                if (countProvider.count(stack.getItem()) >= stack.getCount()) {
                     hasEnough = true;
                     break;
                 }
             }
 
-            if(!hasEnough) return false;
+            if (!hasEnough) {
+                return false;
+            }
         }
-
         return true;
     }
 
     @Override
     public ItemStack assemble(BteAbstractCraftContainer inventory) {
-        return this.getResultItem().copy();
+        return result.copy();
     }
 
     @Override
-    public boolean canCraftInDimensions(int pWidth, int pHeight) {
-        return pWidth * pHeight >= this.ingredients.size();
+    public boolean canCraftInDimensions(int width, int height) {
+        return width * height >= ingredients.size();
     }
 
-    public boolean hasItems(Player player) {
-        for(Ingredient ingredient : getIngredients()) {
-            boolean hasEnough = false;
-
-            for(ItemStack itemStack : ingredient.getItems()) {
-                if(player.getInventory().countItem(itemStack.getItem()) >= itemStack.getCount()) {
-                    hasEnough = true;
-                    break;
-                }
-            }
-
-            if(!hasEnough) return false;
-        }
-        return true;
+    @FunctionalInterface
+    private interface IntCountProvider {
+        int count(net.minecraft.world.item.Item item);
     }
 
-    public static abstract class AbstractSerializer<T extends BteAbstractRecipe> implements RecipeSerializer<T> {
+
+    public static abstract class AbstractSerializer<T extends BteAbstractRecipe>
+            implements RecipeSerializer<T> {
+
         @Override
         public T fromJson(ResourceLocation recipeId, JsonObject json) {
             return fromJson(recipeId, json, new Object[0]);
         }
 
+        protected T fromJson(ResourceLocation recipeId,
+                             JsonObject json,
+                             Object... extra) {
 
-        protected T fromJson(ResourceLocation recipeId, JsonObject json, Object... objects) {
-            BteRecipeCategory category = Arrays.stream(BteRecipeCategory.values()).filter(e-> e.name().equals(json.get("category").getAsString())).findFirst().orElse(null);
-            NonNullList<Ingredient> nonnulllist = itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
+            String categoryName = GsonHelper.getAsString(json, "category");
+            BteRecipeCategory category;
 
-            if (nonnulllist.isEmpty()) {
-                throw new JsonParseException("No ingredients for bte recipe");
-            } else if (nonnulllist.size() > 6) {
-                throw new JsonParseException("Too many ingredients for bte recipe. The maximum is 6.");
-            } else {
-                ItemStack itemstack = hasResultItem() ? CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true, true) : ItemStack.EMPTY;
-                return of(recipeId, category, nonnulllist, itemstack, objects);
+            try {
+                category = BteRecipeCategory.valueOf(categoryName);
+            } catch (IllegalArgumentException e) {
+                throw new JsonParseException("Invalid recipe category: " + categoryName);
             }
+
+            NonNullList<Ingredient> ingredients =
+                    itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
+
+            if (ingredients.isEmpty()) {
+                throw new JsonParseException("No ingredients for bte recipe");
+            }
+
+            if (ingredients.size() > 6) {
+                throw new JsonParseException("Too many ingredients for bte recipe. Max: 6");
+            }
+
+            ItemStack resultStack = hasResultItem()
+                    ? CraftingHelper.getItemStack(
+                    GsonHelper.getAsJsonObject(json, "result"),
+                    true,
+                    true)
+                    : ItemStack.EMPTY;
+
+            return of(recipeId, category, ingredients, resultStack, extra);
         }
 
-        public static NonNullList<Ingredient> itemsFromJson(JsonArray pIngredientArray) {
-            NonNullList<Ingredient> nonnulllist = NonNullList.create();
+        public static NonNullList<Ingredient> itemsFromJson(JsonArray array) {
+            NonNullList<Ingredient> list = NonNullList.create();
 
-            for(int i = 0; i < pIngredientArray.size(); ++i) {
-                Ingredient ingredient = Ingredient.fromJson(pIngredientArray.get(i));
-
+            for (int i = 0; i < array.size(); ++i) {
+                Ingredient ingredient = Ingredient.fromJson(array.get(i));
                 if (!ingredient.isEmpty()) {
-                    nonnulllist.add(ingredient);
+                    list.add(ingredient);
                 }
             }
 
-            return nonnulllist;
+            return list;
         }
 
         @Override
-        public T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf pBuffer) {
-            return fromNetwork(recipeId, pBuffer, new Object[0]);
+        public T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            return fromNetwork(recipeId, buffer, new Object[0]);
         }
 
-        protected T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf pBuffer, Object... objects) {
-            BteRecipeCategory category = BteRecipeCategory.valueOf(pBuffer.readUtf());
+        protected T fromNetwork(ResourceLocation recipeId,
+                                FriendlyByteBuf buffer,
+                                Object... extra) {
 
-            int i = pBuffer.readVarInt();
-            NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
+            BteRecipeCategory category =
+                    BteRecipeCategory.valueOf(buffer.readUtf());
 
-            for(int j = 0; j < nonnulllist.size(); ++j) {
-                nonnulllist.set(j, Ingredient.fromNetwork(pBuffer));
+            int size = buffer.readVarInt();
+            NonNullList<Ingredient> ingredients =
+                    NonNullList.withSize(size, Ingredient.EMPTY);
+
+            for (int i = 0; i < size; ++i) {
+                ingredients.set(i, Ingredient.fromNetwork(buffer));
             }
 
-            ItemStack itemstack = hasResultItem() ? pBuffer.readItem() : ItemStack.EMPTY;
-            return of(recipeId, category, nonnulllist, itemstack);
+            ItemStack resultStack =
+                    hasResultItem() ? buffer.readItem() : ItemStack.EMPTY;
+
+            return of(recipeId, category, ingredients, resultStack, extra);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf pBuffer, T recipe) {
-            pBuffer.writeUtf(recipe.getCategory().name());
-            pBuffer.writeVarInt(recipe.ingredients.size());
+        public void toNetwork(FriendlyByteBuf buffer, T recipe) {
+            buffer.writeUtf(recipe.getCategory().name());
+            buffer.writeVarInt(recipe.ingredients.size());
 
-            for(Ingredient ingredient : recipe.ingredients) {
-                ingredient.toNetwork(pBuffer);
+            for (Ingredient ingredient : recipe.ingredients) {
+                ingredient.toNetwork(buffer);
             }
 
-            if(hasResultItem()) pBuffer.writeItem(recipe.result);
+            if (hasResultItem()) {
+                buffer.writeItem(recipe.result);
+            }
         }
 
         public abstract boolean hasResultItem();
 
-        protected abstract T of(ResourceLocation resourceLocation, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result, Object... objects);
+        protected abstract T of(ResourceLocation id,
+                                BteRecipeCategory category,
+                                NonNullList<Ingredient> ingredients,
+                                ItemStack result,
+                                Object... extra);
     }
 }
+

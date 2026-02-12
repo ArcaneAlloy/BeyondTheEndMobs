@@ -237,7 +237,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
         }
 
         if(this.tablePos!=null){
-            this.setPos(this.tablePos.getX()+0.5F,this.tablePos.getY()+2.7755575615628914E-17,this.tablePos.getZ()+0.6F);
+            this.setPos(this.tablePos.getX()+0.9F,this.tablePos.getY()+2.7755575615628914E-17,this.tablePos.getZ()+0.9F);
         }
 
         this.setYBodyRot(this.getAttachFace().toYRot());
