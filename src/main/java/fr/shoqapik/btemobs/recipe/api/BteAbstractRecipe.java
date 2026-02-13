@@ -195,8 +195,7 @@ public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContai
 
         protected abstract T of(ResourceLocation id,
                                 BteRecipeCategory category,
-                                NonNullList<Ingredient> ingredients,
-                                ItemStack result,
+                                NonNullList<Ingredient> ingredients, ItemStack result,
                                 Object... extra);
     }
 }

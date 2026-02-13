@@ -205,6 +205,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
                 }
             }
         }
+
         if(this.isCrafting()){
             this.craftingTime--;
             if(this.craftingTime==175){
@@ -237,7 +238,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
         }
 
         if(this.tablePos!=null){
-            this.setPos(this.tablePos.getX()+0.9F,this.tablePos.getY()+2.7755575615628914E-17,this.tablePos.getZ()+0.9F);
+            this.setPos(this.tablePos.getX()+0.26F,this.tablePos.getY()+2.7755575615628914E-17,this.tablePos.getZ()+0.26F);
         }
 
         this.setYBodyRot(this.getAttachFace().toYRot());
