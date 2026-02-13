@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:iron_ingot",
+      "count": 7
+    }
+  ],
+  "result": {
+    "item": "minecraft:iron_leggings"
+  }
+}

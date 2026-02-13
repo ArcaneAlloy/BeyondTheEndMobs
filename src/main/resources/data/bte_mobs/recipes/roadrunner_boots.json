@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 3,
+  "base": {
+    "item": "minecraft:leather_boots"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:roadrunner_feather",
+      "count": 4
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:sandstone",
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "alexsmobs:roadrunner_boots"
+  }
+}

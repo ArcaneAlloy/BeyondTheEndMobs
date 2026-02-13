@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 0,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:gold_ingot",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:stick",
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "minecraft:golden_axe"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:netherite_ingot",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "illagerrevolutionmod:scrapper_armor_netherite"
+  }
+}

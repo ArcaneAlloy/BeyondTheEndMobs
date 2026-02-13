@@ -1,0 +1,18 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 4,
+    "base": {
+      "item": "dungeons_gear:slayer_crossbow"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:netherite_ingot",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "bigextras:strong_crossbow"
+    }
+  }

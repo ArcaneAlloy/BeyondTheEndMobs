@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 3,
+  "base": {
+    "item": "minecraft:diamond_boots"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:stalwart_boots"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:explorer",
+  "texture": "bte_mobs:textures/enchantments/explorer_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:glistering_melon_slice",
+      "count": 5
+    }
+  ]
+}

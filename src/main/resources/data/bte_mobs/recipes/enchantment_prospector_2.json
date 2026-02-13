@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:prospector",
+  "texture": "bte_mobs:textures/enchantments/prospector_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:emerald",
+      "count": 8
+    },
+    {
+      "item": "minecraft:gold_ingot",
+      "count": 8
+    }
+  ]
+}

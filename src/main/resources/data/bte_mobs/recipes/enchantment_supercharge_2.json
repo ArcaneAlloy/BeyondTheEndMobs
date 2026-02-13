@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:supercharge",
+  "texture": "bte_mobs:textures/enchantments/supercharge_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "alexsmobs:spiked_scute",
+      "count": 2
+    }
+  ]
+}

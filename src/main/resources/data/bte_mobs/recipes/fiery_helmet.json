@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 4,
+  "base": {
+    "item": "minecraft:diamond_helmet"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "twilightforest:fiery_blood",
+      "count": 5
+    }
+  ],
+  "result": {
+    "item": "twilightforest:fiery_helmet"
+  }
+}

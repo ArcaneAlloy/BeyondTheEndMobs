@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:unbreaking",
+  "texture": "bte_mobs:textures/enchantments/unbreaking_4.png",
+  "eyes": 19,
+  "level": 4,
+  "experience": 30,
+  "ingredients": [
+    {
+      "item": "quark:shell",
+      "count": 4
+    }
+  ]
+}

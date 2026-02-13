@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:looting",
+  "texture": "bte_mobs:textures/enchantments/looting_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:skeleton_skull",
+      "count": 3
+    },
+    {
+      "item": "minecraft:rotten_flesh",
+      "count": 16
+    }
+  ]
+}

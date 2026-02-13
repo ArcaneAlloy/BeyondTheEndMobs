@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 3,
+  "base": {
+    "item": "minecraft:diamond_leggings"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:blood_sac",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:bone",
+      "count": 3
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:hungry_horror_leggings"
+  }
+}

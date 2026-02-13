@@ -1,0 +1,17 @@
+{
+  "type": "bte_mobs:explorer_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:end_stone",
+      "count": 4
+    },
+    {
+      "item": "minecraft:crying_obsidian",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "beyondtheendcompass:compass_cataclysm_ruined_citadel"
+  }
+}

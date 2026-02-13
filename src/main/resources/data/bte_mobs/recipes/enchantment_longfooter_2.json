@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "combatroll:longfooter",
+  "texture": "bte_mobs:textures/enchantments/longfooter_2.png",
+  "eyes": 0,
+  "level": 2,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:rabbit_foot",
+      "count": 3
+    }
+  ]
+}

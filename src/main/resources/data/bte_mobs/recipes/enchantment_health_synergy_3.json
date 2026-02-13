@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:health_synergy",
+  "texture": "bte_mobs:textures/enchantments/health_synergy_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:ghast_tear",
+      "count": 5
+    },
+    {
+      "item": "minecraft:glistering_melon_slice",
+      "count": 13
+    }
+  ]
+}

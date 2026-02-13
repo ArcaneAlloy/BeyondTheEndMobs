@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:cowardice",
+  "texture": "bte_mobs:textures/enchantments/cowardice_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:skeleton_skull",
+      "count": 3
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 3
+    }
+  ]
+}

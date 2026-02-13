@@ -1,0 +1,28 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 5,
+  "base": {
+    "item": "minecraft:netherite_leggings"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:cursium_ingot",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:soul_heart",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:void_core_fragment",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "cataclysm:cursium_leggings"
+  }
+}

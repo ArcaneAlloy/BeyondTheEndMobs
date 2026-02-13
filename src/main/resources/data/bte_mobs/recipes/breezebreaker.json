@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 5,
+  "base": {
+    "item": "dungeons_gear:masters_katana"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "dungeons_mobs:wind_essence",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "celestisynth:zephyr_deposit",
+      "count": 3
+    }
+  ],
+  "result": {
+    "item": "celestisynth:breezebreaker"
+  }
+}

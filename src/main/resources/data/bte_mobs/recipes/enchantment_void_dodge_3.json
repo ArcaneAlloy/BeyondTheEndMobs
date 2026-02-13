@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:void_dodge",
+  "texture": "bte_mobs:textures/enchantments/void_dodge_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "alexsmobs:emu_feather",
+      "count": 3
+    },
+    {
+      "item": "minecraft:ender_pearl",
+      "count": 3
+    }
+  ]
+}

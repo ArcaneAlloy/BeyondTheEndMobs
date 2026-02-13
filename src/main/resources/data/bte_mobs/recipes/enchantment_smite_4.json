@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:smite",
+  "texture": "bte_mobs:textures/enchantments/smite_4.png",
+  "eyes": 10,
+  "level": 4,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:bone",
+      "count": 13
+    }
+  ]
+}

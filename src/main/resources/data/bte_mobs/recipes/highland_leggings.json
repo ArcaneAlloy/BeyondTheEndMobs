@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 2,
+  "base": {
+    "item": "minecraft:iron_leggings"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:leather",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "quark:green_corundum_cluster",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:highland_leggings"
+  }
+}

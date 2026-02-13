@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:beast_boss",
+  "texture": "bte_mobs:textures/enchantments/beast_boss_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:name_tag",
+      "count": 1
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 3
+    }
+  ]
+}

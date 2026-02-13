@@ -1,0 +1,21 @@
+ {
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:brick",
+      "count": 7
+    },
+    {
+      "item": "minecraft:bone_meal",
+      "count": 1
+    },
+    {
+      "item": "minecraft:dirt",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "supplementaries:planter"
+  }
+}

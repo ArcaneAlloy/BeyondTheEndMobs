@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:final_shout",
+  "texture": "bte_mobs:textures/enchantments/final_shout_2.png",
+  "eyes": 13,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:totem_of_undying",
+      "count": 1
+    },
+    {
+      "item": "minecraft:enchanted_golden_apple",
+      "count": 2
+    }
+  ]
+}
