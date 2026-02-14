@@ -1,0 +1,18 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 5,
+    "base": {
+      "item": "dungeons_gear:twin_bow"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "alexsmobs:void_worm_mandible",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:haunted_bow"
+    }
+  }

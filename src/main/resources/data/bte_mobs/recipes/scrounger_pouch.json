@@ -1,0 +1,13 @@
+{
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 2
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "illagerrevolutionmod:scrounger_pouch"
+  }
+}

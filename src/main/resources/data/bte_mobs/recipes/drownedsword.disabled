@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 5,
+  "base": {
+    "item": "dungeons_gear:whispering_spear"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "upgrade_aquatic:thrasher_tooth",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:heart_of_the_sea",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "monstersandmushrooms:drownedsword"
+  }
+}

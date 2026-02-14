@@ -7,6 +7,7 @@ import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +32,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -208,9 +210,13 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
         public WarlockRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             String enchantId = json.get("enchantment").getAsString();
             ResourceLocation enchantment = new ResourceLocation(enchantId);
-            Enchantment enchantment1 = ForgeRegistries.ENCHANTMENTS.getDelegate(enchantment).orElseThrow(() -> {
-                return new IllegalStateException("Enchantment: " + enchantId + " does not exist");
-            }).get();
+            Optional<Holder.Reference<Enchantment>> delegate =
+                    ForgeRegistries.ENCHANTMENTS.getDelegate(enchantment);
+
+            if (delegate.isEmpty()) {
+                throw new JsonSyntaxException("Enchantment does not exist: " + enchantId);
+            }
+
             ResourceLocation texture = null;
             if (json.has("texture")) {
                 texture = new ResourceLocation(json.get("texture").getAsString());

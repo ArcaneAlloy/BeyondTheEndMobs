@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:poison_cloud",
+  "texture": "bte_mobs:textures/enchantments/poison_cloud_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "alexsmobs:poison_bottle",
+      "count": 8
+    }
+  ]
+}

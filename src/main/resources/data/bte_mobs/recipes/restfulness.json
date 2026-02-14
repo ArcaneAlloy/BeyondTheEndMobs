@@ -1,0 +1,8 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "upgrade_aquatic:restfulness",
+  "tier": 1,
+  "ingredient": {
+    "item": "minecraft:cocoa_beans"
+  }
+}

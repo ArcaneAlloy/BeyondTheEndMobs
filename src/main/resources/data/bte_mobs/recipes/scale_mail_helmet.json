@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 2,
+  "base": {
+    "item": "minecraft:iron_helmet"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:leather",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "quark:indigo_corundum_cluster",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:scale_mail_helmet"
+  }
+}

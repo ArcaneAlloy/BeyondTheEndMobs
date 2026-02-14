@@ -1,0 +1,17 @@
+ {
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 3
+    },
+    {
+      "item": "minecraft:string",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "quark:seed_pouch"
+  }
+}

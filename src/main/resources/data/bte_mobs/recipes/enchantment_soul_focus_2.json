@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:soul_focus",
+  "texture": "bte_mobs:textures/enchantments/soul_focus_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:soul_sand",
+      "count": 8
+    },
+    {
+      "item": "quark:soul_bead",
+      "count": 5
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 1
+    }
+  ]
+}

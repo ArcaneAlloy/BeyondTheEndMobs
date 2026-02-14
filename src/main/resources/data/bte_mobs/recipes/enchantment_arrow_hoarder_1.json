@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:arrow_hoarder",
+  "texture": "bte_mobs:textures/enchantments/arrow_hoarder_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "supplementaries:quiver",
+      "count": 1
+    }
+  ]
+}

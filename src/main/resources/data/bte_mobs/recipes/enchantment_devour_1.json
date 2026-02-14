@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:devour",
+  "texture": "bte_mobs:textures/enchantments/devour_1.png",
+  "eyes": 10,
+  "level": 1,
+  "experience": 21,
+  "ingredients": [
+    {
+      "item": "alexsmobs:soul_heart",
+      "count": 3
+    }
+  ]
+}

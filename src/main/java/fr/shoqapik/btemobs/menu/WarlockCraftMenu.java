@@ -50,6 +50,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
             @Override
             public void slotChanged(AbstractContainerMenu menu, int i, ItemStack itemStack) {
                 if(menu != WarlockCraftMenu.this) return;
+                if(WarlockCraftMenu.this.craftSlots.isEmpty())return;
                 if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots
                         && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
                 Optional<WarlockRecipe> optional = WarlockCraftMenu.this.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
@@ -218,7 +219,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                     index ++;
                 }
             }else {
-                //BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
+                BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
             }
         }
     }

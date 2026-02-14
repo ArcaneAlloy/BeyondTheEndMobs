@@ -1,0 +1,28 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 5,
+  "base": {
+    "item": "minecraft:netherite_helmet"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:ignitium_ingot",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_blaze_core_fragment",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:void_core_fragment",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "cataclysm:ignitium_helmet"
+  }
+}

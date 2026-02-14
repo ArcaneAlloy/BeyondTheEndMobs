@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:centipede_leg",
+      "count": 7
+    }
+  ],
+  "result": {
+    "item": "alexsmobs:centipede_leggings"
+  }
+}

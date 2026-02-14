@@ -1,0 +1,23 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 3,
+    "base": {
+      "item": "dungeons_gear:stormlander"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:ender_eye",
+        "count": 1
+      },
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:amethyst_shard",
+        "count": 9
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:hammer_of_gravity"
+    }
+  }

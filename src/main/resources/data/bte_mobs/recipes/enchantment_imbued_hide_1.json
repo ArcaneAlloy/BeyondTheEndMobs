@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "backpacked:imbued_hide",
+  "texture": "bte_mobs:textures/enchantments/imbued_hide_1.png",
+  "eyes": 4,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 32
+    },
+    {
+      "item": "minecraft:magma_cream",
+      "count": 8
+    }
+  ]
+}

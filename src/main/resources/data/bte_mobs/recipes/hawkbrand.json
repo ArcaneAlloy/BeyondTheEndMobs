@@ -1,0 +1,18 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "WEAPONS",
+    "tier": 2,
+    "base": {
+      "item": "minecraft:iron_sword"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "minecraft:emerald_block",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "dungeons_gear:hawkbrand"
+    }
+  }

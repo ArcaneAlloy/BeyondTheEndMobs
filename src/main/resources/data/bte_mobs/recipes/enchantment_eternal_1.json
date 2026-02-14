@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:eternal",
+  "texture": "bte_mobs:textures/enchantments/eternal_1.png",
+  "eyes": 10,
+  "level": 1,
+  "experience": 30,
+  "ingredients": [
+    {
+      "item": "minecraft:totem_of_undying",
+      "count": 1
+    }
+  ]
+}

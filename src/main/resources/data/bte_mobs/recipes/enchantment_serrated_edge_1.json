@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "illagerrevolutionmod:serrated_edge",
+  "texture": "bte_mobs:textures/enchantments/serrated_edge_1.png",
+  "eyes": 4,
+  "level": 1,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "illagerrevolutionmod:illagium",
+      "count": 1
+    }
+  ]
+}

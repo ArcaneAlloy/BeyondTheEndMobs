@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:electrified",
+  "texture": "bte_mobs:textures/enchantments/electrified_1.png",
+  "eyes": 10,
+  "level": 1,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:copper_block",
+      "count": 3
+    },
+    {
+      "item": "minecraft:lightning_rod",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:critical_sunder",
+  "texture": "bte_mobs:textures/enchantments/critical_sunder_1.png",
+  "eyes": 4,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:ghast_tear",
+      "count": 3
+    }
+  ]
+}

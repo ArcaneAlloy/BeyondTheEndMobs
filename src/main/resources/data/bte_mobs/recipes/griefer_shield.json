@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 3,
+  "base": {
+    "item": "shieldexp:iron_shield"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "savage_and_ravage:creeper_spores",
+      "count": 24
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:gold_ingot",
+      "count": 16
+    }
+  ],
+  "result": {
+    "item": "shieldexp:griefer_shield"
+  }
+}

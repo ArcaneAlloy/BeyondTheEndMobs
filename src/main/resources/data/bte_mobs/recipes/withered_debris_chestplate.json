@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 4,
+  "base": {
+    "item": "minecraft:netherite_chestplate"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "bygonenether:withered_debris",
+      "count": 8
+    }
+  ],
+  "result": {
+    "item": "monstersandmushrooms:wither_chestplate"
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "type": "bte_mobs:blacksmith_upgrade",
+    "category": "ARMORS",
+    "tier": 3,
+    "base": {
+      "item": "illagerrevolutionmod:goggles_miner"
+    },
+    "ingredients": [
+      {
+        "type": "bte_mobs:item",
+        "item": "illagerrevolutionmod:illagium",
+        "count": 1
+      }
+    ],
+    "result": {
+      "item": "illagerrevolutionmod:goggles_miner_reinforced"
+    }
+  }

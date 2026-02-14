@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:luck_of_the_sea",
+  "texture": "bte_mobs:textures/enchantments/luck_of_the_sea_3.png",
+  "eyes": 7,
+  "level": 3,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:tropical_fish",
+      "count": 8
+    }
+  ]
+}

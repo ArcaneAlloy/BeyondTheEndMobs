@@ -83,15 +83,16 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
                         double percentage = 0.33;
                         if (isNugget(itemstack2)) percentage = 0.03;
 
-                        int i = 0;
-                        int damage = itemstack1.getDamageValue();
-                        for (i = 0; i < itemstack2.getCount(); ++i) {
-                            damage = (int) (damage - itemstack1.getMaxDamage() * percentage);
-                            //l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
-                        }
-                        itemstack1.setDamageValue(damage);
+                        int itemsToUse = calculateRepairCost(itemstack1, itemstack2, percentage);
 
-                        this.repairItemCountCost = i;
+                        int damage = itemstack1.getDamageValue();
+                        int repairPerItem = (int) (itemstack1.getMaxDamage() * percentage);
+
+                        damage -= repairPerItem * itemsToUse;
+                        damage = Math.max(0, damage);
+
+                        itemstack1.setDamageValue(damage);
+                        this.repairItemCountCost = itemsToUse;
 
                     }
                     else if (itemstack1.isDamageableItem() && isValidRepairItem(itemstack, itemstack2) && !repairRules.containsKey(itemstack1.getDescriptionId())) {
@@ -105,15 +106,16 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
                         double percentage = 0.33;
                         if (isNugget(itemstack2)) percentage = 0.03;
 
-                        int i = 0;
-                        int damage = itemstack1.getDamageValue();
-                        for (i = 0; i < itemstack2.getCount(); ++i) {
-                            damage = (int) (damage - itemstack1.getMaxDamage() * percentage);
-                            //l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
-                        }
-                        itemstack1.setDamageValue(damage);
+                        int itemsToUse = calculateRepairCost(itemstack1, itemstack2, percentage);
 
-                        this.repairItemCountCost = i;
+                        int damage = itemstack1.getDamageValue();
+                        int repairPerItem = (int) (itemstack1.getMaxDamage() * percentage);
+
+                        damage -= repairPerItem * itemsToUse;
+                        damage = Math.max(0, damage);
+
+                        itemstack1.setDamageValue(damage);
+                        this.repairItemCountCost = itemsToUse;
                     } else if (itemstack1.isDamageableItem() && itemstack1.is(itemstack2.getItem())) {
                         int durability1 = itemstack1.getMaxDamage() - itemstack1.getDamageValue();
                         int durability2 = itemstack2.getMaxDamage() - itemstack2.getDamageValue();
@@ -140,6 +142,18 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
                 this.resultSlots.setItem(0, itemstack1);
                 this.broadcastChanges();
             }
+    }
+    private int calculateRepairCost(ItemStack tool, ItemStack material, double percentage) {
+        int maxDamage = tool.getMaxDamage();
+        int damage = tool.getDamageValue();
+
+        int repairPerItem = (int) (maxDamage * percentage);
+        if (repairPerItem <= 0) {
+            return 0;
+        }
+
+        int itemsNeeded = (int) Math.ceil((double) damage / repairPerItem);
+        return Math.min(itemsNeeded, material.getCount());
     }
 
     public void setItemName(String pNewName) {

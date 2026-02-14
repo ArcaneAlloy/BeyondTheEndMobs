@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "OTHERS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:stick",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "twilightforest:steeleaf_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "twilightforest:steeleaf_shovel"
+  }
+}

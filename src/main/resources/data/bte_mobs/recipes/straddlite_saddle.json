@@ -1,0 +1,17 @@
+ {
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:saddle",
+      "count": 1
+    },
+    {
+      "item": "alexsmobs:straddlite",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "alexsmobs:straddle_saddle"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:echo",
+  "texture": "bte_mobs:textures/enchantments/echo_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:echo_shard",
+      "count": 5
+    }
+  ]
+}

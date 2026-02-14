@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:homing",
+  "texture": "bte_mobs:textures/enchantments/homing_1.png",
+  "eyes": 4,
+  "level": 1,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "alexsmobs:frostalker_horn",
+      "count": 1
+    }
+  ]
+}

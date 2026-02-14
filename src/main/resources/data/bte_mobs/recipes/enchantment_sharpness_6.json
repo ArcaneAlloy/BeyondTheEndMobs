@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "minecraft:sharpness",
+  "texture": "bte_mobs:textures/enchantments/sharpness_6.png",
+  "eyes": 19,
+  "level": 6,
+  "experience": 30,
+  "ingredients": [
+    {
+      "item": "minecraft:bone",
+      "count": 17
+    },
+    {
+      "item": "minecraft:spider_eye",
+      "count": 13
+    }
+  ]
+}

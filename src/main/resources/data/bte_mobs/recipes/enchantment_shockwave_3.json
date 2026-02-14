@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:shockwave",
+  "texture": "bte_mobs:textures/enchantments/shockwave_3.png",
+  "eyes": 13,
+  "level": 3,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 3
+    }
+  ]
+}

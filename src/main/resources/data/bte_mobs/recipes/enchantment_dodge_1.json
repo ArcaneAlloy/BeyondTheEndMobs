@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:dodge",
+  "texture": "bte_mobs:textures/enchantments/dodge_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "alexsmobs:emu_feather",
+      "count": 3
+    },
+    {
+      "item": "alexsmobs:kangaroo_hide",
+      "count": 3
+    }
+  ]
+}

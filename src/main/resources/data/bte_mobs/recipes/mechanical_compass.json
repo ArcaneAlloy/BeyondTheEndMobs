@@ -1,0 +1,17 @@
+{
+  "type": "bte_mobs:explorer_recipe",
+  "ingredients": [
+    {
+      "item": "bygonenether:withered_debris",
+      "count": 4
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "beyondtheendcompass:compass_cataclysm_ancient_factory"
+  }
+}

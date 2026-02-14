@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:true_edge",
+  "texture": "bte_mobs:textures/enchantments/true_edge_2.png",
+  "eyes": 10,
+  "level": 2,
+  "experience": 13,
+  "ingredients": [
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 5
+    }
+  ]
+}

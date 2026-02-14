@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:death_barter",
+  "texture": "bte_mobs:textures/enchantments/death_barter_2.png",
+  "eyes": 7,
+  "level": 2,
+  "experience": 8,
+  "ingredients": [
+    {
+      "item": "minecraft:skeleton_skull",
+      "count": 8
+    },
+    {
+      "item": "minecraft:totem_of_undying",
+      "count": 1
+    },
+    {
+      "item": "illagerrevolutionmod:illagium",
+      "count": 48
+    }
+  ]
+}

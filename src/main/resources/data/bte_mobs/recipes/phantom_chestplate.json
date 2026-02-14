@@ -1,0 +1,15 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "ARMORS",
+  "tier": 2,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:phantom_membrane",
+      "count": 8
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:phantom_chestplate"
+  }
+}

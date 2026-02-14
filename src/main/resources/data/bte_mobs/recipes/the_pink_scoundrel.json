@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 3,
+  "base": {
+    "item": "dungeons_gear:red_snake"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:crimson_planks",
+      "count": 3
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:the_pink_scoundrel"
+  }
+}
