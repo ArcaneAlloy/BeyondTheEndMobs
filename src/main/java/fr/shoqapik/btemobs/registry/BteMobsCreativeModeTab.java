@@ -29,7 +29,8 @@ public class BteMobsCreativeModeTab {
     public static void preOrdenInit(){
         List<Item> itemList= List.of(
                 BteMobsBlocks.EXPLORER_TABLE.get().asItem(),
-                BteMobsBlocks.ORIANA_OAK.get().asItem()
+                BteMobsBlocks.ORIANA_OAK.get().asItem(),
+                BteMobsBlocks.MAGMA_FORGE.get().asItem()
         );
 
         stackComparator= Ordering.explicit(itemList).onResultOf(ItemStack::getItem);

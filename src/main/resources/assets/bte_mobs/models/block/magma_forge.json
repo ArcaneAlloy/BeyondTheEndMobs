@@ -320,6 +320,30 @@
 			}
 		}
 	],
+	"display": {
+		"thirdperson_righthand": {
+			"scale": [0.32, 0.32, 0.32]
+		},
+		"thirdperson_lefthand": {
+			"scale": [0.32, 0.32, 0.32]
+		},
+		"firstperson_righthand": {
+			"scale": [0.32, 0.32, 0.32]
+		},
+		"firstperson_lefthand": {
+			"scale": [0.32, 0.32, 0.32]
+		},
+		"ground": {
+			"scale": [0.32, 0.32, 0.32]
+		},
+		"gui": {
+			"translation": [0, -1.25, 0],
+			"scale": [0.32, 0.32, 0.32]
+		},
+		"fixed": {
+			"scale": [0.32, 0.32, 0.32]
+		}
+	},
 	"groups": [
 		{
 			"name": "bone",
