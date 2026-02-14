@@ -286,7 +286,7 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
                     }
                 }
             }else {
-                //BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
+                BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
             }
         }
     }

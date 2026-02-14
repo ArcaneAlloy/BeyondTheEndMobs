@@ -154,7 +154,7 @@ public class DruidMenu extends AbstractContainerMenu {
                     index ++;
                 }
             }else {
-                //BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
+                BteMobsMod.sendToClient(new PlaceGhostRecipePacket(this.containerId,recipe),player);
             }
         }
     }

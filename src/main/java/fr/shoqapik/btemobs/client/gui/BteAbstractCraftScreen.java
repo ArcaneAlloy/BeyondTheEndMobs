@@ -2,6 +2,7 @@ package fr.shoqapik.btemobs.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.client.widget.BteRecipeBookComponent;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
 import net.minecraft.client.gui.components.Button;
@@ -59,7 +60,13 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu>
         int x = this.leftPos + 134;
         int y = (this.height - this.imageHeight) / 2 + 68;
 
-        craftButton = new Button(x, y, 35, 14, Component.literal("Craft"), btn -> {Recipe<?> recipe = recipeBook.recipeBookPage.getLastClickedRecipe();menu.craftItemClient(recipe);btn.active = false;});
+        this.craftButton = new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
+            @Override public void onPress(Button button) {
+                Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBook.recipeBookPage.getLastClickedRecipe();
+                BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
+                BteAbstractCraftScreen.this.craftButton.active = false;
+            }
+        });
 
         craftButton.active = false;
         addRenderableWidget(craftButton);

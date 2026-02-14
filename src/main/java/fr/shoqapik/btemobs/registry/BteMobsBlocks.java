@@ -24,7 +24,7 @@ public class BteMobsBlocks {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, BteMobsMod.MODID);
 
-    public static final RegistryObject<MagmaForgeBlock> MAGMA_FORGE = BLOCKS.register("magma_forge",
+    public static final RegistryObject<MagmaForgeBlock> MAGMA_FORGE = registerBlock("magma_forge",
             () -> new MagmaForgeBlock(BlockBehaviour.Properties.of(Material.HEAVY_METAL, MaterialColor.METAL).noOcclusion().lightLevel((state) -> 9)));
     public static final RegistryObject<Block> EXPLORER_TABLE = registerBlock("explorer_table",
             () -> new ExplorerTableBlock(BlockBehaviour.Properties.copy(Blocks.ACACIA_PLANKS))
