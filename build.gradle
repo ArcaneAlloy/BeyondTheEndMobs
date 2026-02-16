@@ -136,6 +136,7 @@ dependencies {
     implementation fg.deobf("curse.maven:jei-238222:4494410")
     implementation fg.deobf("com.patataprojects:anvilchanges:0.5.1-1.19.2")
     implementation fg.deobf("mc.duzo:enders_journey:1.0.3")
+    //implementation fg.deobf(files("libs/beyondtheendcompass-1.0.0 - 1.19.2.jar"))
     implementation fg.deobf("curse.maven:stoneworks-852663:5049592")
     implementation fg.deobf("curse.maven:big-extras-forge-499948:4713352")
     implementation fg.deobf("curse.maven:cataclysmic-combat-880483:5790282")

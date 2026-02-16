@@ -1,8 +1,6 @@
 package fr.shoqapik.btemobs;
 
-import fr.shoqapik.btemobs.recipe.WarlockRecipe;
-import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
-import net.minecraft.core.Registry;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
