@@ -80,12 +80,14 @@ public class ServerData extends SavedData {
 			getRecipesManager().forEach((key,list)->{
 				CompoundTag tag = new CompoundTag();
 				ListTag recipes = new ListTag();
-				tag.putString("type",key.toString());
-				for (UnlockRecipe recipe : list){
-					recipes.add(recipe.savedData());
+				if(key!=null){
+					tag.putString("type",ForgeRegistries.RECIPE_TYPES.getKey(key).toString());
+					for (UnlockRecipe recipe : list){
+						recipes.add(recipe.savedData());
+					}
+					tag.put("recipes",recipes);
+					listTag.add(tag);
 				}
-				tag.put("recipes",recipes);
-				listTag.add(tag);
 			});
 		}
 		data.put("unlockRecipes",listTag);
@@ -101,8 +103,10 @@ public class ServerData extends SavedData {
 				List<UnlockRecipe> list = new ArrayList<>();
 				CompoundTag nbt = tags.getCompound(i);
 				ListTag recipeData = nbt.getList("recipes",10);
+				if(!ResourceLocation.isValidResourceLocation(nbt.getString("type")))continue;
 				RecipeType<?> type = ForgeRegistries.RECIPE_TYPES.getValue(new ResourceLocation(nbt.getString("type")));
-
+				if (type == null)
+					continue;
 				for (int j = 0 ; j<recipeData.size() ; j++){
 					CompoundTag tag = recipeData.getCompound(j);
 					UnlockRecipe recipe = new UnlockRecipe(tag);

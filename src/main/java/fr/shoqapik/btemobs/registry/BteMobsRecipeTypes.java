@@ -18,11 +18,20 @@ public class BteMobsRecipeTypes {
         public int hashCode() {
             return super.hashCode();
         }
+        @Override
+        public String toString() {
+            return "blacksmith";
+        }
     });
     public static final RegistryObject<RecipeType<BlacksmithUpgradeRecipe>> BLACKSMITH_UPGRADE_RECIPE = RECIPE_TYPES.register("blacksmith_upgrade", ()-> new RecipeType<>() {
         @Override
         public int hashCode() {
             return super.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "blacksmith_upgrade";
         }
     });
 
@@ -32,7 +41,7 @@ public class BteMobsRecipeTypes {
             return super.hashCode();
         }
         public String toString(){
-            return BteMobsMod.MODID+":warlock_recipe";
+            return "warlock_recipe";
         }
     });
 
@@ -42,7 +51,7 @@ public class BteMobsRecipeTypes {
             return super.hashCode();
         }
         public String toString(){
-            return BteMobsMod.MODID+":explorer_recipe_type";
+            return "explorer_recipe_type";
         }
     });
     public static final RegistryObject<RecipeType<WarlockPotionRecipe>> WARLOCK_POTION_RECIPE = RECIPE_TYPES.register("warlock_potion", ()-> new RecipeType<>() {
@@ -51,7 +60,7 @@ public class BteMobsRecipeTypes {
             return super.hashCode();
         }
         public String toString(){
-            return BteMobsMod.MODID+":warlock_potion";
+            return "warlock_potion";
         }
     });
 
@@ -61,7 +70,7 @@ public class BteMobsRecipeTypes {
             return super.hashCode();
         }
         public String toString(){
-            return BteMobsMod.MODID+":druid_recipe_type";
+            return "druid_recipe_type";
         }
     });
 

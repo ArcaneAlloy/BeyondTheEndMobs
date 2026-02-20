@@ -1,5 +1,7 @@
 package fr.shoqapik.btemobs;
 
+import fr.shoqapik.btemobs.capability.BteCapability;
+import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import fr.shoqapik.btemobs.entity.DruidEntity;
@@ -12,6 +14,8 @@ import fr.shoqapik.btemobs.menu.provider.BlacksmithCraftProvider;
 import fr.shoqapik.btemobs.menu.provider.WarlockCraftProvider;
 import fr.shoqapik.btemobs.packets.*;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
+import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
+import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
 import fr.shoqapik.btemobs.rumors.Rumor;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.*;
@@ -22,6 +26,9 @@ import mezz.jei.api.gui.drawable.IDrawableBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -31,14 +38,18 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -74,6 +85,8 @@ public class BteMobsMod {
     public static int eyes = 0;
     public static final RecipeBookType BLACKSMITH =
             RecipeBookType.create("BLACKSMITH");
+    public static final RecipeBookType DRUID =
+            RecipeBookType.create("DRUID");
     public static Rumor.UnlockLevel unlockLevel = Rumor.UnlockLevel.OVERWORLD;
     public static PageCompendium.UnlockLevel unlockLevel1 = PageCompendium.UnlockLevel.OVERWORLD;
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
@@ -93,8 +106,9 @@ public class BteMobsMod {
         BteMobsRecipeSerializers.register(bus);
         BteMobsRecipeTypes.register(bus);
         BteMobsBlocks.ITEMS.register(bus);
-        SoundManager.SOUND_EVENTS.register(bus);
 
+        SoundManager.SOUND_EVENTS.register(bus);
+        MinecraftForge.EVENT_BUS.addListener(BteCapability::registerCapabilities);
         INSTANCE.registerMessage(0, ShowDialogPacket.class, ShowDialogPacket::encode, ShowDialogPacket::decode, ShowDialogPacket::handle);
         INSTANCE.registerMessage(1, ActionPacket.class, ActionPacket::encode, ActionPacket::decode, ActionPacket::handle);
         INSTANCE.registerMessage(2, CheckUnlockRecipePacket.class, CheckUnlockRecipePacket::encode, CheckUnlockRecipePacket::decode, CheckUnlockRecipePacket::handle);
@@ -110,12 +124,13 @@ public class BteMobsMod {
         INSTANCE.registerMessage(11, DirectionPacket.class, DirectionPacket::encode, DirectionPacket::decode, DirectionPacket::handle);
         INSTANCE.registerMessage(12, PlaceGhostRecipePacket.class, PlaceGhostRecipePacket::encode, PlaceGhostRecipePacket::decode, PlaceGhostRecipePacket::handle);
         INSTANCE.registerMessage(13, LastClickedRecipeUpdatePacket.class, LastClickedRecipeUpdatePacket::encode, LastClickedRecipeUpdatePacket::decode, LastClickedRecipeUpdatePacket::handle);
-        INSTANCE.registerMessage(13,SyncUnlockLevelPacket.class,SyncUnlockLevelPacket::encode,SyncUnlockLevelPacket::decode,SyncUnlockLevelPacket::handle);
+        INSTANCE.registerMessage(14,SyncUnlockLevelPacket.class,SyncUnlockLevelPacket::encode,SyncUnlockLevelPacket::decode,SyncUnlockLevelPacket::handle);
+        INSTANCE.registerMessage(15,SyncRecipeManager.class,SyncRecipeManager::encode,SyncRecipeManager::decode,SyncRecipeManager::handle);
     }
-
-    public static List<EnchantType> getEnchantType (){
+    @OnlyIn(Dist.CLIENT)
+    public static List<EnchantType> getEnchantType (Player player){
         List<EnchantType> types = new ArrayList<>();
-        List<WarlockRecipe> recipes = getWarlockRecipe();
+        List<WarlockRecipe> recipes = getWarlockRecipe(player);
         for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS.getValues()){
             if(recipes.stream().anyMatch(warlockRecipe -> warlockRecipe.getEnchantment()==enchantment)){
                 types.add(new EnchantType(Component.translatable(enchantment.getDescriptionId()),enchantment));
@@ -144,7 +159,9 @@ public class BteMobsMod {
             switch (bteAbstractEntity.getNpcType()) {
                 case BLACKSMITH -> NetworkHooks.openScreen(ctx.get().getSender(), new BlacksmithCraftProvider(msg.entityId));
                 case WARLOCK -> NetworkHooks.openScreen(ctx.get().getSender(), new WarlockCraftProvider(msg.entityId));
-                case EXPLORER -> ((ExplorerEntity)bteAbstractEntity).openCraftGui(ctx.get().getSender());
+                case EXPLORER -> {
+                    ((ExplorerEntity)bteAbstractEntity).openCraftGui(ctx.get().getSender());
+                }
                 case DRUID -> ((DruidEntity)bteAbstractEntity).openCraftGui(ctx.get().getSender());
             }
         }
@@ -175,7 +192,6 @@ public class BteMobsMod {
     public static void handleUnlockRecipePacket(CheckUnlockRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         List<Recipe<?>> recipes1 = new ArrayList<>();
         List<WarlockRecipe> recipes2  = getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get());
-
         for (WarlockRecipe recipe : recipes2){
             if(ServerData.get().isUnlock(recipe)) continue;
             boolean flag = false;
@@ -185,55 +201,45 @@ public class BteMobsMod {
             PortalPlayer portalPlayer = PortalPlayer.get(ctx.get().getSender()).orElse(null);
 
             if(ServerData.get().getUnlockRecipe(recipe).wasFound && portalPlayer.getEyesEarn()>=recipe.getNeedEyes()){
-                ServerData.get().getUnlockRecipe(recipe).isLock = false;
                 flag = true;
             }
             if(flag){
                 recipes1.add(recipe);
             }
         }
-        checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),recipes1);
-        checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),recipes1);
-        checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),recipes1);
-
         for (Recipe<?> recipe : recipes1){
             CriteriaTriggers.RECIPE_UNLOCKED.trigger(ctx.get().getSender(), recipe);
         }
+        addRecipe(ctx.get().getSender(),BteMobsRecipeTypes.WARLOCK_RECIPE.get(),recipes1);
         List<Recipe<?>> recipes = new ArrayList<>();
 
-        List<Recipe<?>> list = new ArrayList<>();
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.SMITHING));
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING));
-        for(Recipe<?> recipe : list) {
-            if(ctx.get().getSender().getRecipeBook().contains(recipe.getId())) continue;
-            if(recipe.getIngredients().stream().map(Ingredient::getItems).anyMatch(e->{
-                for (ItemStack stack : e) {
-                    if (ctx.get().getSender().getInventory().contains(stack)) {
-                        return true;
-                    }
-                }
-                return false;
-            })){
-                recipes.add(recipe);
-            }
-        }
+        checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());
+        checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),new ArrayList<>());
+        checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),new ArrayList<>());
+
+//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get()));
+//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()));
+//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
+
+
+//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
+//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
+//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.SMITHING));
+//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING));
 
         ctx.get().getSender().awardRecipes(recipes);
-
-
     }
 
     public static <C extends Container,T extends Recipe<C>> void checkStateRecipe(ServerPlayer player,RecipeType<T> type,List<Recipe<?>> recipes){
-        List<T> recipes2  = getServer().getRecipeManager().getAllRecipesFor(type);
+        BteMobsMod.LOGGER.debug("check {}",type.toString());
 
+        List<T> recipes2  = getServer().getRecipeManager().getAllRecipesFor(type);
         for (T recipe : recipes2){
             if(ServerData.get().isUnlock(recipe)) continue;
             boolean flag = false;
             ServerData.get().getUnlockRecipe(recipe).setWasFound(true);
 
-            if(ServerData.get().getUnlockRecipe(recipe).wasFound && recipe.getIngredients().stream().map(Ingredient::getItems).anyMatch(e->{
+            if(ServerData.get().getUnlockRecipe(recipe).wasFound &&  ServerData.get().getUnlockRecipe(recipe).isLock && recipe.getIngredients().stream().map(Ingredient::getItems).anyMatch(e->{
                 for (ItemStack stack : e) {
                     if (player.getInventory().contains(stack)) {
                         return true;
@@ -248,27 +254,37 @@ public class BteMobsMod {
                 recipes.add(recipe);
             }
         }
+        BteMobsMod.addRecipe(player,type,recipes);
+    }
+    public static void addRecipe(Player player,RecipeType<?> type, List<Recipe<?>> list){
+        RecipeCapability cap = RecipeCapability.get(player);
+        BteMobsMod.LOGGER.debug("addRecipe");
+
+        if(cap!=null){
+            BteMobsMod.LOGGER.debug("Pre : {}",cap.getRecipeManager());
+            cap.addRecipesForType(type,list);
+            BteMobsMod.LOGGER.debug("Post : {}",cap.getRecipeManager());
+        }
     }
 
-    public static<C extends Container,T extends Recipe<C>> List<T> getListRecipe (RecipeType<T> type){
-        List<T> recipes = new ArrayList<>();
-        for (UnlockRecipe recipe : ServerData.get().getUnlockRecipesForType(type)){
-            if(!recipe.isLock && recipe.wasFound){
-                recipes.add((T) recipe.recipe);
+    @OnlyIn(Dist.CLIENT)
+    public static<C extends Container,T extends Recipe<C>> List<T> getListRecipe (RecipeType<T> type, Player player){
+        List<T> list = new ArrayList<>();
+        RecipeCapability<T> cap = RecipeCapability.get(player);
+        if(cap!=null){
+            if (cap.getRecipeManager().containsKey(type)) {
+                list=cap.getRecipesForType(type);
             }
         }
-        return recipes;
+        return list;
     }
 
-    public static List<WarlockRecipe> getWarlockRecipe(){
-        List<WarlockRecipe> recipes = new ArrayList<>();
-        for (UnlockRecipe recipe : ServerData.get().getUnlockRecipesForType(BteMobsRecipeTypes.WARLOCK_RECIPE.get())){
-            if(!recipe.isLock && recipe.wasFound){
-                recipes.add((WarlockRecipe) recipe.recipe);
-            }
-        }
-        return recipes;
+    @OnlyIn(Dist.CLIENT)
+    public static List<WarlockRecipe> getWarlockRecipe(Player player){
+        return getListRecipe(BteMobsRecipeTypes.WARLOCK_RECIPE.get(),player);
     }
+
+
 
     public static void handleCraftItemPacket(CraftItemPacket msg, Supplier<NetworkEvent.Context> ctx){
         if(ctx.get().getSender().containerMenu instanceof BteAbstractCraftMenu){

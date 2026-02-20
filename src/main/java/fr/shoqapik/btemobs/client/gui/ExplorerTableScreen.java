@@ -34,13 +34,16 @@ import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.OnlyIns;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
-
+@OnlyIn(Dist.CLIENT)
 public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMenu> implements IGhostRecipe {
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
     private static final Component SEARCH_HINT = Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
@@ -73,28 +76,28 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     protected void init() {
         super.init();
         this.book = minecraft.player.getRecipeBook();
-        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get());
+        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),minecraft.player);
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
-        this.searchBox = new EditBox(this.minecraft.font, i + 20, j + 14, 80, 9 + 5, Component.translatable("itemGroup.search"));
+        this.searchBox = this.addRenderableWidget(new EditBox(this.minecraft.font, i + 20, j + 14, 80, 9 + 5, Component.translatable("itemGroup.search")));
         this.searchBox.setMaxLength(50);
         this.searchBox.setBordered(false);
         this.searchBox.setVisible(true);
         this.searchBox.setTextColor(16777215);
         this.searchBox.setValue(s);
-        this.filterButton = new StateSwitchingButton(i + 105, j + 12, 26, 16, this.book.isFiltering(RecipeBookType.CRAFTING));
+        this.filterButton = this.addRenderableWidget(new StateSwitchingButton(i + 105, j + 12, 26, 16, this.book.isFiltering(RecipeBookType.CRAFTING)));
         this.initFilterButtonTextures();
-        this.forwardButton = new SmithStateSwitchingButton(i + 93, j + 137, 12, 17, false);
+        this.forwardButton = this.addRenderableWidget(new SmithStateSwitchingButton(i + 93, j + 137, 12, 17, false));
         this.forwardButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
-        this.backButton = new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true);
+        this.backButton = this.addRenderableWidget(new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true));
         this.backButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
         tabButtons.clear();
         this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL));
         this.currentRecipe=null;
-        refreshButtons();
-        updateTabs();
-        this.craftButton = new Button(this.leftPos + 290, (this.height / 2 - this.imageHeight / 2) + 64, 35, 14, Component.literal("Craft"), p_93751_ -> {
+
+
+        this.craftButton = this.addRenderableWidget(new Button(this.leftPos + 290, (this.height / 2 - this.imageHeight / 2) + 64, 35, 14, Component.literal("Craft"), p_93751_ -> {
             if(this.currentRecipe!=null){
                 Entity entity=Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
                 if(entity instanceof ExplorerEntity e){
@@ -105,8 +108,10 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
 
                 Minecraft.getInstance().setScreen(null);
             }
-        });
+        }));
         this.craftButton.active = false;
+        refreshButtons();
+        updateTabs();
     }
     protected void initFilterButtonTextures() {
         this.filterButton.initTextureValues(152, 41, 28, 18, RECIPE_BOOK_LOCATION);
@@ -125,7 +130,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         int j = (this.height - 166) / 2;
         if(page < 0) page = 0;
         if(page * 20 > categoryRecipes.size()) page -= 1;
-        categoryRecipes =new ArrayList<>( BteMobsMod.getListRecipe(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
+        categoryRecipes =new ArrayList<>( BteMobsMod.getListRecipe(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),minecraft.player));
         removeLockedRecipes();
         if(!searchBox.getValue().isEmpty()){
             filterRecipes();
@@ -224,6 +229,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
 
     @Override
     public void render(PoseStack p_97795_, int p_97796_, int p_97797_, float p_97798_) {
+        if(this.searchBox==null || this.craftButton==null)return;
         for(CategoryButton button : tabButtons){
             button.render(p_97795_, p_97796_, p_97797_, p_97798_);
         }
@@ -323,6 +329,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     @Override
     protected void containerTick() {
         super.containerTick();
+        if(searchBox==null || craftButton==null)return;
         boolean flag=false;
         for (ExplorerRecipe recipe : this.categoryRecipes){
             if(this.menu.recipeMatches(recipe) && this.hasExplorerFree()){

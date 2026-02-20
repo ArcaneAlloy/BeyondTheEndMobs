@@ -80,8 +80,8 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
         super.init();
         this.book = minecraft.player.getRecipeBook();
 
-        this.categoryRecipes = BteMobsMod.getWarlockRecipe();
-        this.enchantTypes = BteMobsMod.getEnchantType();
+        this.categoryRecipes = BteMobsMod.getWarlockRecipe(minecraft.player);
+        this.enchantTypes = BteMobsMod.getEnchantType(minecraft.player);
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
@@ -125,7 +125,7 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
             refreshRecipeButton(i,j);
         }else {
             if(page * 20 > enchantTypes.size()) page -= 1;
-            enchantTypes = BteMobsMod.getEnchantType();
+            enchantTypes = BteMobsMod.getEnchantType(minecraft.player);
             for(int index = page * 20; index < (page+1) * 20; ++index) {
                 if(index >= enchantTypes.size()) break;
                 EnchantTypeButton button = new EnchantTypeButton(i+11, j+31,enchantTypes.get(index).enchantment());
@@ -145,7 +145,7 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
     }
     private void refreshRecipeButton(int i,int j){
         if(page * 20 > categoryRecipes.size()) page -= 1;
-        categoryRecipes = BteMobsMod.getWarlockRecipe();
+        categoryRecipes = BteMobsMod.getWarlockRecipe(minecraft.player);
         removeLockedRecipes();
         if(!searchBox.getValue().isEmpty()){
             filterRecipes();

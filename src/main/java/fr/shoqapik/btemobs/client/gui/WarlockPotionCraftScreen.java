@@ -75,7 +75,7 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
     protected void init() {
         super.init();
         this.book = minecraft.player.getRecipeBook();
-        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get());
+        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),minecraft.player);
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
@@ -108,7 +108,7 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
         int j = (this.height - 166) / 2;
         if(page < 0) page = 0;
         if(page * 20 > categoryRecipes.size()) page -= 1;
-        categoryRecipes = new ArrayList<>(BteMobsMod.getListRecipe(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get()));
+        categoryRecipes = new ArrayList<>(BteMobsMod.getListRecipe(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),minecraft.player));
         removeLockedRecipes();
         if(!searchBox.getValue().isEmpty()){
             filterRecipes();

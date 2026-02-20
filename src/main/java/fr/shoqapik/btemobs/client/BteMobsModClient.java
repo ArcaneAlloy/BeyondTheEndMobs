@@ -59,12 +59,7 @@ public class BteMobsModClient {
         event.registerBlockEntityRenderer(BteMobsBlockEntities.MAGMA_FORGE.get(), MagmaForgeBlockEntityRenderer::new);
     }
 
-    public static void handleActionPacket(ActionPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        if(msg.actionType.equals("start_crafting")) {
-            BteAbstractEntity entity = (BteAbstractEntity) Minecraft.getInstance().level.getEntity(msg.entityId);
-            entity.setCrafting(true);
-        }
-    }
+
 
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
         Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest));

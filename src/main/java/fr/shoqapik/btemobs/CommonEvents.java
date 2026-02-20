@@ -1,10 +1,13 @@
 package fr.shoqapik.btemobs;
 
+import fr.shoqapik.btemobs.capability.BteCapability;
+import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.compendium.PagesManager;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import fr.shoqapik.btemobs.packets.CheckUnlockRecipePacket;
 import fr.shoqapik.btemobs.packets.ShowDialogPacket;
+import fr.shoqapik.btemobs.packets.SyncRecipeManager;
 import fr.shoqapik.btemobs.packets.SyncUnlockLevelPacket;
 import fr.shoqapik.btemobs.quests.Quest;
 import fr.shoqapik.btemobs.quests.QuestManager;
@@ -16,13 +19,17 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,11 +42,56 @@ public class CommonEvents {
     private static int previousTimesChanged = 0;
 
     private static final boolean alreadySetToTrue = false;
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SubscribeEvent
+    public static void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {
+        if(event.getObject() instanceof Player player){
+            RecipeCapability oldCap = RecipeCapability.get(player);
+
+            if (oldCap == null) {
+                RecipeCapability.RecipeProvider prov = new RecipeCapability.RecipeProvider();
+                RecipeCapability cap=prov.getCapability(BteCapability.RECIPE_CAPABILITY).orElse(null);
+                cap.init(player,player.level);
+                event.addCapability(new ResourceLocation(BteMobsMod.MODID, "multi_arm_cap"), prov);
+            }
+        }
+    }
+    @SubscribeEvent
+    public static void onTick(LivingEvent.LivingTickEvent event){
+        if(event.getEntity() instanceof Player player){
+            RecipeCapability cap = RecipeCapability.get(player);
+            if(cap!=null && event.getEntity().isAlive()){
+                cap.tick((Player) event.getEntity());
+            }
+        }
+
+    }
+    @SubscribeEvent
+    public static void onPlayerClone(PlayerEvent.Clone event) {
+        if(event.getEntity().level.isClientSide)return;
+        if (!event.isWasDeath()) return;
+
+        Player oldPlayer = event.getOriginal();
+        Player newPlayer = event.getEntity();
+
+        oldPlayer.reviveCaps();
+
+        RecipeCapability oldCap = RecipeCapability.get(oldPlayer);
+        if(oldCap!=null){
+            RecipeCapability cap = RecipeCapability.get(newPlayer);
+            cap.init(newPlayer,newPlayer.level);
+            cap.copyFrom(oldCap);
+
+            BteMobsMod.sendToClient(new SyncRecipeManager(newPlayer.getId(),cap.serializeNBT(),event.isWasDeath()), (ServerPlayer) newPlayer);
+        }
+        oldPlayer.invalidateCaps();
+    }
 
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
         if(event.side.isClient()) {
             Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, true);
+
             Inventory inventory = Minecraft.getInstance().player.getInventory();
             if (inventory.getTimesChanged() != previousTimesChanged) {
                 previousTimesChanged = inventory.getTimesChanged();

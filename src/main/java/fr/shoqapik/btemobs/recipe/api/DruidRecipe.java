@@ -195,8 +195,8 @@ public class DruidRecipe implements Recipe<SimpleContainer> {
         }
 
         public void toNetwork(FriendlyByteBuf p_44553_, DruidRecipe p_44554_) {
-            p_44553_.writeInt(p_44554_.tier);
             p_44554_.requiredItems.toNetwork(p_44553_);
+            p_44553_.writeInt(p_44554_.tier);
             p_44553_.writeItem(p_44554_.craftedItem);
         }
     }

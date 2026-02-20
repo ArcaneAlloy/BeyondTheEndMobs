@@ -1,9 +1,7 @@
 package fr.shoqapik.btemobs.packets;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;

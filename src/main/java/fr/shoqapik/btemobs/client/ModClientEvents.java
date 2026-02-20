@@ -25,7 +25,9 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void onRegisterRecipeBookCategory(RegisterRecipeBookCategoriesEvent event) {
         registerBookCategories(BteMobsMod.BLACKSMITH,BteNpcType.BLACKSMITH, List.of(), event);
+        registerBookCategories(BteMobsMod.DRUID,BteNpcType.DRUID,List.of(),event);
         registerRecipeCategoryLookups(BteNpcType.BLACKSMITH, List.of(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get(), BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()), event);
+        registerRecipeCategoryLookups(BteNpcType.DRUID,List.of(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get()),event);
     }
     @SubscribeEvent
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -43,7 +45,6 @@ public class ModClientEvents {
         if(BteRecipeCategory.ALL.getVanillaCategory(npcType)!=null){
             recipeBookCategories.remove(BteRecipeCategory.ALL.getVanillaCategory(npcType));
             event.registerAggregateCategory(BteRecipeCategory.ALL.getVanillaCategory(npcType), recipeBookCategories);
-
         }
     }
 
@@ -52,9 +53,9 @@ public class ModClientEvents {
             event.registerRecipeCategoryFinder(recipeType, (recipe) -> {
                 if(recipe instanceof BteAbstractRecipe) {
                     return RecipeBookCategories.valueOf(npcType.name() + "_" + ((BteAbstractRecipe)recipe).getCategory().name());
+                }else {
+                    return RecipeBookCategories.valueOf(npcType.name() + "_"+ "ALL");
                 }
-
-                return null;
             });
         }
     }

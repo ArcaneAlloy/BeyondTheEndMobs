@@ -34,9 +34,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -115,9 +117,11 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
 
     public void openCraftGui(ServerPlayer player){
         if(this.getTablePos()==null)return;
-        BlockState state = this.level.getBlockState(this.getTablePos());
-        if(state.getBlock() instanceof ExplorerTableBlock explorerTableBlock){
-            explorerTableBlock.openContainer(this.level,this.getTablePos(),player);
+        BlockEntity blockentity = this.level.getBlockEntity(this.getTablePos());
+        if (blockentity instanceof ExplorerTableBlockEntity table) {
+            NetworkHooks.openScreen(player, table, buf -> {
+                buf.writeBlockPos(table.getBlockPos());
+            });
         }
     }
 
@@ -150,24 +154,6 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
 
     @Override
     protected InteractionResult mobInteract(Player p_21472_, InteractionHand p_21473_) {
-        if(!p_21472_.isLocalPlayer()) {
-            /*if (p_21472_.getItemInHand(p_21473_).getItem() == NpcItems.NPC_WRENCH.get()) {
-                if (p_21472_ instanceof ServerPlayer && p_21472_.hasPermissions(2) && p_21472_.isCreative()) {
-                    NewNpcMod.sendToClient(new ShowNpcEditScreenPacket(this.getUUID(), this.getConfObject()), (ServerPlayer) p_21472_);
-                }
-                return InteractionResult.SUCCESS;
-            } else if (getConfObject().getDialogs() != null && !getConfObject().getDialogs().isEmpty() && getConfObject().getQuest() != null && getConfObject().getQuest() != null && !getConfObject().getQuest().isEmpty()) {
-                if(p_21473_ == InteractionHand.MAIN_HAND) {
-                    if (PlayerQuestHelper.isQuestCompleted(getConfObject().getNpcName(), getConfObject().getQuest(), PlayerQuestHelper.getQuestDatas(p_21472_, getConfObject().getNpcName()))) {
-                        PlayerQuestHelper.rewardPlayer(getConfObject().getNpcName(), p_21472_);
-                    } else {
-                        NewNpcMod.sendToClient(new NpcSendQuestPacket(getConfObject().getNpcName(), !PlayerQuestHelper.hasQuest(p_21472_, getConfObject().getNpcName()), getConfObject().getDialogs(), PlayerQuestHelper.getQuestDatas(p_21472_, getConfObject().getNpcName()), getConfObject().getQuest()), (ServerPlayer) p_21472_);
-                    }
-                }
-                return InteractionResult.SUCCESS;
-            }*/
-            return InteractionResult.SUCCESS;
-        }
         return InteractionResult.PASS;
     }
 

@@ -17,6 +17,7 @@ import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StateSwitchingButton;
@@ -37,6 +38,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
 
@@ -72,7 +74,7 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
     protected void init() {
         super.init();
         this.book = minecraft.player.getRecipeBook();
-        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get());
+        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),minecraft.player);
         int i = (this.width - 147) / 2 - 86;
         int j = (this.height - 166) / 2;
         String s = this.searchBox != null ? this.searchBox.getValue() : "";
@@ -115,7 +117,8 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
         int j = (this.height - 166) / 2;
         if(page < 0) page = 0;
         if(page * 20 > categoryRecipes.size()) page -= 1;
-        categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get());
+        this.categoryRecipes = BteMobsMod.getListRecipe(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),minecraft.player);
+
         removeLockedRecipes();
         if(!searchBox.getValue().isEmpty()){
             filterRecipes();
