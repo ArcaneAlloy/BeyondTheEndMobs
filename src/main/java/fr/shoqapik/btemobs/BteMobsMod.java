@@ -200,8 +200,9 @@ public class BteMobsMod {
             }
             PortalPlayer portalPlayer = PortalPlayer.get(ctx.get().getSender()).orElse(null);
 
-            if(ServerData.get().getUnlockRecipe(recipe).wasFound && portalPlayer.getEyesEarn()>=recipe.getNeedEyes()){
+            if(ServerData.get().getUnlockRecipe(recipe).wasFound && ServerData.get().getUnlockRecipe(recipe).isLock && portalPlayer.getEyesEarn()>=recipe.getNeedEyes()){
                 flag = true;
+                ServerData.get().getUnlockRecipe(recipe).setIsLock(false);
             }
             if(flag){
                 recipes1.add(recipe);
@@ -211,23 +212,23 @@ public class BteMobsMod {
             CriteriaTriggers.RECIPE_UNLOCKED.trigger(ctx.get().getSender(), recipe);
         }
         addRecipe(ctx.get().getSender(),BteMobsRecipeTypes.WARLOCK_RECIPE.get(),recipes1);
-        List<Recipe<?>> recipes = new ArrayList<>();
+        List<Recipe<?>> list = new ArrayList<>();
 
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),new ArrayList<>());
 
-//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get()));
-//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()));
-//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get()));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
 
 
-//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
-//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
-//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.SMITHING));
-//        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.SMITHING));
+        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING));
 
-        ctx.get().getSender().awardRecipes(recipes);
+        ctx.get().getSender().awardRecipes(list);
     }
 
     public static <C extends Container,T extends Recipe<C>> void checkStateRecipe(ServerPlayer player,RecipeType<T> type,List<Recipe<?>> recipes){
