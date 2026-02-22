@@ -85,8 +85,7 @@ public class BteMobsMod {
     public static int eyes = 0;
     public static final RecipeBookType BLACKSMITH =
             RecipeBookType.create("BLACKSMITH");
-    public static final RecipeBookType DRUID =
-            RecipeBookType.create("DRUID");
+
     public static Rumor.UnlockLevel unlockLevel = Rumor.UnlockLevel.OVERWORLD;
     public static PageCompendium.UnlockLevel unlockLevel1 = PageCompendium.UnlockLevel.OVERWORLD;
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
@@ -217,11 +216,6 @@ public class BteMobsMod {
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),new ArrayList<>());
-
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get()));
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()));
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get()));
-
 
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
