@@ -21,13 +21,15 @@ public class ActionPacket {
     }
 
     public static void handle(ActionPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() ->{
-                    ServerPlayer player = ctx.get().getSender();
-                    if (player != null) {
-                        BteMobsMod.handleActionPacket(msg, ctx);
-                    }
-                }
-        );
+        if(ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
+            ctx.get().enqueueWork(() ->
+                    BteMobsModClient.handleActionPacket(msg, ctx)
+            );
+        } else {
+            ctx.get().enqueueWork(() ->
+                    BteMobsMod.handleActionPacket(msg, ctx)
+            );
+        }
         ctx.get().setPacketHandled(true);
     }
 
