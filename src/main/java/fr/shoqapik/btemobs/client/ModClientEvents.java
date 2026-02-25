@@ -17,6 +17,7 @@ import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -40,20 +41,31 @@ public class ModClientEvents {
         event.registerBookCategories(type, recipeBookCategories);
 
         recipeBookCategories.addAll(vanillaCategories);
-        if(BteRecipeCategory.ALL.getVanillaCategory(npcType)!=null){
-            recipeBookCategories.remove(BteRecipeCategory.ALL.getVanillaCategory(npcType));
-            event.registerAggregateCategory(BteRecipeCategory.ALL.getVanillaCategory(npcType), recipeBookCategories);
+        if(getVanillaCategory(npcType,BteRecipeCategory.ALL)!=null){
+            recipeBookCategories.remove(getVanillaCategory(npcType,BteRecipeCategory.ALL));
+            event.registerAggregateCategory(getVanillaCategory(npcType,BteRecipeCategory.ALL), recipeBookCategories);
+
         }
     }
+    public static @Nullable RecipeBookCategories getVanillaCategory(BteNpcType npcType, BteRecipeCategory categorie) {
+        String enumName = npcType.name() + "_" + categorie.name();
 
+        for (RecipeBookCategories category : RecipeBookCategories.values()) {
+            if (category.name().equals(enumName)) {
+                return category;
+            }
+        }
+
+        return null;
+    }
     private static void registerRecipeCategoryLookups(BteNpcType npcType, List<RecipeType<?>> recipeTypes, RegisterRecipeBookCategoriesEvent event) {
         for (RecipeType<?> recipeType : recipeTypes) {
             event.registerRecipeCategoryFinder(recipeType, (recipe) -> {
                 if(recipe instanceof BteAbstractRecipe) {
                     return RecipeBookCategories.valueOf(npcType.name() + "_" + ((BteAbstractRecipe)recipe).getCategory().name());
-                }else {
-                    return RecipeBookCategories.valueOf(npcType.name() + "_"+ "ALL");
                 }
+
+                return null;
             });
         }
     }

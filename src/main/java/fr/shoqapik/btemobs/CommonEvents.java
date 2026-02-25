@@ -41,7 +41,6 @@ import java.util.ArrayList;
 public class CommonEvents {
     private static int previousTimesChanged = 0;
 
-    private static final boolean alreadySetToTrue = false;
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @SubscribeEvent
     public static void attachEntityCapability(AttachCapabilitiesEvent<Entity> event) {

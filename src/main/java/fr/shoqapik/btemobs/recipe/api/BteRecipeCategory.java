@@ -25,18 +25,6 @@ public enum BteRecipeCategory {
         this.npcs = npcs;
     }
 
-    public @Nullable RecipeBookCategories getVanillaCategory(BteNpcType npcType) {
-        String enumName = npcType.name() + "_" + this.name();
-
-        for (RecipeBookCategories category : RecipeBookCategories.values()) {
-            if (category.name().equals(enumName)) {
-                return category;
-            }
-        }
-
-        return null;
-    }
-
     public static List<BteRecipeCategory> values(BteNpcType npcType) {
         List<BteRecipeCategory> categories = new ArrayList<>();
         for (BteRecipeCategory category : BteRecipeCategory.values()) {

@@ -2,6 +2,7 @@ package fr.shoqapik.btemobs;
 
 import fr.shoqapik.btemobs.capability.BteCapability;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
+import fr.shoqapik.btemobs.client.ModClientEvents;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import fr.shoqapik.btemobs.entity.DruidEntity;
@@ -27,6 +28,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -210,19 +212,36 @@ public class BteMobsMod {
         for (Recipe<?> recipe : recipes1){
             CriteriaTriggers.RECIPE_UNLOCKED.trigger(ctx.get().getSender(), recipe);
         }
+
         addRecipe(ctx.get().getSender(),BteMobsRecipeTypes.WARLOCK_RECIPE.get(),recipes1);
-        List<Recipe<?>> list = new ArrayList<>();
+        List<Recipe<?>> recipes = new ArrayList<>();
 
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),new ArrayList<>());
 
-        list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
+        List<Recipe<?>> list = new ArrayList<>(getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.SMITHING));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING));
+        for(Recipe<?> recipe : list) {
+            if(ctx.get().getSender().getRecipeBook().contains(recipe.getId())) continue;
+            if(recipe.getIngredients().stream().map(Ingredient::getItems).anyMatch(e->{
+                for (ItemStack stack : e) {
+                    if (ctx.get().getSender().getInventory().contains(stack)) {
+                        return true;
+                    }
+                }
+                return false;
+            })){
+                recipes.add(recipe);
+            }
+        }
 
-        ctx.get().getSender().awardRecipes(list);
+
+        BteMobsMod.LOGGER.info("list : {}",recipes);
+
+        ctx.get().getSender().awardRecipes(recipes);
     }
 
     public static <C extends Container,T extends Recipe<C>> void checkStateRecipe(ServerPlayer player,RecipeType<T> type,List<Recipe<?>> recipes){
@@ -251,14 +270,12 @@ public class BteMobsMod {
         }
         BteMobsMod.addRecipe(player,type,recipes);
     }
+
     public static void addRecipe(Player player,RecipeType<?> type, List<Recipe<?>> list){
         RecipeCapability cap = RecipeCapability.get(player);
-        BteMobsMod.LOGGER.debug("addRecipe");
 
         if(cap!=null){
-            BteMobsMod.LOGGER.debug("Pre : {}",cap.getRecipeManager());
             cap.addRecipesForType(type,list);
-            BteMobsMod.LOGGER.debug("Post : {}",cap.getRecipeManager());
         }
     }
 
@@ -268,7 +285,7 @@ public class BteMobsMod {
         RecipeCapability<T> cap = RecipeCapability.get(player);
         if(cap!=null){
             if (cap.getRecipeManager().containsKey(type)) {
-                list=cap.getRecipesForType(type);
+                list.addAll(cap.getRecipesForType(type));
             }
         }
         return list;

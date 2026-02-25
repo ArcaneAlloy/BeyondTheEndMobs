@@ -71,7 +71,9 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
     @Override
     public void addRecipeForType(RecipeType<T> type, T recipe) {
         if(this.recipeManager.containsKey(type)){
-            this.recipeManager.get(type).add(recipe);
+            if(!this.recipeManager.get(type).contains(recipe)){
+                this.recipeManager.get(type).add(recipe);
+            }
         }else {
             this.recipeManager.put(type,List.of(recipe));
         }
@@ -81,7 +83,12 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
 
     public void addRecipesForType(RecipeType<T> type, List<T> recipe) {
         if(this.recipeManager.containsKey(type)){
-            this.recipeManager.get(type).addAll(recipe);
+            for(T r : recipe){
+                if(!this.recipeManager.get(type).contains(r)){
+                    this.recipeManager.get(type).add(r);
+                }
+            }
+
         }else {
             this.recipeManager.put(type,recipe);
         }

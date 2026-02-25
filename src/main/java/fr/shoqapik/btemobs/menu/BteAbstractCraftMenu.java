@@ -252,7 +252,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
 
     public void craftItemServer(ServerPlayer serverPlayer, Optional<? extends Recipe<?>> clickedRecipe) {
         List<Recipe> list = getCraftableRecipes(serverPlayer);
-        BteMobsMod.LOGGER.debug("Funca o no funca");
+
         Recipe recipe;
         if(clickedRecipe.isPresent() && list.contains(clickedRecipe.get())) {
             recipe = clickedRecipe.get();
@@ -269,7 +269,6 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
                     this.craftSlots.removeItem(i, this.craftSlots.getItem(i).getCount());
                 }
             }
-            BteMobsMod.LOGGER.debug("Recipe : {}",recipe);
 
             placeResult(recipe, assembleResult(recipe));
         }

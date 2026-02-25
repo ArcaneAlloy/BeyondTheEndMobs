@@ -1,9 +1,11 @@
 package fr.shoqapik.btemobs.recipe;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
+import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -14,12 +16,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.crafting.CraftingHelper;
+
+import java.util.Locale;
 
 public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
 
+    public final Ingredient base;
+
     public BlacksmithUpgradeRecipe(ResourceLocation resourceLocation, BteRecipeCategory category, Ingredient base, NonNullList<Ingredient> ingredients, ItemStack result) {
         super(resourceLocation, category, ingredients, result);
-        ingredients.add(0, base);
+        this.base = base;
     }
 
     @Override
@@ -36,7 +43,7 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return new BlacksmithUpgradeRecipe.Serializer();
+        return BteMobsRecipeSerializers.BLACKSMITH_UPGRADE_RECIPE_SERIALIZER.get();
     }
 
     @Override
@@ -44,35 +51,67 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
         return BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get();
     }
 
-    public static class Serializer extends AbstractSerializer<BlacksmithUpgradeRecipe> {
+    public static class Serializer implements RecipeSerializer<BlacksmithUpgradeRecipe> {
+
         @Override
         public BlacksmithUpgradeRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            int tier = json.get("tier").getAsInt();
+
+            String categoryName = GsonHelper.getAsString(json, "category");
+            BteRecipeCategory category = BteRecipeCategory.valueOf(categoryName.toUpperCase(Locale.ROOT));
+
             Ingredient base = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "base"));
-            return fromJson(recipeId, json, tier, base);
+
+            NonNullList<Ingredient> ingredients = NonNullList.create();
+            JsonArray array = GsonHelper.getAsJsonArray(json, "ingredients");
+
+            for (int i = 0; i < array.size(); ++i) {
+                Ingredient ingredient = Ingredient.fromJson(array.get(i));
+                if (!ingredient.isEmpty()) {
+                    ingredients.add(ingredient);
+                }
+            }
+
+            ItemStack result = CraftingHelper.getItemStack(
+                    GsonHelper.getAsJsonObject(json, "result"),
+                    true,
+                    true
+            );
+
+            return new BlacksmithUpgradeRecipe(recipeId, category, base, ingredients, result);
         }
 
         @Override
-        public BlacksmithUpgradeRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf pBuffer) {
-            Ingredient base = Ingredient.fromNetwork(pBuffer);
-            return fromNetwork(recipeId, pBuffer, base);
+        public BlacksmithUpgradeRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+
+            BteRecipeCategory category = BteRecipeCategory.valueOf(buffer.readUtf());
+
+            Ingredient base = Ingredient.fromNetwork(buffer);
+
+            int size = buffer.readVarInt();
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(size, Ingredient.EMPTY);
+
+            for (int i = 0; i < size; i++) {
+                ingredients.set(i, Ingredient.fromNetwork(buffer));
+            }
+
+            ItemStack result = buffer.readItem();
+
+            return new BlacksmithUpgradeRecipe(recipeId, category, base, ingredients, result);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf pBuffer, BlacksmithUpgradeRecipe recipe) {
-            recipe.ingredients.get(0).toNetwork(pBuffer);
-            recipe.ingredients.remove(0);
-            super.toNetwork(pBuffer, recipe);
-        }
+        public void toNetwork(FriendlyByteBuf buffer, BlacksmithUpgradeRecipe recipe) {
 
-        @Override
-        public boolean hasResultItem() {
-            return true;
-        }
+            buffer.writeUtf(recipe.category.name());
 
-        @Override
-        protected BlacksmithUpgradeRecipe of(ResourceLocation resourceLocation, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result, Object... objects) {
-            return new BlacksmithUpgradeRecipe(resourceLocation, category, (Ingredient)objects[1], ingredients, result);
+            recipe.base.toNetwork(buffer);
+
+            buffer.writeVarInt(recipe.ingredients.size());
+            for (Ingredient ingredient : recipe.ingredients) {
+                ingredient.toNetwork(buffer);
+            }
+
+            buffer.writeItem(recipe.result);
         }
     }
 }

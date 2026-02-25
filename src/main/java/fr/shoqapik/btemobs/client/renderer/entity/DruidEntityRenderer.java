@@ -27,11 +27,9 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 public class DruidEntityRenderer extends GeoEntityRenderer<DruidEntity> {
 
     public final ItemRenderer itemRenderer;
-    public final OrbModel<Entity> orbModel;
     public DruidEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new DruidModel());
         this.itemRenderer = context.getItemRenderer();
-        this.orbModel = new OrbModel<>(context.bakeLayer(OrbModel.LAYER_LOCATION));
     }
 
     @Override

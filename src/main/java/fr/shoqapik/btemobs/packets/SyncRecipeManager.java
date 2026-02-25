@@ -60,14 +60,10 @@ public class SyncRecipeManager {
                         ListTag list = data.getList("manager",10);
                         for (int i = 0 ; i < list.size() ; i ++){
                             CompoundTag tag = list.getCompound(i);
-                            BteMobsMod.LOGGER.debug("tag :{}",tag);
                             if (!ResourceLocation.isValidResourceLocation(tag.getString("type")))continue;
-                            BteMobsMod.LOGGER.debug("type :{}",tag.getString("type"));
 
                             RecipeType<?> type = ForgeRegistries.RECIPE_TYPES.getValue(new ResourceLocation(tag.getString("type")));
                             if(type==null)continue;
-                            BteMobsMod.LOGGER.debug("existe el tipo :{}",type);
-
                             List<Recipe<?>> recipes = new ArrayList<>();
                             if(tag.contains("recipes")){
                                 ListTag list1 = tag.getList("recipes",10);

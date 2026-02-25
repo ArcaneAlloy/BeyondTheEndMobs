@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.client.widget.BteRecipeBookComponent;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -20,151 +21,128 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu>
-        extends AbstractContainerScreen<T>
-        implements RecipeUpdateListener {
-
-    protected final RecipeBookComponent recipeBook = new BteRecipeBookComponent();
+public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> extends AbstractContainerScreen<T> implements RecipeUpdateListener {
+    protected final RecipeBookComponent recipeBookComponent = new BteRecipeBookComponent();
     protected Button craftButton;
 
     protected boolean widthTooNarrow;
 
-    protected BteAbstractCraftScreen(T menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+    public BteAbstractCraftScreen(T containerMenu, Inventory inventory, Component component) {
+        super(containerMenu, inventory, component);
     }
 
     public abstract ResourceLocation getTexture();
 
-
-    @Override
     protected void init() {
         super.init();
-
         this.widthTooNarrow = this.width < 379;
 
-        initRecipeBook();
-        initCraftButton();
-    }
+        this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
+        this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
 
-    private void initRecipeBook() {
-        recipeBook.init(this.width, this.height, this.minecraft, widthTooNarrow, this.menu);
-        this.leftPos = recipeBook.updateScreenPosition(this.width, this.imageWidth);
 
-        addWidget(recipeBook);
-        setInitialFocus(recipeBook);
-
-        recipeBook.setVisible(true);
-    }
-
-    private void initCraftButton() {
-        int x = this.leftPos + 134;
-        int y = (this.height - this.imageHeight) / 2 + 68;
-
-        this.craftButton = new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
-            @Override public void onPress(Button button) {
-                Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBook.recipeBookPage.getLastClickedRecipe();
+        this.craftButton = this.addRenderableWidget(new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
+            @Override
+            public void onPress(Button button) {
+                Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
                 BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
                 BteAbstractCraftScreen.this.craftButton.active = false;
             }
-        });
+        }));
+        this.craftButton.active = false;
+        this.addWidget(this.recipeBookComponent);
+        this.setInitialFocus(this.recipeBookComponent);
 
-        craftButton.active = false;
-        addRenderableWidget(craftButton);
+        this.recipeBookComponent.setVisible(true);
+
     }
 
     @Override
     protected void containerTick() {
         super.containerTick();
-        recipeBook.tick();
+        this.recipeBookComponent.tick();
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        this.recipeBookComponent.setVisible(true);
+        this.renderBackground(pPoseStack);
+        if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
+            this.renderBg(pPoseStack, pPartialTick, pMouseX, pMouseY);
+            this.recipeBookComponent.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
-        if (recipeBook.isVisible() && widthTooNarrow) {
-            renderBackgroundOnly(poseStack, partialTick);
-            recipeBook.render(poseStack, mouseX, mouseY, partialTick);
         } else {
-            recipeBook.render(poseStack, mouseX, mouseY, partialTick);
-            super.render(poseStack, mouseX, mouseY, partialTick);
-            recipeBook.renderGhostRecipe(poseStack, leftPos, topPos, false, partialTick);
+            this.recipeBookComponent.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            this.recipeBookComponent.renderGhostRecipe(pPoseStack, this.leftPos, this.topPos, false, pPartialTick);
         }
 
-        super.renderTooltip(poseStack, mouseX, mouseY);
-        recipeBook.renderTooltip(poseStack, leftPos, topPos, mouseX, mouseY);
+
+        this.renderTooltip(pPoseStack, pMouseX, pMouseY);
+        this.recipeBookComponent.renderTooltip(pPoseStack, this.leftPos, this.topPos, pMouseX, pMouseY);
     }
 
-    private void renderBackgroundOnly(PoseStack poseStack, float partialTick) {
+    protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pX, int pY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, getTexture());
-
-        int y = (this.height - this.imageHeight) / 2;
-        blit(poseStack, leftPos, y, 0, 0, imageWidth, imageHeight);
+        int i = this.leftPos;
+        int j = (this.height - this.imageHeight) / 2;
+        this.blit(pPoseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-
+    protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
+        //this.font.draw(p_97808_, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    protected boolean isHovering(int pX, int pY, int pWidth, int pHeight, double pMouseX, double pMouseY) {
+        return (!this.widthTooNarrow || !this.recipeBookComponent.isVisible()) && super.isHovering(pX, pY, pWidth, pHeight, pMouseX, pMouseY);
+    }
 
-        if (craftButton.mouseClicked(mouseX, mouseY, button)) {
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if(craftButton.mouseClicked(pMouseX, pMouseY, pButton)) {
             return true;
-        }
-
-        if (recipeBook.mouseClicked(mouseX, mouseY, button)) {
-            setFocused(recipeBook);
+        } else if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) {
+            this.setFocused(this.recipeBookComponent);
             return true;
+        } else {
+            return this.widthTooNarrow && this.recipeBookComponent.isVisible() ? true : super.mouseClicked(pMouseX, pMouseY, pButton);
         }
-
-        if (widthTooNarrow && recipeBook.isVisible()) {
-            return true;
-        }
-
-        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
-        boolean outsideMain = mouseX < guiLeft || mouseY < guiTop || mouseX >= guiLeft + imageWidth || mouseY >= guiTop + imageHeight;
-
-        return recipeBook.hasClickedOutside(mouseX, mouseY, leftPos, topPos, imageWidth, imageHeight, mouseButton) && outsideMain;
+    protected boolean hasClickedOutside(double pMouseX, double pMouseY, int pGuiLeft, int pGuiTop, int pMouseButton) {
+        boolean flag = pMouseX < (double)pGuiLeft || pMouseY < (double)pGuiTop || pMouseX >= (double)(pGuiLeft + this.imageWidth) || pMouseY >= (double)(pGuiTop + this.imageHeight);
+        return this.recipeBookComponent.hasClickedOutside(pMouseX, pMouseY, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, pMouseButton) && flag;
     }
 
     @Override
-    protected boolean isHovering(int x, int y, int width, int height, double mouseX, double mouseY) {
-        return (!widthTooNarrow || !recipeBook.isVisible()) && super.isHovering(x, y, width, height, mouseX, mouseY);
+    protected void slotClicked(Slot pSlot, int pSlotId, int pMouseButton, ClickType pType) {
+        super.slotClicked(pSlot, pSlotId, pMouseButton, pType);
+        this.recipeBookComponent.slotClicked(pSlot);
     }
-
-    @Override
-    protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type) {
-        super.slotClicked(slot, slotId, mouseButton, type);
-        recipeBook.slotClicked(slot);
-    }
-
 
     @Override
     public void recipesUpdated() {
-        recipeBook.recipesUpdated();
+
+        this.recipeBookComponent.recipesUpdated();
+    }
+
+    @Override
+    public void removed() {
+        this.recipeBookComponent.removed();
+        super.removed();
     }
 
     @Override
     public RecipeBookComponent getRecipeBookComponent() {
-        return recipeBook;
+        return this.recipeBookComponent;
     }
-
-
-    @Override
-    public void removed() {
-        recipeBook.removed();
-        super.removed();
-    }
-
 
     public void setCraftButtonActive(boolean active) {
-        craftButton.active = active;
+        this.craftButton.active = active;
     }
 }

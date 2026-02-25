@@ -1,6 +1,8 @@
 package fr.shoqapik.btemobs.recipe;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
@@ -8,10 +10,14 @@ import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.CraftingHelper;
+
+import java.util.Locale;
 
 
 public class BlacksmithRecipe extends BteAbstractRecipe {
@@ -37,33 +43,77 @@ public class BlacksmithRecipe extends BteAbstractRecipe {
         return BteMobsRecipeTypes.BLACKSMITH_RECIPE.get();
     }
 
-    public static class Serializer extends BteAbstractRecipe.AbstractSerializer<BlacksmithRecipe> {
+    public static class Serializer implements RecipeSerializer<BlacksmithRecipe> {
+
         @Override
         public BlacksmithRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            int tier = json.get("tier").getAsInt();
-            return fromJson(recipeId, json, tier);
+
+            String categoryName = GsonHelper.getAsString(json, "category");
+            BteRecipeCategory category;
+
+            try {
+                category = BteRecipeCategory.valueOf(categoryName.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                throw new JsonParseException("Invalid recipe category: " + categoryName);
+            }
+
+            int tier = GsonHelper.getAsInt(json, "tier", 0);
+
+            NonNullList<Ingredient> ingredients = NonNullList.create();
+            JsonArray array = GsonHelper.getAsJsonArray(json, "ingredients");
+
+            for (int i = 0; i < array.size(); ++i) {
+                Ingredient ingredient = Ingredient.fromJson(array.get(i));
+                if (!ingredient.isEmpty()) {
+                    ingredients.add(ingredient);
+                }
+            }
+
+            if (ingredients.isEmpty()) {
+                throw new JsonParseException("No ingredients for blacksmith recipe");
+            }
+
+            ItemStack result = CraftingHelper.getItemStack(
+                    GsonHelper.getAsJsonObject(json, "result"),
+                    true,
+                    true
+            );
+
+            return new BlacksmithRecipe(recipeId, category, tier, ingredients, result);
         }
 
         @Override
-        public BlacksmithRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf pBuffer) {
-            int tier = pBuffer.readInt();
-            return fromNetwork(recipeId, pBuffer, tier);
+        public BlacksmithRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+
+            String categoryName = buffer.readUtf();
+            BteRecipeCategory category = BteRecipeCategory.valueOf(categoryName);
+
+            int tier = buffer.readInt();
+
+            int size = buffer.readVarInt();
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(size, Ingredient.EMPTY);
+
+            for (int i = 0; i < size; i++) {
+                ingredients.set(i, Ingredient.fromNetwork(buffer));
+            }
+
+            ItemStack result = buffer.readItem();
+
+            return new BlacksmithRecipe(recipeId, category, tier, ingredients, result);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf pBuffer, BlacksmithRecipe recipe) {
-            pBuffer.writeInt(recipe.tier);
-            super.toNetwork(pBuffer, recipe);
-        }
+        public void toNetwork(FriendlyByteBuf buffer, BlacksmithRecipe recipe) {
 
-        @Override
-        public boolean hasResultItem() {
-            return true;
-        }
+            buffer.writeUtf(recipe.category.name());
+            buffer.writeInt(recipe.tier);
 
-        @Override
-        protected BlacksmithRecipe of(ResourceLocation resourceLocation, BteRecipeCategory category, NonNullList<Ingredient> ingredients, ItemStack result, Object... objects) {
-            return new BlacksmithRecipe(resourceLocation, category, (int)objects[0], ingredients, result);
+            buffer.writeVarInt(recipe.ingredients.size());
+            for (Ingredient ingredient : recipe.ingredients) {
+                ingredient.toNetwork(buffer);
+            }
+
+            buffer.writeItem(recipe.result);
         }
     }
 
