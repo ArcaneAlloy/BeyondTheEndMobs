@@ -8,7 +8,7 @@
   "experience": 30,
   "ingredients": [
     {
-      "item": "quark:shell",
+      "item": "quark:crab_shell",
       "count": 4
     }
   ]
