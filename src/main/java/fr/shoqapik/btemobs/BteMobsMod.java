@@ -4,10 +4,7 @@ import fr.shoqapik.btemobs.capability.BteCapability;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.client.ModClientEvents;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
-import fr.shoqapik.btemobs.entity.BteAbstractEntity;
-import fr.shoqapik.btemobs.entity.DruidEntity;
-import fr.shoqapik.btemobs.entity.ExplorerEntity;
-import fr.shoqapik.btemobs.entity.WarlockEntity;
+import fr.shoqapik.btemobs.entity.*;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
 import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
@@ -154,6 +151,7 @@ public class BteMobsMod {
 
 
     public static void handleActionPacket(ActionPacket msg, Supplier<NetworkEvent.Context> ctx) {
+
         if(msg.actionType.equals("open_craft")) {
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity == null) return;
@@ -167,6 +165,12 @@ public class BteMobsMod {
             }
         }
 
+        if(msg.actionType.equals("Discard")){
+            Npc5Entity bteAbstractEntity = (Npc5Entity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
+            if(bteAbstractEntity == null) return;
+            bteAbstractEntity.discardTime = 40;
+            ctx.get().getSender().level.broadcastEntityEvent(bteAbstractEntity,(byte) 4);
+        }
         if(msg.actionType.equals("open_repair")) {
             NetworkHooks.openScreen(ctx.get().getSender(), new SimpleMenuProvider((id, inventory, player) -> {
                 Entity entity = ctx.get().getSender().getLevel().getEntity(msg.entityId);

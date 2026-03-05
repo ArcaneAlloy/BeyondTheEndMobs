@@ -1,0 +1,121 @@
+package fr.shoqapik.btemobs.entity;
+
+import fr.shoqapik.btemobs.BteMobsMod;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import software.bernie.geckolib3.core.AnimationState;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+
+public class Npc5Entity extends BteAbstractEntity{
+    protected static final AnimationBuilder IDLE_ANIMATION_ONE = new AnimationBuilder().addAnimation("idle_one", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    protected static final AnimationBuilder IDLE_ANIMATION_TWO = new AnimationBuilder().addAnimation("idle_two", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private int summonHandParticlesTick;
+
+    public int discardTime = 0;
+    public Npc5Entity(EntityType<? extends Mob> entityType, Level level) {
+        super(entityType, level);
+    }
+    protected AnimationController<? extends BteAbstractEntity> getIdleAnimationController(AnimationData animationData) {
+        AnimationController<? extends BteAbstractEntity> animationController = super.getIdleAnimationController(animationData);
+        animationController.registerParticleListener(event -> {
+            if(event.effect.equals("hand_particle")) {
+                summonHandParticlesTick = 1;
+            }
+
+        });
+        return animationController;
+    }
+    @Override
+    public void tick() {
+        super.tick();
+        if(this.discardTime>0){
+            this.discardTime--;
+            if(this.discardTime==0 && !this.level.isClientSide){
+                discard();
+            }
+        }
+        if(summonHandParticlesTick > 0) {
+            Level level = this.level;
+
+            float yaw = this.getYRot();
+            double radians = Math.toRadians(yaw);
+
+            double forwardOffset = 0.5;
+            double rightOffset = 0.6;
+
+            double offsetX = -Math.sin(radians) * forwardOffset - Math.cos(radians) * rightOffset;
+            double offsetZ = Math.cos(radians) * forwardOffset - Math.sin(radians) * rightOffset;
+
+            // Randomized motion
+            double randomMotionX = (Math.random() - 0.5) * 0.01;
+            double randomMotionY = Math.random() * 0.015;
+            double randomMotionZ = (Math.random() - 0.5) * 0.01;
+
+            level.addParticle(
+                    ParticleTypes.FLAME,
+                    this.getX() + offsetX,
+                    this.getY() + 1.5,
+                    this.getZ() + offsetZ,
+                    randomMotionX,
+                    randomMotionY,
+                    randomMotionZ
+            );
+
+            summonHandParticlesTick++;
+            if(summonHandParticlesTick == 180) {
+                summonHandParticlesTick = 0;
+            }
+        }
+
+    }
+
+    @Override
+    public void handleEntityEvent(byte p_21375_) {
+        if(p_21375_ == 4){
+            this.discardTime=40;
+        }
+        super.handleEntityEvent(p_21375_);
+    }
+
+    @Override
+    protected PlayState idleAnimation(AnimationEvent<BteAbstractEntity> event) {
+        if(!event.isMoving()) {
+            if(this.discardTime>0){
+                BteMobsMod.LOGGER.info("Animation :{}",(event.getController().getCurrentAnimation().animationName.equals("discard")));
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("discard", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+                event.getController().setAnimationSpeed(0.5D);
+                return PlayState.CONTINUE;
+            }
+            if (event.getController().getAnimationState() == AnimationState.Stopped) {
+                if (event.getController().getCurrentAnimation() == null ||
+                        event.getController().getCurrentAnimation().animationName.equals("idle_two")) {
+                    event.getController().setAnimation(IDLE_ANIMATION_ONE);
+                    event.getController().setAnimationSpeed(0.6D);
+                } else if (event.getController().getCurrentAnimation().animationName.equals("idle_one")) {
+                    event.getController().setAnimation(IDLE_ANIMATION_TWO);
+                    event.getController().setAnimationSpeed(0.6D);
+                }
+            }
+            return PlayState.CONTINUE;
+        }
+
+        return PlayState.STOP;
+    }
+    @Override
+    public BteNpcType getNpcType() {
+        return BteNpcType.NPC5;
+    }
+
+    @Override
+    public Block getWorkBlock() {
+        return null;
+    }
+}

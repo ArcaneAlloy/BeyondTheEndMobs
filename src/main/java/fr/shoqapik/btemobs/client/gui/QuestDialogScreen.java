@@ -7,6 +7,7 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.button.CustomButton;
 import fr.shoqapik.btemobs.client.BteMobsModClient;
 import fr.shoqapik.btemobs.entity.BteNpcType;
+import fr.shoqapik.btemobs.entity.Npc5Entity;
 import fr.shoqapik.btemobs.packets.ActionPacket;
 import fr.shoqapik.btemobs.quests.Quest;
 import fr.shoqapik.btemobs.quests.QuestAnswer;
@@ -25,6 +26,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -209,6 +211,9 @@ public class QuestDialogScreen extends Screen {
 
     @Override
     public void removed() {
+        if(this.bteNpcType == BteNpcType.NPC5){
+            BteMobsMod.sendToServer(new ActionPacket(entityId, "Discard"));
+        }
         if(currentDialogSound != null) {
             Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
         }

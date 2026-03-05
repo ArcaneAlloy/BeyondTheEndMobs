@@ -1,24 +1,25 @@
 package fr.shoqapik.btemobs.client.model;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.entity.WarlockEntity;
+import fr.shoqapik.btemobs.entity.BteAbstractEntity;
+import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class WarlockModel extends AnimatedGeoModel<WarlockEntity> {
+public class WarlockModel extends AnimatedGeoModel<BteAbstractEntity> {
 
     @Override
-    public ResourceLocation getModelResource(WarlockEntity warlockEntity) {
+    public ResourceLocation getModelResource(BteAbstractEntity BteAbstractEntity) {
         return new ResourceLocation(BteMobsMod.MODID, "geo/warlock.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(WarlockEntity warlockEntity) {
+    public ResourceLocation getTextureResource(BteAbstractEntity BteAbstractEntity) {
         return new ResourceLocation(BteMobsMod.MODID, "textures/entity/warlock.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(WarlockEntity warlockEntity) {
+    public ResourceLocation getAnimationResource(BteAbstractEntity BteAbstractEntity) {
         return new ResourceLocation(BteMobsMod.MODID, "animations/warlock.animation.json");
     }
 }

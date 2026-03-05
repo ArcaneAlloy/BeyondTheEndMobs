@@ -1,10 +1,7 @@
 package fr.shoqapik.btemobs.registry;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.entity.BlacksmithEntity;
-import fr.shoqapik.btemobs.entity.DruidEntity;
-import fr.shoqapik.btemobs.entity.ExplorerEntity;
-import fr.shoqapik.btemobs.entity.WarlockEntity;
+import fr.shoqapik.btemobs.entity.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -33,6 +30,9 @@ public class BteMobsEntities {
             () -> EntityType.Builder.of(DruidEntity::new, MobCategory.CREATURE)
                     .sized(0.6F, 1.8F).fireImmune().updateInterval(1).build(BteMobsMod.MODID + ":druid"));
 
+    public static final RegistryObject<EntityType<Npc5Entity>> NPC5_ENTITY = ENTITIES.register("npc5",
+            () -> EntityType.Builder.of(Npc5Entity::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.8F).fireImmune().updateInterval(1).build(BteMobsMod.MODID + ":npc5"));
 
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);

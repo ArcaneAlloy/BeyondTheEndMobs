@@ -55,6 +55,8 @@ public class BteMobsModClient {
         event.registerEntityRenderer(BteMobsEntities.WARLOCK_ENTITY.get(), WarlockEntityRenderer::new);
         event.registerEntityRenderer(BteMobsEntities.EXPLORER_ENTITY.get(), ExplorerEntityRenderer::new);
         event.registerEntityRenderer(BteMobsEntities.DRUID_ENTITY.get(), DruidEntityRenderer::new);
+        event.registerEntityRenderer(BteMobsEntities.NPC5_ENTITY.get(), WarlockEntityRenderer::new);
+
         BlockEntityRenderers.register(BteMobsBlockEntities.EXPLORER_TABLE_ENTITY.get(), ExplorerTableBlockRenderer::new);
         event.registerBlockEntityRenderer(BteMobsBlockEntities.MAGMA_FORGE.get(), MagmaForgeBlockEntityRenderer::new);
     }

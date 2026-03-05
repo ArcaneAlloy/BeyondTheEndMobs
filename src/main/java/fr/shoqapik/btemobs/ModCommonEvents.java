@@ -20,6 +20,7 @@ public class ModCommonEvents {
         event.put(BteMobsEntities.WARLOCK_ENTITY.get(), BteAbstractEntity.getWarlockAttributes().build());
         event.put(BteMobsEntities.EXPLORER_ENTITY.get(), BteAbstractEntity.getExplorerAttributes().build());
         event.put(BteMobsEntities.DRUID_ENTITY.get(), BteAbstractEntity.getDruidAttributes().build());
+        event.put(BteMobsEntities.NPC5_ENTITY.get(), BteAbstractEntity.getDruidAttributes().build());
     }
 
     @SubscribeEvent

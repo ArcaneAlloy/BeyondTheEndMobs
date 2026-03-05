@@ -144,7 +144,6 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
             if(event.effect.equals("hand_particle")) {
                 summonHandParticlesTick = 1;
             }
-
         });
         return animationController;
     }
