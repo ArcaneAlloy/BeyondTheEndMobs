@@ -54,7 +54,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                 if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots
                         && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
                 Optional<WarlockRecipe> optional = WarlockCraftMenu.this.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
-                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty() && (optional.get().getEnchantment().canEnchant(baseSlots.getItem(0)) || baseSlots.getItem(0).is(Items.BOOK)) || baseSlots.getItem(0).is(Items.ENCHANTED_BOOK)){
+                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()  && ( canEnchantItem(optional.get().getEnchantment(),baseSlots.getItem(0)) || baseSlots.getItem(0).is(Items.BOOK)) || baseSlots.getItem(0).is(Items.ENCHANTED_BOOK)){
                     WarlockCraftMenu.this.clickedRecipe = optional;
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
                     menu.getSlot(4).set(optional.get().assemble(WarlockCraftMenu.this.getTotalContainer()));
@@ -79,6 +79,19 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(inventory, l, 161 + l * 18, 142));
         }
     }
+
+    private boolean canEnchantItem(Enchantment enchantment, ItemStack item) {
+        if(!enchantment.canEnchant(item)){
+            return false;
+        }
+        for (Enchantment e : EnchantmentHelper.getEnchantments(item).keySet()){
+            if (!enchantment.isCompatibleWith(e)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void initCraftingSlot() {
         craftSlots = new SimpleContainer(3);
         baseSlots = new BteAbstractCraftContainer(this, 1, 1, 1);
