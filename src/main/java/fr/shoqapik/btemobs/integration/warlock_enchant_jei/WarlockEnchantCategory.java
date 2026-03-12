@@ -13,13 +13,18 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static fr.shoqapik.btemobs.BteMobsMod.getPartialDrawable;
@@ -38,6 +43,7 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
 
     public WarlockEnchantCategory(IGuiHelper helper){
         this.background = getPartialDrawable(helper,TEXTURE);
+
 
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.ENCHANTED_BOOK));
     }
@@ -68,7 +74,7 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
         Component xp = Component.translatable("gui.jei.category.warlock_enchant.exp").append(" "+recipe.getExperience());
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.font.draw(stack, xp, 81.0F, 60.0F, 8453920);
-        Component eyes = Component.translatable("gui.jei.category.warlock_enchant.eyes").append(" "+recipe.getNeedEyes());
+        Component eyes = Component.translatable("gui.jei.category.warlock_enchant.eyes").append(" "+recipe.getNeedEyes()).withStyle(ChatFormatting.RED);
         minecraft.font.draw(stack, eyes, 81.0F, 70.0F, 8453920);
 
     }
@@ -83,8 +89,29 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
         ItemStack output = explorerRecipe.getResultItem();
 
         if (!output.isEmpty()) {
-            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 81 , 33)
-                    .addItemStack(output);
+            List<ItemStack> stacks = new ArrayList<>();
+            List<ItemStack> enchants = new ArrayList<>();
+
+
+            Enchantment enchantment = explorerRecipe.getEnchantment();
+            stacks.add(new ItemStack(Items.BOOK));
+            enchants.add(output);
+
+            for (Item item : ForgeRegistries.ITEMS.getValues()) {
+                ItemStack stack = new ItemStack(item);
+
+                if (enchantment.canEnchant(stack)) {
+                    stacks.add(stack.copy());
+                    stack.enchant(enchantment, 1);
+                    enchants.add(stack.copy());
+                }
+            }
+
+            iRecipeLayoutBuilder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStack(output);
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81 , 33)
+                    .addItemStacks(stacks);
+            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 133 , 33)
+                    .addItemStacks(enchants);
         } else {
             System.out.println("⚠️ Advertencia: La receta " + explorerRecipe.getId() + " tiene un resultado vacío.");
         }

@@ -262,7 +262,6 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
         renderTooltip(p_97795_, p_97796_, p_97797_);
         this.craftButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
         this.renderGhostRecipeTooltip(p_97795_, this.leftPos, this.topPos, p_97796_,p_97797_);
-
     }
 
     public void renderTooltip(PoseStack p_100418_, int p_100419_, int p_100420_) {

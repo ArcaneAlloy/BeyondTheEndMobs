@@ -40,6 +40,16 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
         return itemstack;
     }
 
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> list = NonNullList.withSize(6,Ingredient.EMPTY);
+        NonNullList<Ingredient> nullList = super.getIngredients();
+        for (int i = 0 ; i < nullList.size() ; i++){
+            list.set(i,nullList.get(i));
+        }
+        list.set(nullList.size(),this.base);
+        return list;
+    }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
@@ -71,11 +81,7 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
                 }
             }
 
-            ItemStack result = CraftingHelper.getItemStack(
-                    GsonHelper.getAsJsonObject(json, "result"),
-                    true,
-                    true
-            );
+            ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true, true);
 
             return new BlacksmithUpgradeRecipe(recipeId, category, base, ingredients, result);
         }

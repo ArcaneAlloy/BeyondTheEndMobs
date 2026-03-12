@@ -68,7 +68,6 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
     public void createResult() {
         ItemStack itemstack = this.inputSlots.getItem(0);
 
-        //-------------------------------------------------------------------------------------------------------
         Map<String, List<String>> repairRules = RepairConfig.getAllRepairRules();
 
             if (itemstack.isEmpty()) {
