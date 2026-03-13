@@ -190,31 +190,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
                 } else {
                     player.connection.send(new ClientboundPlaceGhostRecipePacket(this.containerId, recipe));
                 }
-            } else if(recipe instanceof UpgradeRecipe) {
-                UpgradeRecipe upgradeRecipe = (UpgradeRecipe) recipe;
-                ItemStack base = null;
-                ItemStack addition = null;
-
-                for (ItemStack stack : player.getInventory().items) {
-                    if(upgradeRecipe.base.test(stack)) base = stack;
-                    if(upgradeRecipe.isAdditionIngredient(stack)) addition = stack;
-                    if(base != null && addition != null) break;
-                }
-
-                if(base != null && addition != null) {
-                    ItemStack baseStack = base.copy();
-                    baseStack.setCount(1);
-                    ItemStack additionStack = addition.copy();
-                    additionStack.setCount(1);
-                    this.craftSlots.setItem(0, baseStack);
-                    this.craftSlots.setItem(1, additionStack);
-
-                    base.shrink(1);
-                    addition.shrink(1);
-                } else {
-                    player.connection.send(new ClientboundPlaceGhostRecipePacket(this.containerId, recipe));
-                }
-            } else {
+            }else {
                 super.handlePlacement(placeAll, recipe, player);
             }
         }
