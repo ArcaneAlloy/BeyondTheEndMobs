@@ -45,8 +45,10 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
             @Override
             public void onPress(Button button) {
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-                BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
-                BteAbstractCraftScreen.this.craftButton.active = false;
+                if(recipe!=null){
+                    BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
+                    BteAbstractCraftScreen.this.craftButton.active = false;
+                }
             }
         }));
         this.craftButton.active = false;

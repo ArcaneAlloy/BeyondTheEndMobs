@@ -2,6 +2,7 @@ package fr.shoqapik.btemobs.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
@@ -32,7 +33,14 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
     @Override
     public ItemStack assemble(BteAbstractCraftContainer pInv) {
         ItemStack itemstack = this.result.copy();
-        CompoundTag compoundtag = pInv.getItem(0).getTag();
+        ItemStack base = ItemStack.EMPTY;
+        for (int i = 0 ; i < pInv.getContainerSize() ; i++){
+            ItemStack stack = pInv.getItem(i);
+            if(this.base.test(stack)){
+                base = stack;
+            }
+        }
+        CompoundTag compoundtag = base.getTag();
         if (compoundtag != null) {
             itemstack.setTag(compoundtag.copy());
         }

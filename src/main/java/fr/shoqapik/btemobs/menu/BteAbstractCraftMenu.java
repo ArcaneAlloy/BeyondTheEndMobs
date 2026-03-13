@@ -210,7 +210,6 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
             entity.setCraftItem(result);
             entity.setCrafting(true);
             BteMobsMod.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.level.getChunkAt(player.getOnPos())), new ActionPacket(entityId, "start_crafting"));
-            this.player.closeContainer();
         }
     }
 
@@ -238,15 +237,14 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
 
         if (recipe != null) {
             if(!hasRequirementsForCraft(recipe)) return;
-
+            placeResult(recipe, assembleResult(recipe));
             for(int i = 0; i < this.craftSlots.getContainerSize(); ++i) {
                 Inventory inventory = serverPlayer.getInventory();
                 if (inventory.player instanceof ServerPlayer) {
                     this.craftSlots.removeItem(i, this.craftSlots.getItem(i).getCount());
                 }
             }
-
-            placeResult(recipe, assembleResult(recipe));
+            this.player.closeContainer();
         }
     }
 }
