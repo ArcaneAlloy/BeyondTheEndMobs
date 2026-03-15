@@ -9,6 +9,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -57,7 +58,30 @@ public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContai
 
     @Override
     public boolean matches(BteAbstractCraftContainer inventory, Level level) {
-        return hasRequiredItems(inventory::countItem);
+        if(inventory.isEmpty()){
+            return false;
+        }
+        int countItemValid=0;
+        int index=0;
+
+        for(ItemStack stack:inventory.items){
+            if(isValid(stack)){
+                countItemValid++;
+            }
+            index++;
+            if(index>=inventory.getContainerSize()){
+                break;
+            }
+        }
+        return countItemValid==this.ingredients.size();
+    }
+    public boolean isValid(ItemStack stack){
+        for (Ingredient stack1 : this.ingredients){
+            if(stack1.test(stack)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasItems(Player player) {

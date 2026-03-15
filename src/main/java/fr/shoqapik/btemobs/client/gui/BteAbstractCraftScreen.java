@@ -5,10 +5,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.client.widget.BteRecipeBookComponent;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
+import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -45,10 +47,19 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
             @Override
             public void onPress(Button button) {
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-                if(recipe!=null){
-                    BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
-                    BteAbstractCraftScreen.this.craftButton.active = false;
+                if(recipe==null){
+                    for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons){
+                        if(menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())){
+                            recipe = b.getRecipe();
+                            break;
+                        }
+                    }
+                    if (recipe == null) {
+                        return;
+                    }
                 }
+                BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
+                BteAbstractCraftScreen.this.craftButton.active = false;
             }
         }));
         this.craftButton.active = false;

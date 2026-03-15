@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class BteAbstractCraftContainer implements Container, StackedContentsCompatible {
 
-    private final NonNullList<ItemStack> items;
+    public final NonNullList<ItemStack> items;
     private final int width;
     private final int height;
     private final AbstractContainerMenu menu;
