@@ -94,13 +94,13 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
             Ingredient base = Ingredient.fromNetwork(buffer);
 
             int size = buffer.readVarInt();
-            NonNullList<Ingredient> ingredients = NonNullList.withSize(size, Ingredient.EMPTY);
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(size+1, Ingredient.EMPTY);
 
             for (int i = 0; i < size; i++) {
                 ingredients.set(i, Ingredient.fromNetwork(buffer));
             }
 
-            ingredients.add(base);
+            ingredients.set(size,base);
             ItemStack result = buffer.readItem();
 
             return new BlacksmithUpgradeRecipe(recipeId, category, base, ingredients, result);
