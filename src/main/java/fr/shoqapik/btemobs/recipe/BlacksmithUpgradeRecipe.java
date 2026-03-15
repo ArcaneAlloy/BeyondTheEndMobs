@@ -113,6 +113,8 @@ public class BlacksmithUpgradeRecipe extends BteAbstractRecipe {
 
             recipe.base.toNetwork(buffer);
 
+            buffer.writeVarInt(recipe.ingredients.size());
+
             for (Ingredient ingredient : recipe.ingredients) {
                 ingredient.toNetwork(buffer);
             }
