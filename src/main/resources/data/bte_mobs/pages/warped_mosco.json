@@ -1,8 +1,8 @@
 {
-  "title": "Warped Mosco",
+  "title": "page.bte.warped_mosco.title",
   "unlockLevel": "NETHER",
-  "entityId" : "alexsmobs:warped_mosco",
-  "description": "The Warped Mosco is a strong creature that can be summoned if the right circumstances occur.\n\nFirst a Mungus infected with exactly 5 Warped Mungus must be placed on the Nether. After that a Crimson Mosquito \nmust bite the Mungus.\n\nOnce defeated the Warped Mosco may drop Warped Muscle and Hemolymph Sac on death.",
-  "extraYRot" : 0,
+  "entityId": "alexsmobs:warped_mosco",
+  "description": "page.bte.warped_mosco.desc",
+  "extraYRot": 0,
   "orden": 12
 }

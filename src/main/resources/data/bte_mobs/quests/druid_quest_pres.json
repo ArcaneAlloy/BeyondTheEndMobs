@@ -2,22 +2,22 @@
   "entityId": "bte_mobs:druid",
   "type": "PRESENTATION",
   "dialogs": [
-    "Hmm...? Who are you...?",
-    "A Hero? I never met a hero before, but I guess you're the one I have to guide.",
-    "My name is Oriana, I am in charge of the balance and natural order, as well as the creatures that inhabit the universe.",
-    "Speak to me again, and I will reveal more about these creatures."
+    "dialog.bte.druid_quest_pres.1",
+    "dialog.bte.druid_quest_pres.2",
+    "dialog.bte.druid_quest_pres.3",
+    "dialog.bte.druid_quest_pres.4"
   ],
   "answers": [
     {
-      "formattedText": "Craft an item!",
+      "formattedText": "answer.bte.druid_quest_pres.1",
       "action": "open_craft"
     },
     {
-      "formattedText": "Teach me!",
+      "formattedText": "answer.bte.druid_quest_pres.2",
       "action": "rumor"
     },
     {
-      "formattedText": "Maybe later",
+      "formattedText": "answer.bte.druid_quest_pres.3",
       "action": "wip"
     }
   ]

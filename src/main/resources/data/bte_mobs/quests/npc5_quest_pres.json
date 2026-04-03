@@ -2,15 +2,15 @@
   "entityId": "bte_mobs:npc5",
   "type": "PRESENTATION",
   "dialogs": [
-    "Before you go, let me explain something important...",
-    "In this hall you will find Three Portals\nTo The Overworld on the left which is already unlocked.",
-    "To The Nether on the right which is unlocked after collect 8 different\nEnder Eyes.",
-    "Finally behind me you will find The End portal, which will be unlocked after collect 16 different Ender Eyes.",
-    "Good luck out there… Hero…"
+    "dialog.bte.npc5_quest_pres.1",
+    "dialog.bte.npc5_quest_pres.2",
+    "dialog.bte.npc5_quest_pres.3",
+    "dialog.bte.npc5_quest_pres.4",
+    "dialog.bte.npc5_quest_pres.5"
   ],
   "answers": [
     {
-      "formattedText": "Thank you",
+      "formattedText": "answer.bte.npc5_quest_pres.1",
       "action": "wip"
     }
   ]

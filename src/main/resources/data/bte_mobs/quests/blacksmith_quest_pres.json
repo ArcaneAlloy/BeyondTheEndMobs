@@ -2,22 +2,22 @@
   "entityId": "bte_mobs:blacksmith",
   "type": "PRESENTATION",
   "dialogs": [
-    "I cannot believe it! Y-you are here! The great Hero!",
-    "I'm Anna! And this is my forge. Here i will craft to you the best equipment you can ever imagine.",
-    "And if you need to repair or upgrade something just bring it to me along with the materials.",
-    "Have a great adventure and the best of luck, Hero. See you soon!"
+    "dialog.bte.blacksmith_quest_pres.1",
+    "dialog.bte.blacksmith_quest_pres.2",
+    "dialog.bte.blacksmith_quest_pres.3",
+    "dialog.bte.blacksmith_quest_pres.4"
   ],
   "answers": [
     {
-      "formattedText": "Craft an item!",
+      "formattedText": "answer.bte.blacksmith_quest_pres.1",
       "action": "open_craft"
     },
     {
-      "formattedText": "Repair an item!",
+      "formattedText": "answer.bte.blacksmith_quest_pres.2",
       "action": "open_repair"
     },
     {
-      "formattedText": "Maybe later",
+      "formattedText": "answer.bte.blacksmith_quest_pres.3",
       "action": "wip"
     }
   ]

@@ -2,19 +2,19 @@
   "entityId": "bte_mobs:explorer",
   "type": "TASKING",
   "dialogs": [
-    "Ey... Where do we go this time?"
+    "dialog.bte.explorer_quest_task.1"
   ],
   "answers": [
     {
-      "formattedText": "Craft an item!",
+      "formattedText": "answer.bte.explorer_quest_task.1",
       "action": "open_craft"
     },
     {
-      "formattedText": "Guide me!",
+      "formattedText": "answer.bte.explorer_quest_task.2",
       "action": "rumor"
     },
     {
-      "formattedText": "Maybe later",
+      "formattedText": "answer.bte.explorer_quest_task.3",
       "action": "wip"
     }
   ]

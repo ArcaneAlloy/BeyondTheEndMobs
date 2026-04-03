@@ -1,7 +1,6 @@
 {
-  "title": "Find Structures",
+  "title": "rumor.bte.compass.title",
   "unlockLevel": "OVERWORLD",
   "orden": 1,
-  "description": "In this adventure you will have\nto travel to specific structures to get\nthe Ender Eyes.\n\nTo do this, I can craft you different Compasses that will guide you on your adventure, just bring me the necessary materials."
-
+  "description": "rumor.bte.compass.desc"
 }

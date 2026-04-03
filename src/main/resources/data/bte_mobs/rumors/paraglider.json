@@ -1,7 +1,6 @@
 {
-  "title": "Paraglider",
+  "title": "rumor.bte.paraglider.title",
   "unlockLevel": "OVERWORLD",
-  "orden": 3,
-  "description": "The Paraglider is a powerful tool that\nwill allow you to move faster while\ngliding over long distances.\n\nAdditionally, if you jump on top of a lit\nFire or Campfire while using the\nParaglider, you'll ascend several blocks in\naltitude."
-
+  "orden": 14,
+  "description": "rumor.bte.paraglider.desc"
 }

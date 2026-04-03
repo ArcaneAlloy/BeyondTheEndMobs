@@ -1,8 +1,8 @@
 {
-  "title": "Crimson M. Larva",
+  "title": "page.bte.crimson_mosquito_larva.title",
   "unlockLevel": "NETHER",
-  "entityId" : "alexsmobs:crimson_mosquito",
-  "description": "Crimson Mosquito Larva may be \ndropped by a Crimson Mosquito on\ndeath.\n\nThey can be used to tamed Warped Toads or transform Stradpoles to Straddlers.",
-  "extraYRot" : 0,
+  "entityId": "alexsmobs:crimson_mosquito",
+  "description": "page.bte.crimson_mosquito_larva.desc",
+  "extraYRot": 0,
   "orden": 10
 }

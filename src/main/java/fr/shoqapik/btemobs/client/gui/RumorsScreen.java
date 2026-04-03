@@ -13,6 +13,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
@@ -59,36 +60,44 @@ public class RumorsScreen extends Screen {
 
         for (Rumor rumor : this.rumors) {
 
-            ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
+            ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID,
+                    String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
 
             boolean isUnlock = rumor.getUnlockLevel().isUnlocked(BteMobsMod.unlockLevel);
+
+            String rawTitle = rumor.getTitle();
+            String translatedTitle = rawTitle.contains(".") ? I18n.get(rawTitle) : rawTitle;
+
             CustomButton button = new CustomButton(
                     backgroundTexture, null ,
                     0,
                     0,
                     100,
                     20,
-                    Component.literal(rumor.getTitle()),
+                    Component.literal(translatedTitle),
                     (p_95981_) -> {
                         if(isUnlock){
                             this.currentRumor=rumor;
                         }
                     }
             );
+
             button.setIsLock(!isUnlock);
             buttons.add(this.addRenderableWidget(button));
-
         }
 
-        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height -80)-150,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
+        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height -80)-150,14,16,0,0,0,
+                new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
             scrolledY = Math.max(0,scrolledY-1);
             this.layoutButtons();
         });
 
-        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)+45,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
+        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)+45,14,16,0,0,0,
+                new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
             scrolledY=Math.min(this.rumors.size(),this.scrolledY+1);
             this.layoutButtons();
         });
+
         this.addRenderableWidget(this.up);
         this.addRenderableWidget(this.down);
         this.layoutButtons();
@@ -99,13 +108,12 @@ public class RumorsScreen extends Screen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
 
         if(this.currentRumor!=null){
-            // Render background
+
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0,
+                    new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs/antonio_tdialogo_extendido.png"));
 
-            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/dialogs/antonio_tdialogo_extendido.png")));
-
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
@@ -115,9 +123,17 @@ public class RumorsScreen extends Screen {
 
             GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
 
+            String rawDesc = this.currentRumor.getDescription();
+            String translatedDesc = rawDesc.contains(".") ? I18n.get(rawDesc) : rawDesc;
 
-            drawWordWrap(Component.literal(this.currentRumor.getDescription()), x + 17, y + 30, 240 - 20, 16777215, font, poseStack);
-
+            drawWordWrap(
+                    Component.literal(translatedDesc),
+                    x + 17, y + 30,
+                    220,
+                    16777215,
+                    font,
+                    poseStack
+            );
 
             poseStack.popPose();
         }
@@ -138,38 +154,28 @@ public class RumorsScreen extends Screen {
                 int visualIndex = i - visibleStartIndex;
                 button.visible = true;
                 button.active = true;
-                button.y=yStart + visualIndex * 25; // apply vertical scroll
+                button.y=yStart + visualIndex * 25;
                 button.x=x;
             } else {
-                button.visible = false; // hide buttons outside of scroll window
+                button.visible = false;
                 button.active = false;
             }
         }
-        if(visibleStartIndex>0){
-            this.up.active = true;
-            this.up.visible = true;
-        }else {
-            this.up.active = false;
-            this.up.visible = false;
-        }
 
-        if(visibleEndIndex<rumors.size()){
-            this.down.visible=true;
-            this.down.active=true;
-        }else {
-            this.down.visible=false;
-            this.down.active=false;
-        }
+        this.up.visible = visibleStartIndex > 0;
+        this.up.active = visibleStartIndex > 0;
+
+        this.down.visible = visibleEndIndex < rumors.size();
+        this.down.active = visibleEndIndex < rumors.size();
     }
 
-    public void drawWordWrap(FormattedText p_92858_, int p_92859_, int p_92860_, int p_92861_, int p_92862_, Font font, PoseStack stack) {
+    public void drawWordWrap(FormattedText text, int x, int y, int width, int color, Font font, PoseStack stack) {
         Matrix4f matrix4f = stack.last().pose();
 
-        for (FormattedCharSequence formattedcharsequence : font.split(p_92858_, p_92861_)) {
-            font.drawInternal(formattedcharsequence, (float) p_92859_, (float) p_92860_, p_92862_, matrix4f, false);
-            p_92860_ += 11;
+        for (FormattedCharSequence seq : font.split(text, width)) {
+            font.drawInternal(seq, x, y, color, matrix4f, false);
+            y += 11;
         }
-
     }
 
     @Override
@@ -183,13 +189,7 @@ public class RumorsScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
-        return super.mouseClicked(p_94695_, p_94696_, p_94697_);
-    }
-
-    @Override
     public boolean isPauseScreen() {
         return false;
     }
-
 }
