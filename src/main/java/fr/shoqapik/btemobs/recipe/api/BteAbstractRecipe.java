@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -85,9 +86,19 @@ public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContai
     }
 
     public boolean hasItems(Player player) {
-        return hasRequiredItems(player.getInventory()::countItem);
+        return hasRequiredItems((item)->countItem(item,player.getInventory()));
     }
+    public int countItem(Item p_18948_,Inventory inventory) {
+        int i = 0;
 
+        for(ItemStack stack :inventory.items) {
+            if (stack.getItem().equals(p_18948_)) {
+                i += stack.getCount();
+            }
+        }
+
+        return i;
+    }
     private boolean hasRequiredItems(IntCountProvider countProvider) {
         for (Ingredient ingredient : ingredients) {
             boolean hasEnough = false;

@@ -69,7 +69,21 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.recipeBookComponent.setVisible(true);
 
     }
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.recipeBookComponent.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
 
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        if (this.recipeBookComponent.charTyped(codePoint, modifiers)) {
+            return true;
+        }
+        return super.charTyped(codePoint, modifiers);
+    }
     @Override
     protected void containerTick() {
         super.containerTick();
@@ -116,14 +130,15 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(craftButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+        if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) {
             return true;
-        } else if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) {
-            this.setFocused(this.recipeBookComponent);
-            return true;
-        } else {
-            return this.widthTooNarrow && this.recipeBookComponent.isVisible() ? true : super.mouseClicked(pMouseX, pMouseY, pButton);
         }
+
+        if (craftButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+            return true;
+        }
+
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     @Override

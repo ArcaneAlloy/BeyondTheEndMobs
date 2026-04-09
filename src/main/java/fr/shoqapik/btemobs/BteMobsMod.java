@@ -78,9 +78,6 @@ public class BteMobsMod {
     public static double x=0;
     public static double y=0;
     public static double z=0;
-    public static double xq=0;
-    public static double yq=0;
-    public static double zq=0;
     public static int eyes = 0;
     public static final RecipeBookType BLACKSMITH =
             RecipeBookType.create("BLACKSMITH");
@@ -151,7 +148,6 @@ public class BteMobsMod {
 
 
     public static void handleActionPacket(ActionPacket msg, Supplier<NetworkEvent.Context> ctx) {
-
         if(msg.actionType.equals("open_craft")) {
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity == null) return;
@@ -186,6 +182,7 @@ public class BteMobsMod {
 
         }
     }
+
     public static IDrawable getPartialDrawable(IGuiHelper guiHelper,ResourceLocation textures) {
         int textureWidth = 512;
         int textureHeight = 512;
@@ -194,6 +191,7 @@ public class BteMobsMod {
         builder.setTextureSize(textureWidth, textureHeight);
         return builder.build();
     }
+
     public static void handleUnlockRecipePacket(CheckUnlockRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         List<Recipe<?>> recipes1 = new ArrayList<>();
         List<WarlockRecipe> recipes2  = getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get());
@@ -242,14 +240,10 @@ public class BteMobsMod {
             }
         }
 
-
-        BteMobsMod.LOGGER.info("list : {}",recipes);
-
         ctx.get().getSender().awardRecipes(recipes);
     }
 
     public static <C extends Container,T extends Recipe<C>> void checkStateRecipe(ServerPlayer player,RecipeType<T> type,List<Recipe<?>> recipes){
-        BteMobsMod.LOGGER.debug("check {}",type.toString());
 
         List<T> recipes2  = getServer().getRecipeManager().getAllRecipesFor(type);
         for (T recipe : recipes2){
@@ -340,6 +334,7 @@ public class BteMobsMod {
             warlockMenu.clickedRecipe = recipe;
         }
     }
+
     public static MinecraftServer getServer() {
         return ServerLifecycleHooks.getCurrentServer();
     }

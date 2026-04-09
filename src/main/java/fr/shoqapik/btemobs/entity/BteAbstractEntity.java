@@ -259,13 +259,6 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
         return PlayState.STOP;
     }
 
-    // Metodo para reproducir el sonido usando el AnimationEvent
-    private void playSounds(AnimationEvent<?> event, String name) {
-        if (this.level.isClientSide()) {
-            System.out.println("Reproduciendo sonido en: " + this.getX() + ", " + this.getY() + ", " + this.getZ());
-            this.playSound(SoundManager.HAMMER.get(), 1.0F, 1.0F);
-        }
-    }
 
 
     @Override

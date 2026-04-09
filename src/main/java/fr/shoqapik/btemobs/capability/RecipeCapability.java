@@ -3,6 +3,7 @@ package fr.shoqapik.btemobs.capability;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.api.RecipePlayer;
 import fr.shoqapik.btemobs.packets.SyncRecipeManager;
+import mc.duzo.ender_journey.capabilities.PortalPlayer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

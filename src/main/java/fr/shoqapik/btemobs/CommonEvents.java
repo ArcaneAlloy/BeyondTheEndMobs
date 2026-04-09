@@ -40,6 +40,7 @@ import java.util.ArrayList;
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEvents {
     private static int previousTimesChanged = 0;
+    private static boolean openedOnce = false;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @SubscribeEvent
@@ -55,6 +56,7 @@ public class CommonEvents {
             }
         }
     }
+
     @SubscribeEvent
     public static void onTick(LivingEvent.LivingTickEvent event){
         if(event.getEntity() instanceof Player player){
@@ -89,8 +91,10 @@ public class CommonEvents {
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
         if(event.side.isClient()) {
-            Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, true);
-
+            if (!openedOnce && Minecraft.getInstance().player != null) {
+                Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, true);
+                openedOnce = true;
+            }
             Inventory inventory = Minecraft.getInstance().player.getInventory();
             if (inventory.getTimesChanged() != previousTimesChanged) {
                 previousTimesChanged = inventory.getTimesChanged();
@@ -98,7 +102,7 @@ public class CommonEvents {
             }
         }
         if(event.player instanceof ServerPlayer serverPlayer){
-            if(BteMobsMod.unlockLevel== Rumor.UnlockLevel.END)return;
+            if(BteMobsMod.unlockLevel == Rumor.UnlockLevel.END)return;
             Advancement enterEnd = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("minecraft","end/root"));
             if(enterEnd!=null && serverPlayer.getAdvancements().getOrStartProgress(enterEnd).isDone()){
                 BteMobsMod.unlockLevel = Rumor.UnlockLevel.END;
@@ -113,8 +117,6 @@ public class CommonEvents {
                 BteMobsMod.sendToClient(new SyncUnlockLevelPacket(0),serverPlayer);
             }
         }
-
-
     }
 
     @SubscribeEvent
@@ -135,6 +137,7 @@ public class CommonEvents {
             }
         }
     }
+
     @SubscribeEvent
     public static void onAdvancementEarn(AdvancementEvent.AdvancementEarnEvent event){
         if (event.getEntity().level.isClientSide){

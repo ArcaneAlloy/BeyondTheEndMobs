@@ -50,11 +50,18 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
             @Override
             public void slotChanged(AbstractContainerMenu menu, int i, ItemStack itemStack) {
                 if(menu != WarlockCraftMenu.this) return;
-                if(WarlockCraftMenu.this.craftSlots.isEmpty())return;
+                if(WarlockCraftMenu.this.craftSlots.isEmpty()){
+                    WarlockCraftMenu.this.clickedRecipe = null;
+                    menu.getSlot(4).set(ItemStack.EMPTY);
+                    return;
+                }
+
                 if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots
                         && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
-                Optional<WarlockRecipe> optional = WarlockCraftMenu.this.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get()).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
+
+                Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(inventory.player).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
                 if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()  && ( canEnchantItem(optional.get().getEnchantment(),baseSlots.getItem(0)) || baseSlots.getItem(0).is(Items.BOOK)) || baseSlots.getItem(0).is(Items.ENCHANTED_BOOK)){
+
                     WarlockCraftMenu.this.clickedRecipe = optional;
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
                     menu.getSlot(4).set(optional.get().assemble(WarlockCraftMenu.this.getTotalContainer()));

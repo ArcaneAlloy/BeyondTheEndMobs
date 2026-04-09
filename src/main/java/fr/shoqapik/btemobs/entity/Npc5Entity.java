@@ -1,6 +1,6 @@
 package fr.shoqapik.btemobs.entity;
 
-import fr.shoqapik.btemobs.BteMobsMod;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -42,6 +42,8 @@ public class Npc5Entity extends BteAbstractEntity{
                 discard();
             }
         }
+
+
         if(summonHandParticlesTick > 0) {
             Level level = this.level;
 
@@ -74,7 +76,8 @@ public class Npc5Entity extends BteAbstractEntity{
                 summonHandParticlesTick = 0;
             }
         }
-
+        this.setYRot(Direction.NORTH.toYRot());
+        this.setYBodyRot(Direction.NORTH.toYRot());
     }
 
     @Override
@@ -89,7 +92,6 @@ public class Npc5Entity extends BteAbstractEntity{
     protected PlayState idleAnimation(AnimationEvent<BteAbstractEntity> event) {
         if(!event.isMoving()) {
             if(this.discardTime>0){
-                BteMobsMod.LOGGER.info("Animation :{}",(event.getController().getCurrentAnimation().animationName.equals("discard")));
                 event.getController().setAnimation(new AnimationBuilder().addAnimation("discard", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
                 event.getController().setAnimationSpeed(0.5D);
                 return PlayState.CONTINUE;

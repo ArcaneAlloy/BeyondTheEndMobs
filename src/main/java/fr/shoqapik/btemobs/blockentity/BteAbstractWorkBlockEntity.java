@@ -2,6 +2,10 @@ package fr.shoqapik.btemobs.blockentity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,6 +39,7 @@ public abstract class BteAbstractWorkBlockEntity extends BlockEntity {
         return super.getCapability(capability, direction); // See note after snippet
     }
 
+
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
@@ -42,8 +47,22 @@ public abstract class BteAbstractWorkBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void setChanged() {
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
+    }
 
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        load(tag);
+    }
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
 }

@@ -37,6 +37,8 @@ public abstract class BteAbstractWorkBlock extends HorizontalDirectionalBlock im
                 if (inventory.player instanceof ServerPlayer) {
                     inventory.placeItemBackInInventory(result);
                 }
+            }else {
+                blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get().insertItem(0,ItemStack.EMPTY,false);
             }
             if(result != ItemStack.EMPTY) return InteractionResult.SUCCESS;
         }
