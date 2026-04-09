@@ -1,6 +1,6 @@
 {
-  "title": "Ocean Monument",
+  "title": "rumor.bte.ocean_monument.title",
   "unlockLevel": "OVERWORLD",
-  "orden": 5,
-  "description": "The Ocean Monument can be found in the Oceans around the Overworld.\n\nInside of this structure you will find the Elder Guardian.\n\nYou will need to defeat this creature to obtain the Guardian Eye."
+  "orden": 13,
+  "description": "rumor.bte.ocean_monument.desc"
 }

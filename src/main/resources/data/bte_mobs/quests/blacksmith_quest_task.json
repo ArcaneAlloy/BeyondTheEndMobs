@@ -2,19 +2,19 @@
   "entityId": "bte_mobs:blacksmith",
   "type": "TASKING",
   "dialogs": [
-    "You are back! What can I do for you this time?"
+    "dialog.bte.blacksmith_quest_task.1"
   ],
   "answers": [
     {
-      "formattedText": "Craft an item!",
+      "formattedText": "answer.bte.blacksmith_quest_task.1",
       "action": "open_craft"
     },
     {
-      "formattedText": "Repair an item!",
+      "formattedText": "answer.bte.blacksmith_quest_task.2",
       "action": "open_repair"
     },
     {
-      "formattedText": "Maybe later",
+      "formattedText": "answer.bte.blacksmith_quest_task.3",
       "action": "wip"
     }
   ]

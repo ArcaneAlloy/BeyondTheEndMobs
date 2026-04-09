@@ -7,7 +7,6 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.button.CustomButton;
 import fr.shoqapik.btemobs.client.BteMobsModClient;
 import fr.shoqapik.btemobs.entity.BteNpcType;
-import fr.shoqapik.btemobs.entity.Npc5Entity;
 import fr.shoqapik.btemobs.packets.ActionPacket;
 import fr.shoqapik.btemobs.quests.Quest;
 import fr.shoqapik.btemobs.quests.QuestAnswer;
@@ -17,30 +16,23 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 public class QuestDialogScreen extends Screen {
 
     public static final ResourceLocation DIALOGS_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/default.png");
-    private static final Logger log = LoggerFactory.getLogger(QuestDialogScreen.class);
+
     protected int imageWidth = 254;
     protected int imageHeight = 80;
     protected int leftPos;
@@ -58,15 +50,16 @@ public class QuestDialogScreen extends Screen {
     private List<Button> buttons = new ArrayList<>();
     private boolean declined;
 
-/*    private Button acceptQuestButton;
-    private Button declineQuestButton;
-  */
-
     public QuestDialogScreen(int entityId, BteNpcType bteNpcType, Quest quest) {
         super(Component.literal(bteNpcType.name().toLowerCase(Locale.ROOT)));
         this.entityId = entityId;
         this.bteNpcType = bteNpcType;
         this.quest = quest;
+    }
+
+
+    private String tr(String key) {
+        return key != null && key.contains(".") ? I18n.get(key) : key;
     }
 
     @Override
@@ -85,32 +78,33 @@ public class QuestDialogScreen extends Screen {
             ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
             ResourceLocation foregroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/%s.png", bteNpcType.name().toLowerCase(Locale.ROOT), questAnswer.getAction().toLowerCase(Locale.ROOT)));
 
+            String answerKey = questAnswer.getFormattedAwnser();
+            String translatedAnswer = answerKey.contains(".") ? I18n.get(answerKey) : answerKey;
+
             buttons.add(this.addRenderableWidget(new CustomButton(
                     backgroundTexture, foregroundTexture,
                     x,
                     y + index * 25,
                     100,
                     20,
-                    Component.literal(questAnswer.getFormattedAwnser()),
+                    Component.literal(translatedAnswer),
                     (p_95981_) -> {
-                        if (questAnswer.getAction().equals("potion")) {
+                        if (questAnswer.getAction().equals("potion") || questAnswer.getAction().equals("rumor")) {
                             Minecraft.getInstance().setScreen(null);
                             BteMobsModClient.handleRumorsPacket(this.entityId);
-                        }
-                        if (questAnswer.getAction().equals("rumor")) {
-                            Minecraft.getInstance().setScreen(null);
-                            BteMobsModClient.handleRumorsPacket(this.entityId);
-                        }else if(!questAnswer.getAction().equals("wip")){
+                        } else if (!questAnswer.getAction().equals("wip")) {
                             Minecraft.getInstance().setScreen(null);
                             BteMobsMod.sendToServer(new ActionPacket(entityId, questAnswer.getAction()));
-                            if(BteNpcType.DRUID == this.bteNpcType){
+                            if (BteNpcType.DRUID == this.bteNpcType) {
                                 BteMobsModClient.handleClearItem(this.entityId);
                             }
-                        }else {
+                        } else {
                             Minecraft.getInstance().setScreen(null);
                         }
-                        if(currentDialogSound != null) {
+
+                        if (currentDialogSound != null) {
                             Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+                            currentDialogSound = null;
                         }
                     }
             )));
@@ -118,36 +112,48 @@ public class QuestDialogScreen extends Screen {
             index++;
         }
         setButtonsEnabled(false);
-
-        super.init();
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        if (letterIndex < this.quest.getDialogs().get(page).length()) {
-            if(!typing && page < this.quest.getDialogSounds().size()) {
+
+        String rawDialog = this.quest.getDialogs().get(page);
+        String translatedDialog = rawDialog.contains(".") ? I18n.get(rawDialog) : rawDialog;
+
+        if (letterIndex < translatedDialog.length()) {
+            if (!typing && page < this.quest.getDialogSounds().size()) {
+
+                if (currentDialogSound != null) {
+                    Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+                }
+
                 ResourceLocation soundLocation = this.quest.getDialogSounds().get(page);
                 double x = Minecraft.getInstance().player.getX();
                 double y = Minecraft.getInstance().player.getY();
                 double z = Minecraft.getInstance().player.getZ();
-                this.minecraft.getSoundManager().play(new SimpleSoundInstance(soundLocation, SoundSource.NEUTRAL, 1.0f, 1.0f, SoundInstance.createUnseededRandom(), false, 0, SoundInstance.Attenuation.LINEAR, x, y, z, false));
+
+                this.minecraft.getSoundManager().play(
+                        new SimpleSoundInstance(soundLocation, SoundSource.NEUTRAL, 1.0f, 1.0f,
+                                SoundInstance.createUnseededRandom(), false, 0,
+                                SoundInstance.Attenuation.LINEAR, x, y, z, false)
+                );
+
                 this.currentDialogSound = soundLocation;
             }
 
             typing = true;
-            currentLine += this.quest.getDialogs().get(page).charAt(letterIndex);
-            letterIndex += 1;
+            currentLine += translatedDialog.charAt(letterIndex);
+            letterIndex++;
         } else {
             typing = false;
         }
+
         this.setFocused(null);
 
-        // Render background
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/dialogs/%s.png", bteNpcType.name().toLowerCase(Locale.ROOT))));
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID,
+                String.format("textures/gui/dialogs/%s.png", bteNpcType.name().toLowerCase(Locale.ROOT))));
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -158,15 +164,18 @@ public class QuestDialogScreen extends Screen {
 
         GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
 
-        //GuiComponent.drawCenteredString(poseStack, font, entityname, x + imageWidth / 2, y + 5, 16777215);
+        drawWordWrap(Component.literal(currentLine), x + 17, y + 30, 220, 16777215, font, poseStack);
 
-        drawWordWrap(Component.literal(currentLine), x + 17, y + 30, 240 - 20, 16777215, font, poseStack);
-
-
-        poseStack.popPose();
         if (!typing) {
             if (page != this.quest.getDialogs().size() - 1 || declined) {
-                GuiComponent.drawCenteredString(poseStack, font, "Click anywhere to continue", x + imageWidth / 2, y - 13, 16777215);
+                GuiComponent.drawCenteredString(
+                        poseStack,
+                        font,
+                        tr("gui.bte.continue"),
+                        x + imageWidth / 2,
+                        y - 13,
+                        16777215
+                );
             } else {
                 setButtonsEnabled(true);
             }
@@ -175,48 +184,56 @@ public class QuestDialogScreen extends Screen {
         super.render(poseStack, mouseX, mouseY, partialTick);
     }
 
-    public void drawWordWrap(FormattedText p_92858_, int p_92859_, int p_92860_, int p_92861_, int p_92862_, Font font, PoseStack stack) {
+    public void drawWordWrap(FormattedText text, int x, int y, int width, int color, Font font, PoseStack stack) {
         Matrix4f matrix4f = stack.last().pose();
 
-        for (FormattedCharSequence formattedcharsequence : font.split(p_92858_, p_92861_)) {
-            font.drawInternal(formattedcharsequence, (float) p_92859_, (float) p_92860_, p_92862_, matrix4f, false);
-            p_92860_ += 11;
+        for (FormattedCharSequence seq : font.split(text, width)) {
+            font.drawInternal(seq, x, y, color, matrix4f, false);
+            y += 11;
         }
-
     }
 
     @Override
     public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+
+        if (currentDialogSound != null) {
+            Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+            currentDialogSound = null;
+        }
+
         if (typing) {
             typing = false;
-            currentLine = this.quest.getDialogs().get(page);
+            String rawDialog = this.quest.getDialogs().get(page);
+            currentLine = rawDialog.contains(".") ? I18n.get(rawDialog) : rawDialog;
             letterIndex = currentLine.length();
-            if(currentDialogSound != null) {
-                Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
-            }
+
         } else if (page != this.quest.getDialogs().size() - 1) {
-            page += 1;
+            page++;
             letterIndex = 0;
             currentLine = "";
-            if(currentDialogSound != null) {
-                Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
-            }
+
         } else if (declined) {
             Minecraft.getInstance().setScreen(null);
-        } else if (page == this.quest.getDialogs().size() - 1) {
+
+        } else {
             return super.mouseClicked(p_94695_, p_94696_, p_94697_);
         }
+
         return true;
     }
 
     @Override
     public void removed() {
-        if(this.bteNpcType == BteNpcType.NPC5){
+
+        if (this.bteNpcType == BteNpcType.NPC5) {
             BteMobsMod.sendToServer(new ActionPacket(entityId, "Discard"));
         }
-        if(currentDialogSound != null) {
+
+        if (currentDialogSound != null) {
             Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+            currentDialogSound = null;
         }
+
         super.removed();
     }
 

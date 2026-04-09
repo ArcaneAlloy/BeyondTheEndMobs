@@ -2,23 +2,23 @@
   "entityId": "bte_mobs:warlock",
   "type": "PRESENTATION",
   "dialogs": [
-    "Huh? Who's there? Oh, it's you—finally. You'be been taking your time, haven't you?",
-    "I'm Noah, sorcerer and alchemist, at your service.",
-    "As you know, a new enemy threatens this reality, and you’ll need my help.",
-    "Bring me tomes of enchantment and the necessary materials, and I’ll enchant your equipment and prepare concoctions.",
-    "Good luck out there… Hero…"
+    "dialog.bte.warlock_quest_pres.1",
+    "dialog.bte.warlock_quest_pres.2",
+    "dialog.bte.warlock_quest_pres.3",
+    "dialog.bte.warlock_quest_pres.4",
+    "dialog.bte.warlock_quest_pres.5"
   ],
   "answers": [
     {
-      "formattedText": "Enchant an item!",
+      "formattedText": "answer.bte.warlock_quest_pres.1",
       "action": "open_craft"
     },
     {
-      "formattedText": "Brew a Potion!",
+      "formattedText": "answer.bte.warlock_quest_pres.2",
       "action": "potion"
     },
     {
-      "formattedText": "Maybe later",
+      "formattedText": "answer.bte.warlock_quest_pres.3",
       "action": "wip"
     }
   ]

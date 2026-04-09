@@ -1,8 +1,8 @@
 {
-  "title": "Wild Ravager",
+  "title": "page.bte.wild_ravager.title",
   "unlockLevel": "OVERWORLD",
-  "entityId" : "illagerrevolutionmod:wild_ravager",
-  "description": "The Wild Ravager can be found in a Raid.\n\nThey can be tamed when stunned with a shield by feeding them hay bales.\n\nOnce tamed they can be ridden and are allowed to being equipped with a Ravager Armor of different tiers: Iron, Gold, Diamond, Illagium and Netherite.",
-  "extraYRot" : 0,
+  "entityId": "illagerrevolutionmod:wild_ravager",
+  "description": "page.bte.wild_ravager.desc",
+  "extraYRot": 0,
   "orden": 6
 }

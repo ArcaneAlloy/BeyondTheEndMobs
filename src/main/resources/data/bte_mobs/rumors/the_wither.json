@@ -1,6 +1,6 @@
 {
-  "title": "The Wither",
+  "title": "rumor.bte.the_wither.title",
   "unlockLevel": "NETHER",
-  "orden": 14,
-  "description": "The Wither is a similar creature to the Wither Skeleton.\n\nThis creature must be summoned through\na ritual by placing four Soul Stone blocks\nin a T-shape and then three Wither Skeleton Skulls on top of these blocks.\n\nYou will need to defeat the Wither Boss\nto obtain the Nether Star, which is needed\nto activate a robot found in the Ancient Factory."
+  "orden": 17,
+  "description": "rumor.bte.the_wither.desc"
 }

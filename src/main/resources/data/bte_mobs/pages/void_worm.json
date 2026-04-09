@@ -1,8 +1,8 @@
 {
-  "title": "Void Worm",
+  "title": "page.bte.void_worm.title",
   "unlockLevel": "END",
-  "entityId" : "alexsmobs:void_worm",
-  "description": "The Void Worm is a powerful entity that must be summoned throwing a Mysterious Worm into the End void.\n\nYou must defeat this creature to obtain the Parasite Eye.",
-  "extraYRot" : 0,
+  "entityId": "alexsmobs:void_worm",
+  "description": "page.bte.void_worm.desc",
+  "extraYRot": 0,
   "orden": 14
 }

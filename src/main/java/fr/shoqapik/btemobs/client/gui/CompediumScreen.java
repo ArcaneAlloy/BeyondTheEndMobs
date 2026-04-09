@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 public class CompediumScreen extends Screen {
 
@@ -40,11 +40,11 @@ public class CompediumScreen extends Screen {
     protected int topPos;
     protected Button up;
     protected Button down;
-    protected int scrolledY=0;
+    protected int scrolledY = 0;
     private int entityId;
     private BteNpcType bteNpcType;
     private List<PageCompendium> rumors;
-    private PageCompendium currentPageCompendium=null;
+    private PageCompendium currentPageCompendium = null;
     private List<Button> buttons = new ArrayList<>();
 
     public CompediumScreen(int entityId, BteNpcType bteNpcType, List<PageCompendium> rumors) {
@@ -54,6 +54,9 @@ public class CompediumScreen extends Screen {
         this.rumors = rumors;
     }
 
+    private String tr(String key) {
+        return key != null && key.contains(".") ? I18n.get(key) : key;
+    }
 
     @Override
     protected void init() {
@@ -65,36 +68,57 @@ public class CompediumScreen extends Screen {
 
         for (PageCompendium page : this.rumors) {
 
-            ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
+            ResourceLocation backgroundTexture = new ResourceLocation(
+                    BteMobsMod.MODID,
+                    String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT))
+            );
 
             boolean isUnlock = page.getUnlockLevel().isUnlocked(BteMobsMod.unlockLevel1);
+
             CustomButton button = new CustomButton(
-                    backgroundTexture, null ,
+                    backgroundTexture, null,
                     0,
                     0,
                     100,
                     20,
-                    Component.literal(page.getTitle()),
+                    Component.literal(tr(page.getTitle())),
                     (p_95981_) -> {
-                        if(isUnlock){
+                        if (isUnlock) {
                             this.currentPageCompendium = page;
                         }
                     }
             );
+
             button.setIsLock(!isUnlock);
             buttons.add(this.addRenderableWidget(button));
-
         }
 
-        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)-150,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
-            scrolledY = Math.max(0,scrolledY-1);
-            this.layoutButtons();
-        });
+        this.up = new ImageButton(
+                (this.leftPos - (this.width / 8)) + 20,
+                (this.height - 80) - 150,
+                14, 16,
+                0, 0, 0,
+                new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/explorer/up.png"),
+                14, 16,
+                (p) -> {
+                    scrolledY = Math.max(0, scrolledY - 1);
+                    this.layoutButtons();
+                }
+        );
 
-        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)+45,14,16,0,0,0,new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
-            scrolledY=Math.min(this.rumors.size(),this.scrolledY+1);
-            this.layoutButtons();
-        });
+        this.down = new ImageButton(
+                (this.leftPos - (this.width / 8)) + 20,
+                (this.height - 80) + 45,
+                14, 16,
+                0, 0, 0,
+                new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/explorer/down.png"),
+                14, 16,
+                (p) -> {
+                    scrolledY = Math.min(this.rumors.size(), this.scrolledY + 1);
+                    this.layoutButtons();
+                }
+        );
+
         this.addRenderableWidget(this.up);
         this.addRenderableWidget(this.down);
         this.layoutButtons();
@@ -105,14 +129,15 @@ public class CompediumScreen extends Screen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
 
-        if(this.currentPageCompendium!=null){
-            // Render background
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        if (this.currentPageCompendium != null) {
 
-            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/dialogs/oriana_tdialogo_extendido.png")));
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, new ResourceLocation(
+                    BteMobsMod.MODID,
+                    "textures/gui/dialogs/oriana_tdialogo_extendido.png"
+            ));
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
@@ -120,26 +145,37 @@ public class CompediumScreen extends Screen {
             int x = (int) (this.leftPos - (this.width / 8) + 90);
             int y = (int) (this.height - 80 - 130);
 
+            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(
+                    new ResourceLocation(
+                            this.currentPageCompendium.getEntityId().split(":")[0],
+                            this.currentPageCompendium.getEntityId().split(":")[1]
+                    )
+            );
 
-            //GuiComponent.drawCenteredString(poseStack, font, "PageCompendiums", x + imageWidth / 2, y + 5, 16777215);
-
-
-            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(this.currentPageCompendium.getEntityId().split(":")[0],this.currentPageCompendium.getEntityId().split(":")[1]));
-            if(type!=null){
+            if (type != null) {
 
                 EntityPage page = new EntityPage(type);
-                GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
-                drawWordWrap(Component.literal(this.currentPageCompendium.getDescription()), x + 17, y + 30, 240 - 20, 2829099, font, poseStack);
-                page.render(this.currentPageCompendium,poseStack,x+210,y-80,mouseX,mouseY);
 
-            }                                                                       
+                GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
+
+                drawWordWrap(
+                        Component.literal(tr(this.currentPageCompendium.getDescription())),
+                        x + 17,
+                        y + 30,
+                        240 - 20,
+                        2829099,
+                        font,
+                        poseStack
+                );
+
+                page.render(this.currentPageCompendium, poseStack, x + 210, y - 80, mouseX, mouseY);
+            }
 
             poseStack.popPose();
         }
 
         super.render(poseStack, mouseX, mouseY, partialTick);
     }
-
 
     private void layoutButtons() {
         int x = (int) (this.leftPos - (this.width / 8) - 22);
@@ -154,60 +190,42 @@ public class CompediumScreen extends Screen {
                 int visualIndex = i - visibleStartIndex;
                 button.visible = true;
                 button.active = true;
-                button.y=yStart + visualIndex * 25; // apply vertical scroll
-                button.x=x;
+                button.y = yStart + visualIndex * 25;
+                button.x = x;
             } else {
-                button.visible = false; // hide buttons outside of scroll window
+                button.visible = false;
                 button.active = false;
             }
         }
-        if(visibleStartIndex>0){
-            this.up.active = true;
-            this.up.visible = true;
-        }else {
-            this.up.active = false;
-            this.up.visible = false;
-        }
 
-        if(visibleEndIndex<rumors.size()){
-            this.down.visible=true;
-            this.down.active=true;
-        }else {
-            this.down.visible=false;
-            this.down.active=false;
-        }
+        this.up.visible = visibleStartIndex > 0;
+        this.up.active = visibleStartIndex > 0;
+
+        this.down.visible = visibleEndIndex < rumors.size();
+        this.down.active = visibleEndIndex < rumors.size();
     }
 
-    public void drawWordWrap(FormattedText p_92858_, int p_92859_, int p_92860_, int p_92861_, int p_92862_, Font font, PoseStack stack) {
+    public void drawWordWrap(FormattedText text, int x, int y, int width, int color, Font font, PoseStack stack) {
         Matrix4f matrix4f = stack.last().pose();
 
-        for (FormattedCharSequence formattedcharsequence : font.split(p_92858_, p_92861_)) {
-            font.drawInternal(formattedcharsequence, (float) p_92859_, (float) p_92860_, p_92862_, matrix4f, false);
-            p_92860_ += 11;
+        for (FormattedCharSequence seq : font.split(text, width)) {
+            font.drawInternal(seq, (float) x, (float) y, color, matrix4f, false);
+            y += 11;
         }
-
     }
 
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-        if (this.rumors.size()>7) {
+        if (this.rumors.size() > 7) {
             int j = this.rumors.size() - 7;
-            this.scrolledY = Mth.clamp((int)((double)this.scrolledY - pDelta), 0, j);
+            this.scrolledY = Mth.clamp((int) ((double) this.scrolledY - pDelta), 0, j);
             this.layoutButtons();
         }
         return super.mouseScrolled(pMouseX, pMouseY, pDelta);
     }
 
     @Override
-    public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
-        return super.mouseClicked(p_94695_, p_94696_, p_94697_);
-    }
-
-
-
-    @Override
     public boolean isPauseScreen() {
         return false;
     }
-
 }

@@ -2,19 +2,19 @@
   "entityId": "bte_mobs:druid",
   "type": "TASKING",
   "dialogs": [
-    "Oh, I didn't see you. Need anything?"
+    "dialog.bte.druid_quest_task.1"
   ],
   "answers": [
     {
-      "formattedText": "Craft an item!",
+      "formattedText": "answer.bte.druid_quest_task.1",
       "action": "open_craft"
     },
     {
-      "formattedText": "Teach me!",
+      "formattedText": "answer.bte.druid_quest_task.2",
       "action": "rumor"
     },
     {
-      "formattedText": "Maybe later",
+      "formattedText": "answer.bte.druid_quest_task.3",
       "action": "wip"
     }
   ]
