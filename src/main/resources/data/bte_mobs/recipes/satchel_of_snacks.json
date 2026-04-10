@@ -1,0 +1,25 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:chest",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:string",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:beef",
+      "count": 8
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:satchel_of_snacks"
+  }
+}

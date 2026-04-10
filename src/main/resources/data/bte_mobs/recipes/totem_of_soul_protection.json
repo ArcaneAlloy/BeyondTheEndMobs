@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:totem_of_undying",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:chorus_dust",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:totem_of_soul_protection"
+  }
+}

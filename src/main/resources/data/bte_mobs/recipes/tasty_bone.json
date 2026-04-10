@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:bone",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:beef",
+      "count": 9
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:tasty_bone"
+  }
+}

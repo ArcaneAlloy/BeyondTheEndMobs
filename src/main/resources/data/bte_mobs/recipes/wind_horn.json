@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:goat_horn",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "dungeons_mobs:windcaller_staff",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:wind_horn"
+  }
+}
