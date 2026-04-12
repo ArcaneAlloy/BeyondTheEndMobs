@@ -1,23 +1,23 @@
 {
   "type": "bte_mobs:blacksmith_upgrade",
-  "category": "WEAPONS",
-  "tier": 5,
+  "category": "ARMORS",
+  "tier": 2,
   "base": {
-    "item": "dungeons_gear:whispering_spear"
+    "item": "twilightforest:ironwood_leggings"
   },
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "upgrade_aquatic:thrasher_tooth",
+      "item": "minecraft:leather",
       "count": 3
     },
     {
       "type": "bte_mobs:item",
-      "item": "minecraft:heart_of_the_sea",
+      "item": "quark:indigo_corundum_cluster",
       "count": 1
     }
   ],
   "result": {
-    "item": "monstersandmushrooms:drownedsword"
+    "item": "dungeons_gear:scale_mail_leggings"
   }
 }
