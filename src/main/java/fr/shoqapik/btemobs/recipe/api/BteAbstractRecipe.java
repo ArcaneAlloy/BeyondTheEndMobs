@@ -62,31 +62,22 @@ public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContai
         if(inventory.isEmpty()){
             return false;
         }
-        int countItemValid=0;
-        int index=0;
-
-        for(ItemStack stack:inventory.items){
-            if(isValid(stack)){
-                countItemValid++;
-            }
-            index++;
-            if(index>=inventory.getContainerSize()){
-                break;
-            }
-        }
-        return countItemValid==this.ingredients.size();
-    }
-    public boolean isValid(ItemStack stack){
-        for (Ingredient stack1 : this.ingredients){
-            if(stack1.test(stack)){
-                return true;
-            }
-        }
-        return false;
+        return hasItems((c)->countItem(c,inventory));
     }
 
     public boolean hasItems(Player player) {
         return hasRequiredItems((item)->countItem(item,player.getInventory()));
+    }
+    public int countItem(Item p_18948_,BteAbstractCraftContainer inventory) {
+        int i = 0;
+
+        for(ItemStack stack :inventory.items) {
+            if (stack.getItem().equals(p_18948_)) {
+                i += stack.getCount();
+            }
+        }
+
+        return i;
     }
     public int countItem(Item p_18948_,Inventory inventory) {
         int i = 0;
@@ -98,6 +89,23 @@ public abstract class BteAbstractRecipe implements Recipe<BteAbstractCraftContai
         }
 
         return i;
+    }
+    private boolean hasItems(IntCountProvider countProvider) {
+        for (Ingredient ingredient : ingredients) {
+            boolean hasEnough = false;
+
+            for (ItemStack stack : ingredient.getItems()) {
+                if (countProvider.count(stack.getItem()) == stack.getCount()) {
+                    hasEnough = true;
+                    break;
+                }
+            }
+
+            if (!hasEnough) {
+                return false;
+            }
+        }
+        return true;
     }
     private boolean hasRequiredItems(IntCountProvider countProvider) {
         for (Ingredient ingredient : ingredients) {

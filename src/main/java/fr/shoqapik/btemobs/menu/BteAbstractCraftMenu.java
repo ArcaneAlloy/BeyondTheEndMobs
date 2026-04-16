@@ -164,7 +164,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
                             }
                         }
 
-                        if (minecraftItem == null) continue; // In theory this is impossible
+                        if (minecraftItem == null) continue;
 
                         int removed = 0;
                         for (ItemStack stack : player.getInventory().items) {
@@ -214,26 +214,47 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
     }
 
     public List<Recipe> getCraftableRecipes(ServerPlayer player) {
-        List<Recipe> list = new ArrayList<>();
-        for(RecipeType<? extends BteAbstractRecipe> recipeType : getRecipeTypes()) {
-            list.addAll(player.getServer().getRecipeManager().getRecipesFor(recipeType, craftSlots, player.getLevel()));
+        List<BteAbstractRecipe> validRecipes = new ArrayList<>();
+
+        for (RecipeType<? extends BteAbstractRecipe> recipeType : getRecipeTypes()) {
+            List<? extends Recipe<?>> recipes =
+                    player.getServer().getRecipeManager().getRecipesFor(recipeType, craftSlots, player.getLevel());
+
+            for (Recipe<?> recipe : recipes) {
+                if (recipe instanceof BteAbstractRecipe bteRecipe) {
+                    if (bteRecipe.matches(craftSlots, player.getLevel())) {
+                        validRecipes.add(bteRecipe);
+                    }
+                }
+            }
         }
-        return list;
+
+        validRecipes.sort((a, b) -> Integer.compare(getRecipeWeight(b), getRecipeWeight(a)));
+        return new ArrayList<>(validRecipes);
     }
 
     public void craftItemClient(Recipe<?> recipe) {
         BteMobsMod.sendToServer(new CraftItemPacket(recipe));
     }
+    private int getRecipeWeight(BteAbstractRecipe recipe) {
+        int total = 0;
 
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            int max = 0;
+
+            for (ItemStack stack : ingredient.getItems()) {
+                max = Math.max(max, stack.getCount());
+            }
+
+            total += max;
+        }
+
+        return total;
+    }
     public void craftItemServer(ServerPlayer serverPlayer, Optional<? extends Recipe<?>> clickedRecipe) {
         List<Recipe> list = getCraftableRecipes(serverPlayer);
 
-        Recipe recipe;
-        if(clickedRecipe.isPresent() && list.contains(clickedRecipe.get())) {
-            recipe = clickedRecipe.get();
-        } else {
-            recipe = list.get(0);
-        }
+        Recipe recipe= list.get(0);;
 
         if (recipe != null) {
             if(!hasRequirementsForCraft(recipe)) return;

@@ -73,11 +73,7 @@ public class BlacksmithRecipe extends BteAbstractRecipe {
                 throw new JsonParseException("No ingredients for blacksmith recipe");
             }
 
-            ItemStack result = CraftingHelper.getItemStack(
-                    GsonHelper.getAsJsonObject(json, "result"),
-                    true,
-                    true
-            );
+            ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true, true);
 
             return new BlacksmithRecipe(recipeId, category, tier, ingredients, result);
         }

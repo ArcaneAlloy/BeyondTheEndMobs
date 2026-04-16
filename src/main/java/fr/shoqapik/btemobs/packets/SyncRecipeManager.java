@@ -32,10 +32,9 @@ public class SyncRecipeManager {
 
     public static void handle(SyncRecipeManager msg, Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context context = ctx.get();
-
         context.enqueueWork(() -> {
             if (context.getDirection().getReceptionSide().isClient()) {
-                BteMobsMod.LOGGER.debug("Handler : {}",msg.data);
+//                BteMobsMod.LOGGER.debug("Handler : {}",msg.data);
                 msg.handleClient();
             }
         });
@@ -75,11 +74,11 @@ public class SyncRecipeManager {
                             }
                             map.put(type,recipes);
                         }
-                        BteMobsMod.LOGGER.debug("map :{}",map);
+//                        BteMobsMod.LOGGER.debug("map :{}",map);
 
-                        BteMobsMod.LOGGER.debug("pre readdata :{}",cap.getRecipeManager());
+//                        BteMobsMod.LOGGER.debug("pre readdata :{}",cap.getRecipeManager());
                         cap.setRecipeManager(map);
-                        BteMobsMod.LOGGER.debug("post readdata :{}",cap.getRecipeManager());
+//                        BteMobsMod.LOGGER.debug("post readdata :{}",cap.getRecipeManager());
                     }
                 }else {
                     cap.deserializeNBT(data);

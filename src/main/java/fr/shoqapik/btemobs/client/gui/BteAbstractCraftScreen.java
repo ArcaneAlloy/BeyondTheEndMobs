@@ -47,17 +47,23 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
             @Override
             public void onPress(Button button) {
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-                if(recipe==null){
-                    for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons){
-                        if(menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())){
-                            recipe = b.getRecipe();
-                            break;
+                for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons){
+
+                    if(menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())){
+                        if(recipe!=null && !recipe.getId().equals(b.getRecipe().getId())){
+                            BteMobsMod.LOGGER.info("hay cambios :{}  , {}",recipe.getId(),b.getRecipe().getId());
+                        }else if(recipe==null){
+                            BteMobsMod.LOGGER.info("Is null wtf niggerss entocnes se usa el matcheado :{}",b.getRecipe().getId());
+
                         }
-                    }
-                    if (recipe == null) {
-                        return;
+                        recipe = b.getRecipe();
+                        break;
                     }
                 }
+                if (recipe == null) {
+                    return;
+                }
+                BteMobsMod.LOGGER.info("OnPress :{}",recipe.getId());
                 BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
                 BteAbstractCraftScreen.this.craftButton.active = false;
             }
@@ -87,12 +93,14 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
     @Override
     protected void containerTick() {
         super.containerTick();
+        BteMobsMod.LOGGER.info("Recipes :{}",this.recipeBookComponent.recipeBookPage.getLastClickedRecipe());
         this.recipeBookComponent.tick();
     }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.recipeBookComponent.setVisible(true);
+
         this.renderBackground(pPoseStack);
         if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
             this.renderBg(pPoseStack, pPartialTick, pMouseX, pMouseY);
@@ -155,7 +163,6 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     @Override
     public void recipesUpdated() {
-
         this.recipeBookComponent.recipesUpdated();
     }
 

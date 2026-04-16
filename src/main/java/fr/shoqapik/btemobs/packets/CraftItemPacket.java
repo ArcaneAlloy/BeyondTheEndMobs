@@ -36,7 +36,8 @@ public class CraftItemPacket {
 
     public static CraftItemPacket decode(FriendlyByteBuf packetBuffer) {
         if(packetBuffer.readableBytes() != 0) {
-            return new CraftItemPacket(packetBuffer.readResourceLocation());
+            ResourceLocation location = packetBuffer.readResourceLocation();
+            return new CraftItemPacket(location);
         } else {
             throw new IllegalArgumentException("CraftItemPacket error 111");
         }
