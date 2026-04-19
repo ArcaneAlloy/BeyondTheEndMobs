@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:ender_pearl",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "supplementaries:quiver",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:torment_quiver"
+  }
+}

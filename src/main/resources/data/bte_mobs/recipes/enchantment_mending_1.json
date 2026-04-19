@@ -3,7 +3,7 @@
   "category": "ALL",
   "enchantment": "minecraft:mending",
   "texture": "bte_mobs:textures/enchantments/mending_1.png",
-  "eyes": 0,
+  "eyes": 13,
   "level": 1,
   "experience": 30,
   "ingredients": [

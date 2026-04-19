@@ -1,0 +1,30 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:potion",
+      "count": 4
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:leather",
+      "count": 4
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:string",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:dragon_breath",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:satchel_of_elixirs"
+  }
+}

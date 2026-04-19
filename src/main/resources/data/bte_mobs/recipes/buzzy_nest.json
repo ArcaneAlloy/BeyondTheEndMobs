@@ -1,0 +1,30 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:beehive",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:oak_log",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:honeycomb",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:honey_block",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "dungeons_gear:buzzy_nest"
+  }
+}

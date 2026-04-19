@@ -1,7 +1,10 @@
 {
-  "type": "bte_mobs:blacksmith",
+  "type": "bte_mobs:blacksmith_upgrade",
   "category": "ARMORS",
   "tier": 3,
+  "base": {
+    "item": "minecraft:iron_leggings"
+  },
   "ingredients": [
     {
       "type": "bte_mobs:item",

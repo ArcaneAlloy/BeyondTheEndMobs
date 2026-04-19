@@ -5,21 +5,26 @@
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "minecraft:shulker_head",
+      "item": "minecraft:red_mushroom",
       "count": 1
     },
     {
       "type": "bte_mobs:item",
-      "item": "minecraft:netherite_scrap",
+      "item": "minecraft:brown_mushroom",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:roadrunner_feather",
       "count": 2
     },
     {
       "type": "bte_mobs:item",
-      "item": "minecraft:end_rod",
+      "item": "alexsmobs:chorus_dust",
       "count": 1
     }
   ],
   "result": {
-    "item": "monstersandmushrooms:endwand"
+    "item": "dungeons_gear:death_cap_mushroom"
   }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 1,
+  "base": {
+    "item": "minecraft:wooden_pickaxe"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:cobblestone",
+      "count": 3
+    }
+  ],
+  "result": {
+    "item": "minecraft:stone_pickaxe"
+  }
+}

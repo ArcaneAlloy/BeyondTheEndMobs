@@ -1,13 +1,11 @@
 {
-  "type": "bte_mobs:blacksmith",
+  "type": "bte_mobs:blacksmith_upgrade",
   "category": "WEAPONS",
   "tier": 4,
+  "base": {
+    "item": "minecraft:iron_sword"
+  },
   "ingredients": [
-    {
-      "type": "bte_mobs:item",
-      "item": "minecraft:stick",
-      "count": 1
-    },
     {
       "type": "bte_mobs:item",
       "item": "twilightforest:knightmetal_ingot",
