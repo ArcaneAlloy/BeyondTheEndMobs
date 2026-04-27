@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.logging.LogUtils;
-import fr.shoqapik.btemobs.rumors.Rumor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -38,11 +37,17 @@ public class PagesManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
+        // BUG FIX: Solo limpiar y recargar si hay datos — evita borrar datos válidos
+        // cuando el servidor dedicado recarga recursos sin incluir los datapacks del mod.
+        if (p_10793_.isEmpty()) {
+            LOGGER.info("[PagesManager] Skipping reload — no pages data found (keeping {} existing entries)", quests.size());
+            return;
+        }
+
         quests.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : p_10793_.entrySet()) {
             ResourceLocation resourcelocation = entry.getKey();
             try {
-
                 PageCompendium quest = GSON.fromJson(entry.getValue(), PageCompendium.class);
                 if (quest == null) {
                     LOGGER.info("Skipping loading rumors {} as it's serializer returned null", resourcelocation);
@@ -54,8 +59,9 @@ public class PagesManager extends SimpleJsonResourceReloadListener {
             }
         }
         quests.sort(Comparator.comparingInt(PageCompendium::getOrden));
-
+        LOGGER.info("[PagesManager] Loaded {} pages", quests.size());
     }
+
     public static List<PageCompendium> getPages() {
         return quests;
     }

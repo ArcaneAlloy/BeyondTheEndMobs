@@ -33,11 +33,17 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
+        // BUG FIX: Solo limpiar y recargar si hay datos — evita borrar datos válidos
+        // cuando el servidor dedicado recarga recursos sin incluir los datapacks del mod.
+        if (p_10793_.isEmpty()) {
+            LOGGER.info("[QuestManager] Skipping reload — no quests data found (keeping {} existing entries)", quests.size());
+            return;
+        }
+
         quests.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : p_10793_.entrySet()) {
             ResourceLocation resourcelocation = entry.getKey();
             try {
-
                 Quest quest = GSON.fromJson(entry.getValue(), Quest.class);
                 if (quest == null) {
                     LOGGER.info("Skipping loading quest {} as it's serializer returned null", resourcelocation);
@@ -48,7 +54,9 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
                 LOGGER.error("Parsing error loading quest {}", resourcelocation, jsonparseexception);
             }
         }
+        LOGGER.info("[QuestManager] Loaded {} quests", quests.size());
     }
+
     public static List<Quest> getQuests() {
         return quests;
     }

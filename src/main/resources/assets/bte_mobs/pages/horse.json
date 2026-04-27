@@ -1,0 +1,8 @@
+{
+  "title": "page.bte.horse.title",
+  "unlockLevel": "OVERWORLD",
+  "entityId": "minecraft:horse",
+  "description": "page.bte.horse.desc",
+  "extraYRot": 0,
+  "orden": 1
+}

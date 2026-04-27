@@ -1,0 +1,21 @@
+{
+  "entityId": "bte_mobs:blacksmith",
+  "type": "TASKING",
+  "dialogs": [
+    "dialog.bte.blacksmith_quest_task.1"
+  ],
+  "answers": [
+    {
+      "formattedText": "answer.bte.blacksmith_quest_task.1",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "answer.bte.blacksmith_quest_task.2",
+      "action": "open_repair"
+    },
+    {
+      "formattedText": "answer.bte.blacksmith_quest_task.3",
+      "action": "wip"
+    }
+  ]
+}

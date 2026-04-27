@@ -37,11 +37,18 @@ public class RumorsManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
+        // BUG FIX: En servidor dedicado, la segunda recarga del ResourceManager del cliente
+        // no incluye los datapacks del mod, por lo que p_10793_ llega vacío y limpiaría
+        // los datos ya cargados. Solo limpiamos y recargamos si hay datos nuevos.
+        if (p_10793_.isEmpty()) {
+            LOGGER.info("[RumorsManager] Skipping reload — no rumors data found (keeping {} existing entries)", quests.size());
+            return;
+        }
+
         quests.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : p_10793_.entrySet()) {
             ResourceLocation resourcelocation = entry.getKey();
             try {
-
                 Rumor quest = GSON.fromJson(entry.getValue(), Rumor.class);
                 if (quest == null) {
                     LOGGER.info("Skipping loading rumors {} as it's serializer returned null", resourcelocation);
@@ -53,7 +60,9 @@ public class RumorsManager extends SimpleJsonResourceReloadListener {
             }
         }
         quests.sort(Comparator.comparingInt(Rumor::getOrden));
+        LOGGER.info("[RumorsManager] Loaded {} rumors", quests.size());
     }
+
     public static List<Rumor> getRumors() {
         return quests;
     }

@@ -1,0 +1,24 @@
+{
+  "entityId": "bte_mobs:explorer",
+  "type": "PRESENTATION",
+  "dialogs": [
+    "dialog.bte.explorer_quest_pres.1",
+    "dialog.bte.explorer_quest_pres.2",
+    "dialog.bte.explorer_quest_pres.3",
+    "dialog.bte.explorer_quest_pres.4"
+  ],
+  "answers": [
+    {
+      "formattedText": "answer.bte.explorer_quest_pres.1",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "answer.bte.explorer_quest_pres.2",
+      "action": "rumor"
+    },
+    {
+      "formattedText": "answer.bte.explorer_quest_pres.3",
+      "action": "wip"
+    }
+  ]
+}

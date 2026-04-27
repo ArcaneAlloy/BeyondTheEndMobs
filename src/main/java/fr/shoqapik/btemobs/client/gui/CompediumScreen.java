@@ -122,8 +122,6 @@ public class CompediumScreen extends Screen {
         this.addRenderableWidget(this.up);
         this.addRenderableWidget(this.down);
         this.layoutButtons();
-
-        super.init();
     }
 
     @Override

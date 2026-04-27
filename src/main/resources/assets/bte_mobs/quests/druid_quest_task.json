@@ -1,0 +1,21 @@
+{
+  "entityId": "bte_mobs:druid",
+  "type": "TASKING",
+  "dialogs": [
+    "dialog.bte.druid_quest_task.1"
+  ],
+  "answers": [
+    {
+      "formattedText": "answer.bte.druid_quest_task.1",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "answer.bte.druid_quest_task.2",
+      "action": "rumor"
+    },
+    {
+      "formattedText": "answer.bte.druid_quest_task.3",
+      "action": "wip"
+    }
+  ]
+}

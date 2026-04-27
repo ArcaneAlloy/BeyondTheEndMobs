@@ -1,0 +1,25 @@
+{
+  "entityId": "bte_mobs:warlock",
+  "type": "PRESENTATION",
+  "dialogs": [
+    "dialog.bte.warlock_quest_pres.1",
+    "dialog.bte.warlock_quest_pres.2",
+    "dialog.bte.warlock_quest_pres.3",
+    "dialog.bte.warlock_quest_pres.4",
+    "dialog.bte.warlock_quest_pres.5"
+  ],
+  "answers": [
+    {
+      "formattedText": "answer.bte.warlock_quest_pres.1",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "answer.bte.warlock_quest_pres.2",
+      "action": "potion"
+    },
+    {
+      "formattedText": "answer.bte.warlock_quest_pres.3",
+      "action": "wip"
+    }
+  ]
+}

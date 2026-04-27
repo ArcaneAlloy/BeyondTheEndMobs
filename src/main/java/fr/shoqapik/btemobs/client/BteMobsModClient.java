@@ -8,11 +8,11 @@ import fr.shoqapik.btemobs.client.renderer.entity.BlacksmithEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.DruidEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.ExplorerEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.WarlockEntityRenderer;
-import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.compendium.PagesManager;
 import fr.shoqapik.btemobs.entity.*;
 import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
 import fr.shoqapik.btemobs.packets.*;
+import fr.shoqapik.btemobs.quests.QuestManager;
 import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
 import fr.shoqapik.btemobs.rumors.RumorsManager;
 import fr.shoqapik.btemobs.registry.BteMobsBlockEntities;
@@ -28,6 +28,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -46,7 +47,14 @@ public class BteMobsModClient {
         MenuScreens.register(BteMobsContainers.EXPLORER_TABLE_MENU.get(), ExplorerTableScreen::new);
         MenuScreens.register(BteMobsContainers.DRUID_MENU.get(), DruidScreen::new);
         MenuScreens.register(BteMobsContainers.POTION_MENU.get(), WarlockPotionCraftScreen::new);
+    }
 
+    @SubscribeEvent
+    public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
+        BteMobsMod.LOGGER.info("[BteMobs] registerClientReloadListeners fired — registering RumorsManager, PagesManager, QuestManager");
+        event.registerReloadListener(new RumorsManager());
+        event.registerReloadListener(new PagesManager());
+        event.registerReloadListener(new QuestManager());
     }
 
     @SubscribeEvent
@@ -71,36 +79,40 @@ public class BteMobsModClient {
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
         Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest));
     }
+
     public static void handleRumorsPacket(int id) {
+        BteMobsMod.LOGGER.info("[BteMobs] handleRumorsPacket — rumors={}, pages={}", 
+                RumorsManager.getRumors().size(), PagesManager.getPages().size());
         BteAbstractEntity entity = (BteAbstractEntity) Minecraft.getInstance().level.getEntity(id);
         if(entity instanceof ExplorerEntity){
             Minecraft.getInstance().setScreen(new RumorsScreen(id, BteNpcType.EXPLORER, RumorsManager.getRumors()));
-        }else {
+        } else {
             Minecraft.getInstance().setScreen(new CompediumScreen(id, BteNpcType.DRUID, PagesManager.getPages()));
         }
     }
+
     public static void handleClearItem(int id) {
         DruidEntity entity = (DruidEntity) Minecraft.getInstance().level.getEntity(id);
         entity.clearOrSpawnItem(Minecraft.getInstance().player);
-
     }
+
     public static void handleToggleCraftButtonPacket(ToggleCraftButton msg, Supplier<NetworkEvent.Context> ctx) {
         Screen screen = Minecraft.getInstance().screen;
-        if(screen != null && screen instanceof BlacksmithCraftScreen) {
-            ((BlacksmithCraftScreen) screen).setCraftButtonActive(msg.active);
+        if(screen instanceof BlacksmithCraftScreen blacksmithScreen) {
+            blacksmithScreen.setCraftButtonActive(msg.active);
         }
     }
+
     public static void handlePlaceGhostRecipe(PlaceGhostRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         AbstractContainerMenu containerMenu = Minecraft.getInstance().player.containerMenu;
         if (containerMenu.containerId == msg.getContainerId()) {
             Minecraft.getInstance().getConnection().getRecipeManager().byKey(msg.getRecipe()).ifPresent((recipe) -> {
-                if (Minecraft.getInstance().screen instanceof RecipeUpdateListener) {
-                    RecipeBookComponent recipebookcomponent = ((RecipeUpdateListener)Minecraft.getInstance().screen).getRecipeBookComponent();
+                if (Minecraft.getInstance().screen instanceof RecipeUpdateListener listener) {
+                    RecipeBookComponent recipebookcomponent = listener.getRecipeBookComponent();
                     recipebookcomponent.setupGhostRecipe(recipe, containerMenu.slots);
                 }
-
                 if(Minecraft.getInstance().screen instanceof IGhostRecipe screen1){
-                    screen1.setupGhostRecipe(recipe,containerMenu.slots);
+                    screen1.setupGhostRecipe(recipe, containerMenu.slots);
                 }
             });
         }

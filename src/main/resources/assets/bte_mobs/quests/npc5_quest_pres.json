@@ -1,0 +1,17 @@
+{
+  "entityId": "bte_mobs:npc5",
+  "type": "PRESENTATION",
+  "dialogs": [
+    "dialog.bte.npc5_quest_pres.1",
+    "dialog.bte.npc5_quest_pres.2",
+    "dialog.bte.npc5_quest_pres.3",
+    "dialog.bte.npc5_quest_pres.4",
+    "dialog.bte.npc5_quest_pres.5"
+  ],
+  "answers": [
+    {
+      "formattedText": "answer.bte.npc5_quest_pres.1",
+      "action": "wip"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "entityId": "bte_mobs:blacksmith",
+  "type": "PRESENTATION",
+  "dialogs": [
+    "dialog.bte.blacksmith_quest_pres.1",
+    "dialog.bte.blacksmith_quest_pres.2",
+    "dialog.bte.blacksmith_quest_pres.3",
+    "dialog.bte.blacksmith_quest_pres.4"
+  ],
+  "answers": [
+    {
+      "formattedText": "answer.bte.blacksmith_quest_pres.1",
+      "action": "open_craft"
+    },
+    {
+      "formattedText": "answer.bte.blacksmith_quest_pres.2",
+      "action": "open_repair"
+    },
+    {
+      "formattedText": "answer.bte.blacksmith_quest_pres.3",
+      "action": "wip"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "title": "page.bte.wolf.title",
+  "unlockLevel": "OVERWORLD",
+  "entityId": "minecraft:wolf",
+  "description": "page.bte.wolf.desc",
+  "extraYRot": 0,
+  "orden": 2
+}
