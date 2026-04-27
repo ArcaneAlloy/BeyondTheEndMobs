@@ -6,7 +6,6 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.client.widget.BteRecipeBookComponent;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
-import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -42,28 +41,41 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
 
-
         this.craftButton = this.addRenderableWidget(new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
             @Override
             public void onPress(Button button) {
+                // Obtener la receta en la que el jugador hizo clic explícitamente
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-                for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons){
 
-                    if(menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())){
-                        if(recipe!=null && !recipe.getId().equals(b.getRecipe().getId())){
-                            BteMobsMod.LOGGER.info("hay cambios :{}  , {}",recipe.getId(),b.getRecipe().getId());
-                        }else if(recipe==null){
-                            BteMobsMod.LOGGER.info("Is null wtf niggerss entocnes se usa el matcheado :{}",b.getRecipe().getId());
-
+                // BUG FIX: El bucle anterior sobreescribía 'recipe' con la primera receta
+                // que matcheara en la página, ignorando la selección del jugador.
+                // Esto causaba que al crafteear iron_leggings (7 hierros) se obtuviera
+                // anchor (5 hierros) porque anchor aparecía antes en la página y también
+                // satisfacía el check de ingredientes.
+                //
+                // Corrección: solo usar el bucle como fallback cuando recipe == null,
+                // es decir, cuando el jugador no ha hecho clic en ninguna receta aún.
+                if (recipe == null) {
+                    for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons) {
+                        if (menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())) {
+                            recipe = b.getRecipe();
+                            BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] No recipe clicked, using first matching: {}", recipe.getId());
+                            break;
                         }
-                        recipe = b.getRecipe();
-                        break;
+                    }
+                } else {
+                    // Validar que la receta seleccionada sigue siendo crafteable
+                    if (!menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) recipe)) {
+                        BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Selected recipe {} no longer matches, aborting", recipe.getId());
+                        return;
                     }
                 }
+
                 if (recipe == null) {
                     return;
                 }
-                BteMobsMod.LOGGER.info("OnPress :{}",recipe.getId());
+
+                BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Crafting: {}", recipe.getId());
                 BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
                 BteAbstractCraftScreen.this.craftButton.active = false;
             }
@@ -71,10 +83,9 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.craftButton.active = false;
         this.addWidget(this.recipeBookComponent);
         this.setInitialFocus(this.recipeBookComponent);
-
         this.recipeBookComponent.setVisible(true);
-
     }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.recipeBookComponent.keyPressed(keyCode, scanCode, modifiers)) {
@@ -90,10 +101,10 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         }
         return super.charTyped(codePoint, modifiers);
     }
+
     @Override
     protected void containerTick() {
         super.containerTick();
-        BteMobsMod.LOGGER.info("Recipes :{}",this.recipeBookComponent.recipeBookPage.getLastClickedRecipe());
         this.recipeBookComponent.tick();
     }
 
@@ -105,13 +116,11 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
             this.renderBg(pPoseStack, pPartialTick, pMouseX, pMouseY);
             this.recipeBookComponent.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-
         } else {
             this.recipeBookComponent.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
             super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
             this.recipeBookComponent.renderGhostRecipe(pPoseStack, this.leftPos, this.topPos, false, pPartialTick);
         }
-
 
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
         this.recipeBookComponent.renderTooltip(pPoseStack, this.leftPos, this.topPos, pMouseX, pMouseY);
@@ -128,7 +137,6 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     @Override
     protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
-        //this.font.draw(p_97808_, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
 
     @Override
@@ -141,11 +149,9 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) {
             return true;
         }
-
         if (craftButton.mouseClicked(pMouseX, pMouseY, pButton)) {
             return true;
         }
-
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
