@@ -39,6 +39,12 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.widthTooNarrow = this.width < 379;
 
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
+        // FIX: setVisible(true) debe llamarse ANTES de updateScreenPosition.
+        // updateScreenPosition desplaza leftPos a la derecha solo si isVisible()==true.
+        // En la primera apertura isVisible()==false -> leftPos queda centrado ->
+        // el panel de recetas se superpone al inventario del jugador.
+        // En aperturas posteriores el estado visible=true persiste -> funciona bien.
+        this.recipeBookComponent.setVisible(true);
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
 
         this.craftButton = this.addRenderableWidget(new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
@@ -83,7 +89,6 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.craftButton.active = false;
         this.addWidget(this.recipeBookComponent);
         this.setInitialFocus(this.recipeBookComponent);
-        this.recipeBookComponent.setVisible(true);
     }
 
     @Override
