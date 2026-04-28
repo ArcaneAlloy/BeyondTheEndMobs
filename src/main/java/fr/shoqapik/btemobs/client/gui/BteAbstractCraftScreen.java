@@ -7,6 +7,7 @@ import fr.shoqapik.btemobs.client.widget.BteRecipeBookComponent;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
@@ -23,10 +24,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> extends AbstractContainerScreen<T> implements RecipeUpdateListener {
-    protected final RecipeBookComponent recipeBookComponent = new BteRecipeBookComponent();
+    protected final BteRecipeBookComponent recipeBookComponent = new BteRecipeBookComponent();
     protected Button craftButton;
-
     protected boolean widthTooNarrow;
+
+    // EditBox propio, igual que ExplorerTableScreen/WarlockCraftScreen/DruidScreen.
+    // No usamos el EditBox interno del RecipeBookComponent porque otros mods
+    // (Fabrication) lo interfieren y su sistema de foco no funciona correctamente.
+    private EditBox searchBox;
+    private String previousSearch = "";
+
 
     public BteAbstractCraftScreen(T containerMenu, Inventory inventory, Component component) {
         super(containerMenu, inventory, component);
@@ -39,28 +46,31 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.widthTooNarrow = this.width < 379;
 
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
-        // FIX: setVisible(true) debe llamarse ANTES de updateScreenPosition.
-        // updateScreenPosition desplaza leftPos a la derecha solo si isVisible()==true.
-        // En la primera apertura isVisible()==false -> leftPos queda centrado ->
-        // el panel de recetas se superpone al inventario del jugador.
-        // En aperturas posteriores el estado visible=true persiste -> funciona bien.
         this.recipeBookComponent.setVisible(true);
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
+
+
+
+        // Posicion del searchBox basada en leftPos (ya calculado con widthTooNarrow)
+        // El panel del libro esta 147px a la izquierda de leftPos
+        // Crear searchBox con posicion temporal; se actualizara en el primer render
+        // cuando el box interno ya tenga sus coordenadas definitivas
+        String prevValue = this.searchBox != null ? this.searchBox.getValue() : "";
+        this.searchBox = new EditBox(this.minecraft.font, 0, 0, 80, 14,
+                Component.translatable("itemGroup.search"));
+        this.searchBox.setMaxLength(50);
+        this.searchBox.setBordered(false);
+        this.searchBox.setVisible(true);
+        this.searchBox.setTextColor(0xFFFFFF);
+        this.searchBox.setValue(prevValue);
+        this.addWidget(this.searchBox);
+        // Sincronizar posicion con el box interno inmediatamente
+        syncSearchBoxPosition();
 
         this.craftButton = this.addRenderableWidget(new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
             @Override
             public void onPress(Button button) {
-                // Obtener la receta en la que el jugador hizo clic explícitamente
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-
-                // BUG FIX: El bucle anterior sobreescribía 'recipe' con la primera receta
-                // que matcheara en la página, ignorando la selección del jugador.
-                // Esto causaba que al crafteear iron_leggings (7 hierros) se obtuviera
-                // anchor (5 hierros) porque anchor aparecía antes en la página y también
-                // satisfacía el check de ingredientes.
-                //
-                // Corrección: solo usar el bucle como fallback cuando recipe == null,
-                // es decir, cuando el jugador no ha hecho clic en ninguna receta aún.
                 if (recipe == null) {
                     for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons) {
                         if (menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())) {
@@ -70,17 +80,12 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
                         }
                     }
                 } else {
-                    // Validar que la receta seleccionada sigue siendo crafteable
                     if (!menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) recipe)) {
                         BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Selected recipe {} no longer matches, aborting", recipe.getId());
                         return;
                     }
                 }
-
-                if (recipe == null) {
-                    return;
-                }
-
+                if (recipe == null) return;
                 BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Crafting: {}", recipe.getId());
                 BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
                 BteAbstractCraftScreen.this.craftButton.active = false;
@@ -93,17 +98,21 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.recipeBookComponent.keyPressed(keyCode, scanCode, modifiers)) {
+        if (this.searchBox.isFocused()) {
+            if (this.searchBox.keyPressed(keyCode, scanCode, modifiers)) return true;
+            // Bloquear E para que no cierre el menu mientras se escribe
             return true;
         }
+        if (this.recipeBookComponent.keyPressed(keyCode, scanCode, modifiers)) return true;
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        if (this.recipeBookComponent.charTyped(codePoint, modifiers)) {
-            return true;
+        if (this.searchBox.isFocused()) {
+            if (this.searchBox.charTyped(codePoint, modifiers)) return true;
         }
+        if (this.recipeBookComponent.charTyped(codePoint, modifiers)) return true;
         return super.charTyped(codePoint, modifiers);
     }
 
@@ -111,12 +120,35 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
     protected void containerTick() {
         super.containerTick();
         this.recipeBookComponent.tick();
+        this.searchBox.tick();
+
+        // Sincronizar nuestro searchBox con el interno del RecipeBookComponent
+        // para que el filtrado de recetas funcione
+        String current = this.searchBox.getValue();
+        if (!current.equals(previousSearch)) {
+            previousSearch = current;
+            syncSearchToRecipeBook(current);
+        }
+    }
+
+    /**
+     * Escribe el texto de busqueda en el EditBox interno del RecipeBookComponent
+     * via reflexion, para que el filtrado de recetas funcione correctamente.
+     */
+    private void syncSearchToRecipeBook(String text) {
+        EditBox internalBox = BteRecipeBookComponent.getInternalBox(this.recipeBookComponent);
+        if (internalBox != null) {
+            // Usar espacio cuando vacio para que suppressVanillaHint en BteRecipeBookComponent
+            // no resetee el valor y el filtrado funcione (RecipeBookComponent usa trim())
+            internalBox.setValue(text.isEmpty() ? " " : text);
+        }
     }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        // Mantener la posicion del searchBox sincronizada con el panel del libro
+        syncSearchBoxPosition();
         this.recipeBookComponent.setVisible(true);
-
         this.renderBackground(pPoseStack);
         if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
             this.renderBg(pPoseStack, pPartialTick, pMouseX, pMouseY);
@@ -126,6 +158,14 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
             super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
             this.recipeBookComponent.renderGhostRecipe(pPoseStack, this.leftPos, this.topPos, false, pPartialTick);
         }
+
+        // Renderizar nuestro propio searchBox encima del panel del libro
+        if (!this.searchBox.isFocused() && this.searchBox.getValue().isEmpty()) {
+            // Hint "Search..." en las mismas coordenadas que el box
+            drawString(pPoseStack, this.minecraft.font, "Search...",
+                    this.searchBox.x + 2, this.searchBox.y + 2, 0xFF808080);
+        }
+        this.searchBox.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
         this.recipeBookComponent.renderTooltip(pPoseStack, this.leftPos, this.topPos, pMouseX, pMouseY);
@@ -141,8 +181,7 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
     }
 
     @Override
-    protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
-    }
+    protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {}
 
     @Override
     protected boolean isHovering(int pX, int pY, int pWidth, int pHeight, double pMouseX, double pMouseY) {
@@ -151,12 +190,12 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) {
+        if (this.searchBox.mouseClicked(pMouseX, pMouseY, pButton)) {
+            this.setFocused(this.searchBox);
             return true;
         }
-        if (craftButton.mouseClicked(pMouseX, pMouseY, pButton)) {
-            return true;
-        }
+        if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) return true;
+        if (craftButton.mouseClicked(pMouseX, pMouseY, pButton)) return true;
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
@@ -190,5 +229,29 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     public void setCraftButtonActive(boolean active) {
         this.craftButton.active = active;
+    }
+
+    /**
+     * Lee el campo xOffset de RecipeBookComponent via reflexion.
+     * Este es el mismo valor que usa el vanilla para posicionar el panel del libro,
+     * asi que usarlo garantiza que nuestro searchBox queda alineado en cualquier resolucion.
+     */
+    /**
+     * Copia la posicion x,y del searchBox interno del RecipeBookComponent al nuestro.
+     * El box interno tiene las coordenadas correctas para cualquier resolucion
+     * porque vanilla las calcula en init(). Nosotros simplemente las usamos.
+     */
+    private void syncSearchBoxPosition() {
+        if (this.searchBox == null) return;
+        net.minecraft.client.gui.components.EditBox internalBox =
+            BteRecipeBookComponent.getInternalBox(this.recipeBookComponent);
+        if (internalBox != null) {
+            this.searchBox.x = internalBox.x;
+            this.searchBox.y = internalBox.y;
+        } else {
+            // Fallback: misma formula que ExplorerTableScreen
+            this.searchBox.x = (this.width - 147) / 2 - 86 + 28;
+            this.searchBox.y = (this.height - 166) / 2 + 14;
+        }
     }
 }
