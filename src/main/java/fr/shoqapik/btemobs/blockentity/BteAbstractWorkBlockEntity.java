@@ -36,14 +36,34 @@ public abstract class BteAbstractWorkBlockEntity extends BlockEntity {
         if (capability == ITEM_HANDLER) {
             return this.inventoryOptional.cast();
         }
-        return super.getCapability(capability, direction); // See note after snippet
+        return super.getCapability(capability, direction);
     }
-
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         this.inventoryOptional.invalidate();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        // Serializa el ItemStackHandler al NBT.
+        // Sin esto, getUpdateTag() -> saveWithoutMetadata() produce un tag vacio,
+        // el ClientboundBlockEntityDataPacket no lleva el item, y el cliente
+        // nunca actualiza su ItemStackHandler local -> entidad fantasma permanente.
+        tag.put("inventory", this.itemHandler.serializeNBT());
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        // Deserializa el inventario desde el NBT recibido por red.
+        // El renderer lee getStackInSlot(0) en cada frame desde este mismo
+        // itemHandler, asi que al actualizarlo aqui el item desaparece en pantalla.
+        if (tag.contains("inventory")) {
+            this.itemHandler.deserializeNBT(tag.getCompound("inventory"));
+        }
     }
 
     @Override
@@ -55,11 +75,15 @@ public abstract class BteAbstractWorkBlockEntity extends BlockEntity {
     public void handleUpdateTag(CompoundTag tag) {
         load(tag);
     }
+
     @Override
     public void setChanged() {
         super.setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
+
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);

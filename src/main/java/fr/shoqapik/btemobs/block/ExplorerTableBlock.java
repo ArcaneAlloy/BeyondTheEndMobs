@@ -1,12 +1,9 @@
 package fr.shoqapik.btemobs.block;
 
-import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.blockentity.ExplorerTableBlockEntity;
 import fr.shoqapik.btemobs.entity.ExplorerEntity;
-import fr.shoqapik.btemobs.packets.BlockUpdatePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -83,9 +80,12 @@ public class ExplorerTableBlock extends BaseEntityBlock {
             ExplorerTableBlockEntity table=this.getTableEntity(p_48707_, p_48708_, p_48709_);
             if(table!=null){
                 if(p_48706_.getValue(HALF)==DoubleBlockHalf.LOWER &&
+                        !table.getItem().isEmpty() &&
                         p_48709_.getInventory().add(table.getItem().copy())){
+                    // FIX: setItem() llama setChanged() -> sendBlockUpdated(flag=3)
+                    // que envia ClientboundBlockEntityDataPacket a TODOS los clientes
+                    // cercanos. BlockUpdatePacket solo llegaba al jugador A.
                     table.setItem(ItemStack.EMPTY);
-                    BteMobsMod.sendToClient(new BlockUpdatePacket(p_48708_), (ServerPlayer) p_48709_);
                 }
             }
             return InteractionResult.CONSUME;

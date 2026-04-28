@@ -158,8 +158,14 @@ public class ExplorerTableBlockEntity extends BaseContainerBlockEntity implement
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(p_155080_, this.items);
         this.id=p_155080_.getInt("id");
+        // FIX: siempre resetear this.item antes de leer el tag.
+        // Si "craftingItem" no existe en el NBT (porque el item fue recogido y
+        // saveAdditional no lo escribio), this.item quedaba con el valor anterior
+        // -> entidad fantasma en todos los clientes.
         if(p_155080_.contains("craftingItem",10)){
-            this.item= ItemStack.of(p_155080_.getCompound("craftingItem"));
+            this.item = ItemStack.of(p_155080_.getCompound("craftingItem"));
+        } else {
+            this.item = ItemStack.EMPTY;
         }
     }
 

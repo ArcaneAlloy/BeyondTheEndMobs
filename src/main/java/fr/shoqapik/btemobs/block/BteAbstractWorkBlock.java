@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -31,16 +32,27 @@ public abstract class BteAbstractWorkBlock extends HorizontalDirectionalBlock im
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
         if(blockEntity instanceof BteAbstractWorkBlockEntity) {
-            ItemStack result = blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get().extractItem(0, Integer.MAX_VALUE, false);
             if(!pLevel.isClientSide) {
-                Inventory inventory = pPlayer.getInventory();
-                if (inventory.player instanceof ServerPlayer) {
-                    inventory.placeItemBackInInventory(result);
+                // Solo el servidor extrae el item y lo da al jugador.
+                // setChanged() notifica a todos los clientes via ClientboundBlockEntityDataPacket,
+                // eliminando la entidad fantasma que veía el Jugador B.
+                ItemStack result = blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get().extractItem(0, Integer.MAX_VALUE, false);
+                if (!result.isEmpty()) {
+                    Inventory inventory = pPlayer.getInventory();
+                    if (inventory.player instanceof ServerPlayer) {
+                        inventory.placeItemBackInInventory(result);
+                    }
+                    blockEntity.setChanged();
+                    return InteractionResult.SUCCESS;
                 }
-            }else {
-                blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get().insertItem(0,ItemStack.EMPTY,false);
+            } else {
+                // El cliente devuelve CONSUME para evitar la doble acción (swing de brazo, etc.)
+                // sin manipular el inventario — espera la sincronización del servidor.
+                IItemHandler handler = blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get();
+                if (!handler.getStackInSlot(0).isEmpty()) {
+                    return InteractionResult.CONSUME;
+                }
             }
-            if(result != ItemStack.EMPTY) return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
