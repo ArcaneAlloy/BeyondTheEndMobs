@@ -254,7 +254,24 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
     public void craftItemServer(ServerPlayer serverPlayer, Optional<? extends Recipe<?>> clickedRecipe) {
         List<Recipe> list = getCraftableRecipes(serverPlayer);
 
-        Recipe recipe= list.get(0);;
+        // FIX: usar la receta seleccionada por el jugador si esta disponible y es crafteable.
+        // Antes siempre se usaba list.get(0) (la receta con mas ingredientes),
+        // ignorando completamente la seleccion del jugador.
+        Recipe recipe = null;
+        if (clickedRecipe.isPresent()) {
+            Recipe<?> selected = clickedRecipe.get();
+            // Verificar que la receta seleccionada esta en la lista de crafteables
+            for (Recipe r : list) {
+                if (r.getId().equals(selected.getId())) {
+                    recipe = r;
+                    break;
+                }
+            }
+        }
+        // Fallback: si no hay receta seleccionada o no es crafteable, usar la primera
+        if (recipe == null && !list.isEmpty()) {
+            recipe = list.get(0);
+        }
 
         if (recipe != null) {
             if(!hasRequirementsForCraft(recipe)) return;
