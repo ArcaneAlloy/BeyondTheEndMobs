@@ -89,7 +89,7 @@ public class QuestDialogScreen extends Screen {
                     20,
                     Component.literal(translatedAnswer),
                     (p_95981_) -> {
-                        if (questAnswer.getAction().equals("potion") || questAnswer.getAction().equals("rumor")) {
+                        if (questAnswer.getAction().equals("rumor")) {
                             Minecraft.getInstance().setScreen(null);
                             BteMobsModClient.handleRumorsPacket(this.entityId);
                         } else if (!questAnswer.getAction().equals("wip")) {
