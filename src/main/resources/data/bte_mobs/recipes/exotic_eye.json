@@ -4,26 +4,32 @@
   "tier": 1,
   "ingredients": [
     {
+      "type": "bte_mobs:item",
       "item": "minecraft:ender_pearl",
       "count": 1
     },
     {
+      "type": "bte_mobs:item",
       "item": "minecraft:tube_coral",
       "count": 1
     },
-        {
+    {
+      "type": "bte_mobs:item",
       "item": "minecraft:horn_coral",
       "count": 1
     },
-        {
+    {
+      "type": "bte_mobs:item",
       "item": "minecraft:fire_coral",
       "count": 1
     },
-        {
+    {
+      "type": "bte_mobs:item",
       "item": "minecraft:bubble_coral",
       "count": 1
     },
     {
+      "type": "bte_mobs:item",
       "item": "minecraft:glow_ink_sac",
       "count": 1
     }
