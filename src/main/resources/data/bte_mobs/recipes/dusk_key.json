@@ -1,0 +1,30 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "OTHERS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:amethyst_shard",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:blackstone",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:allium",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "mimic:mimic_key",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "altar_of_summoning:duskkey"
+  }
+}

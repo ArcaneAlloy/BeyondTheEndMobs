@@ -1,0 +1,30 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "OTHERS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:rotten_flesh",
+      "count": 4
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:bone",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:spider_eye",
+      "count": 2
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:tropical_fish",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "altar_of_summoning:fossilbait"
+  }
+}

@@ -1,5 +1,7 @@
 {
-  "type": "bte_mobs:explorer_recipe",
+  "type": "bte_mobs:blacksmith",
+  "category": "OTHERS",
+  "tier": 1,
   "ingredients": [
     {
       "item": "minecraft:ender_pearl",
@@ -26,7 +28,6 @@
       "count": 1
     }
   ],
-  "tier": 1,
   "result": {
     "item": "endrem:exotic_eye"
   }

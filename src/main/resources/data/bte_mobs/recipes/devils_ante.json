@@ -1,0 +1,20 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "OTHERS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:quartz",
+      "count": 8
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "alexsmobs:blood_sac",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "altar_of_summoning:devilsante"
+  }
+}
