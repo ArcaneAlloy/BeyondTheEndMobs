@@ -90,15 +90,51 @@ public class CommonEvents {
         if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;
         int unlockId = getUnlockIdForPlayer(serverPlayer);
         BteMobsMod.sendToClient(new SyncUnlockLevelPacket(unlockId), serverPlayer);
+
+        // FIX: Resetear BLACKSMITH en el NBT del servidor al hacer login.
+        // Minecraft inicializa RecipeBookType personalizados con isOpen=true por defecto.
+        // Al resetear aqui en el servidor, el cliente recibe el estado correcto (false)
+        // antes de que se renderice cualquier pantalla.
+        serverPlayer.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, false);
     }
 
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.PlayerTickEvent event) {
         if(event.side.isClient()) {
-            if (!openedOnce && Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, true);
-                openedOnce = true;
+            if (Minecraft.getInstance().player != null) {
+                boolean currentlyOpen = Minecraft.getInstance().player.getRecipeBook().isOpen(BteMobsMod.BLACKSMITH);
+                if (!openedOnce) {
+                    BteMobsMod.LOGGER.warn("[DEBUG] Primer tick - isOpen={}, cerrando...", currentlyOpen);
+                    Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, false);
+                    BteMobsMod.LOGGER.warn("[DEBUG] Tras setOpen(false): isOpen={}", 
+                        Minecraft.getInstance().player.getRecipeBook().isOpen(BteMobsMod.BLACKSMITH));
+                    openedOnce = true;
+                } else if (currentlyOpen) {
+                    // Alguien puso isOpen=true DESPUES de nuestro fix - loguear stack trace
+                    BteMobsMod.LOGGER.warn("[DEBUG] ALERTA: BLACKSMITH isOpen=true inesperadamente! tick={}",
+                        Minecraft.getInstance().player.tickCount);
+                    Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, false);
+                }
             }
+            // FIX: Si el libro de recetas se abre automaticamente sin que haya
+            // ninguna pantalla de NPC abierta, cerrarlo inmediatamente.
+            // Esto ocurre cuando awardRecipes llega al cliente y Minecraft
+            // abre el libro para mostrar las recetas nuevas.
+            net.minecraft.client.gui.screens.Screen currentScreen = Minecraft.getInstance().screen;
+            boolean isNpcScreen = currentScreen instanceof fr.shoqapik.btemobs.client.gui.BteAbstractCraftScreen
+                || currentScreen instanceof fr.shoqapik.btemobs.client.gui.WarlockCraftScreen
+                || currentScreen instanceof fr.shoqapik.btemobs.client.gui.ExplorerTableScreen
+                || currentScreen instanceof fr.shoqapik.btemobs.client.gui.DruidScreen
+                || currentScreen instanceof fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen;
+            if (!isNpcScreen) {
+                net.minecraft.client.ClientRecipeBook recipeBook = Minecraft.getInstance().player.getRecipeBook();
+                for (net.minecraft.world.inventory.RecipeBookType type : net.minecraft.world.inventory.RecipeBookType.values()) {
+                    if (recipeBook.isOpen(type)) {
+                        recipeBook.setOpen(type, false);
+                    }
+                }
+            }
+
             Inventory inventory = Minecraft.getInstance().player.getInventory();
             if (inventory.getTimesChanged() != previousTimesChanged) {
                 previousTimesChanged = inventory.getTimesChanged();

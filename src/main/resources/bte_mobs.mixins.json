@@ -4,8 +4,7 @@
   "package": "fr.shoqapik.btemobs.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "bte_mobs.refmap.json",
-  "mixins": [
-  ],
+  "mixins": [],
   "client": [
     "GhostRecipeMixin",
     "RecipeButtonMixin",
