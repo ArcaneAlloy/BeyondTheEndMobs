@@ -4,6 +4,7 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.UnlockRecipe;
 import fr.shoqapik.btemobs.menu.container.BteAbstractCraftContainer;
 import fr.shoqapik.btemobs.menu.slot.CraftInputSlot;
+import fr.shoqapik.btemobs.menu.slot.WarlockBaseSlot;
 import fr.shoqapik.btemobs.packets.PlaceGhostRecipePacket;
 import fr.shoqapik.btemobs.recipe.WarlockPotionRecipe;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
@@ -60,7 +61,15 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                         && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
 
                 Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(inventory.player).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
-                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()  && ( canEnchantItem(optional.get().getEnchantment(),baseSlots.getItem(0)) || baseSlots.getItem(0).is(Items.BOOK)) || baseSlots.getItem(0).is(Items.ENCHANTED_BOOK)){
+                // FIX: la condicion original tenia un error de precedencia de operadores.
+                // "|| baseSlots.getItem(0).is(ENCHANTED_BOOK)" evaluaba independientemente
+                // de optional.isPresent(), causando NoSuchElementException en optional.get().
+                // WarlockBaseSlot ya bloquea ENCHANTED_BOOK en el slot, pero corregimos
+                // los parentesis como segunda linea de defensa.
+                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()
+                        && ( canEnchantItem(optional.get().getEnchantment(),baseSlots.getItem(0))
+                            || baseSlots.getItem(0).is(Items.BOOK)
+                            || baseSlots.getItem(0).is(Items.ENCHANTED_BOOK))){
 
                     WarlockCraftMenu.this.clickedRecipe = optional;
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
@@ -109,7 +118,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
         this.addSlot(new CraftInputSlot(this.craftSlots, 1, 181, 33));
         this.addSlot(new CraftInputSlot(this.craftSlots, 2, 194, 59));
 
-        this.addSlot(new CraftInputSlot(this.baseSlots, 0, 233, 33));
+        this.addSlot(new WarlockBaseSlot(this.baseSlots, 0, 233, 33));
 
         this.addSlot(new Slot(this.resultSlots, 0, 285, 33) {
             public boolean mayPlace(ItemStack itemStack) {
