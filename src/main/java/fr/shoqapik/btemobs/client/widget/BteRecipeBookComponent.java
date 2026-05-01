@@ -32,24 +32,46 @@ public class BteRecipeBookComponent extends RecipeBookComponent {
      * RecipeBookComponent.render() dibuja el hint cuando box.getValue().isEmpty().
      * Ponemos " " antes y lo restauramos despues para no afectar el filtrado.
      */
+    // Referencia a la pantalla padre para dibujar el hint dentro del pushPose/popPose
+    public fr.shoqapik.btemobs.client.gui.BteAbstractCraftScreen parentScreen = null;
+
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         EditBox box = getInternalBox(this);
         int savedX = -1, savedY = -1;
         String savedValue = null;
         if (box != null) {
-            // Mover fuera de pantalla para que el box no se renderice
             savedX = box.x;
             savedY = box.y;
+            // Mover fuera de pantalla para que vanilla no dibuje ni el hint ni el texto
             box.x = -10000;
             box.y = -10000;
-            // Poner " " para que isEmpty()==false y vanilla no dibuje el hint
             savedValue = box.getValue();
             if (savedValue.isEmpty()) {
                 box.setValue(" ");
             }
         }
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        // super.render() hace pushPose()+translate(0,0,100) al inicio y popPose() al final.
+        // Ahora el PoseStack esta restaurado pero necesitamos dibujar dentro de la misma
+        // capa Z. Lo hacemos con nuestro propio pushPose+translate.
+        if (parentScreen != null) {
+            pPoseStack.pushPose();
+            pPoseStack.translate(0, 0, 100);
+            String val = parentScreen.searchBox != null ? parentScreen.searchBox.getValue() : "";
+            int hx = savedX > -1 ? savedX + 2 : 0;
+            int hy = savedY > -1 ? savedY + 2 : 0;
+            if (val.isEmpty()) {
+                net.minecraft.client.gui.GuiComponent.drawString(pPoseStack,
+                    net.minecraft.client.Minecraft.getInstance().font,
+                    "Search...", hx, hy, 0xFF808080);
+            } else {
+                net.minecraft.client.gui.GuiComponent.drawString(pPoseStack,
+                    net.minecraft.client.Minecraft.getInstance().font,
+                    val, hx, hy, 0xFFFFFF);
+            }
+            pPoseStack.popPose();
+        }
         // Restaurar estado original
         if (box != null && savedX != -1) {
             box.x = savedX;

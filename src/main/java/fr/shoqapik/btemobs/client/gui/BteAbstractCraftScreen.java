@@ -31,10 +31,8 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
     // EditBox propio, igual que ExplorerTableScreen/WarlockCraftScreen/DruidScreen.
     // No usamos el EditBox interno del RecipeBookComponent porque otros mods
     // (Fabrication) lo interfieren y su sistema de foco no funciona correctamente.
-    private EditBox searchBox;
+    public EditBox searchBox; // accesible desde BteRecipeBookComponent
     private String previousSearch = "";
-    // Receta seleccionada por el jugador al hacer clic en un RecipeButton
-    private Recipe<?> selectedRecipe = null;
 
 
     public BteAbstractCraftScreen(T containerMenu, Inventory inventory, Component component) {
@@ -49,6 +47,7 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
         this.recipeBookComponent.setVisible(true);
+        this.recipeBookComponent.parentScreen = this;
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
 
 
@@ -72,25 +71,19 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.craftButton = this.addRenderableWidget(new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
             @Override
             public void onPress(Button button) {
-                // Usar la receta que el jugador selecciono al hacer clic en el RecipeButton.
-                // Preferimos selectedRecipe (capturada en mouseClicked) sobre getLastClickedRecipe()
-                // porque el sistema de foco del RecipeBookComponent puede fallar con otros mods.
-                Recipe<?> recipe = BteAbstractCraftScreen.this.selectedRecipe;
-                if (recipe == null) {
-                    recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-                }
-                if (recipe != null && !menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) recipe)) {
-                    BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Selected recipe {} no longer matches", recipe.getId());
-                    recipe = null;
-                }
-                // Ultimo fallback: primera receta crafteable
+                Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
                 if (recipe == null) {
                     for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons) {
                         if (menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())) {
                             recipe = b.getRecipe();
-                            BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Fallback a primera receta: {}", recipe.getId());
+                            BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] No recipe clicked, using first matching: {}", recipe.getId());
                             break;
                         }
+                    }
+                } else {
+                    if (!menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) recipe)) {
+                        BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Selected recipe {} no longer matches, aborting", recipe.getId());
+                        return;
                     }
                 }
                 if (recipe == null) return;
@@ -167,13 +160,8 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
             this.recipeBookComponent.renderGhostRecipe(pPoseStack, this.leftPos, this.topPos, false, pPartialTick);
         }
 
-        // Renderizar nuestro propio searchBox encima del panel del libro
-        if (!this.searchBox.isFocused() && this.searchBox.getValue().isEmpty()) {
-            // Hint "Search..." en las mismas coordenadas que el box
-            drawString(pPoseStack, this.minecraft.font, "Search...",
-                    this.searchBox.x + 2, this.searchBox.y + 2, 0xFF808080);
-        }
-        this.searchBox.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        // El hint y texto se dibujan dentro de BteRecipeBookComponent.render()
+        // en la misma capa Z (translate 0,0,100) que el panel del libro
 
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
         this.recipeBookComponent.renderTooltip(pPoseStack, this.leftPos, this.topPos, pMouseX, pMouseY);
@@ -202,17 +190,7 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
             this.setFocused(this.searchBox);
             return true;
         }
-        if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) {
-            // Capturar la receta seleccionada tras el clic en un RecipeButton
-            // getLastClickedRecipe() puede devolver null si el foco falla,
-            // por eso lo guardamos nosotros inmediatamente despues del clic.
-            Recipe<?> clicked = this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-            if (clicked != null) {
-                this.selectedRecipe = clicked;
-                BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Receta seleccionada: {}", clicked.getId());
-            }
-            return true;
-        }
+        if (this.recipeBookComponent.mouseClicked(pMouseX, pMouseY, pButton)) return true;
         if (craftButton.mouseClicked(pMouseX, pMouseY, pButton)) return true;
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
