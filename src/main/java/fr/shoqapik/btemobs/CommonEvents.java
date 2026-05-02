@@ -104,15 +104,9 @@ public class CommonEvents {
             if (Minecraft.getInstance().player != null) {
                 boolean currentlyOpen = Minecraft.getInstance().player.getRecipeBook().isOpen(BteMobsMod.BLACKSMITH);
                 if (!openedOnce) {
-                    BteMobsMod.LOGGER.warn("[DEBUG] Primer tick - isOpen={}, cerrando...", currentlyOpen);
                     Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, false);
-                    BteMobsMod.LOGGER.warn("[DEBUG] Tras setOpen(false): isOpen={}", 
-                        Minecraft.getInstance().player.getRecipeBook().isOpen(BteMobsMod.BLACKSMITH));
                     openedOnce = true;
                 } else if (currentlyOpen) {
-                    // Alguien puso isOpen=true DESPUES de nuestro fix - loguear stack trace
-                    BteMobsMod.LOGGER.warn("[DEBUG] ALERTA: BLACKSMITH isOpen=true inesperadamente! tick={}",
-                        Minecraft.getInstance().player.tickCount);
                     Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, false);
                 }
             }
