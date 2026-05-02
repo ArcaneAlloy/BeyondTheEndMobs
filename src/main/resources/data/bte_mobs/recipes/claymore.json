@@ -6,12 +6,12 @@
     {
       "type": "bte_mobs:item",
       "item": "minecraft:iron_ingot",
-      "count": 3
+      "count": 5
     },
     {
       "type": "bte_mobs:item",
       "item": "minecraft:stick",
-      "count": 1
+      "count": 3
     }
   ],
   "result": {

@@ -5,13 +5,13 @@
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "minecraft:stick",
-      "count": 2
+      "item": "twilightforest:ironwood_ingot",
+      "count": 3
     },
     {
       "type": "bte_mobs:item",
-      "item": "twilightforest:ironwood_ingot",
-      "count": 3
+      "item": "minecraft:stick",
+      "count": 1
     }
   ],
   "result": {

@@ -5,13 +5,13 @@
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "minecraft:stick",
-      "count": 2
+      "item": "twilightforest:steeleaf_ingot",
+      "count": 1
     },
     {
       "type": "bte_mobs:item",
-      "item": "twilightforest:steeleaf_ingot",
-      "count": 1
+      "item": "minecraft:stick",
+      "count": 2
     }
   ],
   "result": {

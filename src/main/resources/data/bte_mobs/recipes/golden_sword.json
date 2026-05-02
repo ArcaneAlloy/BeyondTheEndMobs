@@ -6,12 +6,12 @@
     {
       "type": "bte_mobs:item",
       "item": "minecraft:gold_ingot",
-      "count": 3
+      "count": 2
     },
     {
       "type": "bte_mobs:item",
       "item": "minecraft:stick",
-      "count": 2
+      "count": 1
     }
   ],
   "result": {
