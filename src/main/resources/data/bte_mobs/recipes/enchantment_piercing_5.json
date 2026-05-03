@@ -6,5 +6,10 @@
   "eyes": 19,
   "level": 5,
   "experience": 30,
-  "ingredients": []
+  "ingredients": [
+    {
+      "item": "upgrade_aquatic:thrasher_tooth",
+      "count": 13
+    }
+  ]
 }

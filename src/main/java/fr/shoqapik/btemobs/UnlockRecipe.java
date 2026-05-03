@@ -24,19 +24,28 @@ public class UnlockRecipe {
         this.wasFound = false;
     }
     public UnlockRecipe(CompoundTag tag){
-        // Usar orElse(null) en lugar de .get() para evitar NoSuchElementException
-        // si la receta guardada ya no existe (receta renombrada o eliminada).
-        this.recipe = BteMobsMod.getServer().getRecipeManager().byKey(new ResourceLocation(tag.getString("id"))).orElse(null);
+        this.recipe = BteMobsMod.getServer().getRecipeManager().byKey(new ResourceLocation(tag.getString("id"))).get();
         this.isLock = tag.getBoolean("isLock");
         this.wasFound = tag.getBoolean("wasFound");
     }
 
     public boolean is(ItemStack itemStack){
         if(this.recipe instanceof WarlockRecipe warlockRecipe && !itemStack.isEmpty()){
-            if(itemStack.getItem() instanceof EnchantedBookItem){
-                return EnchantmentHelper.getEnchantmentLevel(getEnchantTag(itemStack,warlockRecipe.getEnchantment()))==warlockRecipe.getLevel();
+            boolean usesStoredEnchantments = itemStack.getItem() instanceof EnchantedBookItem
+                || itemStack.getOrCreateTag().contains("StoredEnchantments");
+            if(usesStoredEnchantments){
+                int storedLevel = EnchantmentHelper.getEnchantmentLevel(getEnchantTag(itemStack, warlockRecipe.getEnchantment()));
+                // Ancient Tome de Quark: el NBT guarda el nivel maximo vanilla (lvl: 5s para Sharpness)
+                // pero representa nivel+1 en el juego. Detectamos si es Ancient Tome y sumamos 1.
+                boolean isAncientTome = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(itemStack.getItem()) != null
+                    && net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString().equals("quark:ancient_tome");
+                // Solo aplicar +1 si el encantamiento realmente existe en el tome (storedLevel > 0)
+                if (isAncientTome && storedLevel > 0) {
+                    storedLevel = storedLevel + 1;
+                }
+                return storedLevel == warlockRecipe.getLevel() && storedLevel > 0;
             }
-            return  EnchantmentHelper.getTagEnchantmentLevel(warlockRecipe.getEnchantment(),itemStack) == warlockRecipe.getLevel();
+            return EnchantmentHelper.getTagEnchantmentLevel(warlockRecipe.getEnchantment(), itemStack) == warlockRecipe.getLevel();
         }
         return false;
     }

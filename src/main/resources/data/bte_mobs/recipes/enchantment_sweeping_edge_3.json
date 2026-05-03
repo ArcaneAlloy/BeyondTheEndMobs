@@ -1,7 +1,7 @@
 {
   "type": "bte_mobs:warlock",
   "category": "ALL",
-  "enchantment": "minecraft:sweeping_edge",
+  "enchantment": "minecraft:sweeping",
   "texture": "bte_mobs:textures/enchantments/sweeping_edge_3.png",
   "eyes": 13,
   "level": 3,

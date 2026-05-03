@@ -88,18 +88,34 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
         if (!output.isEmpty()) {
             net.minecraft.world.item.enchantment.Enchantment enchantment = explorerRecipe.getEnchantment();
 
-            // Detectar U (Show Uses en libro encantado): el foco OUTPUT contiene el libro encantado
-            boolean isShowUses = iFocusGroup.getFocuses(VanillaTypes.ITEM_STACK)
-                .anyMatch(f -> f.getRole() == RecipeIngredientRole.OUTPUT);
+            boolean isAboveMaxLevel = explorerRecipe.getLevel() > enchantment.getMaxLevel();
 
-            if (isShowUses) {
-                // U en libro encantado: ingredientes + book → libro encantado
-                iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81, 33)
-                        .addItemStack(new ItemStack(Items.BOOK));
-                iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 33)
-                        .addItemStack(output);
+            if (isAboveMaxLevel) {
+                // Nivel superior al maximo vanilla - resultado es Ancient Tome de Quark
+                net.minecraft.world.item.Item ancientTomeItem =
+                    net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(
+                        new net.minecraft.resources.ResourceLocation("quark:ancient_tome"));
+
+                if (ancientTomeItem != null) {
+                    // Input: libro encantado del nivel anterior (base del Ancient Tome)
+                    ItemStack prevBook = net.minecraft.world.item.EnchantedBookItem.createForEnchantment(
+                        new net.minecraft.world.item.enchantment.EnchantmentInstance(enchantment, explorerRecipe.getLevel() - 1));
+                    iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81, 33)
+                            .addItemStack(prevBook);
+
+                    // Output: Ancient Tome con el encantamiento
+                    ItemStack ancientTome = new ItemStack(ancientTomeItem);
+                    net.minecraft.world.item.EnchantedBookItem.addEnchantment(ancientTome,
+                        new net.minecraft.world.item.enchantment.EnchantmentInstance(enchantment, explorerRecipe.getLevel()));
+                    iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 33)
+                            .addItemStack(ancientTome);
+
+                    // Invisible para U en el ancient tome
+                    iRecipeLayoutBuilder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
+                            .addItemStack(ancientTome);
+                }
             } else {
-                // R: ingredientes + item encantable sin encantar → item encantado
+                // Nivel normal - resultado es item encantado o libro encantado
                 List<ItemStack> sinEncantar = new ArrayList<>();
                 List<ItemStack> encantados = new ArrayList<>();
                 for (net.minecraft.world.item.Item item : net.minecraftforge.registries.ForgeRegistries.ITEMS.getValues()) {
@@ -111,11 +127,17 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
                         encantados.add(enchanted);
                     }
                 }
+
                 iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81, 33)
                         .addItemStacks(sinEncantar);
                 iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 33)
                         .addItemStacks(encantados);
-                // Output invisible para que R en el libro encantado encuentre esta receta
+
+                // Book como INPUT invisible: permite que U en book encuentre esta receta
+                iRecipeLayoutBuilder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
+                        .addItemStack(new ItemStack(Items.BOOK));
+
+                // Libro encantado como OUTPUT invisible
                 iRecipeLayoutBuilder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
                         .addItemStack(output);
             }

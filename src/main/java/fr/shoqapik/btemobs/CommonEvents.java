@@ -219,7 +219,11 @@ public class CommonEvents {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         net.minecraft.world.item.ItemStack stack = event.getItemStack();
-        if (!(stack.getItem() instanceof net.minecraft.world.item.EnchantedBookItem)) return;
+        // Aceptar EnchantedBookItem vanilla y Ancient Tomes de Quark (mismo NBT StoredEnchantments)
+        boolean isEnchantedBook = stack.getItem() instanceof net.minecraft.world.item.EnchantedBookItem;
+        boolean isAncientTome = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem()) != null
+            && net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem()).toString().equals("quark:ancient_tome");
+        if (!isEnchantedBook && !isAncientTome) return;
 
         // Buscar si hay una WarlockRecipe que requiera este libro encantado
         java.util.List<fr.shoqapik.btemobs.recipe.WarlockRecipe> warlockRecipes =
@@ -228,9 +232,17 @@ public class CommonEvents {
         for (fr.shoqapik.btemobs.recipe.WarlockRecipe recipe : warlockRecipes) {
             fr.shoqapik.btemobs.UnlockRecipe unlockRecipe = ServerData.get().getUnlockRecipe(recipe);
 
+            // Ignorar recetas sin UnlockRecipe registrado en ServerData
+            if (unlockRecipe == null) continue;
+
+            // Primero comprobar si este libro corresponde a esta receta
+            if (!unlockRecipe.is(stack)) continue;
+
+            // El libro corresponde - cancelar evento para evitar uso normal
+            event.setCanceled(true);
+
             // Si ya está desbloqueada, mostrar mensaje y salir
             if (ServerData.get().isUnlock(recipe)) {
-                event.setCanceled(true);
                 net.minecraft.network.chat.Component enchantName = net.minecraft.network.chat.Component.translatable(
                     recipe.getEnchantment().getDescriptionId())
                     .append(" ")
@@ -243,12 +255,6 @@ public class CommonEvents {
                 );
                 return;
             }
-
-            // Comprobar si este libro corresponde a esta receta
-            if (!unlockRecipe.is(stack)) continue;
-
-            // Es el libro correcto - cancelar el evento para evitar uso normal del libro
-            event.setCanceled(true);
 
             mc.duzo.ender_journey.capabilities.PortalPlayer portalPlayer =
                 mc.duzo.ender_journey.capabilities.PortalPlayer.get(player).orElse(null);
