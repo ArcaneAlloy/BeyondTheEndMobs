@@ -252,29 +252,25 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
         return total;
     }
     public void craftItemServer(ServerPlayer serverPlayer, Optional<? extends Recipe<?>> clickedRecipe) {
-        List<Recipe> list = getCraftableRecipes(serverPlayer);
-
-        // FIX: usar la receta seleccionada por el jugador si esta disponible y es crafteable.
-        // Antes siempre se usaba list.get(0) (la receta con mas ingredientes),
-        // ignorando completamente la seleccion del jugador.
+        // Usar directamente la receta enviada por el cliente (por ID).
+        // No recalculamos via getCraftableRecipes(craftSlots) porque cuando llega
+        // el CraftItemPacket los craftSlots pueden estar vacios segun el orden de
+        // procesamiento de paquetes, lo que provocaba que la animacion no se disparara.
+        // La validacion real (hasItems) se hace abajo con el inventario del jugador.
         Recipe recipe = null;
+
         if (clickedRecipe.isPresent()) {
-            Recipe<?> selected = clickedRecipe.get();
-            // Verificar que la receta seleccionada esta en la lista de crafteables
-            for (Recipe r : list) {
-                if (r.getId().equals(selected.getId())) {
-                    recipe = r;
-                    break;
-                }
-            }
-        }
-        // Fallback: si no hay receta seleccionada o no es crafteable, usar la primera
-        if (recipe == null && !list.isEmpty()) {
-            recipe = list.get(0);
+            recipe = clickedRecipe.get();
+        } else {
+            // Fallback: si el cliente no mando receta, buscar la primera crafteable
+            List<Recipe> list = getCraftableRecipes(serverPlayer);
+            if (!list.isEmpty()) recipe = list.get(0);
         }
 
         if (recipe != null) {
             if(!hasRequirementsForCraft(recipe)) return;
+            // No validamos hasItems(inventario) aqui: handlePlacement ya movio
+            // los ingredientes a craftSlots antes de que llegara este packet.
             placeResult(recipe, assembleResult(recipe));
             for(int i = 0; i < this.craftSlots.getContainerSize(); ++i) {
                 Inventory inventory = serverPlayer.getInventory();

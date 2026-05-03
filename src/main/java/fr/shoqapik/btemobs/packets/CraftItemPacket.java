@@ -35,17 +35,21 @@ public class CraftItemPacket {
 
 
     public static CraftItemPacket decode(FriendlyByteBuf packetBuffer) {
-        if(packetBuffer.readableBytes() != 0) {
+        boolean hasRecipe = packetBuffer.readBoolean();
+        if (hasRecipe) {
             ResourceLocation location = packetBuffer.readResourceLocation();
             return new CraftItemPacket(location);
         } else {
-            throw new IllegalArgumentException("CraftItemPacket error 111");
+            return new CraftItemPacket((ResourceLocation) null);
         }
     }
 
     public static void encode(CraftItemPacket msg, FriendlyByteBuf packetBuffer) {
-        if(msg.recipe != null) {
+        if (msg.recipe != null) {
+            packetBuffer.writeBoolean(true);
             packetBuffer.writeResourceLocation(msg.recipe);
+        } else {
+            packetBuffer.writeBoolean(false);
         }
     }
 }

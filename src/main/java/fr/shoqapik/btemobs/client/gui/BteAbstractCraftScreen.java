@@ -71,23 +71,9 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.craftButton = this.addRenderableWidget(new Button(this.leftPos + 134, (this.height / 2 - this.imageHeight / 2) + 68, 35, 14, Component.literal("Craft"), new Button.OnPress() {
             @Override
             public void onPress(Button button) {
+                // Usar la ultima receta clickada en el libro si disponible
+                // Si no, enviar null y dejar que el servidor elija la receta correcta
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-                if (recipe == null) {
-                    for (RecipeButton b : recipeBookComponent.recipeBookPage.buttons) {
-                        if (menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) b.getRecipe())) {
-                            recipe = b.getRecipe();
-                            BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] No recipe clicked, using first matching: {}", recipe.getId());
-                            break;
-                        }
-                    }
-                } else {
-                    if (!menu.recipeMatches((Recipe<? super BteAbstractCraftContainer>) recipe)) {
-                        BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Selected recipe {} no longer matches, aborting", recipe.getId());
-                        return;
-                    }
-                }
-                if (recipe == null) return;
-                BteMobsMod.LOGGER.debug("[BteAbstractCraftScreen] Crafting: {}", recipe.getId());
                 BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
                 BteAbstractCraftScreen.this.craftButton.active = false;
             }

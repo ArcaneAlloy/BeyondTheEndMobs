@@ -24,7 +24,9 @@ public class UnlockRecipe {
         this.wasFound = false;
     }
     public UnlockRecipe(CompoundTag tag){
-        this.recipe = BteMobsMod.getServer().getRecipeManager().byKey(new ResourceLocation(tag.getString("id"))).get();
+        // Usar orElse(null) en lugar de .get() para evitar NoSuchElementException
+        // si la receta guardada ya no existe (receta renombrada o eliminada).
+        this.recipe = BteMobsMod.getServer().getRecipeManager().byKey(new ResourceLocation(tag.getString("id"))).orElse(null);
         this.isLock = tag.getBoolean("isLock");
         this.wasFound = tag.getBoolean("wasFound");
     }

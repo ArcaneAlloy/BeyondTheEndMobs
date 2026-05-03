@@ -110,6 +110,8 @@ public class ServerData extends SavedData {
 				for (int j = 0 ; j<recipeData.size() ; j++){
 					CompoundTag tag = recipeData.getCompound(j);
 					UnlockRecipe recipe = new UnlockRecipe(tag);
+					// Saltar recetas cuyo ID ya no existe en el RecipeManager
+					if (recipe.recipe == null) continue;
 					list.add(recipe);
 				}
 				map.put(type,list);
