@@ -20,8 +20,8 @@ public class WarlockBaseSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack itemStack) {
-        // No permitir libros encantados — solo libros normales y items encantables
-        return !itemStack.is(Items.ENCHANTED_BOOK);
+        // Bloquear libros (normales y encantados) — el slot base solo acepta items encantables
+        return !itemStack.is(Items.ENCHANTED_BOOK) && !itemStack.is(Items.BOOK);
     }
 
     @Override

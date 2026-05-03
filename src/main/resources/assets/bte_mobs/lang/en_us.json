@@ -122,5 +122,9 @@
   "page.bte.wild_ravager.desc": "The Wild Ravager can be found in a Raid.\n\nThey can be tamed when stunned with a shield by feeding them hay bales.\n\nOnce tamed they can be ridden and are allowed to being equipped with a Ravager Armor of different tiers: Iron, Gold, Diamond, Illagium and Netherite.",
   "page.bte.wolf.title": "Wolf",
   "page.bte.wolf.desc": "A Wolf can be tamed feeding it with\nBones.\n\nA tamed Wolf can be equipped with armor of different levels: Leather, Gold, Iron, Diamond and Netherite.",
-  "gui.bte.continue": "Click anywhere to continue"
+  "gui.bte.continue": "Click anywhere to continue",
+  "bte_mobs.enchanted_book.unlocked": "You have unlocked the recipe for %s!",
+  "bte_mobs.enchanted_book.locked": "Requires %d Ender Eyes to use this book",
+  "bte_mobs.enchanted_book.locked_chat": "You cannot use this book yet. You need %d Ender Eyes.",
+  "bte_mobs.enchanted_book.already_unlocked": "You have already unlocked the recipe for %s!"
 }

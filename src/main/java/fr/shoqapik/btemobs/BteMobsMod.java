@@ -200,29 +200,8 @@ public class BteMobsMod {
     }
 
     public static void handleUnlockRecipePacket(CheckUnlockRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
-        List<Recipe<?>> recipes1 = new ArrayList<>();
-        List<WarlockRecipe> recipes2  = getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get());
-        for (WarlockRecipe recipe : recipes2){
-            if(ServerData.get().isUnlock(recipe)) continue;
-            boolean flag = false;
-            if(ctx.get().getSender().getInventory().items.stream().anyMatch(e->ServerData.get().getUnlockRecipe(recipe).is(e))){
-                ServerData.get().getUnlockRecipe(recipe).setWasFound(true);
-            }
-            PortalPlayer portalPlayer = PortalPlayer.get(ctx.get().getSender()).orElse(null);
-
-            if(ServerData.get().getUnlockRecipe(recipe).wasFound && ServerData.get().getUnlockRecipe(recipe).isLock && portalPlayer.getEyesEarn()>=recipe.getNeedEyes()){
-                flag = true;
-                ServerData.get().getUnlockRecipe(recipe).setIsLock(false);
-            }
-            if(flag){
-                recipes1.add(recipe);
-            }
-        }
-        for (Recipe<?> recipe : recipes1){
-            CriteriaTriggers.RECIPE_UNLOCKED.trigger(ctx.get().getSender(), recipe);
-        }
-
-        addRecipe(ctx.get().getSender(),BteMobsRecipeTypes.WARLOCK_RECIPE.get(),recipes1);
+        // Las recetas del Warlock (encantamientos) se desbloquean exclusivamente
+        // via right click con el libro encantado - ver CommonEvents.onRightClickItem
         List<Recipe<?>> recipes = new ArrayList<>();
 
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());

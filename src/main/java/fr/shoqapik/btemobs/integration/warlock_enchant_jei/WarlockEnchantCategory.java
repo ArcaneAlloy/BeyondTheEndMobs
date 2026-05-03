@@ -17,12 +17,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,29 +86,39 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
         ItemStack output = explorerRecipe.getResultItem();
 
         if (!output.isEmpty()) {
-            List<ItemStack> stacks = new ArrayList<>();
-            List<ItemStack> enchants = new ArrayList<>();
+            net.minecraft.world.item.enchantment.Enchantment enchantment = explorerRecipe.getEnchantment();
 
+            // Detectar U (Show Uses en libro encantado): el foco OUTPUT contiene el libro encantado
+            boolean isShowUses = iFocusGroup.getFocuses(VanillaTypes.ITEM_STACK)
+                .anyMatch(f -> f.getRole() == RecipeIngredientRole.OUTPUT);
 
-            Enchantment enchantment = explorerRecipe.getEnchantment();
-            stacks.add(new ItemStack(Items.BOOK));
-            enchants.add(output);
-
-            for (Item item : ForgeRegistries.ITEMS.getValues()) {
-                ItemStack stack = new ItemStack(item);
-
-                if (enchantment.canEnchant(stack)) {
-                    stacks.add(stack.copy());
-                    stack.enchant(enchantment, 1);
-                    enchants.add(stack.copy());
+            if (isShowUses) {
+                // U en libro encantado: ingredientes + book → libro encantado
+                iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81, 33)
+                        .addItemStack(new ItemStack(Items.BOOK));
+                iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 33)
+                        .addItemStack(output);
+            } else {
+                // R: ingredientes + item encantable sin encantar → item encantado
+                List<ItemStack> sinEncantar = new ArrayList<>();
+                List<ItemStack> encantados = new ArrayList<>();
+                for (net.minecraft.world.item.Item item : net.minecraftforge.registries.ForgeRegistries.ITEMS.getValues()) {
+                    ItemStack stack = new ItemStack(item);
+                    if (enchantment.canEnchant(stack)) {
+                        sinEncantar.add(stack.copy());
+                        ItemStack enchanted = stack.copy();
+                        enchanted.enchant(enchantment, explorerRecipe.getLevel());
+                        encantados.add(enchanted);
+                    }
                 }
+                iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81, 33)
+                        .addItemStacks(sinEncantar);
+                iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.OUTPUT, 133, 33)
+                        .addItemStacks(encantados);
+                // Output invisible para que R en el libro encantado encuentre esta receta
+                iRecipeLayoutBuilder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
+                        .addItemStack(output);
             }
-
-            iRecipeLayoutBuilder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStack(output);
-            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 81 , 33)
-                    .addItemStacks(stacks);
-            iRecipeLayoutBuilder.addSlot(RecipeIngredientRole.INPUT, 133 , 33)
-                    .addItemStacks(enchants);
         } else {
             System.out.println("⚠️ Advertencia: La receta " + explorerRecipe.getId() + " tiene un resultado vacío.");
         }

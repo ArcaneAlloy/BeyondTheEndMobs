@@ -213,4 +213,90 @@ public class CommonEvents {
         event.addListener(new RumorsManager());
         event.addListener(new PagesManager());
     }
+
+    @SubscribeEvent
+    public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        net.minecraft.world.item.ItemStack stack = event.getItemStack();
+        if (!(stack.getItem() instanceof net.minecraft.world.item.EnchantedBookItem)) return;
+
+        // Buscar si hay una WarlockRecipe que requiera este libro encantado
+        java.util.List<fr.shoqapik.btemobs.recipe.WarlockRecipe> warlockRecipes =
+            BteMobsMod.getServer().getRecipeManager().getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.WARLOCK_RECIPE.get());
+
+        for (fr.shoqapik.btemobs.recipe.WarlockRecipe recipe : warlockRecipes) {
+            fr.shoqapik.btemobs.UnlockRecipe unlockRecipe = ServerData.get().getUnlockRecipe(recipe);
+
+            // Si ya está desbloqueada, mostrar mensaje y salir
+            if (ServerData.get().isUnlock(recipe)) {
+                event.setCanceled(true);
+                net.minecraft.network.chat.Component enchantName = net.minecraft.network.chat.Component.translatable(
+                    recipe.getEnchantment().getDescriptionId())
+                    .append(" ")
+                    .append(net.minecraft.network.chat.Component.translatable("enchantment.level." + recipe.getLevel()));
+                player.displayClientMessage(
+                    net.minecraft.network.chat.Component.translatable("bte_mobs.enchanted_book.already_unlocked",
+                        enchantName)
+                        .withStyle(net.minecraft.ChatFormatting.GREEN),
+                    false
+                );
+                return;
+            }
+
+            // Comprobar si este libro corresponde a esta receta
+            if (!unlockRecipe.is(stack)) continue;
+
+            // Es el libro correcto - cancelar el evento para evitar uso normal del libro
+            event.setCanceled(true);
+
+            mc.duzo.ender_journey.capabilities.PortalPlayer portalPlayer =
+                mc.duzo.ender_journey.capabilities.PortalPlayer.get(player).orElse(null);
+            if (portalPlayer == null) return;
+
+            int eyesEarned = portalPlayer.getEyesEarn();
+            int eyesNeeded = recipe.getNeedEyes();
+
+            if (eyesEarned >= eyesNeeded) {
+                // Tiene suficientes ojos - desbloquear receta y consumir el libro
+                unlockRecipe.setWasFound(true);
+                unlockRecipe.setIsLock(false);
+
+                java.util.List<net.minecraft.world.item.crafting.Recipe<?>> toUnlock = new java.util.ArrayList<>();
+                toUnlock.add(recipe);
+                net.minecraft.advancements.CriteriaTriggers.RECIPE_UNLOCKED.trigger(player, recipe);
+                BteMobsMod.addRecipe(player, fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.WARLOCK_RECIPE.get(), toUnlock);
+
+                // Consumir el libro del inventario
+                stack.shrink(1);
+
+                // Mensaje de éxito en el chat
+                net.minecraft.network.chat.Component enchantName2 = net.minecraft.network.chat.Component.translatable(
+                    recipe.getEnchantment().getDescriptionId())
+                    .append(" ")
+                    .append(net.minecraft.network.chat.Component.translatable("enchantment.level." + recipe.getLevel()));
+                player.displayClientMessage(
+                    net.minecraft.network.chat.Component.translatable("bte_mobs.enchanted_book.unlocked",
+                        enchantName2)
+                        .withStyle(net.minecraft.ChatFormatting.GREEN),
+                    false
+                );
+            } else {
+                // No tiene suficientes ojos - mensaje en overlay y chat
+                player.displayClientMessage(
+                    net.minecraft.network.chat.Component.translatable("bte_mobs.enchanted_book.locked",
+                        eyesNeeded)
+                        .withStyle(net.minecraft.ChatFormatting.RED),
+                    true  // overlay (action bar)
+                );
+                player.displayClientMessage(
+                    net.minecraft.network.chat.Component.translatable("bte_mobs.enchanted_book.locked_chat",
+                        eyesNeeded)
+                        .withStyle(net.minecraft.ChatFormatting.RED),
+                    false  // chat
+                );
+            }
+            return;
+        }
+    }
 }

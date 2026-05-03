@@ -122,5 +122,9 @@
   "page.bte.wild_ravager.desc": "El Wild Ravager se encuentra en las Invasiones.\n\nPueden ser domesticados al ser paralizados con un Escudo y alimentarlos con Balas de Heno.\n\nUna vez domesticados pueden ser equicados con Armadura de Ravager de: Hierro, Oro, Diamante, Illagium y Netherita.",
   "page.bte.wolf.title": "Lobo",
   "page.bte.wolf.desc": "Un Lobo puede ser domesticado con\nHuesos.\n\nUn lobo domesticado puede ser equipado con armaduras de: Cuero, Oro, Hierro, Diamante y Netherita.",
-  "gui.bte.continue": "Haz click para continuar"
+  "gui.bte.continue": "Haz click para continuar",
+  "bte_mobs.enchanted_book.unlocked": "¡Has desbloqueado la receta de %s!",
+  "bte_mobs.enchanted_book.locked": "Necesitas %d Ojos de Ender para usar este libro",
+  "bte_mobs.enchanted_book.locked_chat": "No puedes usar este libro todavía. Necesitas %d Ojos de Ender.",
+  "bte_mobs.enchanted_book.already_unlocked": "¡Ya has desbloqueado la receta de %s!"
 }
