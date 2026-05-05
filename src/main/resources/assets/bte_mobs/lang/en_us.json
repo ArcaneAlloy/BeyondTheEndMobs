@@ -126,5 +126,11 @@
   "bte_mobs.enchanted_book.unlocked": "You have unlocked the recipe for %s!",
   "bte_mobs.enchanted_book.locked": "Requires %d Ender Eyes to use this book",
   "bte_mobs.enchanted_book.locked_chat": "You cannot use this book yet. You need %d Ender Eyes.",
-  "bte_mobs.enchanted_book.already_unlocked": "You have already unlocked the recipe for %s!"
+  "bte_mobs.enchanted_book.already_unlocked": "You have already unlocked the recipe for %s!",
+  "bte_mobs.tier.0": "Common",
+  "bte_mobs.tier.1": "Uncommon",
+  "bte_mobs.tier.2": "Rare",
+  "bte_mobs.tier.3": "Epic",
+  "bte_mobs.tier.4": "Legendary",
+  "bte_mobs.tier.5": "Mythic"
 }

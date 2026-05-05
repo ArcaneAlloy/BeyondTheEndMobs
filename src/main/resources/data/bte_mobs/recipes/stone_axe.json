@@ -1,7 +1,7 @@
 {
   "type": "bte_mobs:blacksmith_upgrade",
   "category": "WEAPONS",
-  "tier": 1,
+  "tier": 0,
   "base": {
     "item": "minecraft:wooden_axe"
   },

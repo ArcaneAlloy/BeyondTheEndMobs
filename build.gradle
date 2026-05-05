@@ -6,7 +6,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-version = '1.11.33'
+version = '1.11.34'
 group = 'fr.shoqapik.btemobs'
 archivesBaseName = 'BeyondTheEndMobs'
 

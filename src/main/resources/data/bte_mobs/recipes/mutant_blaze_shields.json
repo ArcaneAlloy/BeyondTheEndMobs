@@ -1,7 +1,7 @@
 {
   "type": "bte_mobs:blacksmith",
   "category": "WEAPONS",
-  "tier": 4,
+  "tier": 1,
   "ingredients": [
     {
       "type": "bte_mobs:item",

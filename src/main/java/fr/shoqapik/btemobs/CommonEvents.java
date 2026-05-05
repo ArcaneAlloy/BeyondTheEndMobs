@@ -207,6 +207,51 @@ public class CommonEvents {
         }
     }
 
+    // Mapa de item -> tier cargado desde item_tiers.json
+    private static java.util.Map<String, Integer> ITEM_TIERS = null;
+
+    private static java.util.Map<String, Integer> getItemTiers() {
+        if (ITEM_TIERS != null) return ITEM_TIERS;
+        ITEM_TIERS = new java.util.HashMap<>();
+        try {
+            java.io.InputStream is = CommonEvents.class.getResourceAsStream("/data/bte_mobs/item_tiers.json");
+            if (is != null) {
+                String json = new String(is.readAllBytes());
+                com.google.gson.JsonObject obj = com.google.gson.JsonParser.parseString(json).getAsJsonObject();
+                for (var entry : obj.entrySet()) {
+                    ITEM_TIERS.put(entry.getKey(), entry.getValue().getAsInt());
+                }
+            }
+        } catch (Exception e) {
+            BteMobsMod.LOGGER.error("Failed to load item_tiers.json", e);
+        }
+        return ITEM_TIERS;
+    }
+
+    @SubscribeEvent
+    public static void onItemTooltip(net.minecraftforge.event.entity.player.ItemTooltipEvent event) {
+        if (event.getItemStack().isEmpty()) return;
+        String itemId = net.minecraftforge.registries.ForgeRegistries.ITEMS
+            .getKey(event.getItemStack().getItem()).toString();
+        Integer tier = getItemTiers().get(itemId);
+        if (tier == null) return;
+        event.getToolTip().add(net.minecraft.network.chat.Component
+            .translatable("bte_mobs.tier." + tier)
+            .withStyle(getTierStyle(tier)));
+    }
+
+    private static net.minecraft.ChatFormatting getTierStyle(int tier) {
+        return switch (tier) {
+            case 0 -> net.minecraft.ChatFormatting.WHITE;
+            case 1 -> net.minecraft.ChatFormatting.GREEN;
+            case 2 -> net.minecraft.ChatFormatting.AQUA;
+            case 3 -> net.minecraft.ChatFormatting.LIGHT_PURPLE;
+            case 4 -> net.minecraft.ChatFormatting.GOLD;
+            case 5 -> net.minecraft.ChatFormatting.RED;
+            default -> net.minecraft.ChatFormatting.GRAY;
+        };
+    }
+
     @SubscribeEvent
     public static void addQuestsData(AddReloadListenerEvent event){
         event.addListener(new QuestManager());

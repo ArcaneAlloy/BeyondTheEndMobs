@@ -3,16 +3,16 @@
   "category": "WEAPONS",
   "tier": 4,
   "base": {
-    "item": "illagerrevolutionmod:illagium_crossbow"
+    "item": "cataclysm:cursed_bow"
   },
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "quark:soul_bead",
-      "count": 1
+      "item": "celestisynth:lunar_scrap",
+      "count": 6
     }
   ],
   "result": {
-    "item": "dungeons_gear:corrupted_crossbow"
+    "item": "celestisynth:rainfall_serenity"
   }
 }

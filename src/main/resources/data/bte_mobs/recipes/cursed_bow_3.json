@@ -1,23 +1,23 @@
 {
-    "type": "bte_mobs:blacksmith_upgrade",
-    "category": "WEAPONS",
-    "tier": 5,
-    "base": {
-      "item": "dungeons_gear:shivering_bow"
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "WEAPONS",
+  "tier": 4,
+  "base": {
+    "item": "dungeons_gear:shivering_bow"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:cursium_ingot",
+      "count": 1
     },
-    "ingredients": [
-      {
-        "type": "bte_mobs:item",
-        "item": "cataclysm:cursium_ingot",
-        "count": 1
-      },
-      {
-        "type": "bte_mobs:item",
-        "item": "cataclysm:black_steel_ingot",
-        "count": 1
-      }     
-    ],
-    "result": {
-      "item": "cataclysm:cursed_bow"
+    {
+      "type": "bte_mobs:item",
+      "item": "cataclysm:black_steel_ingot",
+      "count": 1
     }
+  ],
+  "result": {
+    "item": "cataclysm:cursed_bow"
   }
+}
