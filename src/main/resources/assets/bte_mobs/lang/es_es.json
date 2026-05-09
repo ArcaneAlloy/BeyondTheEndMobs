@@ -132,5 +132,6 @@
   "bte_mobs.tier.2": "Raro",
   "bte_mobs.tier.3": "Épico",
   "bte_mobs.tier.4": "Legendario",
-  "bte_mobs.tier.5": "Mítico"
+  "bte_mobs.tier.5": "Mítico",
+  "bte_mobs.enchanted_book.tooltip": "Clic derecho para desbloquear la receta"
 }

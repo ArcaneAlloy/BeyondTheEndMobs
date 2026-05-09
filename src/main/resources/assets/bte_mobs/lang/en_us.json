@@ -132,5 +132,6 @@
   "bte_mobs.tier.2": "Rare",
   "bte_mobs.tier.3": "Epic",
   "bte_mobs.tier.4": "Legendary",
-  "bte_mobs.tier.5": "Mythic"
+  "bte_mobs.tier.5": "Mythic",
+  "bte_mobs.enchanted_book.tooltip": "Right-click to unlock the recipe"
 }
