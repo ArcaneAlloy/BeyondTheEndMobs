@@ -1,6 +1,6 @@
 {
   "type": "bte_mobs:blacksmith",
-  "category": "WEAPONS",
+  "category": "ARTIFACTS",
   "tier": 2,
   "ingredients": [
     {

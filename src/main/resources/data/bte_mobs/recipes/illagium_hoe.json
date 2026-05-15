@@ -1,6 +1,6 @@
 {
     "type": "bte_mobs:blacksmith_upgrade",
-    "category": "OTHERS",
+    "category": "TOOLS",
     "tier": 3,
     "base": {
       "item": "minecraft:diamond_hoe"

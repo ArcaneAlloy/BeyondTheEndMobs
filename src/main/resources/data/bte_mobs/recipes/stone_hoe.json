@@ -1,6 +1,6 @@
 {
   "type": "bte_mobs:blacksmith_upgrade",
-  "category": "OTHERS",
+  "category": "TOOLS",
   "tier": 0,
   "base": {
     "item": "minecraft:wooden_hoe"

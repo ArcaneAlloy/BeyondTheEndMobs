@@ -1,6 +1,6 @@
 {
   "type": "bte_mobs:blacksmith",
-  "category": "WEAPONS",
+  "category": "TOOLS",
   "tier": 0,
   "ingredients": [
     {

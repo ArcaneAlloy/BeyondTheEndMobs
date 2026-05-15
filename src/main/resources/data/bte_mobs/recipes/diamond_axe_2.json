@@ -1,6 +1,6 @@
 {
   "type": "bte_mobs:blacksmith_upgrade",
-  "category": "WEAPONS",
+  "category": "TOOLS",
   "tier": 2,
   "base": {
     "item": "twilightforest:ironwood_axe"

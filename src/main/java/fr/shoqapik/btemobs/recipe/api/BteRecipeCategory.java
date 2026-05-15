@@ -14,7 +14,8 @@ public enum BteRecipeCategory {
     ALL(new ItemStack(Items.CRAFTING_TABLE), List.of(BteNpcType.values())),
     WEAPONS(new ItemStack(Items.NETHERITE_SWORD), List.of(BteNpcType.BLACKSMITH, BteNpcType.WARLOCK)),
     ARMORS(new ItemStack(Items.NETHERITE_CHESTPLATE), List.of(BteNpcType.BLACKSMITH, BteNpcType.WARLOCK)),
-    TOOLS(new ItemStack(Items.NETHERITE_PICKAXE), List.of(BteNpcType.WARLOCK)),
+    TOOLS(new ItemStack(Items.NETHERITE_PICKAXE), List.of(BteNpcType.BLACKSMITH, BteNpcType.WARLOCK)),
+    ARTIFACTS(new ItemStack(Items.TOTEM_OF_UNDYING), List.of(BteNpcType.BLACKSMITH)),
     OTHERS(new ItemStack(Items.STICK), List.of(BteNpcType.BLACKSMITH));
 
     public final ItemStack item;

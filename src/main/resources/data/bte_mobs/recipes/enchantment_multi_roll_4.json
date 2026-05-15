@@ -1,11 +1,11 @@
 {
   "type": "bte_mobs:warlock",
   "category": "ALL",
-  "enchantment": "dungeons_gear:multi_roll",
-  "texture": "bte_mobs:textures/enchantments/multi_roll_4.png",
-  "eyes": 0,
+  "enchantment": "combatroll:multi_roll",
+  "texture": "bte_mobs:textures/enchantments/multi_roll_1.png",
+  "eyes": 19,
   "level": 4,
-  "experience": 21,
+  "experience": 30,
   "ingredients": [
     {
       "item": "alexsmobs:rocky_shell",

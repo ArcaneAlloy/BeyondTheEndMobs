@@ -1,9 +1,9 @@
 {
   "type": "bte_mobs:warlock",
   "category": "ALL",
-  "enchantment": "dungeons_gear:acrobat",
-  "texture": "bte_mobs:textures/enchantments/acrobat_8.png",
-  "eyes": 16,
+  "enchantment": "combatroll:acrobat",
+  "texture": "bte_mobs:textures/enchantments/acrobat_1.png",
+  "eyes": 25,
   "level": 8,
   "experience": 25,
   "ingredients": [

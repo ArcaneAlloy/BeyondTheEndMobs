@@ -1,11 +1,11 @@
 {
   "type": "bte_mobs:warlock",
   "category": "ALL",
-  "enchantment": "dungeons_gear:acrobat",
-  "texture": "bte_mobs:textures/enchantments/acrobat_7.png",
-  "eyes": 13,
+  "enchantment": "combatroll:acrobat",
+  "texture": "bte_mobs:textures/enchantments/acrobat_1.png",
+  "eyes": 21,
   "level": 7,
-  "experience": 21,
+  "experience": 22,
   "ingredients": [
     {
       "item": "alexsmobs:roadrunner_feather",
