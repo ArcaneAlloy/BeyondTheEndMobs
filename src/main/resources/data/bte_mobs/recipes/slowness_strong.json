@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "minecraft:strong_slowness",
+  "tier": 1,
+  "ingredient": {
+    "item": "minecraft:soul_sand"
+  },
+  "potion_modifier": "glowstone"
+}

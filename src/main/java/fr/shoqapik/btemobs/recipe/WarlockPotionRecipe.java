@@ -1,7 +1,6 @@
 package fr.shoqapik.btemobs.recipe;
 
 import com.google.gson.*;
-import fr.shoqapik.btemobs.blockentity.ExplorerTableBlockEntity;
 import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
@@ -9,102 +8,149 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
 
 public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
+
+    /**
+     * Modifier slot behaviour for this recipe variant.
+     *   NONE      - neither Redstone nor Glowstone accepted
+     *   REDSTONE  - Redstone required (extended duration)
+     *   GLOWSTONE - Glowstone dust required (amplified / level II)
+     */
+    public enum PotionModifier { NONE, REDSTONE, GLOWSTONE }
+
+    /**
+     * Output item type.
+     *   NORMAL    - minecraft:potion
+     *   SPLASH    - minecraft:splash_potion
+     *   LINGERING - minecraft:lingering_potion
+     */
+    public enum PotionOutputType { NORMAL, SPLASH, LINGERING }
+
     private final BteRecipeCategory category;
     protected final ResourceLocation id;
     private final int tier;
     public final String effect;
     private final ItemStack ingredientPrimary;
-    public Item type = Items.POTION;
-    public Item upgrade = Items.AIR;
-    public WarlockPotionRecipe(ItemStack stack,ResourceLocation id,String effect, int tier) {
-        this.id=id;
+    private final PotionModifier modifier;
+    private final PotionOutputType outputType;
+
+    // Legacy public fields kept for JEI compatibility (WarlockPotionCategory reads them)
+    public Item type;
+    public Item upgrade;
+
+    public WarlockPotionRecipe(ItemStack stack, ResourceLocation id, String effect,
+                               int tier, PotionModifier modifier, PotionOutputType outputType) {
+        this.id = id;
         this.ingredientPrimary = stack;
-        this.tier=tier;
-        this.effect=effect;
-        this.category= BteRecipeCategory.ALL;
+        this.tier = tier;
+        this.effect = effect;
+        this.modifier = modifier;
+        this.outputType = outputType;
+        this.category = BteRecipeCategory.ALL;
+
+        // Populate legacy JEI fields from enums
+        this.type = switch (outputType) {
+            case SPLASH    -> Items.SPLASH_POTION;
+            case LINGERING -> Items.LINGERING_POTION;
+            default        -> Items.POTION;
+        };
+        this.upgrade = switch (modifier) {
+            case REDSTONE  -> Items.REDSTONE;
+            case GLOWSTONE -> Items.GLOWSTONE_DUST;
+            default        -> Items.AIR;
+        };
     }
 
-    public int getTier() {
-        return tier;
-    }
+    // ── Getters ─────────────────────────────────────────────────────────────
 
+    public int getTier() { return tier; }
+    public PotionModifier getModifier() { return modifier; }
+    public PotionOutputType getOutputType() { return outputType; }
+    public ItemStack getIngredientPrimary() { return ingredientPrimary; }
+    public BteRecipeCategory getCategory() { return category; }
 
-    public ItemStack getIngredientPrimary() {
-        return ingredientPrimary;
-    }
-
-    public BteRecipeCategory getCategory() {
-        return category;
-    }
+    // ── Recipe logic ─────────────────────────────────────────────────────────
 
     @Override
-    public boolean matches(SimpleContainer p_44002_, Level p_44003_) {
-        ItemStack bottle = p_44002_.getItem(2);
-        return bottle.is(Items.GLASS_BOTTLE) && p_44002_.getItem(3).is(ingredientPrimary.getItem());
-    }
+    public boolean matches(SimpleContainer container, Level level) {
+        if (!container.getItem(2).is(Items.GLASS_BOTTLE)) return false;
+        if (!container.getItem(3).is(ingredientPrimary.getItem())) return false;
 
-    @Override
-    public ItemStack assemble(SimpleContainer p_44001_) {
-        Item potion = Items.POTION;
-        ItemStack mixIngredient = p_44001_.getItem(0).isEmpty() ? p_44001_.getItem(1) : p_44001_.getItem(0) ;
-        if(p_44001_.getItem(4).is(Items.GUNPOWDER)){
-            potion = Items.SPLASH_POTION;
-        }else if(p_44001_.getItem(5).is(Items.DRAGON_BREATH)){
-            potion = Items.LINGERING_POTION;
-        }
-        return PotionBrewing.mix(mixIngredient,PotionUtils.setPotion(new ItemStack(potion),Registry.POTION.get(new ResourceLocation(effect))));
-    }
+        boolean hasRedstone   = container.getItem(0).is(Items.REDSTONE);
+        boolean hasGlowstone  = container.getItem(1).is(Items.GLOWSTONE_DUST);
+        boolean hasSplash     = container.getItem(4).is(Items.GUNPOWDER);
+        boolean hasLingering  = container.getItem(5).is(Items.DRAGON_BREATH);
 
-    @Override
-    public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
+        // Modifier slots must match exactly
+        if (modifier == PotionModifier.REDSTONE  && !hasRedstone)              return false;
+        if (modifier == PotionModifier.GLOWSTONE && !hasGlowstone)             return false;
+        if (modifier == PotionModifier.NONE      && (hasRedstone || hasGlowstone)) return false;
+
+        // Output type slots must match exactly
+        if (outputType == PotionOutputType.SPLASH    && !hasSplash)              return false;
+        if (outputType == PotionOutputType.LINGERING  && !hasLingering)           return false;
+        if (outputType == PotionOutputType.NORMAL     && (hasSplash || hasLingering)) return false;
+
         return true;
     }
 
-    public boolean hasItems(Player player,SimpleContainer craftContainer){
-        Inventory inventory = player.getInventory();
-        return (inventory.contains(ingredientPrimary) || craftContainer.hasAnyMatching(e->e.getItem()==ingredientPrimary.getItem())) && (inventory.contains(new ItemStack(Items.GLASS_BOTTLE)) || craftContainer.hasAnyMatching(e->e.is(Items.GLASS_BOTTLE)));
+    @Override
+    public ItemStack assemble(SimpleContainer container) {
+        Item potionItem = switch (outputType) {
+            case SPLASH    -> Items.SPLASH_POTION;
+            case LINGERING -> Items.LINGERING_POTION;
+            default        -> Items.POTION;
+        };
+        ItemStack base = PotionUtils.setPotion(
+            new ItemStack(potionItem),
+            Registry.POTION.get(new ResourceLocation(effect))
+        );
+        ItemStack mixStack = switch (modifier) {
+            case REDSTONE  -> new ItemStack(Items.REDSTONE);
+            case GLOWSTONE -> new ItemStack(Items.GLOWSTONE_DUST);
+            default        -> ItemStack.EMPTY;
+        };
+        return mixStack.isEmpty() ? base : PotionBrewing.mix(mixStack, base);
     }
 
-    public boolean hasItems(Inventory inventory){
-        return (inventory.contains(ingredientPrimary)) && (inventory.contains(new ItemStack(Items.GLASS_BOTTLE)));
-    }
     @Override
     public ItemStack getResultItem() {
-        return PotionBrewing.mix(new ItemStack(this.upgrade),PotionUtils.setPotion(new ItemStack(this.type), Registry.POTION.get(new ResourceLocation(effect.split(":")[0],effect.split(":")[1]))));
+        // Delegate to assemble using an empty container (modifier/outputType encoded in fields)
+        return assemble(new SimpleContainer(7));
     }
 
     @Override
-    public ResourceLocation getId() {
-        return this.id;
+    public boolean canCraftInDimensions(int w, int h) { return true; }
+
+    public boolean hasItems(Player player, SimpleContainer craftContainer) {
+        Inventory inventory = player.getInventory();
+        return (inventory.contains(ingredientPrimary) ||
+                craftContainer.hasAnyMatching(e -> e.getItem() == ingredientPrimary.getItem()))
+            && (inventory.contains(new ItemStack(Items.GLASS_BOTTLE)) ||
+                craftContainer.hasAnyMatching(e -> e.is(Items.GLASS_BOTTLE)));
     }
+
+    public boolean hasItems(Inventory inventory) {
+        return inventory.contains(ingredientPrimary)
+            && inventory.contains(new ItemStack(Items.GLASS_BOTTLE));
+    }
+
+    @Override
+    public ResourceLocation getId() { return this.id; }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
@@ -117,51 +163,71 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients(){
+    public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> ingredients = NonNullList.create();
-
         ingredients.add(Ingredient.of(ingredientPrimary));
-
         return ingredients;
     }
 
+    // ── Serializer ──────────────────────────────────────────────────────────
+
     public static class Serializer implements RecipeSerializer<WarlockPotionRecipe> {
-        public WarlockPotionRecipe fromJson(ResourceLocation p_44562_, JsonObject p_44563_) {
-            String effect = GsonHelper.getAsString(p_44563_,"potion_effect");
-            int tier = GsonHelper.getAsInt(p_44563_,"tier");
-            ItemStack ingredient = getItemForJson(p_44563_,"ingredient");
-            return new WarlockPotionRecipe(ingredient,p_44562_,effect,tier);
+
+        @Override
+        public WarlockPotionRecipe fromJson(ResourceLocation id, JsonObject json) {
+            String effect    = GsonHelper.getAsString(json, "potion_effect");
+            int tier         = GsonHelper.getAsInt(json, "tier");
+            ItemStack ingredient = getItemForJson(json, "ingredient");
+
+            // "potion_modifier": "none" | "redstone" | "glowstone"  (default: "none")
+            String modStr = GsonHelper.getAsString(json, "potion_modifier", "none");
+            PotionModifier modifier = switch (modStr.toLowerCase()) {
+                case "redstone"  -> PotionModifier.REDSTONE;
+                case "glowstone" -> PotionModifier.GLOWSTONE;
+                default          -> PotionModifier.NONE;
+            };
+
+            // "potion_type": "normal" | "splash" | "lingering"  (default: "normal")
+            String typeStr = GsonHelper.getAsString(json, "potion_type", "normal");
+            PotionOutputType outputType = switch (typeStr.toLowerCase()) {
+                case "splash"    -> PotionOutputType.SPLASH;
+                case "lingering" -> PotionOutputType.LINGERING;
+                default          -> PotionOutputType.NORMAL;
+            };
+
+            return new WarlockPotionRecipe(ingredient, id, effect, tier, modifier, outputType);
         }
 
-
-
-
-        private ItemStack getItemForJson(JsonObject p_44563_,String name) {
-            if (!p_44563_.has(name)) throw new JsonSyntaxException("Missing result, expected to find a string or object");
-            ItemStack itemstack;
-            if (p_44563_.get(name).isJsonObject()) itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(p_44563_, name));
-            else {
-                String s1 = GsonHelper.getAsString(p_44563_, name);
-                ResourceLocation resourcelocation = new ResourceLocation(s1);
-                itemstack = new ItemStack(ForgeRegistries.ITEMS.getDelegate(resourcelocation).orElseThrow(() -> {
-                    return new IllegalStateException("Item: " + s1 + " does not exist");
-                }));
-            }
-            return itemstack;
+        @Override
+        public WarlockPotionRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+            String effect    = buf.readUtf();
+            int tier         = buf.readInt();
+            int modOrd       = buf.readInt();
+            int typeOrd      = buf.readInt();
+            ItemStack ingredient = buf.readItem();
+            return new WarlockPotionRecipe(ingredient, id, effect, tier,
+                PotionModifier.values()[modOrd],
+                PotionOutputType.values()[typeOrd]);
         }
 
-
-        public WarlockPotionRecipe fromNetwork(ResourceLocation p_44565_, FriendlyByteBuf p_44566_) {
-            String effect = p_44566_.readUtf();
-            int tier = p_44566_.readInt();
-            ItemStack result = p_44566_.readItem();
-            return new WarlockPotionRecipe(result,p_44565_,effect,tier);
+        @Override
+        public void toNetwork(FriendlyByteBuf buf, WarlockPotionRecipe recipe) {
+            buf.writeUtf(recipe.effect);
+            buf.writeInt(recipe.tier);
+            buf.writeInt(recipe.modifier.ordinal());
+            buf.writeInt(recipe.outputType.ordinal());
+            buf.writeItem(recipe.ingredientPrimary);
         }
 
-        public void toNetwork(FriendlyByteBuf p_44553_, WarlockPotionRecipe p_44554_) {
-            p_44553_.writeUtf(p_44554_.effect);
-            p_44553_.writeInt(p_44554_.tier);
-            p_44553_.writeItem(p_44554_.ingredientPrimary);
+        private ItemStack getItemForJson(JsonObject json, String name) {
+            if (!json.has(name))
+                throw new JsonSyntaxException("Missing '" + name + "', expected item or object");
+            if (json.get(name).isJsonObject())
+                return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, name));
+            String s = GsonHelper.getAsString(json, name);
+            ResourceLocation rl = new ResourceLocation(s);
+            return new ItemStack(ForgeRegistries.ITEMS.getDelegate(rl).orElseThrow(
+                () -> new IllegalStateException("Item: " + s + " does not exist")));
         }
     }
 }

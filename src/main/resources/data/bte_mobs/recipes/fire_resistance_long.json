@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "minecraft:long_fire_resistance",
+  "tier": 1,
+  "ingredient": {
+    "item": "minecraft:magma_cream"
+  },
+  "potion_modifier": "redstone"
+}

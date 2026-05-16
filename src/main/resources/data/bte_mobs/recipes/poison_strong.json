@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "minecraft:strong_poison",
+  "tier": 1,
+  "ingredient": {
+    "item": "minecraft:spider_eye"
+  },
+  "potion_modifier": "glowstone"
+}

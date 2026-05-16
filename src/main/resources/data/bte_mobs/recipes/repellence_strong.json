@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "upgrade_aquatic:repellence_ii",
+  "tier": 1,
+  "ingredient": {
+    "item": "upgrade_aquatic:lionfish"
+  },
+  "potion_modifier": "glowstone"
+}

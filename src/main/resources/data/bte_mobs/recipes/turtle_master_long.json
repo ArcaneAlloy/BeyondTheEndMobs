@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "minecraft:long_turtle_master",
+  "tier": 1,
+  "ingredient": {
+    "item": "minecraft:turtle_helmet"
+  },
+  "potion_modifier": "redstone"
+}

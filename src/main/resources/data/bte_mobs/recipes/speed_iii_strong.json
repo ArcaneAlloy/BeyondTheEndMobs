@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "alexsmobs:speed_iii",
+  "tier": 1,
+  "ingredient": {
+    "item": "alexsmobs:gazelle_horn"
+  },
+  "potion_modifier": "glowstone"
+}

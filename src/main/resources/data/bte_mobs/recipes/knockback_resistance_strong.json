@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "alexsmobs:knockback_resistance_ii",
+  "tier": 1,
+  "ingredient": {
+    "item": "alexsmobs:bear_fur"
+  },
+  "potion_modifier": "glowstone"
+}

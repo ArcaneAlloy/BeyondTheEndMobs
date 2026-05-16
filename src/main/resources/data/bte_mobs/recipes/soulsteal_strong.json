@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "alexsmobs:soulsteal_ii",
+  "tier": 1,
+  "ingredient": {
+    "item": "alexsmobs:soul_heart"
+  },
+  "potion_modifier": "glowstone"
+}

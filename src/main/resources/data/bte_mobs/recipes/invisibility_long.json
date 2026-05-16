@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "minecraft:long_invisibility",
+  "tier": 1,
+  "ingredient": {
+    "item": "revised_phantoms:phantom_eye"
+  },
+  "potion_modifier": "redstone"
+}

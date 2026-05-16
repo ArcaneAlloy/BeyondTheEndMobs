@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "minecraft:strong_healing",
+  "tier": 1,
+  "ingredient": {
+    "item": "minecraft:glistering_melon_slice"
+  },
+  "potion_modifier": "glowstone"
+}

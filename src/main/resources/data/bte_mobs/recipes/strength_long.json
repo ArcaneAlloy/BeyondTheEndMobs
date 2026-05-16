@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "minecraft:long_strength",
+  "tier": 1,
+  "ingredient": {
+    "item": "minecraft:blaze_powder"
+  },
+  "potion_modifier": "redstone"
+}
