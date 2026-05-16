@@ -237,6 +237,12 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public void removed(Player pPlayer) {
+        super.removed(pPlayer);
+        clearContainer(pPlayer, craftSlots);
+    }
+
+    @Override
     public boolean stillValid(Player p_38874_) {
         return true;
     }
