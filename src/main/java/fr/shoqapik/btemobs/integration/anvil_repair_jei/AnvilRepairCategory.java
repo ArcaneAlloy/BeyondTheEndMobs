@@ -20,17 +20,15 @@ public class AnvilRepairCategory implements IRecipeCategory<AnvilRepairRecipe> {
     public static final ResourceLocation UID =
             new ResourceLocation(BteMobsMod.MODID, "anvil_repair");
 
-    // Same texture used by BlacksmithRepairScreen (extends ItemCombinerScreen)
+    // Modified version of blacksmith_repair_jei.png with the red EditBox area painted over
     public static final ResourceLocation TEXTURE =
-            new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/blacksmith_repair.png");
+            new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/blacksmith_repair_jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;
 
     public AnvilRepairCategory(IGuiHelper helper) {
-        // ItemCombinerScreen uses 176x166 — crop only the top part with the slots,
-        // excluding the player inventory rows (saves vertical space in JEI).
-        // The craft area ends at approximately y=68; we show 176x70.
+        // Crop 176x70: shows the hammer decoration and the 3 slots, no inventory rows
         this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 70);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.ANVIL));
     }
@@ -53,28 +51,38 @@ public class AnvilRepairCategory implements IRecipeCategory<AnvilRepairRecipe> {
 
     /**
      * Slot positions match ItemCombinerScreen exactly:
-     *   slot 0 (base item)     : x=27, y=47
+     *   slot 0 (damaged item)   : x=27, y=47
      *   slot 1 (repair material): x=76, y=47
-     *   slot 2 (output)        : x=134, y=47
+     *   slot 2 (output)         : x=134, y=47
+     *
+     * The input item is shown at ~75% damage to communicate to the player
+     * that this recipe repairs the item, not crafts it.
      */
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder,
                           AnvilRepairRecipe recipe,
                           IFocusGroup focuses) {
 
-        // Input: the item to repair (slot 0)
+        // Input slot 0: the item shown as damaged (75% of max durability used)
+        ItemStack damagedInput = recipe.getBase().copy();
+        int maxDamage = damagedInput.getMaxDamage();
+        if (maxDamage > 0) {
+            damagedInput.setDamageValue((int) (maxDamage * 0.75));
+        }
         builder.addSlot(RecipeIngredientRole.INPUT, 27, 47)
-               .addIngredients(Ingredient.of(recipe.getBase()));
+               .addItemStack(damagedInput);
 
-        // Input: repair material (slot 1)
+        // Input slot 1: repair material
         builder.addSlot(RecipeIngredientRole.INPUT, 76, 47)
                .addIngredients(Ingredient.of(recipe.getRepairMaterial()));
 
-        // Output: repaired item (slot 2)
-        ItemStack output = recipe.getBase().copy();
-        if (!output.isEmpty()) {
+        // Output slot 2: the item fully repaired
+        ItemStack repairedOutput = recipe.getBase().copy();
+        // Ensure output shows full durability (damage = 0)
+        repairedOutput.setDamageValue(0);
+        if (!repairedOutput.isEmpty()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 134, 47)
-                   .addItemStack(output);
+                   .addItemStack(repairedOutput);
         } else {
             System.out.println("⚠️ AnvilRepair: resultado vacío para " + recipe.getId());
         }
