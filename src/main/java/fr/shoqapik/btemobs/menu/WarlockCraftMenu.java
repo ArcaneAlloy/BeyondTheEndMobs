@@ -52,7 +52,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
             public void slotChanged(AbstractContainerMenu menu, int i, ItemStack itemStack) {
                 if(menu != WarlockCraftMenu.this) return;
                 if(WarlockCraftMenu.this.craftSlots.isEmpty()){
-                    WarlockCraftMenu.this.clickedRecipe = null;
+                    WarlockCraftMenu.this.clickedRecipe = Optional.empty();
                     menu.getSlot(4).set(ItemStack.EMPTY);
                     return;
                 }
@@ -75,7 +75,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
                     menu.getSlot(4).set(optional.get().assemble(WarlockCraftMenu.this.getTotalContainer()));
                 }else {
-                    WarlockCraftMenu.this.clickedRecipe = null;
+                    WarlockCraftMenu.this.clickedRecipe = Optional.empty();
                     menu.getSlot(4).set(ItemStack.EMPTY);
                 }
             }
@@ -130,7 +130,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
             }
 
             public void onTake(Player player, ItemStack itemStack) {
-                if(WarlockCraftMenu.this.clickedRecipe.isPresent() && WarlockCraftMenu.this.clickedRecipe.get() instanceof WarlockRecipe recipe){
+                if(WarlockCraftMenu.this.clickedRecipe != null && WarlockCraftMenu.this.clickedRecipe.isPresent() && WarlockCraftMenu.this.clickedRecipe.get() instanceof WarlockRecipe recipe){
                     WarlockCraftMenu.this.baseSlots.getItem(0).shrink(1);
                     for (int i = 0 ; i < WarlockCraftMenu.this.craftSlots.getContainerSize() ; i++){
                         ItemStack stack = WarlockCraftMenu.this.craftSlots.getItem(i);
