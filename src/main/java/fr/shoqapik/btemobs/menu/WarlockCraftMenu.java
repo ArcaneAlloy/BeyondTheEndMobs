@@ -60,7 +60,14 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                 if(menu.getSlot(i).container != WarlockCraftMenu.this.craftSlots
                         && menu.getSlot(i).container != WarlockCraftMenu.this.baseSlots) return;
 
-                Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(inventory.player).parallelStream().filter(e->e.matches(WarlockCraftMenu.this.craftSlots,WarlockCraftMenu.this.level)).findAny();
+                // FIX: elegir la receta de mayor nivel que coincida con los slots.
+                // findAny() devolvía siempre la primera receta que hacía matches()
+                // (normalmente nivel 1), ignorando que varias recetas del mismo
+                // encantamiento comparten los mismos ingredientes base.
+                Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(inventory.player)
+                        .stream()
+                        .filter(e -> e.matches(WarlockCraftMenu.this.craftSlots, WarlockCraftMenu.this.level))
+                        .max(java.util.Comparator.comparingInt(WarlockRecipe::getLevel));
                 // FIX: la condicion original tenia un error de precedencia de operadores.
                 // "|| baseSlots.getItem(0).is(ENCHANTED_BOOK)" evaluaba independientemente
                 // de optional.isPresent(), causando NoSuchElementException en optional.get().
