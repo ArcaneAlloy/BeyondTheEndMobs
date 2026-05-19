@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "alexsmobs:long_poison_resistance",
+  "tier": 1,
+  "ingredient": {
+    "item": "alexsmobs:cave_centipede_leg"
+  },
+  "potion_modifier": "redstone"
+}

@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "alexsmobs:long_clinging",
+  "tier": 1,
+  "ingredient": {
+    "item": "alexsmobs:dropbear_claw"
+  },
+  "potion_modifier": "redstone"
+}

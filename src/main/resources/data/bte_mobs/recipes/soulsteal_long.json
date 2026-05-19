@@ -1,9 +1,9 @@
 {
   "type": "bte_mobs:warlock_potion_recipe",
-  "potion_effect": "alexsmobs:strong_soulsteal",
+  "potion_effect": "alexsmobs:long_soulsteal",
   "tier": 1,
   "ingredient": {
     "item": "alexsmobs:soul_heart"
   },
-  "potion_modifier": "glowstone"
+  "potion_modifier": "redstone"
 }

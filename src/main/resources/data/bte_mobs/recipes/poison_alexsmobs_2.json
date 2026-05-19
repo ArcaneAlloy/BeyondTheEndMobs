@@ -1,6 +1,6 @@
 {
   "type": "bte_mobs:warlock_potion_recipe",
-  "potion_effect": "alexsmobs:poison",
+  "potion_effect": "minecraft:poison",
   "tier": 1,
   "ingredient": {
     "item": "alexsmobs:centipede_leg"

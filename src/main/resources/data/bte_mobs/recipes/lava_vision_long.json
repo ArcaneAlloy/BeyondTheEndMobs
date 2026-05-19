@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "alexsmobs:long_lava_vision",
+  "tier": 1,
+  "ingredient": {
+    "item": "alexsmobs:bone_serpent_tooth"
+  },
+  "potion_modifier": "redstone"
+}

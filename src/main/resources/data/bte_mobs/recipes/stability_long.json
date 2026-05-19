@@ -1,9 +1,9 @@
 {
   "type": "bte_mobs:warlock_potion_recipe",
-  "potion_effect": "quark:strong_resilience",
+  "potion_effect": "quark:long_resilience",
   "tier": 1,
   "ingredient": {
     "item": "quark:crab_shell"
   },
-  "potion_modifier": "glowstone"
+  "potion_modifier": "redstone"
 }

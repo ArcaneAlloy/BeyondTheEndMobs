@@ -6,6 +6,7 @@ import fr.shoqapik.btemobs.registry.BteMobsRecipeSerializers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -110,27 +111,37 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
 
     @Override
     public ItemStack assemble(SimpleContainer container) {
-        Item potionItem = switch (outputType) {
-            case SPLASH    -> Items.SPLASH_POTION;
-            case LINGERING -> Items.LINGERING_POTION;
-            default        -> Items.POTION;
-        };
-        ItemStack base = PotionUtils.setPotion(
-            new ItemStack(potionItem),
-            Registry.POTION.get(new ResourceLocation(effect))
-        );
-        ItemStack mixStack = switch (modifier) {
-            case REDSTONE  -> new ItemStack(Items.REDSTONE);
-            case GLOWSTONE -> new ItemStack(Items.GLOWSTONE_DUST);
-            default        -> ItemStack.EMPTY;
-        };
-        return mixStack.isEmpty() ? base : PotionBrewing.mix(mixStack, base);
+        return buildResult(outputType, effect);
     }
 
     @Override
     public ItemStack getResultItem() {
-        // Delegate to assemble using an empty container (modifier/outputType encoded in fields)
-        return assemble(new SimpleContainer(7));
+        return buildResult(outputType, effect);
+    }
+
+    /**
+     * Builds the result potion directly from the recipe fields, without going
+     * through PotionBrewing.mix(). This is necessary because modded potions
+     * (e.g. alexsmobs:soulsteal_ii) are not registered in the vanilla brewing
+     * system, so PotionBrewing.mix() would return an empty/uncraftable stack.
+     * The output type (splash, lingering) and the effect ID come directly from
+     * the recipe JSON fields, so no container slots are needed here.
+     */
+    private ItemStack buildResult(PotionOutputType type, String effectId) {
+        Item potionItem = switch (type) {
+            case SPLASH    -> Items.SPLASH_POTION;
+            case LINGERING -> Items.LINGERING_POTION;
+            default        -> Items.POTION;
+        };
+        // Write the Potion NBT tag directly instead of going through PotionUtils or
+        // ForgeRegistries. This ensures modded potions (e.g. alexsmobs:strong_soulsteal)
+        // display correctly in JEI regardless of mod load order, since we never do
+        // a registry lookup that could return null.
+        ItemStack stack = new ItemStack(potionItem);
+        CompoundTag tag = new CompoundTag();
+        tag.putString("Potion", effectId);
+        stack.setTag(tag);
+        return stack;
     }
 
     @Override

@@ -210,7 +210,20 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
         }
     }
 
-    private void reOrganize(){
+        private void reOrganize(){
+        // Deduplicate: for each ingredient, keep only the NORMAL/NONE base variant
+        // so the list shows one icon per effect. Splash/lingering/extended are
+        // produced by filling the modifier slots, not by separate recipe buttons.
+        java.util.Map<String, WarlockPotionRecipe> baseByIngredient = new java.util.LinkedHashMap<>();
+        for (WarlockPotionRecipe r : categoryRecipes) {
+            String key = r.getIngredientPrimary().getItem().toString();
+            boolean isBase = r.getModifier()   == WarlockPotionRecipe.PotionModifier.NONE
+                          && r.getOutputType() == WarlockPotionRecipe.PotionOutputType.NORMAL;
+            if (!baseByIngredient.containsKey(key) || isBase) {
+                baseByIngredient.put(key, r);
+            }
+        }
+        categoryRecipes = new java.util.ArrayList<>(baseByIngredient.values());
         categoryRecipes = categoryRecipes.stream().sorted(Comparator.comparing(
                 e -> e.hasItems(this.minecraft.player, this.menu.craftSlots),
                 Comparator.reverseOrder())).toList();

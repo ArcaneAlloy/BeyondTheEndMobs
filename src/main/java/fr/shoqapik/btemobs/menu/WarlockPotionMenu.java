@@ -142,20 +142,10 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
         this.addSlotListener(new ContainerListener() {
             @Override
             public void slotChanged(AbstractContainerMenu menu, int i, ItemStack itemStack) {
-                if(level.isClientSide)return;
-                Optional<WarlockPotionRecipe> optionalRecipe = level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get()).stream().filter(e->e.getIngredientPrimary().getItem()==menu.getSlot(3).getItem().getItem()).findFirst();
-
-                if(!optionalRecipe.isPresent()) {
-                    WarlockPotionMenu.this.craftSlots.setItem(6,ItemStack.EMPTY);
-                    return;
-                }
-                SimpleContainer container1 = WarlockPotionMenu.this.craftSlots;
-                if(container1.getItem(2).is(Items.GLASS_BOTTLE)){
-                    ItemStack result = assemble(optionalRecipe.get());
-                    container1.setItem(6, result);
-                }else {
-                    container1.setItem(6,ItemStack.EMPTY);
-                }
+                if (level.isClientSide) return;
+                // Delegate to slotChangedCraftingGrid which uses recipe.matches() correctly,
+                // handling all modifier/outputType combinations without findFirst() shortcuts.
+                slotChangedCraftingGrid(level, WarlockPotionMenu.this.craftSlots);
             }
 
             @Override
@@ -255,9 +245,19 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
 
 
     public void placeRecipe(ServerPlayer player, ItemStack item) {
-        Optional<WarlockPotionRecipe> optionalRecipe = player.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get()).stream().filter(e->{
-            return e.getIngredientPrimary().getItem()==item.getItem();
-        }).findFirst();
+        // Prefer the base NORMAL/NONE variant so clicking the recipe icon always
+        // places the plain ingredient. Modifier slots are filled by the player.
+        Optional<WarlockPotionRecipe> optionalRecipe = player.level.getRecipeManager()
+            .getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get()).stream()
+            .filter(e -> e.getIngredientPrimary().getItem() == item.getItem()
+                      && e.getModifier()   == WarlockPotionRecipe.PotionModifier.NONE
+                      && e.getOutputType() == WarlockPotionRecipe.PotionOutputType.NORMAL)
+            .findFirst()
+            // Fallback: any recipe with this ingredient if no NORMAL/NONE exists
+            .or(() -> player.level.getRecipeManager()
+                .getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get()).stream()
+                .filter(e -> e.getIngredientPrimary().getItem() == item.getItem())
+                .findFirst());
         ItemStack stack1 = craftSlots.getItem(3);
         ItemStack bottle = craftSlots.getItem(2);
         if(!stack1.isEmpty()){

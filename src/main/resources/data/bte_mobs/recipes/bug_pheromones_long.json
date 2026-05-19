@@ -1,0 +1,9 @@
+{
+  "type": "bte_mobs:warlock_potion_recipe",
+  "potion_effect": "alexsmobs:long_bug_pheromones",
+  "tier": 1,
+  "ingredient": {
+    "item": "alexsmobs:cockroach_wing"
+  },
+  "potion_modifier": "redstone"
+}
