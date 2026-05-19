@@ -10,6 +10,10 @@
     {
       "item": "upgrade_aquatic:thrasher_tooth",
       "count": 13
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 21
     }
   ]
 }

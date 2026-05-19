@@ -10,6 +10,10 @@
     {
       "item": "minecraft:slime_ball",
       "count": 8
+    },
+    {
+      "item": "minecraft:arrow",
+      "count": 8
     }
   ]
 }

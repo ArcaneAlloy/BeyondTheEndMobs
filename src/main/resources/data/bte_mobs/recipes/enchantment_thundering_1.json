@@ -8,12 +8,16 @@
   "experience": 13,
   "ingredients": [
     {
+      "item": "minecraft:lightning_rod",
+      "count": 1
+    },
+    {
       "item": "minecraft:copper_block",
       "count": 3
     },
     {
-      "item": "minecraft:lightning_rod",
-      "count": 1
+      "item": "minecraft:lapis_lazuli",
+      "count": 3
     }
   ]
 }

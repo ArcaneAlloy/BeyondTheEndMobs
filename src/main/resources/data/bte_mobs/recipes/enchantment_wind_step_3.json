@@ -9,7 +9,11 @@
   "ingredients": [
     {
       "item": "alexsmobs:gazelle_horn",
-      "count": 21
+      "count": 8
+    },
+    {
+      "item": "neapolitan:chocolate_bar",
+      "count": 8
     }
   ]
 }

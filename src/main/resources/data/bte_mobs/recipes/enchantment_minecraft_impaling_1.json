@@ -2,13 +2,17 @@
   "type": "bte_mobs:warlock",
   "category": "ALL",
   "enchantment": "minecraft:impaling",
-  "texture": "bte_mobs:textures/enchantments/impaling_2.png",
-  "eyes": 4,
-  "level": 2,
-  "experience": 8,
+  "texture": "bte_mobs:textures/enchantments/impaling_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
   "ingredients": [
     {
       "item": "upgrade_aquatic:thrasher_tooth",
+      "count": 3
+    },
+    {
+      "item": "minecraft:iron_ingot",
       "count": 3
     }
   ]

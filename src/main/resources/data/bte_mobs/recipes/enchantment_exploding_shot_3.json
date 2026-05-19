@@ -10,6 +10,14 @@
     {
       "item": "minecraft:gunpowder",
       "count": 13
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 13
+    },
+    {
+      "item": "minecraft:arrow",
+      "count": 13
     }
   ]
 }

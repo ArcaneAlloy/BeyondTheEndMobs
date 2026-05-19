@@ -1,9 +1,9 @@
 {
   "type": "bte_mobs:warlock",
   "category": "ALL",
-  "enchantment": "dungeons_gear:master_call",
+  "enchantment": "dungeons_gear:masters_call",
   "texture": "bte_mobs:textures/enchantments/master_call_1.png",
-  "eyes": 0,
+  "eyes": 7,
   "level": 1,
   "experience": 13,
   "ingredients": [

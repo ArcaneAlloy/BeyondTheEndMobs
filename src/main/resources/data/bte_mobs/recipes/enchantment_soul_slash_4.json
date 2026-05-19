@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "illagerrevolutionmod:soul_slash",
+  "texture": "bte_mobs:textures/enchantments/soul_slash_4.png",
+  "eyes": 13,
+  "level": 4,
+  "experience": 21,
+  "ingredients": [
+    {
+      "item": "illagerrevolutionmod:illagium",
+      "count": 5
+    },
+    {
+      "item": "quark:soul_bead",
+      "count": 13
+    }
+  ]
+}

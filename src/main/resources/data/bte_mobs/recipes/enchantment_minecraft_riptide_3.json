@@ -10,6 +10,10 @@
     {
       "item": "minecraft:prismarine_crystals",
       "count": 8
+    },
+    {
+      "item": "minecraft:prismarine_shard",
+      "count": 8
     }
   ]
 }

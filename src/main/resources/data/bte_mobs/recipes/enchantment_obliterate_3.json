@@ -8,8 +8,8 @@
   "experience": 21,
   "ingredients": [
     {
-      "item": "minecraft:gunpowder",
-      "count": 8
+      "item": "minecraft:tnt",
+      "count": 3
     }
   ]
 }

@@ -8,8 +8,12 @@
   "experience": 13,
   "ingredients": [
     {
-      "item": "minecraft:gunpowder",
-      "count": 13
+      "item": "minecraft:tnt",
+      "count": 3
+    },
+    {
+      "item": "minecraft:fire_charge",
+      "count": 5
     }
   ]
 }

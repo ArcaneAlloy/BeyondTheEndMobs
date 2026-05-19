@@ -8,7 +8,7 @@
   "experience": 5,
   "ingredients": [
     {
-      "item": "minecraft:blue_ice",
+      "item": "minecraft:packed_ice",
       "count": 5
     }
   ]

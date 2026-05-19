@@ -8,7 +8,11 @@
   "experience": 13,
   "ingredients": [
     {
-      "item": "alexsmobs:dropbear_claw",
+      "item": "minecraft:coal",
+      "count": 3
+    },
+    {
+      "item": "minecraft:arrow",
       "count": 3
     }
   ]

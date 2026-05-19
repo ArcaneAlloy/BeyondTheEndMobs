@@ -10,6 +10,10 @@
     {
       "item": "minecraft:blaze_powder",
       "count": 13
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 13
     }
   ]
 }

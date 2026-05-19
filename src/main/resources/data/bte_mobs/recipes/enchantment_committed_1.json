@@ -3,7 +3,7 @@
   "category": "ALL",
   "enchantment": "dungeons_gear:committed",
   "texture": "bte_mobs:textures/enchantments/committed_1.png",
-  "eyes": 0,
+  "eyes": 1,
   "level": 1,
   "experience": 5,
   "ingredients": [

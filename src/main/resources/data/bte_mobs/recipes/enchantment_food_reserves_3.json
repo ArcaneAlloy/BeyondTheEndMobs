@@ -10,6 +10,10 @@
     {
       "item": "minecraft:glistering_melon_slice",
       "count": 13
+    },
+    {
+      "item": "minecraft:potion",
+      "count": 1
     }
   ]
 }

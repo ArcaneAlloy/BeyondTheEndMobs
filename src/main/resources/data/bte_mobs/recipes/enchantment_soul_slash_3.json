@@ -8,8 +8,12 @@
   "experience": 13,
   "ingredients": [
     {
+      "item": "illagerrevolutionmod:illagium",
+      "count": 3
+    },
+    {
       "item": "quark:soul_bead",
-      "count": 5
+      "count": 8
     }
   ]
 }

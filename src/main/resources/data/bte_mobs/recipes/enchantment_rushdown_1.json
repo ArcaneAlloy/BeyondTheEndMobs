@@ -8,7 +8,11 @@
   "experience": 5,
   "ingredients": [
     {
-      "item": "minecraft:sugar",
+      "item": "neapolitan:chocolate_bar",
+      "count": 5
+    },
+    {
+      "item": "minecraft:redstone",
       "count": 5
     }
   ]

@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:multi_roll",
+  "texture": "bte_mobs:textures/enchantments/multi_roll_1.png",
+  "eyes": 1,
+  "level": 1,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:rabbit_foot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:slime_ball",
+      "count": 3
+    }
+  ]
+}

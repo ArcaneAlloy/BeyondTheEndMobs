@@ -8,6 +8,10 @@
   "experience": 8,
   "ingredients": [
     {
+      "item": "minecraft:basalt",
+      "count": 5
+    },
+    {
       "item": "minecraft:rabbit_foot",
       "count": 5
     }

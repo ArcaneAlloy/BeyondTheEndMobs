@@ -2,14 +2,18 @@
   "type": "bte_mobs:warlock",
   "category": "ALL",
   "enchantment": "twilightforest:fire_react",
-  "texture": "bte_mobs:textures/enchantments/fire_react_1.png",
-  "eyes": 1,
-  "level": 1,
+  "texture": "bte_mobs:textures/enchantments/fire_react_2.png",
+  "eyes": 7,
+  "level": 2,
   "experience": 0,
   "ingredients": [
     {
       "item": "minecraft:blaze_powder",
-      "count": 3
+      "count": 5
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 5
     }
   ]
 }

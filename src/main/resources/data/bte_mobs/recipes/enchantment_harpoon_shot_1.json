@@ -10,6 +10,10 @@
     {
       "item": "upgrade_aquatic:thrasher_tooth",
       "count": 3
+    },
+    {
+      "item": "minecraft:lapis_lazuli",
+      "count": 3
     }
   ]
 }

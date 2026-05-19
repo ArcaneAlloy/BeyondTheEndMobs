@@ -10,6 +10,10 @@
     {
       "item": "alexsmobs:rocky_shell",
       "count": 1
+    },
+    {
+      "item": "minecraft:arrow",
+      "count": 3
     }
   ]
 }

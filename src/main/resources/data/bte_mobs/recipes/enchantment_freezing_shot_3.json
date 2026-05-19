@@ -8,7 +8,11 @@
   "experience": 13,
   "ingredients": [
     {
-      "item": "minecraft:blue_ice",
+      "item": "minecraft:snowball",
+      "count": 13
+    },
+    {
+      "item": "minecraft:arrow",
       "count": 13
     }
   ]

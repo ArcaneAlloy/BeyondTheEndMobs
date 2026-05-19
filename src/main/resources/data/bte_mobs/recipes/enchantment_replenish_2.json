@@ -9,7 +9,11 @@
   "ingredients": [
     {
       "item": "minecraft:arrow",
-      "count": 16
+      "count": 13
+    },
+    {
+      "item": "minecraft:lapis_lazuli",
+      "count": 5
     }
   ]
 }

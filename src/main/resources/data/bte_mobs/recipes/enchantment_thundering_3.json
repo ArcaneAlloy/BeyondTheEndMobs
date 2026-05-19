@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:thundering",
+  "texture": "bte_mobs:textures/enchantments/thundering_3.png",
+  "eyes": 0,
+  "level": 3,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:lightning_rod",
+      "count": 1
+    },
+    {
+      "item": "minecraft:copper_block",
+      "count": 8
+    },
+    {
+      "item": "minecraft:lapis_lazuli",
+      "count": 8
+    }
+  ]
+}

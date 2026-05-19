@@ -10,6 +10,10 @@
     {
       "item": "supplementaries:quiver",
       "count": 2
+    },
+    {
+      "item": "backpacked:backpack",
+      "count": 1
     }
   ]
 }

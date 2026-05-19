@@ -8,8 +8,12 @@
   "experience": 21,
   "ingredients": [
     {
+      "item": "illagerrevolutionmod:illagium",
+      "count": 5
+    },
+    {
       "item": "minecraft:blaze_powder",
-      "count": 8
+      "count": 13
     }
   ]
 }

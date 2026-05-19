@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dungeons_gear:harpoon_shot",
+  "texture": "bte_mobs:textures/enchantments/harpoon_shot_2.png",
+  "eyes": 0,
+  "level": 2,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "upgrade_aquatic:thrasher_tooth",
+      "count": 5
+    },
+    {
+      "item": "minecraft:lapis_lazuli",
+      "count": 5
+    }
+  ]
+}

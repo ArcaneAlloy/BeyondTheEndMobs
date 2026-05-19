@@ -3,7 +3,7 @@
   "category": "ALL",
   "enchantment": "combatroll:longfooted",
   "texture": "bte_mobs:textures/enchantments/longfooter_5.png",
-  "eyes": 0,
+  "eyes": 19,
   "level": 5,
   "experience": 21,
   "ingredients": [

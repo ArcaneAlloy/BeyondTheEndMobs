@@ -10,6 +10,14 @@
     {
       "item": "minecraft:gunpowder",
       "count": 5
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 5
+    },
+    {
+      "item": "minecraft:arrow",
+      "count": 5
     }
   ]
 }

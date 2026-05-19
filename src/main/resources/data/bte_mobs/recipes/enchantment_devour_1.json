@@ -10,6 +10,10 @@
     {
       "item": "alexsmobs:soul_heart",
       "count": 3
+    },
+    {
+      "item": "minecraft:skeleton_skull",
+      "count": 13
     }
   ]
 }

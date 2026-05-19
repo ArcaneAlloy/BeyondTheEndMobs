@@ -3,7 +3,7 @@
   "category": "ALL",
   "enchantment": "dungeons_gear:cooldown",
   "texture": "bte_mobs:textures/enchantments/cooldown_3.png",
-  "eyes": 0,
+  "eyes": 13,
   "level": 3,
   "experience": 13,
   "ingredients": [

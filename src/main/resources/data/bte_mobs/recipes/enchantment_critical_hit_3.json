@@ -9,6 +9,10 @@
   "ingredients": [
     {
       "item": "illagerrevolutionmod:illagium",
+      "count": 3
+    },
+    {
+      "item": "minecraft:lapis_lazuli",
       "count": 8
     }
   ]

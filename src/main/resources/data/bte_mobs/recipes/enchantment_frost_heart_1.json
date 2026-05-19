@@ -8,6 +8,10 @@
   "experience": 8,
   "ingredients": [
     {
+      "item": "alexsmobs:soul_heart",
+      "count": 3
+    },
+    {
       "item": "minecraft:ice",
       "count": 3
     }

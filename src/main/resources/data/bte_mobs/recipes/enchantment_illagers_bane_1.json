@@ -3,7 +3,7 @@
   "category": "ALL",
   "enchantment": "dungeons_gear:illagers_bane",
   "texture": "bte_mobs:textures/enchantments/illagers_bane_1.png",
-  "eyes": 0,
+  "eyes": 4,
   "level": 1,
   "experience": 13,
   "ingredients": [

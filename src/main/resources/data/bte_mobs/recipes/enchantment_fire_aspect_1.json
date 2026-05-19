@@ -8,8 +8,8 @@
   "experience": 8,
   "ingredients": [
     {
-      "item": "alexsmobs:dropbear_claw",
-      "count": 1
+      "item": "minecraft:coal",
+      "count": 3
     }
   ]
 }

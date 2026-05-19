@@ -8,12 +8,16 @@
   "experience": 13,
   "ingredients": [
     {
+      "item": "quark:diamond_heart",
+      "count": 3
+    },
+    {
       "item": "minecraft:skeleton_skull",
       "count": 8
     },
     {
-      "item": "quark:diamond_heart",
-      "count": 3
+      "item": "minecraft:arrow",
+      "count": 8
     }
   ]
 }

@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:enderference",
+  "texture": "bte_mobs:textures/enchantments/enderference_3.png",
+  "eyes": 0,
+  "level": 3,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "minecraft:ender_pearl",
+      "count": 8
+    },
+    {
+      "item": "minecraft:potion",
+      "count": 1
+    }
+  ]
+}

@@ -14,6 +14,10 @@
     {
       "item": "minecraft:ghast_tear",
       "count": 2
+    },
+    {
+      "item": "minecraft:arrow",
+      "count": 8
     }
   ]
 }

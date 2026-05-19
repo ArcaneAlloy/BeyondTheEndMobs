@@ -1,0 +1,19 @@
+{
+  "type": "bte_mobs:warlock",
+  "category": "ALL",
+  "enchantment": "dragonenchants:devour",
+  "texture": "bte_mobs:textures/enchantments/devour_2.png",
+  "eyes": 0,
+  "level": 2,
+  "experience": 5,
+  "ingredients": [
+    {
+      "item": "alexsmobs:soul_heart",
+      "count": 5
+    },
+    {
+      "item": "minecraft:skeleton_skull",
+      "count": 13
+    }
+  ]
+}

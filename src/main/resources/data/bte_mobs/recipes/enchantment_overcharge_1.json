@@ -10,6 +10,10 @@
     {
       "item": "minecraft:fire_charge",
       "count": 3
+    },
+    {
+      "item": "minecraft:lapis_lazuli",
+      "count": 3
     }
   ]
 }
