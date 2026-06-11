@@ -28,8 +28,15 @@ public final class SacredPlaceHandler {
     private static final int DURATION_TICKS = 100;
     private static final int REFRESH_THRESHOLD = 40;
     private static final int SPEED_AMP = 1;
+    private static final int LOBBY_RADIUS = 500;
 
     private SacredPlaceHandler() {}
+
+    private static boolean isInLobby(Player player) {
+        double x = player.getX();
+        double z = player.getZ();
+        return x * x + z * z <= (double)(LOBBY_RADIUS * LOBBY_RADIUS);
+    }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent e) {
@@ -40,12 +47,20 @@ public final class SacredPlaceHandler {
         if (lvl.isClientSide) return;
         if (!lvl.dimension().equals(FORGOTTEN_REALM)) return;
 
-        MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
-        if (sacred != null) ensureEffect(player, sacred, 0);
+        if (isInLobby(player)) {
+            MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
+            if (sacred != null) ensureEffect(player, sacred, 0);
             ensureEffect(player, MobEffects.MOVEMENT_SPEED, SPEED_AMP);
             ensureEffect(player, MobEffects.DAMAGE_RESISTANCE, 99);
             ensureEffect(player, MobEffects.SATURATION, 99);
-}
+        } else {
+            MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
+            if (sacred != null) player.removeEffect(sacred);
+            player.removeEffect(MobEffects.MOVEMENT_SPEED);
+            player.removeEffect(MobEffects.DAMAGE_RESISTANCE);
+            player.removeEffect(MobEffects.SATURATION);
+        }
+    }
 
     @SubscribeEvent
     public static void onDimChange(PlayerChangedDimensionEvent e) {
@@ -53,10 +68,10 @@ public final class SacredPlaceHandler {
 
         MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
         if (sacred != null) e.getEntity().removeEffect(sacred);
-            e.getEntity().removeEffect(MobEffects.MOVEMENT_SPEED);
-            e.getEntity().removeEffect(MobEffects.DAMAGE_RESISTANCE);
-            e.getEntity().removeEffect(MobEffects.SATURATION);
-        }
+        e.getEntity().removeEffect(MobEffects.MOVEMENT_SPEED);
+        e.getEntity().removeEffect(MobEffects.DAMAGE_RESISTANCE);
+        e.getEntity().removeEffect(MobEffects.SATURATION);
+    }
 
     private static void ensureEffect(Player player, MobEffect effect, int amplifier) {
         MobEffectInstance current = player.getEffect(effect);
