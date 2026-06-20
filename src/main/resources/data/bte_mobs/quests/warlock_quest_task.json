@@ -13,9 +13,14 @@
       "formattedText": "answer.bte.warlock_quest_task.2",
       "action": "potion"
     },
+
     {
-      "formattedText": "answer.bte.warlock_quest_task.3",
-      "action": "wip"
+      "formattedText": "answer.bte.warlock_quest_pres.4",
+      "action": "upgrade"
+    },
+    {
+      "formattedText": "answer.bte.warlock_quest_pres.5",
+      "action": "remove"
     }
   ]
 }

@@ -4,6 +4,7 @@ import com.mojang.math.Vector3f;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.block.OrianaOakBlock;
 import fr.shoqapik.btemobs.menu.DruidMenu;
+import fr.shoqapik.btemobs.menu.WarlockUpgradeMenu;
 import fr.shoqapik.btemobs.packets.DirectionPacket;
 import fr.shoqapik.btemobs.registry.BteMobsBlocks;
 import net.minecraft.ChatFormatting;
@@ -483,6 +484,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
         this.openMenu((MenuProvider) this,player);
     }
 
+
     public OptionalInt openMenu(@javax.annotation.Nullable MenuProvider pMenu,ServerPlayer serverPlayer) {
         if (pMenu == null) {
             return OptionalInt.empty();
@@ -568,7 +570,7 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     }
 
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> cap, @org.jetbrains.annotations.Nullable net.minecraft.core.Direction side) {
-        if (cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+        if (cap == net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER )
             return itemHandler.cast();
         return super.getCapability(cap, side);
     }

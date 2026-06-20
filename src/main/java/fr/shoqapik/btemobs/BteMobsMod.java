@@ -154,10 +154,6 @@ public class BteMobsMod {
             switch (bteAbstractEntity.getNpcType()) {
                 case BLACKSMITH -> {
                     NetworkHooks.openScreen(ctx.get().getSender(), new BlacksmithCraftProvider(msg.entityId));
-                    // FIX: Forzar la carga de recetas inmediatamente al abrir el Blacksmith.
-                    // CheckUnlockRecipePacket normalmente solo se envia cuando cambia el
-                    // inventario, por lo que en la primera apertura las recetas no estaban
-                    // en el RecipeBook del jugador y la lista aparecia vacia (slots en rojo).
                     handleUnlockRecipePacket(new CheckUnlockRecipePacket(), ctx);
                 }
                 case WARLOCK -> NetworkHooks.openScreen(ctx.get().getSender(), new WarlockCraftProvider(msg.entityId));
@@ -186,7 +182,18 @@ public class BteMobsMod {
             if(bteAbstractEntity instanceof WarlockEntity warlockEntity){
                 warlockEntity.openPotionGui(ctx.get().getSender());
             }
-
+        }
+        if (msg.actionType.equals("upgrade")){
+            BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
+            if(bteAbstractEntity instanceof WarlockEntity warlockEntity){
+                warlockEntity.openUpgradeGui(ctx.get().getSender());
+            }
+        }
+        if (msg.actionType.equals("remove")){
+            BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
+            if(bteAbstractEntity instanceof WarlockEntity warlockEntity){
+                warlockEntity.openRemoveGui(ctx.get().getSender());
+            }
         }
     }
 
@@ -200,17 +207,12 @@ public class BteMobsMod {
     }
 
     public static void handleUnlockRecipePacket(CheckUnlockRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
-        // Las recetas del Warlock (encantamientos) se desbloquean exclusivamente
-        // via right click con el libro encantado - ver CommonEvents.onRightClickItem
         List<Recipe<?>> recipes = new ArrayList<>();
 
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get(),new ArrayList<>());
 
-        // Solo añadir recetas propias del Blacksmith al RecipeBook.
-        // Las recetas vanilla (SMITHING, CRAFTING) no tienen category finder para BLACKSMITH
-        // y causaban que aparecieran en la lista del Blacksmith sin filtrar.
         List<Recipe<?>> list = new ArrayList<>(getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
 
@@ -233,7 +235,6 @@ public class BteMobsMod {
     }
 
     public static <C extends Container,T extends Recipe<C>> void checkStateRecipe(ServerPlayer player,RecipeType<T> type,List<Recipe<?>> recipes){
-
         List<T> recipes2  = getServer().getRecipeManager().getAllRecipesFor(type);
         for (T recipe : recipes2){
             if(ServerData.get().isUnlock(recipe)) continue;

@@ -1,8 +1,6 @@
 package fr.shoqapik.btemobs.entity;
 
-import fr.shoqapik.btemobs.menu.DruidMenu;
-import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
-import fr.shoqapik.btemobs.menu.WarlockPotionMenu;
+import fr.shoqapik.btemobs.menu.*;
 import fr.shoqapik.btemobs.registry.BteMobsBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -158,7 +156,48 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     public void openPotionGui(ServerPlayer player){
         this.openMenu(this,player);
     }
+    public OptionalInt openUpgradeGui(ServerPlayer serverPlayer){
+        if (serverPlayer.containerMenu != serverPlayer.inventoryMenu) {
+            serverPlayer.closeContainer();
+        }
 
+        serverPlayer.nextContainerCounter();
+        AbstractContainerMenu abstractcontainermenu = new WarlockUpgradeMenu(serverPlayer.containerCounter, serverPlayer.getInventory());
+        if (abstractcontainermenu == null) {
+            if (serverPlayer.isSpectator()) {
+                serverPlayer.displayClientMessage(Component.translatable("container.spectatorCantOpen").withStyle(ChatFormatting.RED), true);
+            }
+
+            return OptionalInt.empty();
+        } else {
+            serverPlayer.connection.send(new ClientboundOpenScreenPacket(abstractcontainermenu.containerId, abstractcontainermenu.getType(), Component.literal("Inventory")));
+            serverPlayer.initMenu(abstractcontainermenu);
+            serverPlayer.containerMenu = abstractcontainermenu;
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(serverPlayer, serverPlayer.containerMenu));
+            return OptionalInt.of(serverPlayer.containerCounter);
+        }
+    }
+    public OptionalInt openRemoveGui(ServerPlayer serverPlayer){
+        if (serverPlayer.containerMenu != serverPlayer.inventoryMenu) {
+            serverPlayer.closeContainer();
+        }
+
+        serverPlayer.nextContainerCounter();
+        AbstractContainerMenu abstractcontainermenu = new CurseRemovalMenu(serverPlayer.containerCounter, serverPlayer.getInventory());
+        if (abstractcontainermenu == null) {
+            if (serverPlayer.isSpectator()) {
+                serverPlayer.displayClientMessage(Component.translatable("container.spectatorCantOpen").withStyle(ChatFormatting.RED), true);
+            }
+
+            return OptionalInt.empty();
+        } else {
+            serverPlayer.connection.send(new ClientboundOpenScreenPacket(abstractcontainermenu.containerId, abstractcontainermenu.getType(), Component.literal("Inventory")));
+            serverPlayer.initMenu(abstractcontainermenu);
+            serverPlayer.containerMenu = abstractcontainermenu;
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(serverPlayer, serverPlayer.containerMenu));
+            return OptionalInt.of(serverPlayer.containerCounter);
+        }
+    }
     public OptionalInt openMenu(@javax.annotation.Nullable MenuProvider pMenu, ServerPlayer serverPlayer) {
         if (pMenu == null) {
             return OptionalInt.empty();
@@ -268,7 +307,7 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     }
 
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> cap, @org.jetbrains.annotations.Nullable net.minecraft.core.Direction side) {
-        if (cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+        if (cap == net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER )
             return itemHandler.cast();
         return super.getCapability(cap, side);
     }

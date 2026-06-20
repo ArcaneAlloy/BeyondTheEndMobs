@@ -59,7 +59,6 @@ public class RumorsScreen extends Screen {
         this.topPos = (this.height - 80) / 2;
 
         for (Rumor rumor : this.rumors) {
-
             ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID,
                     String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
 
@@ -68,13 +67,7 @@ public class RumorsScreen extends Screen {
             String rawTitle = rumor.getTitle();
             String translatedTitle = rawTitle.contains(".") ? I18n.get(rawTitle) : rawTitle;
 
-            CustomButton button = new CustomButton(
-                    backgroundTexture, null ,
-                    0,
-                    0,
-                    100,
-                    20,
-                    Component.literal(translatedTitle),
+            CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20, Component.literal(translatedTitle),
                     (p_95981_) -> {
                         if(isUnlock){
                             this.currentRumor=rumor;
@@ -105,7 +98,6 @@ public class RumorsScreen extends Screen {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-
         if(this.currentRumor!=null){
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);

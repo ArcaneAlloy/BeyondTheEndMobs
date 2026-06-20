@@ -10,7 +10,6 @@ import fr.shoqapik.btemobs.client.renderer.entity.ExplorerEntityRenderer;
 import fr.shoqapik.btemobs.client.renderer.entity.WarlockEntityRenderer;
 import fr.shoqapik.btemobs.compendium.PagesManager;
 import fr.shoqapik.btemobs.entity.*;
-import fr.shoqapik.btemobs.menu.BlacksmithCraftMenu;
 import fr.shoqapik.btemobs.packets.*;
 import fr.shoqapik.btemobs.quests.QuestManager;
 import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
@@ -26,7 +25,6 @@ import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,6 +45,8 @@ public class BteMobsModClient {
         MenuScreens.register(BteMobsContainers.EXPLORER_TABLE_MENU.get(), ExplorerTableScreen::new);
         MenuScreens.register(BteMobsContainers.DRUID_MENU.get(), DruidScreen::new);
         MenuScreens.register(BteMobsContainers.POTION_MENU.get(), WarlockPotionCraftScreen::new);
+        MenuScreens.register(BteMobsContainers.WARLOCK_UPGRADE_MENU.get(), WarlockUpgradeScreen::new);
+        MenuScreens.register(BteMobsContainers.WARLOCK_REMOVE_CURSE_MENU.get(), WarlockCursesRemoveScreen::new);
     }
 
     @SubscribeEvent

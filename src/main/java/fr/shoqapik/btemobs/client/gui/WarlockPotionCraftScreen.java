@@ -64,6 +64,7 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
 
     public int totalPages = 0;
     private List<CategoryButton> tabButtons = new ArrayList<>();
+
     public WarlockPotionCraftScreen(WarlockPotionMenu p_97741_, Inventory p_97742_, Component p_97743_) {
         super(p_97741_, p_97742_, p_97743_);
         this.imageWidth = 339;

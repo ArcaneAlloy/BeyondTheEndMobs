@@ -23,7 +23,10 @@ public class BteMobsContainers {
 
     public static final RegistryObject<MenuType<WarlockCraftMenu>> WARLOCK_CRAFT_MENU = CONTAINERS
             .register("warlock_craft", () -> new MenuType<>((id, inventory) -> new WarlockCraftMenu(id, inventory, -1)));
-
+    public static final RegistryObject<MenuType<WarlockUpgradeMenu>> WARLOCK_UPGRADE_MENU = CONTAINERS
+            .register("warlock_upgrade", () -> new MenuType<>(WarlockUpgradeMenu::new));
+    public static final RegistryObject<MenuType<CurseRemovalMenu>> WARLOCK_REMOVE_CURSE_MENU = CONTAINERS
+            .register("warlock_remove_curse", () -> new MenuType<>(CurseRemovalMenu::new));
     public static final RegistryObject<MenuType<TableExplorerMenu>> EXPLORER_TABLE_MENU = registerMenuType(TableExplorerMenu::new,"explorer_table_menu");
     public static final RegistryObject<MenuType<DruidMenu>> DRUID_MENU = registerMenuType(DruidMenu::new,"druid_menu");
     public static final RegistryObject<MenuType<WarlockPotionMenu>> POTION_MENU = registerMenuType(WarlockPotionMenu::new,"potion_menu");

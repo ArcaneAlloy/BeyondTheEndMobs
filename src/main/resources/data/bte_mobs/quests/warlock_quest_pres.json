@@ -19,7 +19,11 @@
     },
     {
       "formattedText": "answer.bte.warlock_quest_pres.3",
-      "action": "wip"
+      "action": "upgrade"
+    },
+    {
+      "formattedText": "answer.bte.warlock_quest_pres.3",
+      "action": "remove"
     }
   ]
 }
