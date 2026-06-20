@@ -147,14 +147,12 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
                         }
                     }
             );
-            button.hasItem = true;
-            ItemStack stack1 = Items.SKELETON_SKULL.getDefaultInstance();
-            button.item = stack1;
             button.isSelect = i==0;
             currentEnchant = enchantment;
             i++;
             buttons.add(button);
         }
+
         this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 2);
     }
 
@@ -203,6 +201,12 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
         for (Button b : buttons){
             b.render(p_97795_, p_97796_, p_97797_, p_97798_);
         }
+        if(menu.recipe != null){
+            ItemStack item = Items.SKELETON_SKULL.getDefaultInstance();
+            item.setCount(menu.recipe.needEyes);
+            Minecraft.getInstance().getItemRenderer().renderGuiItem(item,this.upgradeButton.x,this.upgradeButton.y);
+        }
+
     }
 
     public void renderTooltip(PoseStack p_100418_, int p_100419_, int p_100420_) {

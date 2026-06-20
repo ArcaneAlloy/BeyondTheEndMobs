@@ -72,9 +72,7 @@ public class CustomButton extends Button {
             blit(poseStack, iconX, iconY, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
         }else {
             drawCenteredString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 0xFFFFFF);
-            if (hasItem){
-                Minecraft.getInstance().getItemRenderer().renderGuiItem(item,this.x,this.y);
-            }
+
         }
     }
 
