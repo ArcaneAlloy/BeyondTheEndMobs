@@ -99,12 +99,12 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
         this.addRenderableWidget(this.down);
         this.layoutButtons();
         this.currentRecipe=null;
-        this.upgradeButton = this.addRenderableWidget(new Button(this.leftPos+140,50,60,16,Component.literal("Upgrade"),(p)->{
+        this.upgradeButton = this.addRenderableWidget(new Button(this.leftPos+140,50,75,16,Component.literal("Upgrade X"),(p)->{
             p.active = false;
             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 0);
 
         }));
-        this.downgradeButton = this.addRenderableWidget(new Button(this.leftPos+140,90,60,16,Component.literal("Downgrade"),(p)->{
+        this.downgradeButton = this.addRenderableWidget(new Button(this.leftPos+140,90,75,16,Component.literal("Downgrade"),(p)->{
             p.active = false;
             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 1);
 
@@ -139,13 +139,28 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
                         if (p_95981_ instanceof CustomButton customButton){
                             customButton.isSelect = true;
                         }
-                        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 2+finalI);
+                        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 3+finalI);
                         if(menu.mode.get() == 0){
                             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 0);
                         }else if(menu.mode.get() == 1){
                             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 1);
                         }
-                    }
+
+                        Optional<WarlockRecipe> optional =
+                                BteMobsMod.getWarlockRecipe(player)
+                                        .stream()
+                                        .filter(e -> {
+                                            BteMobsMod.LOGGER.info("Enchantment {} Level {}",e.getEnchantment(),e.getLevel());
+
+                                            if (enchantment == e.getEnchantment()) {
+                                                return EnchantmentHelper.getTagEnchantmentLevel(e.getEnchantment(), menu.inputSlots.getItem(0)) + 1 == e.getLevel() && menu.canUpgrade(player.getInventory(), e);
+                                            }
+                                            return false;
+                                        })
+                                        .findFirst();
+
+                        currentRecipe = optional.orElse(null);
+            }
             );
             button.isSelect = i==0;
             currentEnchant = enchantment;
@@ -153,7 +168,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
             buttons.add(button);
         }
 
-        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 2);
+
     }
 
 
@@ -170,7 +185,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
 
         if(page < 0) page = 0;
 
-        upgradeButton.active = menu.canUpgrade(player.getInventory()) && currentEnchant != null;
+        upgradeButton.active = menu.canUpgrade(player.getInventory(),currentRecipe) && currentEnchant != null;
         downgradeButton.active = menu.canDowngrade(player.getInventory()) && currentEnchant != null;
     }
 
@@ -201,10 +216,11 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
         for (Button b : buttons){
             b.render(p_97795_, p_97796_, p_97797_, p_97798_);
         }
-        if(menu.recipe != null){
+        if(this.currentRecipe != null){
             ItemStack item = Items.SKELETON_SKULL.getDefaultInstance();
-            item.setCount(menu.recipe.needEyes);
-            Minecraft.getInstance().getItemRenderer().renderGuiItem(item,this.upgradeButton.x,this.upgradeButton.y);
+            item.setCount(this.currentRecipe.needEyes);
+            Minecraft.getInstance().getItemRenderer().renderGuiItem(item,this.upgradeButton.x+50,this.upgradeButton.y);
+            Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(font,item,this.upgradeButton.x+50,this.upgradeButton.y);
         }
 
     }
@@ -285,9 +301,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
 //                break;
 //            }
 //        }
-        if(!flag){
-            this.currentRecipe=null;
-        }
+
 
     }
 

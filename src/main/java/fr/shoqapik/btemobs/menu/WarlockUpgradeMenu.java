@@ -142,6 +142,54 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(inventory, l, -90+184 + l * 18, 142));
         }
     }
+    private void updateRecipe() {
+        if (this.inputSlots.isEmpty()) {
+            this.clickedRecipe = Optional.empty();
+            getSlot(1).set(ItemStack.EMPTY);
+            enchantments.clear();
+            recipe = null;
+            mode.set(-1);
+            return;
+        }
+
+        enchantments.clear();
+        enchantments.addAll(
+                EnchantmentHelper.getEnchantments(
+                        this.inputSlots.getItem(0)
+                ).keySet()
+        );
+
+        if (slotEnchant.get() >= enchantments.size()) {
+            recipe = null;
+            return;
+        }
+
+        Enchantment enchantment = enchantments.get(slotEnchant.get());
+
+        Optional<WarlockRecipe> optional =
+                BteMobsMod.getWarlockRecipe(player)
+                        .stream()
+                        .filter(e -> {
+                            if (enchantment == e.getEnchantment()) {
+                                return EnchantmentHelper
+                                        .getTagEnchantmentLevel(
+                                                e.getEnchantment(),
+                                                inputSlots.getItem(0)
+                                        ) + 1 == e.getLevel()
+                                        && canUpgrade(player.getInventory(), e);
+                            }
+                            return false;
+                        })
+                        .findFirst();
+
+        recipe = optional.orElse(null);
+    }
+
+    @Override
+    public void slotsChanged(Container p_38868_) {
+        super.slotsChanged(p_38868_);
+        updateRecipe();
+    }
 
     public ItemStack upgrade(Recipe recipe) {
         if(recipe instanceof WarlockRecipe) {
@@ -201,8 +249,8 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
                 WarlockUpgradeMenu.this.mode.set(0);
 
                 getSlot(1).set(upgrade(recipe));
-            }else if(p_38876_ > 1){
-                int index = p_38876_-2;
+            }else if(p_38876_ > 2){
+                int index = p_38876_-3;
                 containerData.set(0,index);
             }
         }
@@ -210,6 +258,10 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
             WarlockUpgradeMenu.this.experience.set(1);
             WarlockUpgradeMenu.this.mode.set(1);
             getSlot(1).set(downgrade());
+        }
+        if (p_38876_ == 2){
+            BteMobsMod.LOGGER.info("Change");
+            WarlockUpgradeMenu.this.slotsChanged(WarlockUpgradeMenu.this.inputSlots);
         }
 
         return super.clickMenuButton(p_38875_, p_38876_);
