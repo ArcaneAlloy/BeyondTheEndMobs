@@ -1,16 +1,19 @@
 package fr.shoqapik.btemobs.menu;
 
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +33,7 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
         }
     };
 
-    public final DataSlot selectedCurse;
+
 
     public final Player player;
     public final Level level;
@@ -43,12 +46,8 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
         this.player = inventory.player;
         this.level = inventory.player.level;
 
-        this.selectedCurse = DataSlot.standalone();
-        this.addDataSlot(this.selectedCurse);
-
-        // INPUT
         this.addSlot(new Slot(inputSlots, 0, 203 - 90, 33));
-        // RESULT
+
         this.addSlot(new Slot(resultSlots, 0, 308 - 90, 33) {
 
             @Override
@@ -83,8 +82,7 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
 
                 if(canRemoveCurse()) {
                     getSlot(1).set(removeSelectedCurse());
-                }
-                else {
+                } else {
                     getSlot(1).set(ItemStack.EMPTY);
                 }
             }
@@ -93,7 +91,6 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
             public void dataChanged(AbstractContainerMenu menu, int id, int value) {}
         });
 
-        // INVENTORY
         for(int row = 0; row < 3; ++row) {
             for(int col = 0; col < 9; ++col) {
                 this.addSlot(new Slot(
@@ -105,7 +102,6 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
             }
         }
 
-        // HOTBAR
         for(int col = 0; col < 9; ++col) {
             this.addSlot(new Slot(
                     inventory,
@@ -117,40 +113,32 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
     }
 
     private void updateCurses() {
-        curses.clear();
 
-        ItemStack stack = inputSlots.getItem(0);
-
-        if(stack.isEmpty())
-            return;
-
-        Map<Enchantment,Integer> map = EnchantmentHelper.getEnchantments(stack);
-
-        for(Enchantment enchantment : map.keySet()) {
-            if(enchantment.isCurse()) {
-                curses.add(enchantment);
-            }
-        }
-
-        if(selectedCurse.get() >= curses.size()) {
-            selectedCurse.set(0);
-        }
     }
 
     public ItemStack removeSelectedCurse() {
-
         updateCurses();
 
-        if(curses.isEmpty())
-            return ItemStack.EMPTY;
-
         ItemStack copy = inputSlots.getItem(0).copy();
-
+        List<Enchantment> curses=new ArrayList<>();
         Map<Enchantment,Integer> enchants = new HashMap<>(EnchantmentHelper.getEnchantments(copy));
+        if (!EnchantedBookItem.getEnchantments(copy).isEmpty()){
+            ListTag tag = EnchantedBookItem.getEnchantments(copy);
+            for (int i = 0 ; i < tag.size() ; i++ ){
+                Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(EnchantmentHelper.getEnchantmentId(tag.getCompound(i)));
+                if (enchantment!=null && enchantment.isCurse()){
+                    curses.add(enchantment);
+                }
+            }
+        }else {
+            curses = enchants.keySet().stream().filter(Enchantment::isCurse).toList();
+        }
 
-        Enchantment curse = curses.get(selectedCurse.get());
 
-        enchants.remove(curse);
+
+        for (Enchantment curse : curses){
+            enchants.remove(curse);
+        }
 
         EnchantmentHelper.setEnchantments(enchants, copy);
 
@@ -159,9 +147,6 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
 
     public boolean canRemoveCurse() {
         updateCurses();
-
-        if(curses.isEmpty())
-            return false;
 
         if(player.experienceLevel < 20)
             return false;
@@ -173,6 +158,7 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
             if(stack.is(Items.SKELETON_SKULL)) {
                 skulls += stack.getCount();
             }
+
         }
 
         return skulls >= 5;
@@ -183,14 +169,10 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
         int remaining = 5;
 
         for(ItemStack stack : player.getInventory().items) {
-
             if(!stack.is(Items.SKELETON_SKULL))
                 continue;
 
-            int remove = Math.min(
-                    remaining,
-                    stack.getCount()
-            );
+            int remove = Math.min(remaining, stack.getCount());
 
             stack.shrink(remove);
 
@@ -204,17 +186,13 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
     @Override
     public boolean clickMenuButton(Player player, int id) {
         updateCurses();
-
-        if(id >= 0 && id < curses.size()) {
-            selectedCurse.set(id);
-
+        if(id >= 0) {
             if(canRemoveCurse()) {
                 getSlot(1).set(removeSelectedCurse());
             }
             broadcastChanges();
             return true;
         }
-
         return super.clickMenuButton(player, id);
     }
 

@@ -47,8 +47,6 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
 
     protected StateSwitchingButton filterButton;
     private final Player player;
-    protected Button up;
-    protected Button down;
     protected int scrolledY=0;
     protected Enchantment currentCurse=null;
     public WarlockCursesRemoveScreen(CurseRemovalMenu p_97741_, Inventory p_97742_, Component p_97743_) {
@@ -65,60 +63,16 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
         this.leftPos = (this.width - 147) / 2 - 86;
         this.topPos = (this.height - 166) / 2;
 
-        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height -80)-150,14,16,0,0,0,
-                new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
-            scrolledY = Math.max(0,scrolledY-1);
-            this.layoutButtons();
-        });
-
-        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)+45,14,16,0,0,0,
-                new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
-            scrolledY=Math.min(this.curses.size(),this.scrolledY+1);
-            this.layoutButtons();
-        });
-
-        this.addRenderableWidget(this.up);
-        this.addRenderableWidget(this.down);
-        this.layoutButtons();
         this.currentRecipe=null;
         if (this.menu.getSlot(0).hasItem()){
             createButtonCurses(this.menu.getSlot(0).getItem());
         }
         refreshButtons();
-        layoutButtons();
     }
 
     protected void createButtonCurses(ItemStack stack){
-        curses.clear();
-        buttons.clear();
 
-        for(Enchantment enchantment : EnchantmentHelper.getEnchantments(stack).keySet()){
-            if(!enchantment.isCurse())
-                continue;
-            curses.add(enchantment);
-        }
-
-        int i = 0;
-
-        for(Enchantment curse : curses){
-            ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/warlock/background.png");
-            String rawTitle = EnchantmentHelper.getEnchantmentId(curse).getPath();
-            int finalI = i;
-            CustomButton button = new CustomButton(backgroundTexture, null, 0, 0, 100, 20, Component.literal(rawTitle),
-                            press -> {
-                                currentCurse = curse;
-                                buttons.forEach((b)->{
-                                    if (b instanceof CustomButton){
-                                        ((CustomButton) b).isSelect = false;
-                                    }
-                                });
-                                ((CustomButton)press).isSelect = true;
-                                minecraft.gameMode.handleInventoryButtonClick(menu.containerId, finalI);
-                            });
-            button.isSelect = false;
-            buttons.add(button);
-            i++;
-        }
+        minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 0);
     }
 
     public void setupGhostRecipe(Recipe<?> pRecipe, List<Slot> pSlots) {
@@ -141,20 +95,30 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
         hoveredButton = null;
         this.renderGhostRecipe(p_97795_, this.leftPos, this.topPos, false, p_97798_);
 
-//        this.backButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
-//        this.forwardButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
-
-        this.up.render(p_97795_, p_97796_, p_97797_, p_97798_);
-        this.down.render(p_97795_, p_97796_, p_97797_, p_97798_);
 
 
         renderTooltip(p_97795_, p_97796_, p_97797_);
         this.renderGhostRecipeTooltip(p_97795_, this.leftPos, this.topPos, p_97796_,p_97797_);
-//        upgradeButton.active = menu.canUpgrade(player.getInventory());
-//        downgradeButton.active = menu.canDowngrade(player.getInventory());
-        for (Button b : buttons){
-            b.render(p_97795_, p_97796_, p_97797_, p_97798_);
+
+        Component component = Component.literal("Need Skeleton Skull : ").append(String.valueOf(this.currentRecipe==null ? 5 :this.currentRecipe.needEyes));
+        Component component1 = Component.literal("Need XP : ").append(20 + " level");
+
+        int color = 8453920;
+        if (!this.menu.getSlot(0).hasItem()) {
+            component = null;
+            component1 = null;
         }
+        p_97795_.pushPose();
+        p_97795_.scale(0.8F, 0.8F, 0.8F);
+        if (component != null) {
+            int k = this.leftPos - 8 - this.font.width(component) - 2;
+            this.font.drawShadow(p_97795_, component, (float)k + 305, topPos+85, color);
+        }
+        if (component1!=null){
+            int k = this.leftPos - 8 - this.font.width(component1) - 2;
+            this.font.drawShadow(p_97795_, component1, (float)k+275, topPos+75, color);
+        }
+        p_97795_.popPose();
     }
 
     public void renderTooltip(PoseStack p_100418_, int p_100419_, int p_100420_) {
@@ -246,20 +210,6 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int p_97750_) {
 
-        for (Button b : buttons){
-            if (!b.mouseClicked(p_97748_, p_97749_, p_97750_)){
-                continue;
-            }
-//            minecraft.gameMode.handleInventoryButtonClick();
-            return true;
-        }
-
-        if(this.down.mouseClicked(p_97748_, p_97749_, p_97750_)){
-            return true;
-        }else if(this.up.mouseClicked(p_97748_, p_97749_, p_97750_)){
-            return true;
-        }
-
         return super.mouseClicked(p_97748_, p_97749_, p_97750_);
     }
 
@@ -272,11 +222,8 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
         super.slotClicked(pSlot, pSlotId, pMouseButton, pType);
         if (menu.getSlot(0).hasItem()){
             createButtonCurses(menu.getSlot(0).getItem());
-            layoutButtons();
-        }else{
-            curses.clear();
-            buttons.clear();
         }
+
 //        if (pSlot != null && pSlot.index < this.menu.craftSlots.getContainerSize()) {
 //            this.ghostRecipe.clear();
 //        }
@@ -303,40 +250,13 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
         super.removed();
     }
 
-    private void layoutButtons() {
-        int x = (int) (this.leftPos - (this.width / 8) +10);
-        int yStart = (int) (this.height - 80 - 130);
-
-        int visibleStartIndex = scrolledY;
-        int visibleEndIndex = Math.min(scrolledY + 7, curses.size());
-
-        for (int i = 0; i < buttons.size(); i++) {
-            Button button = buttons.get(i);
-            if (i >= visibleStartIndex && i < visibleEndIndex) {
-                int visualIndex = i - visibleStartIndex;
-                button.visible = true;
-                button.active = true;
-                button.y=yStart + visualIndex * 25;
-                button.x=x;
-            } else {
-                button.visible = false;
-                button.active = false;
-            }
-        }
-
-        this.up.visible = visibleStartIndex > 0;
-        this.up.active = visibleStartIndex > 0;
-
-        this.down.visible = visibleEndIndex < curses.size();
-        this.down.active = visibleEndIndex < curses.size();
-    }
 
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
         if (this.curses.size()>7) {
             int j = this.curses.size() - 7;
             this.scrolledY = Mth.clamp((int)((double)this.scrolledY - pDelta), 0, j);
-            this.layoutButtons();
+
         }
         return super.mouseScrolled(pMouseX, pMouseY, pDelta);
     }

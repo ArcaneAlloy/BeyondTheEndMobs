@@ -2,73 +2,49 @@ package fr.shoqapik.btemobs.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.EnchantType;
-import fr.shoqapik.btemobs.button.CustomButton;
-import fr.shoqapik.btemobs.client.widget.CategoryButton;
-import fr.shoqapik.btemobs.client.widget.EnchantTypeButton;
-import fr.shoqapik.btemobs.client.widget.RecipeButton;
-import fr.shoqapik.btemobs.client.widget.SmithStateSwitchingButton;
-import fr.shoqapik.btemobs.menu.WarlockCraftMenu;
 import fr.shoqapik.btemobs.menu.WarlockUpgradeMenu;
-import fr.shoqapik.btemobs.packets.PlaceItemRecipePacket;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
-import fr.shoqapik.btemobs.recipe.api.BteRecipeCategory;
 import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.ClientRecipeBook;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.StateSwitchingButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.GhostRecipe;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.protocol.game.ServerboundRecipeBookChangeSettingsPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import org.spongepowered.asm.mixin.injection.struct.InjectorGroupInfo;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
-
-import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
+import java.util.List;
 
 public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgradeMenu> implements IGhostRecipe {
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/warlock_upgrade_screen.png");
 
-    private Button upgradeButton;
-    private Button downgradeButton;
-    public WarlockRecipe currentRecipe;
+    private Button modeButton;
+
+    public WarlockRecipe currentRecipe = null;
     private int page = 0;
     private fr.shoqapik.btemobs.client.widget.RecipeButton hoveredButton;
-    private List<Button> buttons = new ArrayList<>();
     private List<Enchantment> enchantments = new ArrayList<>();
     public final GhostRecipe ghostRecipe = new GhostRecipe();
 
     protected StateSwitchingButton filterButton;
     private final Player player;
-    protected Button up;
-    protected Button down;
     protected int scrolledY=0;
     protected Enchantment currentEnchant=null;
+    public int lastMode = 0;
     public WarlockUpgradeScreen(WarlockUpgradeMenu p_97741_, Inventory p_97742_, Component p_97743_) {
         super(p_97741_, p_97742_, p_97743_);
         this.imageWidth = 306;
@@ -83,92 +59,35 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
         this.leftPos = (this.width - 147) / 2 - 86;
         this.topPos = (this.height - 166) / 2;
 
-        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height -80)-150,14,16,0,0,0,
-                new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
-            scrolledY = Math.max(0,scrolledY-1);
-            this.layoutButtons();
-        });
-
-        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)+45,14,16,0,0,0,
-                new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
-            scrolledY=Math.min(this.enchantments.size(),this.scrolledY+1);
-            this.layoutButtons();
-        });
-
-        this.addRenderableWidget(this.up);
-        this.addRenderableWidget(this.down);
         this.layoutButtons();
-        this.currentRecipe=null;
-        this.upgradeButton = this.addRenderableWidget(new Button(this.leftPos+140,50,75,16,Component.literal("Upgrade X"),(p)->{
-            p.active = false;
-            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 0);
 
-        }));
-        this.downgradeButton = this.addRenderableWidget(new Button(this.leftPos+140,90,75,16,Component.literal("Downgrade"),(p)->{
+        this.modeButton = this.addRenderableWidget(new Button(this.leftPos+142,this.topPos + 29,65,16,Component.literal("Upgrade"),(p)->{
             p.active = false;
-            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 1);
-
+            boolean isUpgradeMode = menu.mode.get() == 0;
+            menu.mode.set(isUpgradeMode ? 1 : 0);
+            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, isUpgradeMode? 1 : 0 );
+            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 2);
         }));
         if (this.menu.getSlot(0).hasItem()){
             createButtonEnchants(this.menu.getSlot(0).getItem());
         }
+        lastMode = -1;
         refreshButtons();
         layoutButtons();
     }
 
     protected void createButtonEnchants(ItemStack stack){
         enchantments.clear();
-        buttons.clear();
-        enchantments.addAll(EnchantmentHelper.getEnchantments(menu.inputSlots.getItem(0)).keySet());
-
-        int i = 0;
-        for (Enchantment enchantment : this.enchantments) {
-            ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/warlock/background.png"));
-            String rawTitle = EnchantmentHelper.getEnchantmentId(enchantment).toString().split(":")[1];
-            String translatedTitle = rawTitle.contains(".") ? I18n.get(rawTitle) : rawTitle;
-
-            int finalI = i;
-            CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20, Component.literal(translatedTitle),
-                    (p_95981_) -> {
-                        this.currentEnchant = enchantment;
-                        buttons.forEach((b)->{
-                            if (b instanceof CustomButton){
-                                ((CustomButton) b).isSelect = false;
+        enchantments.addAll(EnchantmentHelper.getEnchantments(stack).keySet());
+        if (menu.mode.get() == 1)return;
+        BteMobsMod.getWarlockRecipe(player).stream().filter(
+                    e -> {
+                            if (enchantments.get(0) == e.getEnchantment()) {
+                                return EnchantmentHelper.getTagEnchantmentLevel(e.getEnchantment(), menu.inputSlots.getItem(0)) + 1 == e.getLevel() && menu.canUpgrade(player.getInventory(), e);
                             }
-                        });
-                        if (p_95981_ instanceof CustomButton customButton){
-                            customButton.isSelect = true;
-                        }
-                        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 3+finalI);
-                        if(menu.mode.get() == 0){
-                            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 0);
-                        }else if(menu.mode.get() == 1){
-                            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, 1);
-                        }
-
-                        Optional<WarlockRecipe> optional =
-                                BteMobsMod.getWarlockRecipe(player)
-                                        .stream()
-                                        .filter(e -> {
-                                            BteMobsMod.LOGGER.info("Enchantment {} Level {}",e.getEnchantment(),e.getLevel());
-
-                                            if (enchantment == e.getEnchantment()) {
-                                                return EnchantmentHelper.getTagEnchantmentLevel(e.getEnchantment(), menu.inputSlots.getItem(0)) + 1 == e.getLevel() && menu.canUpgrade(player.getInventory(), e);
-                                            }
-                                            return false;
-                                        })
-                                        .findFirst();
-
-                        currentRecipe = optional.orElse(null);
-            }
-            );
-            button.isSelect = i==0;
-            currentEnchant = enchantment;
-            i++;
-            buttons.add(button);
-        }
-
-
+                            return false;
+                        })
+                        .findFirst().ifPresent((r)->currentRecipe = r);
     }
 
 
@@ -182,11 +101,9 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
     }
 
     private void refreshButtons(){
-
         if(page < 0) page = 0;
 
-        upgradeButton.active = menu.canUpgrade(player.getInventory(),currentRecipe) && currentEnchant != null;
-        downgradeButton.active = menu.canDowngrade(player.getInventory()) && currentEnchant != null;
+        modeButton.active = menu.canUpgrade(player.getInventory(),currentRecipe) && currentEnchant != null;
     }
 
 
@@ -205,24 +122,64 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
 //        this.backButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
 //        this.forwardButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
 
-        this.up.render(p_97795_, p_97796_, p_97797_, p_97798_);
-        this.down.render(p_97795_, p_97796_, p_97797_, p_97798_);
-
 
         renderTooltip(p_97795_, p_97796_, p_97797_);
         this.renderGhostRecipeTooltip(p_97795_, this.leftPos, this.topPos, p_97796_,p_97797_);
-        upgradeButton.active = menu.canUpgrade(player.getInventory());
-        downgradeButton.active = menu.canDowngrade(player.getInventory());
-        for (Button b : buttons){
-            b.render(p_97795_, p_97796_, p_97797_, p_97798_);
-        }
-        if(this.currentRecipe != null){
-            ItemStack item = Items.SKELETON_SKULL.getDefaultInstance();
-            item.setCount(this.currentRecipe.needEyes);
-            Minecraft.getInstance().getItemRenderer().renderGuiItem(item,this.upgradeButton.x+50,this.upgradeButton.y);
-            Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(font,item,this.upgradeButton.x+50,this.upgradeButton.y);
-        }
+        modeButton.active = menu.getSlot(0).hasItem();
 
+
+        if (this.menu.mode.get()!=this.lastMode){
+            this.lastMode = menu.mode.get();
+            boolean isUpgradeMode = menu.mode.get() == 0;
+            modeButton.setMessage(Component.literal(isUpgradeMode ? "Upgrade" : "Downgrade"));
+            if (isUpgradeMode){
+                ListTag listTag = EnchantedBookItem.getEnchantments(menu.inputSlots.getItem(0));
+
+                Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(EnchantmentHelper.getEnchantmentId(listTag.getCompound(0)));
+                Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(player)
+                        .stream().filter(e -> {
+                            if (enchantment == e.getEnchantment()){
+                                if(EnchantmentHelper.getEnchantmentLevel(listTag.getCompound(0))+1==e.getLevel()){
+                                    return menu.canUpgrade(player.getInventory(),e);
+                                }
+                            }
+                            return false;
+                        }).findFirst();
+                optional.ifPresent((r)->currentRecipe = r);
+            }else {
+                currentRecipe = null;
+            }
+        }
+        Component component = Component.literal("Need Skeleton Skull : ").append(String.valueOf(this.currentRecipe==null ? 5 :this.currentRecipe.needEyes));
+        Component component1 = Component.literal(this.currentRecipe==null ? "Up  +" :"Need XP : ").append(String.valueOf(this.currentRecipe==null ? 1 +" level": this.currentRecipe.getExperience()));
+
+        int color = 8453920;
+        if (menu.mode.get() == 0){
+            if (!menu.canUpgrade(player.getInventory())){
+                color = 16736352;
+                component = Component.literal("Can't found next enchant level");
+            }
+        }else {
+            if (menu.getEnchantLevel(menu.inputSlots.getItem(0),0)==1){
+                component = Component.literal("Minimum Enchant Level");
+                component1 = null;
+            }
+        }
+        if (!this.menu.getSlot(0).hasItem()) {
+            component = null;
+            component1 = null;
+        }
+        p_97795_.pushPose();
+        p_97795_.scale(0.8F, 0.8F, 0.8F);
+        if (component != null) {
+            int k = this.leftPos - 8 - this.font.width(component) - 2;
+            this.font.drawShadow(p_97795_, component, (float)k + 305, topPos+85, color);
+        }
+        if (component1!=null){
+            int k = this.leftPos - 8 - this.font.width(component1) - 2;
+            this.font.drawShadow(p_97795_, component1, (float)k+275, topPos+75, color);
+        }
+        p_97795_.popPose();
     }
 
     public void renderTooltip(PoseStack p_100418_, int p_100419_, int p_100420_) {
@@ -263,69 +220,11 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
     }
 
     protected void renderLabels(PoseStack pPoseStack, int pX, int pY) {
-        RenderSystem.disableBlend();
-//        int i = this.menu.experience.get();
-//        if (i > 0) {
-//            int j = 8453920;
-//            Component component;
-//            if (i >= 40 && !this.minecraft.player.getAbilities().instabuild) {
-//                component = TOO_EXPENSIVE_TEXT;
-//                j = 16736352;
-//            } else if (!this.menu.getSlot(4).hasItem()) {
-//                component = null;
-//            } else {
-//                component = Component.translatable("container.repair.cost", i);
-//                if (!this.menu.getSlot(4).mayPickup(this.player)) {
-//                    j = 16736352;
-//                }
-//            }
-//
-//            if (component != null) {
-//                int k = this.imageWidth - 8 - this.font.width(component) - 2;
-//                int l = 69;
-//                fill(pPoseStack, k - 2, 67, this.imageWidth - 8, 79, 1325400064);
-//                this.font.drawShadow(pPoseStack, component, (float)k, 69.0F, j);
-//            }
-//        }
-        RenderSystem.enableBlend();
-    }
-
-    @Override
-    protected void containerTick() {
-        super.containerTick();
-        boolean flag=false;
-//        for (WarlockRecipe recipe : this.categoryRecipes){
-//            if(this.menu.recipeMatches(recipe) && this.hasExplorerFree()){
-//                flag=true;
-//                this.currentRecipe= recipe;
-//                break;
-//            }
-//        }
-
 
     }
-
-//    public boolean hasExplorerFree(){
-//        Entity entity = Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
-//        return entity !=null && entity.isAlive();
-//    }
 
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int p_97750_) {
-
-        for (Button b : buttons){
-            if (!b.mouseClicked(p_97748_, p_97749_, p_97750_)){
-                continue;
-            }
-            return true;
-        }
-
-        if(this.down.mouseClicked(p_97748_, p_97749_, p_97750_)){
-            return true;
-        }else if(this.up.mouseClicked(p_97748_, p_97749_, p_97750_)){
-            return true;
-        }
-
         return super.mouseClicked(p_97748_, p_97749_, p_97750_);
     }
 
@@ -335,18 +234,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
     @Override
     protected void slotClicked(Slot pSlot, int pSlotId, int pMouseButton, ClickType pType) {
         super.slotClicked(pSlot, pSlotId, pMouseButton, pType);
-        if (menu.getSlot(0).hasItem()){
-            createButtonEnchants(menu.getSlot(0).getItem());
-            layoutButtons();
-        }else{
-            enchantments.clear();
-            buttons.clear();
-        }
-
-
-//        if (pSlot != null && pSlot.index < this.menu.craftSlots.getContainerSize()) {
-//            this.ghostRecipe.clear();
-//        }
+        this.lastMode = -1;
     }
     @Override
     public boolean keyPressed(int p_97765_, int p_97766_, int p_97767_) {
@@ -371,31 +259,8 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
     }
 
     private void layoutButtons() {
-        int x = (int) (this.leftPos - (this.width / 8) +10);
-        int yStart = (int) (this.height - 80 - 130);
 
-        int visibleStartIndex = scrolledY;
-        int visibleEndIndex = Math.min(scrolledY + 7, enchantments.size());
 
-        for (int i = 0; i < buttons.size(); i++) {
-            Button button = buttons.get(i);
-            if (i >= visibleStartIndex && i < visibleEndIndex) {
-                int visualIndex = i - visibleStartIndex;
-                button.visible = true;
-                button.active = true;
-                button.y=yStart + visualIndex * 25;
-                button.x=x;
-            } else {
-                button.visible = false;
-                button.active = false;
-            }
-        }
-
-        this.up.visible = visibleStartIndex > 0;
-        this.up.active = visibleStartIndex > 0;
-
-        this.down.visible = visibleEndIndex < enchantments.size();
-        this.down.active = visibleEndIndex < enchantments.size();
     }
 
     @Override
