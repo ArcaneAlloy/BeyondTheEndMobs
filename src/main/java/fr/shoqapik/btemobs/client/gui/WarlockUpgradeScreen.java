@@ -155,6 +155,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
                 component1 = null;
             }
         }else {
+            component = null;
             if (menu.getEnchantLevel(menu.inputSlots.getItem(0),0)==1){
                 component = Component.literal("Minimum Enchant Level");
                 component1 = null;

@@ -90,7 +90,6 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
                     }
                 } else if (mode.get()==1) {
                     inputSlots.getItem(0).shrink(1);
-                    consumeSkull(player.getInventory(),5);
                     player.giveExperiencePoints(player.getXpNeededForNextLevel());
                 }
             }
