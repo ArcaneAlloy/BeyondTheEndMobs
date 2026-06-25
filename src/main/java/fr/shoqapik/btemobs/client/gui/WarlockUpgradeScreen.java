@@ -22,6 +22,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -130,12 +131,9 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
 
                 Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(EnchantmentHelper.getEnchantmentId(listTag.getCompound(0)));
                 Optional<WarlockRecipe> optional = minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get())
-
                         .stream().filter(e -> {
                             if (enchantment == e.getEnchantment()){
-                                if(EnchantmentHelper.getEnchantmentLevel(listTag.getCompound(0))+1==e.getLevel()){
-                                    return menu.canUpgrade(player.getInventory(),e);
-                                }
+                                return EnchantmentHelper.getEnchantmentLevel(listTag.getCompound(0)) + 1 == e.getLevel();
                             }
                             return false;
                         }).findFirst();
@@ -148,11 +146,21 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
         Component component1 = Component.literal(this.currentRecipe==null ? "Up  +" :"Need XP : ").append(String.valueOf(this.currentRecipe==null ? 1 +" level": this.currentRecipe.getExperience()));
 
         int color = 8453920;
+        int color1 = 8453920;
         if (menu.mode.get() == 0){
             if (currentRecipe == null){
                 color = 16736352;
                 component = Component.literal("Can't found next enchant level");
                 component1 = null;
+            }else {
+                int exp = currentRecipe.getExperience();
+                int skulls = currentRecipe.needEyes;
+                if (skulls>player.getInventory().countItem(Items.SKELETON_SKULL)){
+                    color = 16736352;
+                }
+                if (exp > player.experienceLevel){
+                    color1 = 16736352;
+                }
             }
         }else {
             component = null;
@@ -173,7 +181,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
         }
         if (component1!=null){
             int k = this.leftPos - 8 - this.font.width(component1) - 2;
-            this.font.drawShadow(p_97795_, component1, (float)k+275, topPos+75, color);
+            this.font.drawShadow(p_97795_, component1, (float)k+275, topPos+75, color1);
         }
         p_97795_.popPose();
     }

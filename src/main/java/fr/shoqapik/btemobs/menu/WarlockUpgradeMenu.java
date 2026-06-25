@@ -61,7 +61,7 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
         this.addSlot(new Slot(resultSlots,0,308-90,33){
             @Override
             public boolean mayPickup(Player p_40228_) {
-                return true;
+                return mode.get() != 0 || inventory.countItem(Items.SKELETON_SKULL) >= recipe.needEyes &&  player.experienceLevel >= recipe.getExperience();
             }
 
             @Override
@@ -150,18 +150,7 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(inventory, l, -90+184 + l * 18, 142));
         }
     }
-    public void consumeSkull(Inventory inventory,int count){
-        int countFinal = count;
-        for (ItemStack stack : inventory.items){
-            if (stack.is(Items.SKELETON_SKULL)){
-                stack.shrink(Math.min(stack.getCount(),countFinal));
-                countFinal=countFinal-stack.getCount();
-            }
-            if (countFinal<=0){
-                break;
-            }
-        }
-    }
+
 
     public void updateRecipe(){
         Enchantment enchantment = null;
@@ -180,9 +169,7 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
                         CompoundTag compoundtag = listTag.getCompound(0);
 
                         if (finalEnchantment == e.getEnchantment()){
-                            if(EnchantmentHelper.getEnchantmentLevel(compoundtag)+1==e.getLevel()){
-                                return canUpgrade(player.getInventory(),e);
-                            }
+                            return EnchantmentHelper.getEnchantmentLevel(compoundtag) + 1 == e.getLevel();
                         }
 
                         return false;
@@ -255,9 +242,7 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
                         CompoundTag compoundtag = listTag.getCompound(0);
 
                         if (finalEnchantment == e.getEnchantment()){
-                            if(EnchantmentHelper.getEnchantmentLevel(compoundtag)+1==e.getLevel()){
-                                return canUpgrade(p_38875_.getInventory(),e);
-                            }
+                            return EnchantmentHelper.getEnchantmentLevel(compoundtag) + 1 == e.getLevel();
                         }
 
                         return false;
