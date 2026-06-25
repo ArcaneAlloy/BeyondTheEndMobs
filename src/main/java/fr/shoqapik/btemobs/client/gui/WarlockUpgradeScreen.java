@@ -6,6 +6,7 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.menu.WarlockUpgradeMenu;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
+import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StateSwitchingButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -80,14 +81,6 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
         enchantments.clear();
         enchantments.addAll(EnchantmentHelper.getEnchantments(stack).keySet());
         if (menu.mode.get() == 1)return;
-        BteMobsMod.getWarlockRecipe(player).stream().filter(
-                    e -> {
-                            if (enchantments.get(0) == e.getEnchantment()) {
-                                return EnchantmentHelper.getTagEnchantmentLevel(e.getEnchantment(), menu.inputSlots.getItem(0)) + 1 == e.getLevel() && menu.canUpgrade(player.getInventory(), e);
-                            }
-                            return false;
-                        })
-                        .findFirst().ifPresent((r)->currentRecipe = r);
     }
 
 
@@ -136,7 +129,8 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
                 ListTag listTag = EnchantedBookItem.getEnchantments(menu.inputSlots.getItem(0));
 
                 Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(EnchantmentHelper.getEnchantmentId(listTag.getCompound(0)));
-                Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(player)
+                Optional<WarlockRecipe> optional = minecraft.level.getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get())
+
                         .stream().filter(e -> {
                             if (enchantment == e.getEnchantment()){
                                 if(EnchantmentHelper.getEnchantmentLevel(listTag.getCompound(0))+1==e.getLevel()){
@@ -155,9 +149,10 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
 
         int color = 8453920;
         if (menu.mode.get() == 0){
-            if (!menu.canUpgrade(player.getInventory())){
+            if (currentRecipe == null){
                 color = 16736352;
                 component = Component.literal("Can't found next enchant level");
+                component1 = null;
             }
         }else {
             if (menu.getEnchantLevel(menu.inputSlots.getItem(0),0)==1){
@@ -225,6 +220,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
 
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int p_97750_) {
+
         return super.mouseClicked(p_97748_, p_97749_, p_97750_);
     }
 
@@ -234,6 +230,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
     @Override
     protected void slotClicked(Slot pSlot, int pSlotId, int pMouseButton, ClickType pType) {
         super.slotClicked(pSlot, pSlotId, pMouseButton, pType);
+        this.currentRecipe = null;
         this.lastMode = -1;
     }
     @Override

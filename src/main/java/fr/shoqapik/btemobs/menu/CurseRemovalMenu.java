@@ -1,6 +1,7 @@
 package fr.shoqapik.btemobs.menu;
 
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -46,7 +47,22 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
         this.player = inventory.player;
         this.level = inventory.player.level;
 
-        this.addSlot(new Slot(inputSlots, 0, 203 - 90, 33));
+        this.addSlot(new Slot(inputSlots, 0, 203 - 90, 33){
+            @Override
+            public boolean mayPlace(ItemStack p_40231_) {
+                return p_40231_.isEnchanted() ? isCursed(p_40231_.getEnchantmentTags()) : isCursed(EnchantedBookItem.getEnchantments(p_40231_));
+            }
+            public boolean isCursed(ListTag tags){
+                for (int i = 0 ; i < tags.size() ; i ++){
+                    CompoundTag tag = tags.getCompound(i);
+                    Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(EnchantmentHelper.getEnchantmentId(tag));
+                    if (enchantment != null && enchantment.isCurse()){
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
         this.addSlot(new Slot(resultSlots, 0, 308 - 90, 33) {
 
@@ -77,8 +93,6 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
             public void slotChanged(AbstractContainerMenu menu, int slot, ItemStack stack) {
                 if(menu != CurseRemovalMenu.this)
                     return;
-
-                updateCurses();
 
                 if(canRemoveCurse()) {
                     getSlot(1).set(removeSelectedCurse());
@@ -202,9 +216,9 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public void removed(Player player) {
-        super.removed(player);
-        this.inputSlots.clearContent();
+    public void removed(Player pPlayer) {
+        super.removed(pPlayer);
+        clearContainer(pPlayer, inputSlots);
     }
 
     @Override

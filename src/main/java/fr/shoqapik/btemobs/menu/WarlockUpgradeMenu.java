@@ -1,9 +1,12 @@
 package fr.shoqapik.btemobs.menu;
 
 import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.ServerData;
 import fr.shoqapik.btemobs.client.gui.WarlockUpgradeScreen;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
+import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+import fr.shoqapik.btemobs.registry.BteRenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +19,7 @@ import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -69,19 +73,21 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
             public void onTake(Player p_150645_, ItemStack p_150646_) {
                 super.onTake(p_150645_, p_150646_);
                 if (mode.get()==0){
-                    inputSlots.getItem(0).shrink(1);
-                    int countFinal = recipe.needEyes;
+                    if (recipe !=null){
+                        inputSlots.getItem(0).shrink(1);
+                        int countFinal = recipe.needEyes;
 
-                    for (ItemStack stack : player.getInventory().items){
-                        if (stack.is(Items.SKELETON_SKULL)){
-                            stack.shrink(Math.min(stack.getCount(),countFinal));
-                            countFinal=countFinal-stack.getCount();
+                        for (ItemStack stack : player.getInventory().items){
+                            if (stack.is(Items.SKELETON_SKULL)){
+                                stack.shrink(Math.min(stack.getCount(),countFinal));
+                                countFinal=countFinal-stack.getCount();
+                            }
+                            if (countFinal<=0){
+                                break;
+                            }
                         }
-                        if (countFinal<=0){
-                            break;
-                        }
+                        player.experienceLevel-=experience.get();
                     }
-                    player.experienceLevel-=experience.get();
                 } else if (mode.get()==1) {
                     inputSlots.getItem(0).shrink(1);
                     consumeSkull(player.getInventory(),5);
@@ -96,7 +102,7 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
         this.slotEnchant = DataSlot.standalone();
         this.containerData = new SimpleContainerData(1);
 
-        this.mode.set(-1);
+        this.mode.set(0);
         this.addDataSlot(this.mode);
         this.addDataSlot(this.experience);
         this.addDataSlot(this.slotEnchant);
@@ -112,8 +118,23 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
                     resultSlots.setItem(0,ItemStack.EMPTY);
                     enchantments.clear();
                     recipe = null;
-                    mode.set(-1);
+                    mode.set(0);
                     return;
+                }
+                updateRecipe();
+                int mode = ((WarlockUpgradeMenu)menu).mode.get();
+                if(mode == 1){
+                    WarlockUpgradeMenu.this.experience.set(1);
+                    WarlockUpgradeMenu.this.mode.set(1);
+                    ItemStack downgrade = downgrade();
+
+                    resultSlots.setItem(0,downgrade);
+                }else if(recipe!=null){
+                    WarlockUpgradeMenu.this.experience.set(recipe.getExperience());
+                    WarlockUpgradeMenu.this.mode.set(0);
+                    resultSlots.setItem(0,upgrade(recipe));
+                }else {
+                    resultSlots.setItem(0,ItemStack.EMPTY);
                 }
             }
 
@@ -143,36 +164,38 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
         }
     }
 
-    private void updateRecipe() {
-        if (this.inputSlots.isEmpty()) {
-            this.clickedRecipe = Optional.empty();
-            resultSlots.setItem(0,ItemStack.EMPTY);
-            enchantments.clear();
-            recipe = null;
-            mode.set(-1);
-            return;
+    public void updateRecipe(){
+        Enchantment enchantment = null;
+        ListTag listTag = EnchantedBookItem.getEnchantments(inputSlots.getItem(0));
+        for(int i = 0; i < listTag.size(); ++i) {
+            CompoundTag compoundtag = listTag.getCompound(i);
+            ResourceLocation resourcelocation1 = EnchantmentHelper.getEnchantmentId(compoundtag);
+            enchantment = ForgeRegistries.ENCHANTMENTS.getValue(resourcelocation1);
+            break;
         }
+        if (enchantment != null){
+            Enchantment finalEnchantment = enchantment;
+            Optional<WarlockRecipe> optional = BteMobsMod.getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get())
 
-        enchantments.clear();
-        ListTag listTag = EnchantedBookItem.getEnchantments(WarlockUpgradeMenu.this.inputSlots.getItem(0));
+                    .stream().filter(e -> {
+                        CompoundTag compoundtag = listTag.getCompound(0);
 
-        Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(EnchantmentHelper.getEnchantmentId(listTag.getCompound(0)));
-        Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(player)
-                .stream().filter(e -> {
-                    if (enchantment == e.getEnchantment()){
-                        if(EnchantmentHelper.getTagEnchantmentLevel(e.getEnchantment(),inputSlots.getItem(0))+1==e.getLevel()){
-                            return canUpgrade(player.getInventory(),e);
+                        if (finalEnchantment == e.getEnchantment()){
+                            if(EnchantmentHelper.getEnchantmentLevel(compoundtag)+1==e.getLevel()){
+                                return canUpgrade(player.getInventory(),e);
+                            }
                         }
-                    }
-                    return false;
-                }).findFirst();
-        optional.ifPresent((r)->recipe = r);
+
+                        return false;
+                    }).findFirst();
+            optional.ifPresentOrElse((r)->recipe = r,()->recipe=null);
+        }
     }
 
     @Override
     public void slotsChanged(Container p_38868_) {
         super.slotsChanged(p_38868_);
-        updateRecipe();
+
     }
 
     public ItemStack upgrade(Recipe recipe) {
@@ -188,7 +211,9 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
                 int level = EnchantmentHelper.getEnchantmentLevel(tag);
                 Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(EnchantmentHelper.getEnchantmentId(tag));
 
-                if(enchantment!=((WarlockRecipe) recipe).getEnchantment()|| warlockRecipe.getLevel()<level+1)continue;
+                if(enchantment!=((WarlockRecipe) recipe).getEnchantment() || warlockRecipe.getLevel()<level+1){
+                    return ItemStack.EMPTY;
+                }
                 EnchantmentHelper.setEnchantmentLevel(tag,level+1);
             }
             return base;
@@ -225,7 +250,8 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
         }
         if (enchantment != null){
             Enchantment finalEnchantment = enchantment;
-            Optional<WarlockRecipe> optional = BteMobsMod.getWarlockRecipe(p_38875_)
+                    Optional<WarlockRecipe> optional = BteMobsMod.getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.WARLOCK_RECIPE.get())
+
                     .stream().filter(e -> {
                         CompoundTag compoundtag = listTag.getCompound(0);
 
@@ -237,7 +263,7 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
 
                         return false;
                     }).findFirst();
-            optional.ifPresent((r)->recipe = r);
+            optional.ifPresentOrElse((r)->recipe = r,()->recipe=null);
         }
         if (p_38876_ == 2){
             int mode = this.mode.get();
@@ -249,15 +275,17 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
                 WarlockUpgradeMenu.this.experience.set(recipe.getExperience());
                 WarlockUpgradeMenu.this.mode.set(0);
                 resultSlots.setItem(0,upgrade(recipe));
+            }else {
+                resultSlots.setItem(0,ItemStack.EMPTY);
             }
         }
         return super.clickMenuButton(p_38875_, p_38876_);
     }
 
     @Override
-    public void removed(Player p_38940_) {
-        super.removed(p_38940_);
-        this.inputSlots.clearContent();
+    public void removed(Player pPlayer) {
+        super.removed(pPlayer);
+        clearContainer(pPlayer, inputSlots);
     }
 
     public int getEnchantLevel(ItemStack stack,int index){
@@ -271,12 +299,8 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
         }
         return 0;
     }
-    public boolean canDowngrade(Container container){
-        int skull = 5;
-        return container.hasAnyMatching((item)->item.is(Items.SKELETON_SKULL) && item.getCount() >= skull) && getEnchantLevel(inputSlots.getItem(0),0)>1;
-
-    }
-    public boolean canUpgrade(Container container){
+    
+    public boolean  canUpgrade(Container container){
         int eyes = recipe == null ? 0 : recipe.needEyes;
         int exp = recipe == null ? 0 : recipe.getExperience();
         return container.hasAnyMatching((item)->item.is(Items.SKELETON_SKULL) && item.getCount() >= eyes) && player.experienceLevel>=exp;
@@ -296,6 +320,7 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
     @Override
     public void setData(int p_38855_, int p_38856_) {
         super.setData(p_38855_, p_38856_);
+
         broadcastChanges();
     }
 
