@@ -16,7 +16,8 @@ println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty '
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    // Currently, this location cannot be changed from the default.
 
     runs {
         client {
@@ -136,7 +137,7 @@ dependencies {
     implementation fg.deobf("curse.maven:jei-238222:4494410")
     implementation fg.deobf("com.patataprojects:anvilchanges:0.5.1-1.19.2")
     implementation fg.deobf("mc.duzo:enders_journey:1.0.7")
-    //implementation fg.deobf(files("libs/beyondtheendcompass-1.0.0 - 1.19.2.jar"))
+    implementation fg.deobf(files("libs/beyondtheendcompass-1.0.0 - 1.19.2.jar"))
     implementation fg.deobf("curse.maven:stoneworks-852663:5049592")
     implementation fg.deobf("curse.maven:big-extras-forge-499948:4713352")
     implementation fg.deobf("curse.maven:cataclysmic-combat-880483:5790282")
@@ -153,10 +154,11 @@ dependencies {
     implementation fg.deobf("curse.maven:blueprint-382216:4749000")
     implementation fg.deobf("curse.maven:smartbrainlib-661293:4458565")
     implementation fg.deobf("curse.maven:curios-309927:5494603")
-    implementation fg.deobf("curse.maven:supermartijn642s-core-lib-454372:5668843")
+
     implementation fg.deobf("curse.maven:puzzles-lib-495476:4600775")
     implementation fg.deobf("curse.maven:autoreglib-250363:4100299")
     implementation fg.deobf("curse.maven:cloth-config-348521:5729096")
+    implementation fg.deobf("curse.maven:supermartijn642s-core-lib-454372:5668843")
     implementation fg.deobf("curse.maven:moving-elevators-373051:5686455")
     implementation fg.deobf("curse.maven:supermartijn642s-config-lib-438332:4715406")
     implementation fg.deobf("curse.maven:moving-elevators-extra-remote-panels-addon-937449:4867548")

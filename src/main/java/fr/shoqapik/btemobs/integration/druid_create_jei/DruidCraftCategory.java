@@ -2,14 +2,11 @@ package fr.shoqapik.btemobs.integration.druid_create_jei;
 
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.integration.JEIPlugin;
-import fr.shoqapik.btemobs.integration.explorer_craft_jei.JEIExplorerCraftPlugin;
 import fr.shoqapik.btemobs.recipe.ExplorerRecipe;
 import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
-import fr.shoqapik.btemobs.registry.BteMobsBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;

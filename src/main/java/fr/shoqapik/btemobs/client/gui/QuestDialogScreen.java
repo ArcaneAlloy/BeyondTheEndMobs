@@ -5,11 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.button.CustomButton;
+import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.client.BteMobsModClient;
+import fr.shoqapik.btemobs.entity.BteAbstractEntity;
 import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.packets.ActionPacket;
-import fr.shoqapik.btemobs.quests.Quest;
-import fr.shoqapik.btemobs.quests.QuestAnswer;
+import fr.shoqapik.btemobs.option_dialogs.OptionDialogs;
+import fr.shoqapik.btemobs.option_dialogs.QuestAnswer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
@@ -40,7 +42,7 @@ public class QuestDialogScreen extends Screen {
 
     private int entityId;
     private BteNpcType bteNpcType;
-    private Quest quest;
+    private OptionDialogs quest;
     private boolean typing;
     private int letterIndex;
     private String currentLine = "";
@@ -50,7 +52,7 @@ public class QuestDialogScreen extends Screen {
     private List<Button> buttons = new ArrayList<>();
     private boolean declined;
 
-    public QuestDialogScreen(int entityId, BteNpcType bteNpcType, Quest quest) {
+    public QuestDialogScreen(int entityId, BteNpcType bteNpcType, OptionDialogs quest) {
         super(Component.literal(bteNpcType.name().toLowerCase(Locale.ROOT)));
         this.entityId = entityId;
         this.bteNpcType = bteNpcType;
@@ -69,7 +71,7 @@ public class QuestDialogScreen extends Screen {
         this.topPos = (this.height - this.imageHeight) / 2;
 
         int x = this.leftPos - (this.width / 8) + 254;
-        int y = this.height - this.imageHeight - 20;
+        int y = this.height - this.imageHeight - 40;
 
         int index = 0;
         for (QuestAnswer questAnswer : this.quest.getAnswers()) {
@@ -89,7 +91,9 @@ public class QuestDialogScreen extends Screen {
                     20,
                     Component.literal(translatedAnswer),
                     (p_95981_) -> {
-                        if (questAnswer.getAction().equals("rumor")) {
+                        if (questAnswer.getAction().equals("quests")){
+                            Minecraft.getInstance().setScreen(new QuestScreen(this.entityId,bteNpcType, RecipeCapability.get(Minecraft.getInstance().player).quests));
+                        }else if (questAnswer.getAction().equals("rumor")) {
                             Minecraft.getInstance().setScreen(null);
                             BteMobsModClient.handleRumorsPacket(this.entityId);
                         } else if (!questAnswer.getAction().equals("wip")) {

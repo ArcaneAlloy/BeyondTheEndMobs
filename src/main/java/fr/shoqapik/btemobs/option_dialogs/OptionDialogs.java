@@ -1,27 +1,23 @@
-package fr.shoqapik.btemobs.quests;
+package fr.shoqapik.btemobs.option_dialogs;
 
 import fr.shoqapik.btemobs.BteMobsMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Quest {
+public class OptionDialogs {
 
     private String entityId;
-    private Quest.Type type;
+    private OptionDialogs.Type type;
     private List<String> dialogs;
     private List<QuestAnswer> answers;
 
     private transient List<ResourceLocation> dialogSounds;
     private transient ResourceLocation entityIdLocation;
 
-    public Quest() {}
-
-    public Quest(String entityId, Type type, List<String> dialogs, List<QuestAnswer> answers) {
+    public OptionDialogs(String entityId, Type type, List<String> dialogs, List<QuestAnswer> answers) {
         this.entityId = entityId;
         this.type = type;
         this.dialogs = dialogs;
@@ -36,7 +32,7 @@ public class Quest {
         return entityIdLocation;
     }
 
-    public Quest.Type getType() {
+    public OptionDialogs.Type getType() {
         return type;
     }
 
@@ -60,7 +56,7 @@ public class Quest {
         return answers;
     }
 
-    public static void encode(Quest quest, FriendlyByteBuf packetBuffer) {
+    public static void encode(OptionDialogs quest, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeUtf(quest.entityId);
         packetBuffer.writeUtf(quest.type.name());
 
@@ -76,7 +72,7 @@ public class Quest {
         }
     }
 
-    public static Quest decode(FriendlyByteBuf packetBuffer) {
+    public static OptionDialogs decode(FriendlyByteBuf packetBuffer) {
         String entityId = packetBuffer.readUtf();
         Type type = Type.valueOf(packetBuffer.readUtf());
 
@@ -92,7 +88,7 @@ public class Quest {
             answers.add(new QuestAnswer(packetBuffer.readUtf(), packetBuffer.readUtf()));
         }
 
-        return new Quest(entityId, type, dialogs, answers);
+        return new OptionDialogs(entityId, type, dialogs, answers);
     }
 
     public enum Type {

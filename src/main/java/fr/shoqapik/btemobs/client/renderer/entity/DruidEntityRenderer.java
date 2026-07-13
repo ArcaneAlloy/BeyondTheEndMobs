@@ -7,8 +7,7 @@ import fr.shoqapik.btemobs.client.model.DruidModel;
 import fr.shoqapik.btemobs.client.model.OrbModel;
 import fr.shoqapik.btemobs.entity.DruidEntity;
 import fr.shoqapik.btemobs.entity.ItemPart;
-import fr.shoqapik.btemobs.registry.BteRenderType;
-import mc.duzo.ender_journey.EndersJourney;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;

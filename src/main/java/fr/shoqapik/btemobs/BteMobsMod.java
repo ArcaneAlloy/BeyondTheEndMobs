@@ -3,6 +3,7 @@ package fr.shoqapik.btemobs;
 import fr.shoqapik.btemobs.capability.BteCapability;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.client.ModClientEvents;
+import fr.shoqapik.btemobs.client.gui.QuestScreen;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.entity.*;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
@@ -18,7 +19,8 @@ import fr.shoqapik.btemobs.rumors.Rumor;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.*;
 import fr.shoqapik.btemobs.sound.SoundManager;
-import mc.duzo.ender_journey.capabilities.PortalPlayer;
+
+
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -78,6 +80,8 @@ public class BteMobsMod {
     public static double x=0;
     public static double y=0;
     public static double z=0;
+    public static double xp=0;
+    public static double yp=0;
     public static int eyes = 0;
     public static final RecipeBookType BLACKSMITH =
             RecipeBookType.create("BLACKSMITH");
@@ -121,6 +125,7 @@ public class BteMobsMod {
         INSTANCE.registerMessage(13, LastClickedRecipeUpdatePacket.class, LastClickedRecipeUpdatePacket::encode, LastClickedRecipeUpdatePacket::decode, LastClickedRecipeUpdatePacket::handle);
         INSTANCE.registerMessage(14,SyncUnlockLevelPacket.class,SyncUnlockLevelPacket::encode,SyncUnlockLevelPacket::decode,SyncUnlockLevelPacket::handle);
         INSTANCE.registerMessage(15,SyncRecipeManager.class,SyncRecipeManager::encode,SyncRecipeManager::decode,SyncRecipeManager::handle);
+        INSTANCE.registerMessage(16,QuestActionPacket.class,QuestActionPacket::encode,QuestActionPacket::decode,QuestActionPacket::handle);
     }
     @OnlyIn(Dist.CLIENT)
     public static List<EnchantType> getEnchantType (Player player){
@@ -148,6 +153,7 @@ public class BteMobsMod {
 
 
     public static void handleActionPacket(ActionPacket msg, Supplier<NetworkEvent.Context> ctx) {
+
         if(msg.actionType.equals("open_craft")) {
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity == null) return;
@@ -195,9 +201,10 @@ public class BteMobsMod {
                 warlockEntity.openRemoveGui(ctx.get().getSender());
             }
         }
+
     }
 
-    public static IDrawable getPartialDrawable(IGuiHelper guiHelper,ResourceLocation textures) {
+    public static IDrawable getPartialDrawable(IGuiHelper guiHelper, ResourceLocation textures) {
         int textureWidth = 512;
         int textureHeight = 512;
 

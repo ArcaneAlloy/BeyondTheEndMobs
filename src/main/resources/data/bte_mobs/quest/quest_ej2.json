@@ -1,0 +1,33 @@
+{
+  "entityId": "",
+  "description": "Tengo hambre, Caza 15 Ovejas.",
+  "difficult" : "MEDIUM",
+  "dimension" : "OVERWORLD",
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "La descripcion",
+      "count": 15,
+      "entityIdLocation": "minecraft:sheep"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:gold_ingot",
+      "count": 15
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "itemId": "minecraft:diamond_axe",
+      "recipeType" : "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:quest_ej1",
+      "type" : "PARENT_QUEST"
+    }
+  ],
+  "experience" : 10
+}

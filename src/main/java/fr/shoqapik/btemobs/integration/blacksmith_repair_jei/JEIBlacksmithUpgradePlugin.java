@@ -4,6 +4,7 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.recipe.BlacksmithRecipe;
 import fr.shoqapik.btemobs.recipe.BlacksmithUpgradeRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;

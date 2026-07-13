@@ -1,7 +1,11 @@
 package fr.shoqapik.btemobs.packets;
 
 import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.capability.QuestStateData;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
+import fr.shoqapik.btemobs.capability.StatRewardData;
+import fr.shoqapik.btemobs.quest.Quest;
+import fr.shoqapik.btemobs.quest.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -54,6 +58,8 @@ public class SyncRecipeManager {
             RecipeCapability cap = RecipeCapability.get(player);
             if(cap!=null){
                 Map<RecipeType<?>,List<Recipe<?>>> map = new HashMap<>();
+                Map<Quest,List<StatRewardData>> map1 = new HashMap<>();
+                Map<Quest,QuestStateData> map2 = new HashMap<>();
                 if(!wasDeath){
                     if(data.contains("manager")){
                         ListTag list = data.getList("manager",10);
@@ -74,12 +80,20 @@ public class SyncRecipeManager {
                             }
                             map.put(type,recipes);
                         }
-//                        BteMobsMod.LOGGER.debug("map :{}",map);
 
-//                        BteMobsMod.LOGGER.debug("pre readdata :{}",cap.getRecipeManager());
                         cap.setRecipeManager(map);
-//                        BteMobsMod.LOGGER.debug("post readdata :{}",cap.getRecipeManager());
+
                     }
+                    if (data.contains("quests")){
+                        ListTag listTag = data.getList("quests",10);
+
+                        for (int i = 0 ; i < listTag.size() ; i++){
+                            CompoundTag nbt1 = listTag.getCompound(i);
+                            Quest quest = QuestManager.getQuest(nbt1.getString("id"));
+                            map2.put(quest,new QuestStateData(nbt1.getCompound("data")));
+                        }
+                    }
+                    cap.quests = map2;
                 }else {
                     cap.deserializeNBT(data);
                 }

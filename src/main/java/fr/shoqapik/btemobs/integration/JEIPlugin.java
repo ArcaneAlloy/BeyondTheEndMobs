@@ -1,6 +1,7 @@
 package fr.shoqapik.btemobs.integration;
 
 import fr.shoqapik.btemobs.BteMobsMod;
+
 import fr.shoqapik.btemobs.integration.druid_create_jei.DruidCraftCategory;
 import fr.shoqapik.btemobs.integration.warlock_enchant_jei.WarlockEnchantCategory;
 import fr.shoqapik.btemobs.integration.warlock_potion_jei.WarlockPotionCategory;
@@ -8,6 +9,7 @@ import fr.shoqapik.btemobs.recipe.WarlockPotionRecipe;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.DruidRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -16,6 +18,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
+
 
 import java.util.List;
 import java.util.Objects;

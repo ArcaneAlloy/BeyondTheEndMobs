@@ -1,0 +1,25 @@
+{
+  "entityId": "",
+  "description": "Tengo hambre, Caza 5 Ovejas.",
+  "difficult" : "EASY",
+  "dimension" : "OVERWORLD",
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "La descripcion",
+      "count": 5,
+      "entityIdLocation": "minecraft:sheep"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:gold_ingot",
+      "count": 3
+    }
+  ],
+  "conditionUnlockData": [
+
+  ],
+  "experience" : 10
+}

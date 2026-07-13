@@ -1,7 +1,10 @@
 package fr.shoqapik.btemobs;
 
 import fr.shoqapik.btemobs.capability.BteCapability;
+import fr.shoqapik.btemobs.capability.QuestStateData;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
+import fr.shoqapik.btemobs.capability.StatRewardData;
+import fr.shoqapik.btemobs.client.gui.QuestScreen;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
 import fr.shoqapik.btemobs.compendium.PagesManager;
 import fr.shoqapik.btemobs.entity.BteAbstractEntity;
@@ -9,8 +12,10 @@ import fr.shoqapik.btemobs.packets.CheckUnlockRecipePacket;
 import fr.shoqapik.btemobs.packets.ShowDialogPacket;
 import fr.shoqapik.btemobs.packets.SyncRecipeManager;
 import fr.shoqapik.btemobs.packets.SyncUnlockLevelPacket;
-import fr.shoqapik.btemobs.quests.Quest;
-import fr.shoqapik.btemobs.quests.QuestManager;
+import fr.shoqapik.btemobs.option_dialogs.OptionDialogs;
+import fr.shoqapik.btemobs.option_dialogs.OptionDialogsManager;
+import fr.shoqapik.btemobs.quest.Quest;
+import fr.shoqapik.btemobs.quest.QuestManager;
 import fr.shoqapik.btemobs.rumors.Rumor;
 import fr.shoqapik.btemobs.rumors.RumorsManager;
 import net.minecraft.advancements.Advancement;
@@ -21,9 +26,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -31,6 +38,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEvents {
@@ -51,12 +62,22 @@ public class CommonEvents {
         }
     }
 
+
     @SubscribeEvent
     public static void onTick(LivingEvent.LivingTickEvent event){
         if(event.getEntity() instanceof Player player){
             RecipeCapability cap = RecipeCapability.get(player);
             if(cap != null && event.getEntity().isAlive()){
                 cap.tick((Player) event.getEntity());
+            }
+        }
+    }
+    @SubscribeEvent
+    public static void onDeath(LivingDeathEvent event){
+        if (event.getSource().getEntity() instanceof Player player){
+            RecipeCapability cap = RecipeCapability.get(player);
+            if (cap != null){
+                cap.hunterQuestUpdate(event);
             }
         }
     }
@@ -80,21 +101,12 @@ public class CommonEvents {
         oldPlayer.invalidateCaps();
     }
 
-    /**
-     * BUG FIX: Sincronizar el unlock level al cliente cuando el jugador hace login.
-     * En multiplayer, el SyncUnlockLevelPacket solo se enviaba al ganar el avance,
-     * así que jugadores que se reconectan o se unen después nunca lo recibían.
-     */
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;
         int unlockId = getUnlockIdForPlayer(serverPlayer);
         BteMobsMod.sendToClient(new SyncUnlockLevelPacket(unlockId), serverPlayer);
 
-        // FIX: Resetear BLACKSMITH en el NBT del servidor al hacer login.
-        // Minecraft inicializa RecipeBookType personalizados con isOpen=true por defecto.
-        // Al resetear aqui en el servidor, el cliente recibe el estado correcto (false)
-        // antes de que se renderice cualquier pantalla.
         serverPlayer.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, false);
     }
 
@@ -110,10 +122,7 @@ public class CommonEvents {
                     Minecraft.getInstance().player.getRecipeBook().setOpen(BteMobsMod.BLACKSMITH, false);
                 }
             }
-            // FIX: Si el libro de recetas se abre automaticamente sin que haya
-            // ninguna pantalla de NPC abierta, cerrarlo inmediatamente.
-            // Esto ocurre cuando awardRecipes llega al cliente y Minecraft
-            // abre el libro para mostrar las recetas nuevas.
+
             net.minecraft.client.gui.screens.Screen currentScreen = Minecraft.getInstance().screen;
             boolean isNpcScreen = currentScreen instanceof fr.shoqapik.btemobs.client.gui.BteAbstractCraftScreen
                 || currentScreen instanceof fr.shoqapik.btemobs.client.gui.WarlockCraftScreen
@@ -186,14 +195,15 @@ public class CommonEvents {
         if(event.getHand() != InteractionHand.MAIN_HAND) return;
         if(event.getEntity() instanceof ServerPlayer) {
             ResourceLocation entityId = ForgeRegistries.ENTITY_TYPES.getKey(event.getTarget().getType());
-            Quest.Type type = Quest.Type.PRESENTATION;
+            OptionDialogs.Type type = OptionDialogs.Type.PRESENTATION;
             if(event.getTarget() instanceof BteAbstractEntity && ((BteAbstractEntity)event.getTarget()).getInteractedPlayers().contains(event.getEntity().getUUID())) {
-                type = Quest.Type.TASKING;
+                type = OptionDialogs.Type.TASKING;
             }
-            Quest quest = QuestManager.getQuest(entityId, type);
-            if(quest == null) quest = QuestManager.getQuest(entityId, Quest.Type.TASKING);
+            OptionDialogs quest = OptionDialogsManager.getQuest(entityId, type);
+            if(quest == null) quest = OptionDialogsManager.getQuest(entityId, OptionDialogs.Type.TASKING);
             if(quest != null && event.getTarget() instanceof BteAbstractEntity) {
                 BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) event.getTarget();
+
                 BteMobsMod.sendToClient(new ShowDialogPacket(event.getTarget().getId(), bteAbstractEntity.getNpcType(), quest), (ServerPlayer) event.getEntity());
                 bteAbstractEntity.getInteractedPlayers().add(event.getEntity().getUUID());
             }
@@ -207,7 +217,7 @@ public class CommonEvents {
         }
     }
 
-    // Mapa de item -> tier cargado desde item_tiers.json
+
     private static java.util.Map<String, Integer> ITEM_TIERS = null;
 
     public static java.util.Map<String, Integer> getItemTiers() {
@@ -242,6 +252,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void addQuestsData(AddReloadListenerEvent event){
+        event.addListener(new OptionDialogsManager());
         event.addListener(new QuestManager());
         event.addListener(new RumorsManager());
         event.addListener(new PagesManager());
@@ -252,6 +263,35 @@ public class CommonEvents {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         net.minecraft.world.item.ItemStack stack = event.getItemStack();
+        if (stack.getItem() == Items.STICK){
+            if (!player.isShiftKeyDown()){
+                BteMobsMod.x += 1;
+            }else {
+                BteMobsMod.x -= 1;
+            }
+        }
+        if (stack.getItem() == Items.GOLD_INGOT){
+            if (!player.isShiftKeyDown()){
+                BteMobsMod.y += 1;
+            }else {
+                BteMobsMod.y -= 1;
+            }
+        }
+        if (stack.getItem() == Items.BLAZE_ROD){
+            if (!player.isShiftKeyDown()){
+                BteMobsMod.xp += 1;
+            }else {
+                BteMobsMod.xp -= 1;
+            }
+        }
+        if (stack.getItem() == Items.IRON_INGOT){
+            if (!player.isShiftKeyDown()){
+                BteMobsMod.yp += 1;
+            }else {
+                BteMobsMod.yp -= 1;
+            }
+        }
+        BteMobsMod.LOGGER.info("X :{} , Y :{} , XP :{} , YP :{}",BteMobsMod.x,BteMobsMod.y,BteMobsMod.xp,BteMobsMod.yp);
         boolean isEnchantedBook = stack.getItem() instanceof net.minecraft.world.item.EnchantedBookItem;
         boolean isAncientTome = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem()) != null
             && net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem()).toString().equals("quark:ancient_tome");
@@ -304,11 +344,11 @@ public class CommonEvents {
                 return;
             }
 
-            mc.duzo.ender_journey.capabilities.PortalPlayer portalPlayer =
-                mc.duzo.ender_journey.capabilities.PortalPlayer.get(player).orElse(null);
-            if (portalPlayer == null) return;
+//            mc.duzo.ender_journey.capabilities.PortalPlayer portalPlayer =
+//                mc.duzo.ender_journey.capabilities.PortalPlayer.get(player).orElse(null);
+//            if (portalPlayer == null) return;
 
-            int eyesEarned = portalPlayer.getEyesEarn();
+            int eyesEarned = 0;//portalPlayer.getEyesEarn();
             int eyesNeeded = recipe.getNeedEyes();
 
             if (eyesEarned >= eyesNeeded) {

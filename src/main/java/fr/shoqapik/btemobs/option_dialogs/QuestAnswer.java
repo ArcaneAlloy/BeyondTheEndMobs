@@ -1,4 +1,4 @@
-package fr.shoqapik.btemobs.quests;
+package fr.shoqapik.btemobs.option_dialogs;
 
 public class QuestAnswer {
 

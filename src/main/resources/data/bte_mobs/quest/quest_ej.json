@@ -1,0 +1,30 @@
+{
+  "entityId": "",
+  "description": "Hay muchos zombies , Caza 15 zombies.",
+  "difficult" : "EASY",
+  "dimension" : "OVERWORLD",
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "La descripcion",
+      "count": 15,
+      "entityIdLocation": "minecraft:zombie"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:stick",
+      "count": 15
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:diamond",
+      "count": 15
+    }
+  ],
+  "conditionUnlockData": [
+
+  ],
+  "experience" : 10
+}

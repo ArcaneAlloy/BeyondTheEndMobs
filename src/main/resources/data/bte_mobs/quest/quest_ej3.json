@@ -1,0 +1,42 @@
+{
+  "entityId": "",
+  "description": "Hay muchos zombies , Caza 15 zombies , 4 Husk, 4 Drowned",
+  "difficult" : "EASY",
+  "dimension" : "OVERWORLD",
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "La descripcion",
+      "count": 15,
+      "entityIdLocation": "minecraft:zombie"
+    },
+    {
+      "type": "HUNTER",
+      "description": "La descripcion",
+      "count": 4,
+      "entityIdLocation": "minecraft:husk"
+    },
+    {
+      "type": "HUNTER",
+      "description": "La descripcion",
+      "count": 4,
+      "entityIdLocation": "minecraft:drowned"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:stick",
+      "count": 15
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:diamond",
+      "count": 15
+    }
+  ],
+  "conditionUnlockData": [
+
+  ],
+  "experience" : 10
+}

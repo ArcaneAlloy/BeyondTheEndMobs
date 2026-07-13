@@ -1,10 +1,7 @@
-package fr.shoqapik.btemobs.rumors;
+package fr.shoqapik.btemobs.option_dialogs;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -12,23 +9,22 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class RumorsManager extends SimpleJsonResourceReloadListener {
+public class OptionDialogsManager extends SimpleJsonResourceReloadListener {
 
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final List<Rumor> quests = Lists.newArrayList();
+    private static final List<OptionDialogs> quests = Lists.newArrayList();
 
-    public RumorsManager() {
-        super(GSON, "rumors");
+    public OptionDialogsManager() {
+        super(GSON, "dialogs");
     }
 
-    public static Rumor getRumor(ResourceLocation entityId, Rumor.UnlockLevel levelActually) {
-        for (Rumor quest: quests) {
-            if(quest.getTitle().equals(entityId.toString()) && quest.getUnlockLevel().isUnlocked(levelActually)){
+    public static OptionDialogs getQuest(ResourceLocation entityId, OptionDialogs.Type type) {
+        for (OptionDialogs quest: quests) {
+            if(quest.getEntityId().toString().equals(entityId.toString()) && quest.getType() == type){
                 return quest;
             }
         }
@@ -39,7 +35,7 @@ public class RumorsManager extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
 
         if (p_10793_.isEmpty()) {
-            LOGGER.info("[RumorsManager] Skipping reload — no rumors data found (keeping {} existing entries)", quests.size());
+            LOGGER.info("[OptionDialogsManager] Skipping reload — no dialogs data found (keeping {} existing entries)", quests.size());
             return;
         }
 
@@ -47,21 +43,20 @@ public class RumorsManager extends SimpleJsonResourceReloadListener {
         for (Map.Entry<ResourceLocation, JsonElement> entry : p_10793_.entrySet()) {
             ResourceLocation resourcelocation = entry.getKey();
             try {
-                Rumor quest = GSON.fromJson(entry.getValue(), Rumor.class);
+                OptionDialogs quest = GSON.fromJson(entry.getValue(), OptionDialogs.class);
                 if (quest == null) {
-                    LOGGER.info("Skipping loading rumors {} as it's serializer returned null", resourcelocation);
+                    LOGGER.info("Skipping loading quest {} as it's serializer returned null", resourcelocation);
                     continue;
                 }
                 quests.add(quest);
             } catch (IllegalArgumentException | JsonParseException jsonparseexception) {
-                LOGGER.error("Parsing error loading rumors {}", resourcelocation, jsonparseexception);
+                LOGGER.error("Parsing error loading quest {}", resourcelocation, jsonparseexception);
             }
         }
-        quests.sort(Comparator.comparingInt(Rumor::getOrden));
-        LOGGER.info("[RumorsManager] Loaded {} rumors", quests.size());
+        LOGGER.info("[OptionDialogsManager] Loaded {} dialogs", quests.size());
     }
 
-    public static List<Rumor> getRumors() {
+    public static List<OptionDialogs> getQuests() {
         return quests;
     }
 }
