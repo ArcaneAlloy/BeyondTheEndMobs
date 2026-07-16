@@ -344,11 +344,11 @@ public class CommonEvents {
                 return;
             }
 
-//            mc.duzo.ender_journey.capabilities.PortalPlayer portalPlayer =
-//                mc.duzo.ender_journey.capabilities.PortalPlayer.get(player).orElse(null);
-//            if (portalPlayer == null) return;
+            mc.duzo.ender_journey.capabilities.PortalPlayer portalPlayer =
+                mc.duzo.ender_journey.capabilities.PortalPlayer.get(player).orElse(null);
+            if (portalPlayer == null) return;
 
-            int eyesEarned = 0;//portalPlayer.getEyesEarn();
+            int eyesEarned = portalPlayer.getEyesEarn();
             int eyesNeeded = recipe.getNeedEyes();
 
             if (eyesEarned >= eyesNeeded) {
