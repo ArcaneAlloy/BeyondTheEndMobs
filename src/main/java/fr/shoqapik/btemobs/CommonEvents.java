@@ -370,9 +370,6 @@ public class CommonEvents {
                 player.displayClientMessage(
                     net.minecraft.network.chat.Component.translatable("bte_mobs.enchanted_book.locked",
                         eyesNeeded).withStyle(net.minecraft.ChatFormatting.RED), true);
-                player.displayClientMessage(
-                    net.minecraft.network.chat.Component.translatable("bte_mobs.enchanted_book.locked_chat",
-                        eyesNeeded).withStyle(net.minecraft.ChatFormatting.RED), false);
             }
             return;
         }
