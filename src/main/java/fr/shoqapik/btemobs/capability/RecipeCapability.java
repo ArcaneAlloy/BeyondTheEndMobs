@@ -309,6 +309,7 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
             for (int i = 0 ; i < listTag.size() ; i++){
                 CompoundTag nbt1 = listTag.getCompound(i);
                 Quest quest = QuestManager.getQuest(nbt1.getString("id"));
+                if (quest == null) continue; // ID de quest guardado que ya no existe (renombrada/eliminada); se ignora en vez de corromper el mapa
                 map1.put(quest,new QuestStateData(nbt1.getCompound("data")));
             }
 
