@@ -3,6 +3,7 @@ package fr.shoqapik.btemobs.capability;
 
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.api.RecipePlayer;
+import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.packets.SyncRecipeManager;
 import fr.shoqapik.btemobs.quest.*;
 
@@ -34,17 +35,59 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
     private Map<RecipeType<T>, List<T>> recipeManager = new HashMap<>();
     public boolean dirty = false;
     private Level level ;
-    public Map<Quest,QuestStateData> quests=new HashMap<>();
+    public Map<BteNpcType,Map<Quest,QuestStateData>> quests=new HashMap<>();
 
     public static RecipeCapability get(Player player){
         return player.getCapability(BteCapability.RECIPE_CAPABILITY,null).orElse(null);
     }
+    public Map<Quest,QuestStateData> getQuestForNpc(BteNpcType npcType){
+        BteMobsMod.LOGGER.info("{} , {}, {}",quests,quests.get(npcType),npcType);
+        return quests.get(npcType);
+    }
+    public void checkChangedInventory(){
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (QuestStateData data : questMap.values()) {
+
+                List<StatTaskData> list = data.statTaskData;
+                boolean unlock = data.unlockStates.isEmpty()
+                        || data.unlockStates.stream().allMatch(e -> e.unlock);
+
+                int taskComplete = 0;
+
+                if (unlock) {
+                    for (StatTaskData task : list) {
+                        if (!task.complete) {
+                            if (task.taskType == TaskData.Type.COLLECT) {
+                                task.count = Math.min(task.maxCount,
+                                        player.getInventory().countItem(
+                                                ForgeRegistries.ITEMS.getValue(new ResourceLocation(task.id))));
+
+                                if (task.count == task.maxCount) {
+                                    taskComplete++;
+                                }
+                            }
+                        } else {
+                            taskComplete++;
+                        }
+                    }
+
+                    if (taskComplete == list.size()) {
+                        data.isComplete = true;
+                        this.dirty = true;
+                    }
+                }
+            }
+        }
+    }
     public void completeQuest(Quest quest){
-        for (Map.Entry<Quest,QuestStateData> entry : quests.entrySet()){
-            QuestStateData data = entry.getValue();
-            for (UnlockState state : data.unlockStates){
-                if (state.type == ConditionUnlockData.Type.PARENT_QUEST){
-                    if (state.id.equals(quest.id.toString())){
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
+
+                QuestStateData data = entry.getValue();
+
+                for (UnlockState state : data.unlockStates) {
+                    if (state.type == ConditionUnlockData.Type.PARENT_QUEST
+                            && state.id.equals(quest.id.toString())) {
                         state.unlock = true;
                     }
                 }
@@ -53,34 +96,36 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
     }
 
     public void hunterQuestUpdate(LivingDeathEvent event){
-        for (Map.Entry<Quest,QuestStateData> entry : quests.entrySet()){
-            if (entry.getValue().isComplete)continue;
-            List<StatTaskData> list = entry.getValue().statTaskData;
-            boolean unlock = (entry.getValue().unlockStates.isEmpty() || entry.getValue().unlockStates.stream().allMatch(e->e.unlock));
-            int taskComplete = 0;
-            if (unlock){
-                for (StatTaskData statTaskData : list) {
-                    if (!statTaskData.complete){
-                        if (statTaskData.id.equals(event.getEntity().getEncodeId())) {
-                            BteMobsMod.LOGGER.info("Count :{}", statTaskData.count);
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
 
-                            statTaskData.count = Math.min(statTaskData.count + 1, statTaskData.maxCount);
-                            if (statTaskData.count== statTaskData.maxCount){
-                                statTaskData.complete = true;
-                                taskComplete++;
+                if (entry.getValue().isComplete)continue;
+                List<StatTaskData> list = entry.getValue().statTaskData;
+                boolean unlock = (entry.getValue().unlockStates.isEmpty() || entry.getValue().unlockStates.stream().allMatch(e->e.unlock));
+                int taskComplete = 0;
+                if (unlock){
+                    for (StatTaskData statTaskData : list) {
+                        if (!statTaskData.complete){
+                            if (statTaskData.id.equals(event.getEntity().getEncodeId())) {
+
+                                statTaskData.count = Math.min(statTaskData.count + 1, statTaskData.maxCount);
+                                if (statTaskData.count== statTaskData.maxCount){
+                                    statTaskData.complete = true;
+                                    taskComplete++;
+                                }
                             }
+                        }else {
+                            taskComplete++;
                         }
-                    }else {
-                        taskComplete++;
+
                     }
+                    if (taskComplete == list.size()){
+                        entry.getValue().isComplete = true;
+                        this.dirty = true;
+                    }
+                }
 
-                }
-                if (taskComplete == list.size()){
-                    entry.getValue().isComplete = true;
-                    this.dirty = true;
-                }
             }
-
         }
     }
 
@@ -90,19 +135,22 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
     }
 
     public boolean getQuestComplete(Quest quest){
-        for (Map.Entry<Quest,QuestStateData> entry : quests.entrySet()){
-            if (entry.getKey().id.equals(quest.id)){
-                return entry.getValue().isComplete;
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
+                if (entry.getKey().id.equals(quest.id)) {
+                    return entry.getValue().isComplete;
+                }
             }
         }
         return false;
     }
 
     public boolean getQuestReclaim(Quest quest){
-        for (Map.Entry<Quest,QuestStateData> entry : quests.entrySet()){
-            if (entry.getKey().id.equals(quest.id)){
-
-                return entry.getValue().isReclaim;
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
+                if (entry.getKey().id.equals(quest.id)) {
+                    return entry.getValue().isReclaim;
+                }
             }
         }
         return false;
@@ -118,7 +166,7 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
         if(!level.isClientSide){
             if (this.quests.size() != QuestManager.getQuests().size()){
                 for (Quest quest : QuestManager.getQuests()){
-                    if (!this.quests.containsKey(quest)){
+                    if (!this.quests.get(quest.getEntityType()).containsKey(quest)){
                         List<StatRewardData> dataList = new ArrayList<>();
                         List<StatTaskData> taskDataList = new ArrayList<>();
                         List<UnlockState> unlockStates = new ArrayList<>();
@@ -131,7 +179,7 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
                         for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
                             unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
                         }
-                        quests.put(quest,new QuestStateData(false,false,dataList,taskDataList,unlockStates));
+                        quests.get(quest.getEntityType()).put(quest,new QuestStateData(false,false,dataList,taskDataList,unlockStates));
                     }
                 }
                 this.dirty = true;
@@ -215,30 +263,37 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
     }
 
     public void completeQuest(ResourceLocation id){
-        for (Map.Entry<Quest,QuestStateData> entry : quests.entrySet()){
-            if (entry.getKey().id.equals(id)){
-                entry.getValue().isReclaim = true;
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
+                if (entry.getKey().id.equals(id)) {
+                    entry.getValue().isReclaim = true;
+                }
             }
         }
         dirty = true;
     }
 
     public void initQuest(){
-        Map<Quest,QuestStateData> map = new HashMap<>();
-        for (Quest quest : QuestManager.getQuests()){
-            List<StatRewardData> dataList = new ArrayList<>();
-            List<StatTaskData> taskDataList = new ArrayList<>();
-            List<UnlockState> unlockStates = new ArrayList<>();
-            for (TaskData data:quest.getTasks()){
-                taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.type));
+        Map<BteNpcType,Map<Quest,QuestStateData>> map = new HashMap<>();
+        for (BteNpcType type : BteNpcType.values()){
+            map.put(type,new HashMap<>());
+        }
+        for (Map.Entry<BteNpcType,List<Quest>> entry : QuestManager.getQuestsForType().entrySet()){
+            for (Quest quest : entry.getValue()){
+                List<StatRewardData> dataList = new ArrayList<>();
+                List<StatTaskData> taskDataList = new ArrayList<>();
+                List<UnlockState> unlockStates = new ArrayList<>();
+                for (TaskData data:quest.getTasks()){
+                    taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.type));
+                }
+                for (RewardData rewardData : quest.getRewards()){
+                    dataList.add(new StatRewardData(rewardData.itemId,0,rewardData.count,false,rewardData.type));
+                }
+                for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
+                    unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
+                }
+                map.get(entry.getKey()).put(quest,new QuestStateData(false,false,dataList,taskDataList,unlockStates));
             }
-            for (RewardData rewardData : quest.getRewards()){
-                dataList.add(new StatRewardData(rewardData.itemId,0,rewardData.count,false,rewardData.type));
-            }
-            for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
-                unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
-            }
-            map.put(quest,new QuestStateData(false,false,dataList,taskDataList,unlockStates));
         }
         this.quests = map;
     }
@@ -271,8 +326,15 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
                     return;
                 }
                 CompoundTag tag = new CompoundTag();
-                tag.putString("id",entry.getKey().id.toString());
-                tag.put("data",entry.getValue().save());
+                tag.putString("type",entry.getKey().name());
+                ListTag tags = new ListTag();
+                entry.getValue().entrySet().forEach(entry1->{
+                    CompoundTag tag1 = new CompoundTag();
+                    tag1.putString("id",entry1.getKey().id.toString());
+                    tag1.put("data",entry1.getValue().save());
+                    tags.add(tag1);
+                });
+                tag.put("list",tags);
                 list.add(tag);
             });
             nbt.put("quests",list);
@@ -302,14 +364,24 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
                 map.put((RecipeType<T>) type,recipes);
             }
         }
-        Map<Quest,QuestStateData> map1 = new HashMap<>();
+        Map<BteNpcType,Map<Quest,QuestStateData>> map1 = new HashMap<>();
+        for (BteNpcType type : BteNpcType.values()){
+            map1.put(type,new HashMap<>());
+        }
         if (nbt.contains("quests")){
             ListTag listTag = nbt.getList("quests",10);
 
             for (int i = 0 ; i < listTag.size() ; i++){
                 CompoundTag nbt1 = listTag.getCompound(i);
-                Quest quest = QuestManager.getQuest(nbt1.getString("id"));
-                map1.put(quest,new QuestStateData(nbt1.getCompound("data")));
+                BteNpcType type = BteNpcType.valueOf(nbt1.getString("type"));
+                if (nbt1.contains("list")){
+                    ListTag listTag1 = nbt1.getList("list",10);
+                    for (int j = 0;j < listTag1.size() ; j++){
+                        CompoundTag nbt2 = listTag1.getCompound(j);
+                        Quest quest = QuestManager.getQuest(nbt2.getString("id"));
+                        map1.get(type).put(quest,new QuestStateData(nbt2.getCompound("data")));
+                    }
+                }
             }
 
         }

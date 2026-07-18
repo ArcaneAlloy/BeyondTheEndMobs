@@ -1,7 +1,9 @@
 package fr.shoqapik.btemobs;
 
 import fr.shoqapik.btemobs.capability.BteCapability;
+import fr.shoqapik.btemobs.capability.QuestStateData;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
+import fr.shoqapik.btemobs.capability.StatTaskData;
 import fr.shoqapik.btemobs.client.ModClientEvents;
 import fr.shoqapik.btemobs.client.gui.QuestScreen;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
@@ -215,6 +217,7 @@ public class BteMobsMod {
 
     public static void handleUnlockRecipePacket(CheckUnlockRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         List<Recipe<?>> recipes = new ArrayList<>();
+        RecipeCapability.get(ctx.get().getSender()).checkChangedInventory();
 
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),new ArrayList<>());
@@ -236,7 +239,6 @@ public class BteMobsMod {
                 recipes.add(recipe);
             }
         }
-
 
         ctx.get().getSender().awardRecipes(recipes);
     }

@@ -1,5 +1,5 @@
 {
-  "entityId": "",
+  "entityType": "BLACKSMITH",
   "description": "Hay muchos zombies , Caza 15 zombies.",
   "difficult" : "EASY",
   "dimension" : "OVERWORLD",
@@ -7,8 +7,14 @@
     {
       "type": "HUNTER",
       "description": "La descripcion",
-      "count": 15,
+      "count": 1,
       "entityIdLocation": "minecraft:zombie"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Recoger",
+      "count": 10,
+      "entityIdLocation": "minecraft:emerald"
     }
   ],
   "rewards": [
@@ -21,6 +27,11 @@
       "type": "ITEM",
       "itemId": "minecraft:diamond",
       "count": 15
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeType": "blacksmith",
+      "itemId": "endrem:exotic_eye"
     }
   ],
   "conditionUnlockData": [

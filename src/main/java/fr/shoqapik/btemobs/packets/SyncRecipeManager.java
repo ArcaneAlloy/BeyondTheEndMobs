@@ -4,6 +4,7 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.capability.QuestStateData;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.capability.StatRewardData;
+import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.quest.Quest;
 import fr.shoqapik.btemobs.quest.QuestManager;
 import net.minecraft.client.Minecraft;
@@ -59,7 +60,7 @@ public class SyncRecipeManager {
             if(cap!=null){
                 Map<RecipeType<?>,List<Recipe<?>>> map = new HashMap<>();
                 Map<Quest,List<StatRewardData>> map1 = new HashMap<>();
-                Map<Quest,QuestStateData> map2 = new HashMap<>();
+                Map<BteNpcType,Map<Quest,QuestStateData>> map2 = new HashMap<>();
                 if(!wasDeath){
                     if(data.contains("manager")){
                         ListTag list = data.getList("manager",10);
@@ -84,14 +85,25 @@ public class SyncRecipeManager {
                         cap.setRecipeManager(map);
 
                     }
+                    for (BteNpcType type : BteNpcType.values()){
+                        map2.put(type,new HashMap<>());
+                    }
                     if (data.contains("quests")){
                         ListTag listTag = data.getList("quests",10);
 
                         for (int i = 0 ; i < listTag.size() ; i++){
-                            CompoundTag nbt1 = listTag.getCompound(i);
-                            Quest quest = QuestManager.getQuest(nbt1.getString("id"));
-                            map2.put(quest,new QuestStateData(nbt1.getCompound("data")));
+                            CompoundTag data1 = listTag.getCompound(i);
+                            BteNpcType type = BteNpcType.valueOf(data1.getString("type"));
+                            if (data1.contains("list")){
+                                ListTag listTag1 = data1.getList("list",10);
+                                for (int j = 0;j < listTag1.size() ; j++){
+                                    CompoundTag data2 = listTag1.getCompound(j);
+                                    Quest quest = QuestManager.getQuest(data2.getString("id"));
+                                    map2.get(type).put(quest,new QuestStateData(data2.getCompound("data")));
+                                }
+                            }
                         }
+
                     }
                     cap.quests = map2;
                 }else {

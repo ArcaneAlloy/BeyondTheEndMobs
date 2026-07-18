@@ -203,7 +203,7 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
     }
 
 //    public boolean hasExplorerFree(){
-//        Entity entity = Minecraft.getInstance().level.getEntity(this.menu.getEntityId());
+//        Entity entity = Minecraft.getInstance().level.getEntity(this.menu.getEntityType());
 //        return entity !=null && entity.isAlive();
 //    }
 

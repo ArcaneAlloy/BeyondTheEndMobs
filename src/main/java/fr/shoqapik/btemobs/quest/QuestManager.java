@@ -6,6 +6,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.logging.LogUtils;
+import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.entity.BteNpcType;
+import fr.shoqapik.btemobs.quest.deserializer.RewardDataDeserializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -13,11 +16,12 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class QuestManager extends SimpleJsonResourceReloadListener {
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().registerTypeAdapter(RewardData.class,new RewardDataDeserializer()).create();
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final List<Quest> quests = Lists.newArrayList();
 
@@ -60,5 +64,16 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
 
     public static List<Quest> getQuests() {
         return quests;
+    }
+    public static Map<BteNpcType,List<Quest>> getQuestsForType(){
+        Map<BteNpcType,List<Quest>> map = new HashMap<>();
+        for (BteNpcType type : BteNpcType.values()){
+            map.put(type,new ArrayList<>());
+        }
+        for (Quest quest : getQuests()){
+            BteMobsMod.LOGGER.info("BteType :{}",quest.getEntityType());
+            map.get(quest.getEntityType()).add(quest);
+        }
+        return map;
     }
 }

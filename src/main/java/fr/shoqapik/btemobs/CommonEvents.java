@@ -142,6 +142,7 @@ public class CommonEvents {
             if (inventory.getTimesChanged() != previousTimesChanged) {
                 previousTimesChanged = inventory.getTimesChanged();
                 BteMobsMod.sendToServer(new CheckUnlockRecipePacket());
+
             }
         }
 

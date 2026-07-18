@@ -14,6 +14,10 @@
       "action": "open_craft"
     },
     {
+      "formattedText": "answer.bte.blacksmith_quest",
+      "action": "quests"
+    },
+    {
       "formattedText": "answer.bte.warlock_quest_pres.2",
       "action": "potion"
     },

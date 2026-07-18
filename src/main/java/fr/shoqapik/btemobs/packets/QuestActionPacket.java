@@ -42,16 +42,18 @@ public class QuestActionPacket {
                                     }else if (data.type == RewardData.Type.UNLOCK_RECIPE){
                                         ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.itemId)));
                                         if (data instanceof  UnlockRecipeRewardData){
-                                            RecipeType<?> type = ForgeRegistries.RECIPE_TYPES.getValue(new ResourceLocation(((UnlockRecipeRewardData) data).recipeType));
+                                            RecipeType<?> type = getRecipeTypeForId((UnlockRecipeRewardData) data);
                                             if (type != null){
                                                 ctx.get().getSender().server.getRecipeManager()
                                                         .getRecipes()
                                                         .stream()
-                                                        .filter(recipe -> recipe.getType() == type)
-                                                        .filter(recipe -> ItemStack.isSame(recipe.getResultItem(), stack))
-                                                        .findFirst()
-                                                        .ifPresentOrElse(
-                                                                recipe -> cap.addRecipeForType(type, recipe),
+                                                        .filter(recipe -> recipe.getType().toString().equals(type.toString()))
+                                                        .filter(recipe -> stack.getItem().equals(recipe.getResultItem().getItem()))
+                                                        .findFirst().ifPresentOrElse(
+                                                                recipe -> {
+                                                                    cap.addRecipeForType(type, recipe);
+                                                                    BteMobsMod.LOGGER.info("Se agrego el recipe :{}",data.itemId);
+                                                                },
                                                                 () -> BteMobsMod.LOGGER.info("Recipe not found: {}", data.itemId)
                                                         );
                                             }
@@ -73,6 +75,15 @@ public class QuestActionPacket {
             }
         });
         ctx.get().setPacketHandled(true);
+    }
+
+    private static RecipeType<?> getRecipeTypeForId(UnlockRecipeRewardData data) {
+        for (RecipeType<?> type1 : ForgeRegistries.RECIPE_TYPES.getValues()){
+            if (type1.toString().equals(data.recipeType)){
+                return type1;
+            }
+        }
+        return null;
     }
 
 
