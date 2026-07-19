@@ -4,9 +4,12 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.quest.Quest;
 import fr.shoqapik.btemobs.quest.RewardData;
+import fr.shoqapik.btemobs.quest.TaskData;
 import fr.shoqapik.btemobs.quest.UnlockRecipeRewardData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -62,6 +65,18 @@ public class QuestActionPacket {
                                         }
 
 
+                                    }
+                                }
+                                Player player = ctx.get().getSender();
+
+                                for (TaskData data : msg.quest.getTasks()){
+                                    if (data.type == TaskData.Type.COLLECT){
+                                        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getEntityIdLocation()));
+                                        player.getInventory().clearOrCountMatchingItems(
+                                                stack -> stack.is(item),
+                                                10,
+                                                player.inventoryMenu.getCraftSlots()
+                                        );
                                     }
                                 }
                                 cap.completeQuest(msg.quest.id);
