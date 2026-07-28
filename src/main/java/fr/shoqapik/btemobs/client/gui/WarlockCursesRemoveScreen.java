@@ -37,7 +37,7 @@ import java.util.List;
 import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
 
 public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemovalMenu> implements IGhostRecipe {
-    public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/warlock_upgrade_screen.png");
+    public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/bg_curse_breaker.png");
     public WarlockRecipe currentRecipe;
     private int page = 0;
     private RecipeButton hoveredButton;
@@ -51,7 +51,7 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
     protected Enchantment currentCurse=null;
     public WarlockCursesRemoveScreen(CurseRemovalMenu p_97741_, Inventory p_97742_, Component p_97743_) {
         super(p_97741_, p_97742_, p_97743_);
-        this.imageWidth = 306;
+        this.imageWidth = 176;
         this.imageHeight = 166;
         this.inventoryLabelX = 161;
         this.titleLabelX = 161;
@@ -152,9 +152,9 @@ public class WarlockCursesRemoveScreen extends AbstractContainerScreen<CurseRemo
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, CRAFTING_TABLE_LOCATION);
-        int i = this.leftPos + 176 -90;
+        int i = this.leftPos;
         int j = (this.height - this.imageHeight) / 2;
-        blit(p_97787_, i, j, 0, 0, this.imageWidth +176 , this.imageHeight, 512, 512);
+        blit(p_97787_, i, j, 0, 0, this.imageWidth , this.imageHeight, 176, 166);
     }
 
     protected void renderLabels(PoseStack pPoseStack, int pX, int pY) {

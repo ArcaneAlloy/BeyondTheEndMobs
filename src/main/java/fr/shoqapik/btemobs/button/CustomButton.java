@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.Locale;
 
 public class CustomButton extends Button {
-    private final ResourceLocation texture;
+    public ResourceLocation texture;
     private final ResourceLocation texture2;
     public boolean hasItem = false;
     public ItemStack item = ItemStack.EMPTY;
@@ -30,6 +30,7 @@ public class CustomButton extends Button {
         this.texture = texture;
         this.texture2 = texture2;
     }
+
 
     @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
@@ -72,7 +73,6 @@ public class CustomButton extends Button {
             blit(poseStack, iconX, iconY, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
         }else {
             drawCenteredString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 0xFFFFFF);
-
         }
     }
 
