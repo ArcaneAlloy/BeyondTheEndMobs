@@ -29,6 +29,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class WarlockCraftMenu extends AbstractContainerMenu {
@@ -166,9 +167,12 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
         if(recipe instanceof WarlockRecipe) {
             WarlockRecipe warlockRecipe = (WarlockRecipe) recipe;
             ItemStack base = this.baseSlots.getItem(0).copy();
+
             if(base.isEmpty() || !warlockRecipe.getEnchantment().canEnchant(base)) return ItemStack.EMPTY;
             base.setCount(1);
-            base.enchant(warlockRecipe.getEnchantment(), warlockRecipe.getLevel());
+            Map<Enchantment,Integer> map = EnchantmentHelper.getEnchantments(base);
+            map.put(warlockRecipe.getEnchantment(), warlockRecipe.getLevel());
+            EnchantmentHelper.setEnchantments(map,base);
             return base;
         }
         return null;

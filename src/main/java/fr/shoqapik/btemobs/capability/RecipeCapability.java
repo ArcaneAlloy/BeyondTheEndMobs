@@ -41,7 +41,7 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
         return player.getCapability(BteCapability.RECIPE_CAPABILITY,null).orElse(null);
     }
     public Map<Quest,QuestStateData> getQuestForNpc(BteNpcType npcType){
-        BteMobsMod.LOGGER.info("{} , {}, {}",quests,quests.get(npcType),npcType);
+
         return quests.get(npcType);
     }
     public void checkChangedInventory(){
@@ -59,9 +59,7 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
                         if (!task.complete) {
                             if (task.taskType == TaskData.Type.COLLECT) {
                                 task.count = Math.min(task.maxCount,
-                                        player.getInventory().countItem(
-                                                ForgeRegistries.ITEMS.getValue(new ResourceLocation(task.id))));
-
+                                        player.getInventory().countItem(ForgeRegistries.ITEMS.getValue(new ResourceLocation(task.id))));
                                 if (task.count == task.maxCount) {
                                     taskComplete++;
                                 }
