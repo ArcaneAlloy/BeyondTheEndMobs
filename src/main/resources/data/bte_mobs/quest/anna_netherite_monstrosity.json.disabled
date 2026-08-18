@@ -1,0 +1,28 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "La Netherite Monstrosity custodia los tesoros del Nether. Derrótala para desbloquear el tier Netherite.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a la Netherite Monstrosity",
+      "count": 1,
+      "entityIdLocation": "cataclysm:netherite_monstrosity"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:netherite_ingot",
+      "count": 3
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

@@ -1,0 +1,32 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Viaja a la Isla de los Giants y obtén un Giant Carminite Block. Desbloquea el tier Diamante.",
+  "difficult": "HARD",
+  "dimension": "TWILIGHT_FOREST",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Obtén un Giant Carminite Block",
+      "count": 1,
+      "entityIdLocation": "forgottentf:giant_carminite_block"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:diamond",
+      "count": 5
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "bte_mobs:oriana_big_chungus",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

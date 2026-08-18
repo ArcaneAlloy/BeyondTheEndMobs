@@ -1,0 +1,28 @@
+{
+  "entityType": "WARLOCK",
+  "description": "El Sanctum del Incendium es el templo más peligroso del Nether.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Explora el Incendium Sanctum",
+      "count": 1,
+      "entityIdLocation": "minecraft:nether_star"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

@@ -1,0 +1,28 @@
+{
+  "entityType": "DRUID",
+  "description": "La Snow Queen reina en el Aurora Palace. Derrótala y entrega su drop a Anna.",
+  "difficult": "HARD",
+  "dimension": "TWILIGHT_FOREST",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a la Snow Queen",
+      "count": 1,
+      "entityIdLocation": "twilightforest:snow_queen"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "itemId": "twilightforest:ice_bomb",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

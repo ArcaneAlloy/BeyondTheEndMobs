@@ -1,0 +1,23 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Derrota a un Windcaller y tráeme su Wind Essence.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Wind Essence a Antonio",
+      "count": 1,
+      "entityIdLocation": "dungeons_mobs:wind_essence"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "itemId": "minecraft:levitation_stone",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 15
+}

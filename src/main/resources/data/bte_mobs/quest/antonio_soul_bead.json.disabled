@@ -1,0 +1,28 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Las criaturas del Soul Sand Valley guardan corazones de almas. Tráeme uno.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Soul Bead a Antonio",
+      "count": 1,
+      "entityIdLocation": "quark:soul_bead"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

@@ -1,0 +1,34 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Entrega un lingote de hierro y una manzana de oro.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Iron Ingot",
+      "count": 1,
+      "entityIdLocation": "minecraft:iron_ingot"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Golden Apple",
+      "count": 1,
+      "entityIdLocation": "minecraft:golden_apple"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:iron_apple",
+      "count": 5
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:golden_apple",
+      "count": 5
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

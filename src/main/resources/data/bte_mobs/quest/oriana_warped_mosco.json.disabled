@@ -1,0 +1,28 @@
+{
+  "entityType": "DRUID",
+  "description": "El Warped Mosco es un insecto gigante del Nether. Derrótalo.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Warped Mosco",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:warped_mosco"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:oriana_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 25
+}

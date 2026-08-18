@@ -1,0 +1,28 @@
+{
+  "entityType": "DRUID",
+  "description": "Alimenta a un Big Chungus en el Twilight Forest para obtener las Magic Beans.",
+  "difficult": "MEDIUM",
+  "dimension": "TWILIGHT_FOREST",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Alimenta a un Big Chungus",
+      "count": 1,
+      "entityIdLocation": "minecraft:carrot"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "neapolitan:magic_beans",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

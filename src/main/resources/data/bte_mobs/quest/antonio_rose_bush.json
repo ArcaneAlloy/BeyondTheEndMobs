@@ -1,0 +1,23 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Busca un rosal silvestre y tráemelo.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Rose Bush a Antonio",
+      "count": 1,
+      "entityIdLocation": "minecraft:rose_bush"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 5
+}

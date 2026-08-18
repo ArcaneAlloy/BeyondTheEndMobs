@@ -1,0 +1,23 @@
+{
+  "entityType": "NPC5",
+  "description": "Entrega 1x Dried Vanilla Pods a la granja.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Dried Vanilla Pods",
+      "count": 1,
+      "entityIdLocation": "neapolitan:dried_vanilla_pods"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 4
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 3
+}

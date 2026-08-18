@@ -1,0 +1,23 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Los Gusters vagan por el desierto. Derrota a uno y trae su ojo.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Guster Eye a Antonio",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:guster_eye"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}
