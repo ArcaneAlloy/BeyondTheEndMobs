@@ -28,7 +28,10 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +85,7 @@ public class QuestScreen extends Screen {
 
             boolean isUnlock = (rumor.getValue().unlockStates.isEmpty() || rumor.getValue().unlockStates.stream().allMatch(e->e.unlock));
 
-            String rawTitle = rumor.getKey().id.toString();
+            String rawTitle = "title.quest."+rumor.getKey().id.toString().split(":")[1];
             String translatedTitle = rawTitle.contains(".") ? I18n.get(rawTitle) : rawTitle;
 
             CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20, Component.literal(translatedTitle),
@@ -177,12 +180,11 @@ public class QuestScreen extends Screen {
     public void tick() {
         super.tick();
         if (this.dirty){
-            List<QuestStateData> list = (List<QuestStateData>) RecipeCapability.get(minecraft.player).quests.values().stream().toList();
+            List<QuestStateData> list =((Map<Quest,QuestStateData>) RecipeCapability.get(minecraft.player).quests.get(bteNpcType)).values().stream().toList();
             if (quests.values().stream().anyMatch(s->{
                 return list.stream().anyMatch(s1->s1.isReclaim!=s.isReclaim);
             })){
-                BteMobsMod.LOGGER.info("Dirty");
-                quests = RecipeCapability.get(minecraft.player).quests;
+                quests = ((Map<Quest,QuestStateData>)RecipeCapability.get(minecraft.player).quests.get(bteNpcType));
                 buttons.forEach(this::removeWidget);
                 buttons.clear();
 
@@ -191,19 +193,24 @@ public class QuestScreen extends Screen {
 
                     boolean isUnlock = (rumor.getValue().unlockStates.isEmpty() || rumor.getValue().unlockStates.stream().allMatch(e->e.unlock));
 
-                    String rawTitle = rumor.getKey().id.toString();
+                    String rawTitle = "title.quest."+rumor.getKey().id.toString().split(":")[1];
                     String translatedTitle = rawTitle.contains(".") ? I18n.get(rawTitle) : rawTitle;
 
                     CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20, Component.literal(translatedTitle),
                             (p_95981_) -> {
                                 if(isUnlock){
+                                    buttons.forEach(button1 -> ((CustomButton)button1).isSelect = false);
                                     this.currentQuest = rumor.getKey();
                                     refreshButton();
+                                    ((CustomButton)p_95981_).isSelect=true;
                                 }
                             }
                     );
 
                     button.setIsLock(!isUnlock);
+                    if (currentQuest.id == rumor.getKey().id){
+                        button.isSelect = true;
+                    }
                     buttons.add(this.addRenderableWidget(button));
                 }
                 layoutButtons();
@@ -252,9 +259,9 @@ public class QuestScreen extends Screen {
             poseStack.popPose();
             poseStack.pushPose();
 
-            int left1 = x + 70   ;
-            int top1 = y + 12 ;
-            int right1 = left ;
+            int left1 = x + 70;
+            int top1 = y + 12;
+            int right1 = left;
             int bottom1 = top + this.font.lineHeight + 2;
             fill(poseStack, left1, top1, right1, bottom1, 0x4FFF0000);
             poseStack.popPose();
@@ -264,6 +271,7 @@ public class QuestScreen extends Screen {
             int j = 0;
             Component prevComponent = null;
             for (StatTaskData data : quests.get(currentQuest).statTaskData){
+
                 poseStack.pushPose();
                 int d = 0;
                 if (prevComponent !=null){
@@ -271,7 +279,7 @@ public class QuestScreen extends Screen {
                 }
                 poseStack.translate(x + 12 + d*j  +101,y + i * 6 +108,0.0D);
                 poseStack.scale(0.5F,0.5F,0.5F);
-                Component component = Component.literal(data.id+"  " + data.count +"/"+data.maxCount);
+                Component component = getComponentForType(data);
                 drawWordWrap(component,0 ,0 , 150, 16777215, font, poseStack);
                 i++;
                 if (i == 3 ){
@@ -295,6 +303,20 @@ public class QuestScreen extends Screen {
         super.render(poseStack, mouseX, mouseY, partialTick);
     }
 
+    public Component getComponentForType(StatTaskData data){
+        String name = "";
+        switch (data.taskType){
+            case HUNTER -> {
+                EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(data.id));
+                name= type.getDescription().getString();
+            }
+            case COLLECT -> {
+                ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.id)));
+                name= stack.getHoverName().getString();
+            }
+        }
+        return Component.literal(name+"  " + data.count +"/"+data.maxCount);
+    }
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick){
         if (!this.currentQuest.getRewards().isEmpty()){
             for (ButtonReward buttonReward : slotRewards){

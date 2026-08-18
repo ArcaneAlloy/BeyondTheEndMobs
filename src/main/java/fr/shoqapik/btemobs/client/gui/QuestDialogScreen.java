@@ -73,7 +73,7 @@ public class QuestDialogScreen extends Screen {
         int x = this.leftPos - (this.width / 8) + 254;
         int y = this.height - this.imageHeight - 40;
 
-        int index = 0;
+        int index = quest.getAnswers().size() > 4 ? -1 : 0;
         for (QuestAnswer questAnswer : this.quest.getAnswers()) {
             if (index > 3) break;
 
@@ -92,7 +92,7 @@ public class QuestDialogScreen extends Screen {
                     Component.literal(translatedAnswer),
                     (p_95981_) -> {
                         if (questAnswer.getAction().equals("quests")){
-                            Minecraft.getInstance().setScreen(new QuestScreen(this.entityId,bteNpcType, RecipeCapability.get(Minecraft.getInstance().player).quests));
+                            Minecraft.getInstance().setScreen(new QuestScreen(this.entityId,bteNpcType, RecipeCapability.get(Minecraft.getInstance().player).getQuestForNpc(bteNpcType)));
                         }else if (questAnswer.getAction().equals("rumor")) {
                             Minecraft.getInstance().setScreen(null);
                             BteMobsModClient.handleRumorsPacket(this.entityId);

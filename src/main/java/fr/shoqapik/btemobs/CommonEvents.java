@@ -39,10 +39,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEvents {
     private static int previousTimesChanged = 0;
@@ -72,6 +68,7 @@ public class CommonEvents {
             }
         }
     }
+
     @SubscribeEvent
     public static void onDeath(LivingDeathEvent event){
         if (event.getSource().getEntity() instanceof Player player){
@@ -142,17 +139,14 @@ public class CommonEvents {
             if (inventory.getTimesChanged() != previousTimesChanged) {
                 previousTimesChanged = inventory.getTimesChanged();
                 BteMobsMod.sendToServer(new CheckUnlockRecipePacket());
+
             }
         }
 
         if(event.player instanceof ServerPlayer serverPlayer){
-            // BUG FIX: Calcular el unlock level para ESTE jugador específico,
-            // no usar el campo estático global que se sobreescribe entre jugadores.
+
             int currentUnlockId = getUnlockIdForPlayer(serverPlayer);
 
-            // Solo enviar si el nivel cambió respecto al estado actual del cliente
-            // Para evitar spam, usamos el campo estático solo como caché del servidor
-            // y enviamos al jugador individual (no a todos)
             Advancement enterEnd = serverPlayer.getServer().getAdvancements()
                     .getAdvancement(new ResourceLocation("minecraft", "end/root"));
             if(enterEnd != null && serverPlayer.getAdvancements().getOrStartProgress(enterEnd).isDone()) {
@@ -160,7 +154,6 @@ public class CommonEvents {
                     BteMobsMod.unlockLevel = Rumor.UnlockLevel.END;
                     BteMobsMod.unlockLevel1 = PageCompendium.UnlockLevel.END;
                 }
-                // Siempre sincronizar al jugador individual por si es nuevo o se reconectó
                 BteMobsMod.sendToClient(new SyncUnlockLevelPacket(1), serverPlayer);
                 return;
             }

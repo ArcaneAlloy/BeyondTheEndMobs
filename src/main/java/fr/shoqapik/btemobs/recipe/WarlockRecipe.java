@@ -104,10 +104,7 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
             if(oldLevel>level){
                 return ItemStack.EMPTY;
             }else if(oldLevel>0){
-                CompoundTag tag = getTagEnchantment(enchantment,result);
-                if(tag!=null){
-                    EnchantmentHelper.setEnchantmentLevel(tag,level);
-                }
+                result.enchant(enchantment, level);
             }else {
                 result.enchant(enchantment, level);
             }

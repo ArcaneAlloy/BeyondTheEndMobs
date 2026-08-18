@@ -47,7 +47,7 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
         this.player = inventory.player;
         this.level = inventory.player.level;
 
-        this.addSlot(new Slot(inputSlots, 0, 203 - 90, 33){
+        this.addSlot(new Slot(inputSlots, 0, 203 - 90 -85, 33){
             @Override
             public boolean mayPlace(ItemStack p_40231_) {
                 return p_40231_.isEnchanted() ? isCursed(p_40231_.getEnchantmentTags()) : isCursed(EnchantedBookItem.getEnchantments(p_40231_));
@@ -64,7 +64,7 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
             }
         });
 
-        this.addSlot(new Slot(resultSlots, 0, 308 - 90, 33) {
+        this.addSlot(new Slot(resultSlots, 0, 308 - 90 -86, 33) {
 
             @Override
             public boolean mayPickup(Player player) {
@@ -107,22 +107,12 @@ public class CurseRemovalMenu extends AbstractContainerMenu {
 
         for(int row = 0; row < 3; ++row) {
             for(int col = 0; col < 9; ++col) {
-                this.addSlot(new Slot(
-                        inventory,
-                        col + row * 9 + 9,
-                        -90 + 184 + col * 18,
-                        84 + row * 18
-                ));
+                this.addSlot(new Slot(inventory, col + row * 9 + 9 , -86-90 + 184 + col * 18, 84 + row * 18));
             }
         }
 
         for(int col = 0; col < 9; ++col) {
-            this.addSlot(new Slot(
-                    inventory,
-                    col,
-                    -90 + 184 + col * 18,
-                    142
-            ));
+            this.addSlot(new Slot(inventory, col, -86-90 + 184 + col * 18, 142));
         }
     }
 

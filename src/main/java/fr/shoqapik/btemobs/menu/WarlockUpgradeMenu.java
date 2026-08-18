@@ -51,14 +51,14 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
     public final Player player;
     public WarlockUpgradeMenu(int id, Inventory inventory) {
         super(BteMobsContainers.WARLOCK_UPGRADE_MENU.get(), id);
-        this.addSlot(new Slot(inputSlots,0,203-90,33){
+        this.addSlot(new Slot(inputSlots,0,203-90-85,33){
             @Override
             public boolean mayPlace(ItemStack p_40231_) {
                 ListTag tags = EnchantedBookItem.getEnchantments(p_40231_);
                 return tags.size() == 1;
             }
         });
-        this.addSlot(new Slot(resultSlots,0,308-90,33){
+        this.addSlot(new Slot(resultSlots,0,308-90-85,33){
             @Override
             public boolean mayPickup(Player p_40228_) {
                 return mode.get() != 0 || inventory.countItem(Items.SKELETON_SKULL) >= recipe.needEyes &&  player.experienceLevel >= recipe.getExperience();
@@ -142,12 +142,12 @@ public class WarlockUpgradeMenu extends AbstractContainerMenu {
         });
         for(int k = 0; k < 3; ++k) {
             for(int i1 = 0; i1 < 9; ++i1) {
-                this.addSlot(new Slot(inventory, i1 + k * 9 + 9, -90+184 + i1 * 18, 84 + k * 18));
+                this.addSlot(new Slot(inventory, i1 + k * 9 + 9, -86-90+184 + i1 * 18, 84 + k * 18));
             }
         }
 
         for(int l = 0; l < 9; ++l) {
-            this.addSlot(new Slot(inventory, l, -90+184 + l * 18, 142));
+            this.addSlot(new Slot(inventory, l, -86-90+184 + l * 18, 142));
         }
     }
 

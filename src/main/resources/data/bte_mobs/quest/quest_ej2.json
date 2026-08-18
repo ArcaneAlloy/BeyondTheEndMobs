@@ -1,5 +1,5 @@
 {
-  "entityId": "",
+  "entityType": "BLACKSMITH",
   "description": "Tengo hambre, Caza 15 Ovejas.",
   "difficult" : "MEDIUM",
   "dimension" : "OVERWORLD",

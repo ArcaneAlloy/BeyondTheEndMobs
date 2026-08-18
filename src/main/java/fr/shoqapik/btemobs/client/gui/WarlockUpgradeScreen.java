@@ -3,6 +3,7 @@ package fr.shoqapik.btemobs.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.button.CustomButton;
 import fr.shoqapik.btemobs.menu.WarlockUpgradeMenu;
 import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
@@ -32,9 +33,13 @@ import java.util.*;
 import java.util.List;
 
 public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgradeMenu> implements IGhostRecipe {
-    public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/warlock_upgrade_screen.png");
+    public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/bg_enchant_lvlup.png");
+    public static final ResourceLocation DOWNGRADE_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/bg_enchant_lvldown.png");
 
-    private Button modeButton;
+    public static final ResourceLocation LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/warlock/btn_lvldown.png");
+    public static final ResourceLocation LOCATION2 = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/warlock/btn_lvlup.png");
+
+    private CustomButton modeButton;
 
     public WarlockRecipe currentRecipe = null;
     private int page = 0;
@@ -49,12 +54,13 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
     public int lastMode = 0;
     public WarlockUpgradeScreen(WarlockUpgradeMenu p_97741_, Inventory p_97742_, Component p_97743_) {
         super(p_97741_, p_97742_, p_97743_);
-        this.imageWidth = 306;
+        this.imageWidth = 176;
         this.imageHeight = 166;
         this.inventoryLabelX = 161;
         this.titleLabelX = 161;
         this.player = p_97742_.player;
     }
+
 
     protected void init() {
         super.init();
@@ -63,7 +69,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
 
         this.layoutButtons();
 
-        this.modeButton = this.addRenderableWidget(new Button(this.leftPos+142,this.topPos + 29,65,16,Component.literal("Upgrade"),(p)->{
+        this.modeButton = this.addRenderableWidget(new CustomButton(LOCATION,null,this.leftPos+142 -86,this.topPos + 29,65,16,Component.literal("Upgrade"),(p)->{
             p.active = false;
             boolean isUpgradeMode = menu.mode.get() == 0;
             menu.mode.set(isUpgradeMode ? 1 : 0);
@@ -141,6 +147,7 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
             }else {
                 currentRecipe = null;
             }
+            modeButton.texture = isUpgradeMode ? LOCATION2 : LOCATION;
         }
         Component component = Component.literal("Need Skeleton Skull : ").append(String.valueOf(this.currentRecipe==null ? 5 :this.currentRecipe.needEyes));
         Component component1 = Component.literal(this.currentRecipe==null ? "Up  +" :"Need XP : ").append(String.valueOf(this.currentRecipe==null ? 1 +" level": this.currentRecipe.getExperience()));
@@ -217,10 +224,10 @@ public class WarlockUpgradeScreen extends AbstractContainerScreen<WarlockUpgrade
     protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, CRAFTING_TABLE_LOCATION);
-        int i = this.leftPos + 176 -90;
+        RenderSystem.setShaderTexture(0, menu.mode.get() == 0 ? CRAFTING_TABLE_LOCATION : DOWNGRADE_TABLE_LOCATION);
+        int i = this.leftPos;
         int j = (this.height - this.imageHeight) / 2;
-        blit(p_97787_, i, j, 0, 0, this.imageWidth +176 , this.imageHeight, 512, 512);
+        blit(p_97787_, i, j, 0, 0, this.imageWidth, this.imageHeight, 177, 166);
     }
 
     protected void renderLabels(PoseStack pPoseStack, int pX, int pY) {

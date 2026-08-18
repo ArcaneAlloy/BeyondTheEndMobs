@@ -1,7 +1,7 @@
 package fr.shoqapik.btemobs.quest;
 
 import fr.shoqapik.btemobs.BteMobsMod;
-import fr.shoqapik.btemobs.capability.UnlockState;
+import fr.shoqapik.btemobs.entity.BteNpcType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Quest {
     public ResourceLocation id;
-    private final String entityId;
+    private final BteNpcType entityType;
     private final String description;
     private final List<TaskData> tasks;
     private final List<RewardData> rewards;
@@ -19,10 +19,10 @@ public class Quest {
     private final Difficult difficult;
     private final LocationDimension dimension;
 
-    public Quest(String entityId,String description, List<TaskData> tasks, List<RewardData> rewards,
+    public Quest(BteNpcType entityId,String description, List<TaskData> tasks, List<RewardData> rewards,
                  List<ConditionUnlockData> conditionUnlockData, Difficult difficult,
                  LocationDimension dimension, int experience){
-        this.entityId = entityId;
+        this.entityType = entityId;
         this.description = description;
         this.tasks = tasks;
         this.rewards = rewards;
@@ -34,7 +34,7 @@ public class Quest {
 
     public static void encode(Quest quest, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeUtf(quest.id.toString());
-        packetBuffer.writeUtf(quest.entityId);
+        packetBuffer.writeUtf(quest.entityType.name());
         packetBuffer.writeUtf(quest.description);
         packetBuffer.writeInt(quest.experience);
 
@@ -53,7 +53,6 @@ public class Quest {
                 packetBuffer.writeUtf(rewardData.itemId);
                 packetBuffer.writeInt(rewardData.count);
             }else if (rewardData instanceof UnlockRecipeRewardData data){
-                BteMobsMod.LOGGER.info("info");
                 packetBuffer.writeUtf(data.itemId);
                 packetBuffer.writeUtf(data.recipeType);
             }
@@ -71,7 +70,8 @@ public class Quest {
 
     public static Quest decode(FriendlyByteBuf packetBuffer) {
         ResourceLocation id = ResourceLocation.tryParse(packetBuffer.readUtf());
-        String entityId = packetBuffer.readUtf();
+        BteNpcType entityId = BteNpcType.valueOf(packetBuffer.readUtf());
+
         String description = packetBuffer.readUtf();
         int xp = packetBuffer.readInt();
 
@@ -128,8 +128,8 @@ public class Quest {
         return experience;
     }
 
-    public String getEntityId() {
-        return entityId;
+    public BteNpcType getEntityType() {
+        return entityType;
     }
 
     public ResourceLocation getId() {
