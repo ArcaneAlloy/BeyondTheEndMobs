@@ -83,13 +83,7 @@ public class QuestDialogScreen extends Screen {
             String answerKey = questAnswer.getFormattedAwnser();
             String translatedAnswer = answerKey.contains(".") ? I18n.get(answerKey) : answerKey;
 
-            buttons.add(this.addRenderableWidget(new CustomButton(
-                    backgroundTexture, foregroundTexture,
-                    x,
-                    y + index * 25,
-                    100,
-                    20,
-                    Component.literal(translatedAnswer),
+            CustomButton button = new CustomButton(backgroundTexture, foregroundTexture, x, y + index * 25, 100, 20, Component.literal(translatedAnswer),
                     (p_95981_) -> {
                         if (questAnswer.getAction().equals("quests")){
                             Minecraft.getInstance().setScreen(new QuestScreen(this.entityId,bteNpcType, RecipeCapability.get(Minecraft.getInstance().player).getQuestForNpc(bteNpcType)));
@@ -111,7 +105,9 @@ public class QuestDialogScreen extends Screen {
                             currentDialogSound = null;
                         }
                     }
-            )));
+            );
+            button.setIsLock(!RecipeCapability.get(getMinecraft().player).isUnlockAction(bteNpcType.name().toLowerCase()+":"+questAnswer.getAction()));
+            buttons.add(this.addRenderableWidget(button));
 
             index++;
         }

@@ -4,6 +4,7 @@ import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.capability.QuestStateData;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.capability.StatRewardData;
+import fr.shoqapik.btemobs.capability.UnlockAction;
 import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.quest.Quest;
 import fr.shoqapik.btemobs.quest.QuestManager;
@@ -103,9 +104,17 @@ public class SyncRecipeManager {
                                 }
                             }
                         }
-
+                    }
+                    List<UnlockAction> unlockActions = new ArrayList<>();
+                    if (data.contains("unlockAction")){
+                        ListTag list = data.getList("unlockAction",10);
+                        for (int i = 0 ; i < list.size() ; i++){
+                            CompoundTag data1 = list.getCompound(i);
+                            unlockActions.add(new UnlockAction(data1));
+                        }
                     }
                     cap.quests = map2;
+                    cap.unlockActions = unlockActions;
                 }else {
                     cap.deserializeNBT(data);
                 }

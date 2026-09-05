@@ -28,10 +28,7 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
     protected Button craftButton;
     protected boolean widthTooNarrow;
 
-    // EditBox propio, igual que ExplorerTableScreen/WarlockCraftScreen/DruidScreen.
-    // No usamos el EditBox interno del RecipeBookComponent porque otros mods
-    // (Fabrication) lo interfieren y su sistema de foco no funciona correctamente.
-    public EditBox searchBox; // accesible desde BteRecipeBookComponent
+    public EditBox searchBox;
     private String previousSearch = "";
 
 
@@ -51,11 +48,6 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
 
 
-
-        // Posicion del searchBox basada en leftPos (ya calculado con widthTooNarrow)
-        // El panel del libro esta 147px a la izquierda de leftPos
-        // Crear searchBox con posicion temporal; se actualizara en el primer render
-        // cuando el box interno ya tenga sus coordenadas definitivas
         String prevValue = this.searchBox != null ? this.searchBox.getValue() : "";
         this.searchBox = new EditBox(this.minecraft.font, 0, 0, 80, 14,
                 Component.translatable("itemGroup.search"));

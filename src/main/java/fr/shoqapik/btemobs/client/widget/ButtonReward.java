@@ -55,7 +55,7 @@ public class ButtonReward extends Button {
     public ItemStack getItemOfRewardData(){
         ItemStack stack = ItemStack.EMPTY;
         if (data.type == RewardData.Type.ITEM){
-            stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.itemId)),data.count);
+            stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getObjectId())),data.count);
         }
         return stack;
     }

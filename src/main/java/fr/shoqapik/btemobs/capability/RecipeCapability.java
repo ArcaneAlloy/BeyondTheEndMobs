@@ -30,18 +30,18 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 
-public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
+public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
     public Player player;
     private Map<RecipeType<T>, List<T>> recipeManager = new HashMap<>();
     public boolean dirty = false;
     private Level level ;
     public Map<BteNpcType,Map<Quest,QuestStateData>> quests=new HashMap<>();
-
+    public List<UnlockAction> unlockActions = new ArrayList<>();
+    public List<UnlockAction> unlockZone = new ArrayList<>();
     public static RecipeCapability get(Player player){
         return player.getCapability(BteCapability.RECIPE_CAPABILITY,null).orElse(null);
     }
     public Map<Quest,QuestStateData> getQuestForNpc(BteNpcType npcType){
-
         return quests.get(npcType);
     }
     public void checkChangedInventory(){
@@ -49,9 +49,7 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
             for (QuestStateData data : questMap.values()) {
 
                 List<StatTaskData> list = data.statTaskData;
-                boolean unlock = data.unlockStates.isEmpty()
-                        || data.unlockStates.stream().allMatch(e -> e.unlock);
-
+                boolean unlock = data.unlockStates.isEmpty() || data.unlockStates.stream().allMatch(e -> e.unlock);
                 int taskComplete = 0;
 
                 if (unlock) {
@@ -80,14 +78,18 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
     public void completeQuest(Quest quest){
         for (Map<Quest, QuestStateData> questMap : quests.values()) {
             for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
-
                 QuestStateData data = entry.getValue();
-
                 for (UnlockState state : data.unlockStates) {
-                    if (state.type == ConditionUnlockData.Type.PARENT_QUEST
-                            && state.id.equals(quest.id.toString())) {
+                    if (state.type == ConditionUnlockData.Type.PARENT_QUEST && state.id.equals(quest.id.toString())) {
                         state.unlock = true;
                     }
+                }
+            }
+        }
+        for (UnlockAction unlockAction : this.unlockActions){
+            for (UnlockState state : unlockAction.unlockStates) {
+                if (state.type == ConditionUnlockData.Type.PARENT_QUEST && state.id.equals(quest.id.toString())) {
+                    state.unlock = true;
                 }
             }
         }
@@ -172,7 +174,7 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
                             taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.type));
                         }
                         for (RewardData rewardData : quest.getRewards()){
-                            dataList.add(new StatRewardData(rewardData.itemId,0,rewardData.count,false,rewardData.type));
+                            dataList.add(new StatRewardData(rewardData.getObjectId(),0,rewardData.count,false,rewardData.type));
                         }
                         for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
                             unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
@@ -191,6 +193,8 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
 
     public void copyFrom(RecipeCapability cap){
         this.recipeManager = cap.recipeManager;
+        this.quests = cap.quests;
+        this.unlockActions = cap.unlockActions;
         this.dirty = true;
     }
 
@@ -255,9 +259,14 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
 
         if(!this.level.isClientSide){
             this.initQuest();
-
+            this.initActionState();
             this.dirty = true;
         }
+    }
+
+    private void initActionState() {
+
+
     }
 
     public void completeQuest(ResourceLocation id){
@@ -285,7 +294,17 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
                     taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.type));
                 }
                 for (RewardData rewardData : quest.getRewards()){
-                    dataList.add(new StatRewardData(rewardData.itemId,0,rewardData.count,false,rewardData.type));
+                    if (rewardData.type == RewardData.Type.UNLOCK_OPTION_DIALOG){
+                        UnlockAction unlockAction = this.unlockActions.stream().filter(data-> data.action.equals(rewardData.getObjectId())).findAny().orElse(null);
+                        if (unlockAction!=null){
+                            unlockAction.unlockStates.add(new UnlockState(quest.id.toString(), ConditionUnlockData.Type.PARENT_QUEST,false));
+                        }else {
+                            List<UnlockState> states = new ArrayList<>();
+                            states.add(new UnlockState(quest.id.toString(), ConditionUnlockData.Type.PARENT_QUEST,false));
+                            this.unlockActions.add(new UnlockAction(rewardData.getObjectId() ,states));
+                        }
+                    }
+                    dataList.add(new StatRewardData(rewardData.getObjectId(),0,rewardData.count,false,rewardData.type));
                 }
                 for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
                     unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
@@ -337,6 +356,11 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
             });
             nbt.put("quests",list);
         }
+        ListTag listTag = new ListTag();
+        for (UnlockAction unlockAction : this.unlockActions){
+            listTag.add(unlockAction.save());
+        }
+        nbt.put("unlockAction",listTag);
         return nbt;
     }
 
@@ -384,9 +408,27 @@ public class RecipeCapability <T extends Recipe<?>> implements RecipePlayer<T> {
 
         }
 
+        List<UnlockAction> unlockActions = new ArrayList<>();
+        if (nbt.contains("unlockAction")){
+            ListTag list = nbt.getList("unlockAction",10);
+            for (int i = 0 ; i < list.size() ; i++){
+                CompoundTag data1 = list.getCompound(i);
+                unlockActions.add(new UnlockAction(data1));
+            }
+        }
+        this.unlockActions = unlockActions;
         this.recipeManager = map;
         this.quests = map1;
         this.dirty = true;
+    }
+
+    public boolean isUnlockAction(String id) {
+        for (UnlockAction unlockAction : unlockActions){
+            if (unlockAction.action.equals(id)){
+                return unlockAction.unlockStates.isEmpty() || unlockAction.unlockStates.stream().allMatch((unlockState -> unlockState.unlock));
+            }
+        }
+        return true;
     }
 
     public static class RecipeProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {

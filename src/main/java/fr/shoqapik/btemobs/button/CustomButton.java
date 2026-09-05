@@ -10,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class CustomButton extends Button {
@@ -19,11 +21,19 @@ public class CustomButton extends Button {
     public ItemStack item = ItemStack.EMPTY;
     private boolean isLock=false;
     public boolean isSelect = true;
+    public List<Component> listComponents = new ArrayList<>();
     public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height, Component message, OnPress onPress) {
         super(x, y, width, height, message, onPress);
         this.texture = texture;
         this.texture2 = texture2;
     }
+    public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height, Component message,List<Component> components, OnPress onPress) {
+        super(x, y, width, height, message, onPress);
+        this.texture = texture;
+        this.texture2 = texture2;
+        listComponents = components;
+    }
+
 
     public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height, Component message, OnPress onPress,Button.OnTooltip onTooltip) {
         super(x, y, width, height, message, onPress,onTooltip);
@@ -71,8 +81,20 @@ public class CustomButton extends Button {
 
             RenderSystem.setShaderTexture(0, foregroundTexture);
             blit(poseStack, iconX, iconY, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
-        }else {
+            if (this.isMouseOver(mouseX,mouseY)) {
+                this.renderToolTip(poseStack,mouseX, mouseY);
+            }
+        } else {
             drawCenteredString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 0xFFFFFF);
+        }
+    }
+
+    @Override
+    public void renderToolTip(PoseStack p_93736_, int p_93737_, int p_93738_) {
+        super.renderToolTip(p_93736_, p_93737_, p_93738_);
+
+        if (!this.listComponents.isEmpty()){
+            Minecraft.getInstance().screen.renderComponentTooltip(p_93736_, this.listComponents,p_93737_,p_93738_);
         }
     }
 

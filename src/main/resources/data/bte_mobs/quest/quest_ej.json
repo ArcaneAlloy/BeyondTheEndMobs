@@ -3,6 +3,8 @@
   "description": "Hay muchos zombies , Caza 15 zombies.",
   "difficult" : "EASY",
   "dimension" : "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+  "priorityQuest" : "SIDE_QUEST",
   "tasks": [
     {
       "type": "HUNTER",
@@ -24,14 +26,9 @@
       "count": 15
     },
     {
-      "type": "ITEM",
-      "itemId": "minecraft:diamond",
-      "count": 15
-    },
-    {
       "type": "UNLOCK_RECIPE",
-      "recipeType": "blacksmith",
-      "itemId": "endrem:exotic_eye"
+      "recipeId": "#bte_mobs:druid_craft1",
+      "recipeType" : "druid_recipe_type"
     }
   ],
   "conditionUnlockData": [

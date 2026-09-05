@@ -1,21 +1,21 @@
 package fr.shoqapik.btemobs.quest;
 
-public class RewardData {
-    public String itemId;
+public abstract class RewardData {
     public int count;
     public Type type;
-    public RewardData(Type type,String id,int count){
-
+    public RewardData(Type type,int count){
         this.type = type;
-        this.itemId = id;
         this.count = count;
     }
+
+    public abstract String getObjectId();
+
     public enum Type{
         ITEM,
         UNLOCK_RECIPE,
         UNLOCK_OPTION_DIALOG,
-        UNLOCK_SYSTEM,
-        UNLOCK_ABILITY,
         UNLOCK_ZONE,
+        UNLOCK_SYSTEM,
+        UNLOCK_ABILITY
     }
 }

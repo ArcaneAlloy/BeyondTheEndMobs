@@ -1,6 +1,5 @@
 package fr.shoqapik.btemobs.quest;
 
-import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.entity.BteNpcType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -12,29 +11,34 @@ public class Quest {
     public ResourceLocation id;
     private final BteNpcType entityType;
     private final String description;
+    private final String toolTip;
     private final List<TaskData> tasks;
     private final List<RewardData> rewards;
     private final List<ConditionUnlockData> conditionUnlockData;
     private final  int experience;
     private final Difficult difficult;
     private final LocationDimension dimension;
+    private final PriorityQuest priorityQuest;
 
-    public Quest(BteNpcType entityId,String description, List<TaskData> tasks, List<RewardData> rewards,
+    public Quest(BteNpcType entityId, String description, String toolTip, List<TaskData> tasks, List<RewardData> rewards,
                  List<ConditionUnlockData> conditionUnlockData, Difficult difficult,
-                 LocationDimension dimension, int experience){
+                 LocationDimension dimension,PriorityQuest priorityQuest, int experience){
         this.entityType = entityId;
         this.description = description;
+        this.toolTip = toolTip;
         this.tasks = tasks;
         this.rewards = rewards;
         this.conditionUnlockData = conditionUnlockData;
         this.experience = experience;
         this.dimension = dimension;
         this.difficult = difficult;
+        this.priorityQuest = priorityQuest;
     }
 
     public static void encode(Quest quest, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeUtf(quest.id.toString());
         packetBuffer.writeUtf(quest.entityType.name());
+        packetBuffer.writeUtf(quest.toolTip);
         packetBuffer.writeUtf(quest.description);
         packetBuffer.writeInt(quest.experience);
 
@@ -49,12 +53,15 @@ public class Quest {
         packetBuffer.writeInt(quest.rewards.size());
         for (RewardData rewardData : quest.rewards) {
             packetBuffer.writeUtf(rewardData.type.name());
+            packetBuffer.writeUtf(rewardData.getObjectId());
             if (rewardData.type == RewardData.Type.ITEM){
-                packetBuffer.writeUtf(rewardData.itemId);
                 packetBuffer.writeInt(rewardData.count);
             }else if (rewardData instanceof UnlockRecipeRewardData data){
-                packetBuffer.writeUtf(data.itemId);
                 packetBuffer.writeUtf(data.recipeType);
+            }else if (rewardData instanceof UnlockZoneRewardData){
+               // No hace falta por ahora
+            }else if (rewardData instanceof UnlockOptionDialogRewardData data){
+                packetBuffer.writeUtf(data.npcType.name());
             }
         }
 
@@ -66,12 +73,14 @@ public class Quest {
 
         packetBuffer.writeUtf(quest.difficult.name());
         packetBuffer.writeUtf(quest.dimension.name());
+        packetBuffer.writeEnum(quest.priorityQuest);
     }
 
     public static Quest decode(FriendlyByteBuf packetBuffer) {
         ResourceLocation id = ResourceLocation.tryParse(packetBuffer.readUtf());
         BteNpcType entityId = BteNpcType.valueOf(packetBuffer.readUtf());
 
+        String tooltip = packetBuffer.readUtf();
         String description = packetBuffer.readUtf();
         int xp = packetBuffer.readInt();
 
@@ -86,14 +95,18 @@ public class Quest {
         for (int i = 0; i < rewardsNumber; i++) {
             RewardData.Type type = RewardData.Type.valueOf(packetBuffer.readUtf());
 
+            String objectId = packetBuffer.readUtf();
             if (type == RewardData.Type.ITEM){
-                String item = packetBuffer.readUtf();
-                int count =packetBuffer.readInt();
-                rewards.add(new RewardData(type, item,count ));
-            }else {
-                String item = packetBuffer.readUtf();
+                int count = packetBuffer.readInt();
+                rewards.add(new ItemRewardData(objectId,count));
+            }else if (type == RewardData.Type.UNLOCK_OPTION_DIALOG){
+                BteNpcType bteNpcType = BteNpcType.valueOf(packetBuffer.readUtf());
+                rewards.add(new UnlockOptionDialogRewardData(bteNpcType,objectId));
+            }else if (type == RewardData.Type.UNLOCK_RECIPE){
                 String recipeType = packetBuffer.readUtf();
-                rewards.add(new UnlockRecipeRewardData(item,recipeType));
+                rewards.add(new UnlockRecipeRewardData(objectId,recipeType));
+            }else if (type == RewardData.Type.UNLOCK_ZONE){
+                rewards.add(new UnlockZoneRewardData(objectId));
             }
 
         }
@@ -107,9 +120,14 @@ public class Quest {
         }
         Difficult difficult1 = Difficult.valueOf(packetBuffer.readUtf());
         LocationDimension dimension1 = LocationDimension.valueOf(packetBuffer.readUtf());
-        Quest quest = new Quest(entityId, description, tasks, rewards, conditionUnlocks,difficult1,dimension1, xp);
+        PriorityQuest priorityQuest1 = packetBuffer.readEnum(PriorityQuest.class);
+        Quest quest = new Quest(entityId, description,tooltip , tasks, rewards, conditionUnlocks, difficult1, dimension1,priorityQuest1, xp);
         quest.id = id;
         return quest;
+    }
+
+    public String getToolTip() {
+        return toolTip;
     }
 
     public LocationDimension getDimension() {
@@ -147,6 +165,11 @@ public class Quest {
     public List<RewardData> getRewards() {
         return rewards;
     }
+
+    public PriorityQuest getPriorityQuest() {
+        return priorityQuest;
+    }
+
     public enum Difficult {
         HARD(0x4DFF0000 ),
         MEDIUM(0x4DFFFF00),
@@ -161,5 +184,9 @@ public class Quest {
         NETHER,
         END,
         TWILIGHT_FOREST
+    }
+    public enum PriorityQuest{
+        MAIN_QUEST,
+        SIDE_QUEST;
     }
 }

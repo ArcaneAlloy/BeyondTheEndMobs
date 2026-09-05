@@ -23,6 +23,8 @@ import java.util.*;
  */
 public class ServerData extends SavedData {
 	private Map<RecipeType<?>,List<UnlockRecipe>> recipes;
+	private boolean unlockTwilightForestPortal = false;
+
 	public Map<RecipeType<?>,List<UnlockRecipe>> getRecipesManager() {
 		if (this.recipes == null) {
 			Collection<RecipeType<?>> recipeTypes = ForgeRegistries.RECIPE_TYPES.getValues();
@@ -59,6 +61,13 @@ public class ServerData extends SavedData {
 		return recipe1.orElse(null);
 	}
 
+	public boolean unlockTwilightForestPortal(){
+		return this.unlockTwilightForestPortal;
+	}
+	public void unlockPortal(){
+		this.unlockTwilightForestPortal = true;
+	}
+
 	public static ServerData get() {
 		DimensionDataStorage manager = BteMobsMod.getServer().getLevel(Level.OVERWORLD)
 				.getDataStorage();
@@ -90,6 +99,7 @@ public class ServerData extends SavedData {
 				}
 			});
 		}
+		data.putBoolean("unlockTheTwilightForest",this.unlockTwilightForestPortal);
 		data.put("unlockRecipes",listTag);
 		return data;
 	}
@@ -117,6 +127,7 @@ public class ServerData extends SavedData {
 				map.put(type,list);
 			}
 		}
+		created.unlockTwilightForestPortal = data.getBoolean("unlockTheTwilightForest");
 		created.recipes = map;
 		return created;
 	}

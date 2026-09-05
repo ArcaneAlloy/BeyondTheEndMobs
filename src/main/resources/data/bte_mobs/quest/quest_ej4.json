@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Tengo hambre, Caza 15 Ovejas.",
+  "description": "Tengo hambre, Caza 15 Cerdo.",
   "difficult" : "MEDIUM",
   "dimension" : "OVERWORLD",
   "toolTip" : "tooltip de ejemplo",
@@ -11,7 +11,7 @@
       "type": "HUNTER",
       "description": "La descripcion",
       "count": 15,
-      "entityIdLocation": "minecraft:sheep"
+      "entityIdLocation": "minecraft:pig"
     }
   ],
   "rewards": [
@@ -19,16 +19,11 @@
       "type": "ITEM",
       "itemId": "minecraft:gold_ingot",
       "count": 15
-    },
-    {
-      "type": "UNLOCK_RECIPE",
-      "recipeId": "minecraft:diamond_axe",
-      "recipeType" : "blacksmith"
     }
   ],
   "conditionUnlockData": [
     {
-      "locationId": "bte_mobs:quest_ej1",
+      "locationId": "bte_mobs:quest_ej2",
       "type" : "PARENT_QUEST"
     }
   ],

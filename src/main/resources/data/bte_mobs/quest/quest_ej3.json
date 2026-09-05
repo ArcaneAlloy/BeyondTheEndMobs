@@ -3,6 +3,9 @@
   "description": "Hay muchos zombies , Caza 15 zombies , 4 Husk, 4 Drowned",
   "difficult" : "EASY",
   "dimension" : "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+  "priorityQuest" : "SIDE_QUEST",
+
   "tasks": [
     {
       "type": "HUNTER",

@@ -3,6 +3,9 @@
   "description": "Tengo hambre, Caza 5 Ovejas.",
   "difficult" : "EASY",
   "dimension" : "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+  "priorityQuest" : "SIDE_QUEST",
+
   "tasks": [
     {
       "type": "HUNTER",
@@ -16,6 +19,11 @@
       "type": "ITEM",
       "itemId": "minecraft:gold_ingot",
       "count": 3
+    },
+    {
+      "type": "UNLOCK_OPTION_DIALOG",
+      "optionDialogId": "warlock:open_craft",
+      "npcType": "WARLOCK"
     }
   ],
   "conditionUnlockData": [

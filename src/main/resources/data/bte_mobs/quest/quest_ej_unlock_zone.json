@@ -1,0 +1,27 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Tengo hambre, Caza 15 Cerdo.",
+  "difficult" : "MEDIUM",
+  "dimension" : "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+  "priorityQuest" : "SIDE_QUEST",
+
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "La descripcion",
+      "count": 1,
+      "entityIdLocation": "minecraft:pig"
+    }
+  ],
+  "rewards": [
+    {
+     "type": "UNLOCK_ZONE",
+      "zoneId": "the_twilight_forest"
+    }
+  ],
+  "conditionUnlockData": [
+
+  ],
+  "experience" : 10
+}
