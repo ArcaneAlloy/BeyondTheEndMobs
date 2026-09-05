@@ -1,0 +1,23 @@
+{
+  "entityType": "DRUID",
+  "description": "El Amethyst Crab habita en las geodas. Derrótalo.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a un Amethyst Crab",
+      "count": 1,
+      "entityIdLocation": "cataclysm:amethyst_crab"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 20
+}

@@ -1,0 +1,28 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "La Hydra es una bestia de múltiples cabezas. Derrótala y trae su drop a Anna.",
+  "difficult": "HARD",
+  "dimension": "TWILIGHT_FOREST",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a la Hydra",
+      "count": 1,
+      "entityIdLocation": "twilightforest:hydra"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "itemId": "twilightforest:fiery_ingot",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

@@ -1,0 +1,28 @@
+{
+  "entityType": "DRUID",
+  "description": "El Ur-Ghast domina la Dark Tower. Derrótalo y entrega su Carminite a Anna.",
+  "difficult": "HARD",
+  "dimension": "TWILIGHT_FOREST",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Ur-Ghast",
+      "count": 1,
+      "entityIdLocation": "twilightforest:ur_ghast"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "itemId": "twilightforest:carminite",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

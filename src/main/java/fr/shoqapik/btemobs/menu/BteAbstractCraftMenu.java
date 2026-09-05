@@ -252,17 +252,38 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
         return total;
     }
     public void craftItemServer(ServerPlayer serverPlayer, Optional<? extends Recipe<?>> clickedRecipe) {
-        // Usar directamente la receta enviada por el cliente (por ID).
-        // No recalculamos via getCraftableRecipes(craftSlots) porque cuando llega
-        // el CraftItemPacket los craftSlots pueden estar vacios segun el orden de
-        // procesamiento de paquetes, lo que provocaba que la animacion no se disparara.
-        // La validacion real (hasItems) se hace abajo con el inventario del jugador.
+        // Usar la receta enviada por el cliente (por ID), pero SOLO si coincide
+        // con lo que hay realmente en los craftSlots en este momento. El cliente
+        // manda la ultima receta "clickada" en el libro de recetas, que puede
+        // quedar desincronizada de lo que hay fisicamente en los slots (por eso
+        // aparecia el bug: ingredientes de Claymore -> resultado Pantalones de
+        // Hierro, porque esa era la receta cacheada por el libro).
+        // assemble() en BteAbstractRecipe siempre devuelve result.copy() sin
+        // comprobar el inventario, asi que esta validacion es imprescindible
+        // antes de fiarnos de la receta que llega del cliente.
         Recipe recipe = null;
 
         if (clickedRecipe.isPresent()) {
-            recipe = clickedRecipe.get();
-        } else {
-            // Fallback: si el cliente no mando receta, buscar la primera crafteable
+            Recipe<?> candidate = clickedRecipe.get();
+            boolean slotsEmpty = this.craftSlots.isEmpty();
+            boolean matchesSlots = candidate instanceof BteAbstractRecipe bteCandidate
+                    && bteCandidate.matches(craftSlots, serverPlayer.getLevel());
+
+            if (slotsEmpty || matchesSlots) {
+                // Slots vacios (posible carrera de paquetes; mantenemos el
+                // comportamiento previo de confiar en el cliente) o la receta
+                // coincide con el contenido real: la usamos tal cual.
+                recipe = candidate;
+            }
+            // Si los slots NO estan vacios pero la receta del cliente NO
+            // coincide con lo que hay en ellos, la ignoramos: es justo el caso
+            // del bug (receta cacheada/obsoleta del libro de recetas) y
+            // recalculamos abajo a partir del contenido real de los slots.
+        }
+
+        if (recipe == null) {
+            // Sin receta valida: recalcular a partir del contenido real de
+            // los craftSlots.
             List<Recipe> list = getCraftableRecipes(serverPlayer);
             if (!list.isEmpty()) recipe = list.get(0);
         }

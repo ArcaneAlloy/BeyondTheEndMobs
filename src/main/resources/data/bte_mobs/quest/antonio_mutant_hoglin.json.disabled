@@ -1,0 +1,28 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Un Mutant Hoglin aterroriza el Nether. Derrótalo.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Mutant Hoglin",
+      "count": 1,
+      "entityIdLocation": "mutantmore:mutant_hoglin"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 25
+}

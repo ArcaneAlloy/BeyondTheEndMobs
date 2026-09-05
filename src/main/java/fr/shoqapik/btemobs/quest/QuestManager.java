@@ -30,7 +30,7 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
     }
     public static Quest getQuest(String id) {
         if (quests==null || quests.isEmpty())return null;
-        return quests.stream().filter((quest -> quest.id.toString().equals(id))).findFirst().orElseGet(null);
+        return quests.stream().filter((quest -> quest.id.toString().equals(id))).findFirst().orElse(null);
     }
     public static List<Quest> getQuest(ResourceLocation entityId) {
         return quests;

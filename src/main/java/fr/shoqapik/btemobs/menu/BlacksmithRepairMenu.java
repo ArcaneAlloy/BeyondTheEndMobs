@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
+import com.patataprojects.anvilchanges.repairs.RepairConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -67,79 +68,79 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
     public void createResult() {
         ItemStack itemstack = this.inputSlots.getItem(0);
 
-//        Map<String, List<String>> repairRules = RepairConfig.getAllRepairRules();
-//
-//            if (itemstack.isEmpty()) {
-//                this.resultSlots.setItem(0, ItemStack.EMPTY);
-//            } else {
-//                ItemStack itemstack1 = itemstack.copy();
-//                ItemStack itemstack2 = this.inputSlots.getItem(1);
-//
-//                if (!itemstack2.isEmpty()) {
-//                    if (itemstack.isDamageableItem() && repairRules.containsKey(itemstack1.getDescriptionId()) && repairRules.get(itemstack1.getDescriptionId()).get(0).equals(ForgeRegistries.ITEMS.getKey(itemstack2.getItem()).toString())){
-//
-//                        double percentage = 0.33;
-//                        if (isNugget(itemstack2)) percentage = 0.03;
-//
-//                        int itemsToUse = calculateRepairCost(itemstack1, itemstack2, percentage);
-//
-//                        int damage = itemstack1.getDamageValue();
-//                        int repairPerItem = (int) (itemstack1.getMaxDamage() * percentage);
-//
-//                        damage -= repairPerItem * itemsToUse;
-//                        damage = Math.max(0, damage);
-//
-//                        itemstack1.setDamageValue(damage);
-//                        this.repairItemCountCost = itemsToUse;
-//
-//                    }
-//                    else if (itemstack1.isDamageableItem() && isValidRepairItem(itemstack, itemstack2) && !repairRules.containsKey(itemstack1.getDescriptionId())) {
-//
-//                    /*int l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
-//                    if (l2 <= 0) {
-//                        this.resultSlots.setItem(0, ItemStack.EMPTY);
-//                        return;
-//                    }*/
-//
-//                        double percentage = 0.33;
-//                        if (isNugget(itemstack2)) percentage = 0.03;
-//
-//                        int itemsToUse = calculateRepairCost(itemstack1, itemstack2, percentage);
-//
-//                        int damage = itemstack1.getDamageValue();
-//                        int repairPerItem = (int) (itemstack1.getMaxDamage() * percentage);
-//
-//                        damage -= repairPerItem * itemsToUse;
-//                        damage = Math.max(0, damage);
-//
-//                        itemstack1.setDamageValue(damage);
-//                        this.repairItemCountCost = itemsToUse;
-//                    } else if (itemstack1.isDamageableItem() && itemstack1.is(itemstack2.getItem())) {
-//                        int durability1 = itemstack1.getMaxDamage() - itemstack1.getDamageValue();
-//                        int durability2 = itemstack2.getMaxDamage() - itemstack2.getDamageValue();
-//
-//                        int damage = itemstack1.getMaxDamage() - (durability1 + durability2);
-//                        if (damage < 0) {
-//                            damage = 0;
-//                        }
-//                        itemstack1.setDamageValue(damage);
-//                        this.repairItemCountCost = 1;
-//                    } else {
-//                        itemstack1 = ItemStack.EMPTY;
-//                    }
-//                }
-//
-//                if (StringUtils.isBlank(this.itemName)) {
-//                    if (itemstack.hasCustomHoverName()) {
-//                        itemstack1.resetHoverName();
-//                    }
-//                } else if (!this.itemName.equals(itemstack.getHoverName().getString())) {
-//                    itemstack1.setHoverName(Component.literal(this.itemName));
-//                }
-//
-//                this.resultSlots.setItem(0, itemstack1);
-//                this.broadcastChanges();
-//            }
+        Map<String, List<String>> repairRules = RepairConfig.getAllRepairRules();
+
+            if (itemstack.isEmpty()) {
+                this.resultSlots.setItem(0, ItemStack.EMPTY);
+            } else {
+                ItemStack itemstack1 = itemstack.copy();
+                ItemStack itemstack2 = this.inputSlots.getItem(1);
+
+                if (!itemstack2.isEmpty()) {
+                    if (itemstack.isDamageableItem() && repairRules.containsKey(itemstack1.getDescriptionId()) && repairRules.get(itemstack1.getDescriptionId()).get(0).equals(ForgeRegistries.ITEMS.getKey(itemstack2.getItem()).toString())){
+
+                        double percentage = 0.33;
+                        if (isNugget(itemstack2)) percentage = 0.03;
+
+                        int itemsToUse = calculateRepairCost(itemstack1, itemstack2, percentage);
+
+                        int damage = itemstack1.getDamageValue();
+                        int repairPerItem = (int) (itemstack1.getMaxDamage() * percentage);
+
+                        damage -= repairPerItem * itemsToUse;
+                        damage = Math.max(0, damage);
+
+                        itemstack1.setDamageValue(damage);
+                        this.repairItemCountCost = itemsToUse;
+
+                    }
+                    else if (itemstack1.isDamageableItem() && isValidRepairItem(itemstack, itemstack2) && !repairRules.containsKey(itemstack1.getDescriptionId())) {
+
+                    /*int l2 = Math.min(itemstack1.getDamageValue(), itemstack1.getMaxDamage() / 4);
+                    if (l2 <= 0) {
+                        this.resultSlots.setItem(0, ItemStack.EMPTY);
+                        return;
+                    }*/
+
+                        double percentage = 0.33;
+                        if (isNugget(itemstack2)) percentage = 0.03;
+
+                        int itemsToUse = calculateRepairCost(itemstack1, itemstack2, percentage);
+
+                        int damage = itemstack1.getDamageValue();
+                        int repairPerItem = (int) (itemstack1.getMaxDamage() * percentage);
+
+                        damage -= repairPerItem * itemsToUse;
+                        damage = Math.max(0, damage);
+
+                        itemstack1.setDamageValue(damage);
+                        this.repairItemCountCost = itemsToUse;
+                    } else if (itemstack1.isDamageableItem() && itemstack1.is(itemstack2.getItem())) {
+                        int durability1 = itemstack1.getMaxDamage() - itemstack1.getDamageValue();
+                        int durability2 = itemstack2.getMaxDamage() - itemstack2.getDamageValue();
+
+                        int damage = itemstack1.getMaxDamage() - (durability1 + durability2);
+                        if (damage < 0) {
+                            damage = 0;
+                        }
+                        itemstack1.setDamageValue(damage);
+                        this.repairItemCountCost = 1;
+                    } else {
+                        itemstack1 = ItemStack.EMPTY;
+                    }
+                }
+
+                if (StringUtils.isBlank(this.itemName)) {
+                    if (itemstack.hasCustomHoverName()) {
+                        itemstack1.resetHoverName();
+                    }
+                } else if (!this.itemName.equals(itemstack.getHoverName().getString())) {
+                    itemstack1.setHoverName(Component.literal(this.itemName));
+                }
+
+                this.resultSlots.setItem(0, itemstack1);
+                this.broadcastChanges();
+            }
     }
     private int calculateRepairCost(ItemStack tool, ItemStack material, double percentage) {
         int maxDamage = tool.getMaxDamage();

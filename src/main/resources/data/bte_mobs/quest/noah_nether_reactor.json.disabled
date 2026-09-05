@@ -1,0 +1,28 @@
+{
+  "entityType": "WARLOCK",
+  "description": "El Nether Reactor es una estructura del Incendium. Derrota al Ghast que la habita.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Explora el Nether Reactor",
+      "count": 1,
+      "entityIdLocation": "minecraft:ghast"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "itemId": "quark:soul_bead",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 20
+}

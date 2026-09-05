@@ -1,0 +1,28 @@
+{
+  "entityType": "WARLOCK",
+  "description": "El Mutant Frosted Zombie es una bestia congelada. Derrótalo.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Mutant Frosted Zombie",
+      "count": 1,
+      "entityIdLocation": "mutantmore:mutant_frozen_zombie"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_plague_asylum",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 25
+}

@@ -1,0 +1,33 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Demuestra tu habilidad alquímica creando una poción.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Crea una poción",
+      "count": 1,
+      "entityIdLocation": "minecraft:potion"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:glass_bottle",
+      "count": 16
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:redstone",
+      "count": 16
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:gunpowder",
+      "count": 16
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

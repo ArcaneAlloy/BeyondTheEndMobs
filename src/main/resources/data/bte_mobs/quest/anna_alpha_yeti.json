@@ -1,0 +1,28 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "El Alpha Yeti reina en las montañas nevadas del Twilight Forest.",
+  "difficult": "HARD",
+  "dimension": "TWILIGHT_FOREST",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Alpha Yeti",
+      "count": 1,
+      "entityIdLocation": "twilightforest:alpha_yeti"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 25
+}

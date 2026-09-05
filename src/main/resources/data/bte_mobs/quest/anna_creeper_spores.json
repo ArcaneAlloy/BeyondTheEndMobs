@@ -1,0 +1,23 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Las esporas de Creeper son un material único. Consigue unas.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Obtén Creeper Spores",
+      "count": 1,
+      "entityIdLocation": "savage_and_ravage:creeper_spores"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "itemId": "bte_mobs:griefer_armor",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

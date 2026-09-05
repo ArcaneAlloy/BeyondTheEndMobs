@@ -1,0 +1,23 @@
+{
+  "entityType": "WARLOCK",
+  "description": "El Plague Asylum esconde secretos oscuros. Explóralo.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Explora el Plague Asylum y obtén el item del cofre",
+      "count": 1,
+      "entityIdLocation": "minecraft:nether_star"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 16
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 15
+}

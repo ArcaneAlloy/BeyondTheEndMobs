@@ -1,0 +1,28 @@
+{
+  "entityType": "EXPLORER",
+  "description": "En las profundidades del Nether habita el Wildfire. Trae su núcleo.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Wildfire Core a Antonio",
+      "count": 1,
+      "entityIdLocation": "dungeons_mobs:wildfire_core"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

@@ -1,0 +1,23 @@
+{
+  "entityType": "WARLOCK",
+  "description": "El Lich ha infestado un templo antiguo. Derrótalo para abrir el portal al Twilight Forest.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Lich",
+      "count": 1,
+      "entityIdLocation": "twilightforest:lich"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:diamond",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 30
+}

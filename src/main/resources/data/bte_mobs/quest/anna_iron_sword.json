@@ -1,0 +1,23 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Todo herrero empieza con lo básico. Craftea una espada de hierro.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Craftea una Iron Sword",
+      "count": 1,
+      "entityIdLocation": "minecraft:iron_sword"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:iron_ingot",
+      "count": 16
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

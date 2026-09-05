@@ -1,0 +1,28 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Los fantasmas de las minas portan picos espectrales. Consigue uno.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Ghostly Pickaxe a Antonio",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:ghostly_pickaxe"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

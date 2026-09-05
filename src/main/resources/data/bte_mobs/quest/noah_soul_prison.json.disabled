@@ -1,0 +1,28 @@
+{
+  "entityType": "WARLOCK",
+  "description": "La Soul Prison es una torre siniestra. Llega a la cima.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Obtén el item de la cima de la Soul Prison",
+      "count": 1,
+      "entityIdLocation": "minecraft:nether_star"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 16
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_nether_gate",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 20
+}

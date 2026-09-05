@@ -1,0 +1,28 @@
+{
+  "entityType": "DRUID",
+  "description": "Derrota a la Hydra y trae su drop a Oriana.",
+  "difficult": "HARD",
+  "dimension": "TWILIGHT_FOREST",
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a la Hydra",
+      "count": 1,
+      "entityIdLocation": "twilightforest:hydra"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 25
+}

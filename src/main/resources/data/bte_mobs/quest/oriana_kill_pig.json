@@ -1,0 +1,23 @@
+{
+  "entityType": "DRUID",
+  "description": "La población de pigs ha crecido demasiado. Caza 10.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "Mata 10 Pigs",
+      "count": 10,
+      "entityIdLocation": "minecraft:pig"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 8
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 5
+}

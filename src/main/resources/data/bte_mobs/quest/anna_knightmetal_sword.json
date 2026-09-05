@@ -1,0 +1,28 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Es hora de mejorar tu espada. Forja una Knightmetal Sword.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Craftea una Knightmetal Sword",
+      "count": 1,
+      "entityIdLocation": "twilightforest:knightmetal_sword"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "twilightforest:knightmetal_ingot",
+      "count": 16
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_iron_sword",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 20
+}

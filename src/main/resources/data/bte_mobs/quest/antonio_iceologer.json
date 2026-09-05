@@ -1,0 +1,23 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Los Iceologers son peligrosos magos del hielo. Derrota a uno.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "Derrota a un Iceologer",
+      "count": 1,
+      "entityIdLocation": "savage_and_ravage:iceologer"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 16
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 15
+}

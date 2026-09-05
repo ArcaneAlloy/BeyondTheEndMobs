@@ -1,0 +1,33 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Usa una mesa de encantamientos para encantar un objeto.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Encanta un objeto",
+      "count": 1,
+      "entityIdLocation": "minecraft:enchanted_book"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 32
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:skeleton_skull",
+      "count": 3
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_enchanted_book",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}
