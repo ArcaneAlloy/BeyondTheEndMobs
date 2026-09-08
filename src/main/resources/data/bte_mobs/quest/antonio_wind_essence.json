@@ -14,7 +14,7 @@
   "rewards": [
     {
       "type": "UNLOCK_RECIPE",
-      "itemId": "minecraft:levitation_stone",
+      "recipeId": "minecraft:levitation_stone",
       "recipeType": "blacksmith"
     }
   ],

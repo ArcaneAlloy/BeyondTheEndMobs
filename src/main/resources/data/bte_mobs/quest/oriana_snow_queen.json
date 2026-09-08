@@ -14,7 +14,7 @@
   "rewards": [
     {
       "type": "UNLOCK_RECIPE",
-      "itemId": "twilightforest:ice_bomb",
+      "recipeId": "twilightforest:ice_bomb",
       "recipeType": "blacksmith"
     }
   ],

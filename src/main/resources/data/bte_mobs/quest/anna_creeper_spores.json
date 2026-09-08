@@ -14,7 +14,7 @@
   "rewards": [
     {
       "type": "UNLOCK_RECIPE",
-      "itemId": "bte_mobs:griefer_armor",
+      "recipeId": "bte_mobs:griefer_armor",
       "recipeType": "blacksmith"
     }
   ],

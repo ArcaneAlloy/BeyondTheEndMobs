@@ -17,15 +17,19 @@ import java.util.Locale;
 public class CustomButton extends Button {
     public ResourceLocation texture;
     private final ResourceLocation texture2;
-    public boolean hasItem = false;
+    public boolean hasColor = false;
     public ItemStack item = ItemStack.EMPTY;
     private boolean isLock=false;
     public boolean isSelect = true;
     public List<Component> listComponents = new ArrayList<>();
+    public float[] color = new float[]{
+            1.0F,1.0F,1.0F,1.0F
+    };
     public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height, Component message, OnPress onPress) {
         super(x, y, width, height, message, onPress);
         this.texture = texture;
         this.texture2 = texture2;
+
     }
     public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height, Component message,List<Component> components, OnPress onPress) {
         super(x, y, width, height, message, onPress);
@@ -33,7 +37,14 @@ public class CustomButton extends Button {
         this.texture2 = texture2;
         listComponents = components;
     }
-
+    public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height,float[] color, Component message,List<Component> components, OnPress onPress) {
+        super(x, y, width, height, message, onPress);
+        this.texture = texture;
+        this.texture2 = texture2;
+        listComponents = components;
+        this.hasColor = color.length>0;
+        this.color = color;
+    }
 
     public CustomButton(ResourceLocation texture, ResourceLocation texture2, int x, int y, int width, int height, Component message, OnPress onPress,Button.OnTooltip onTooltip) {
         super(x, y, width, height, message, onPress,onTooltip);
@@ -46,14 +57,15 @@ public class CustomButton extends Button {
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderTexture(0, texture);
 
+
         if (this.isHovered) {
-            RenderSystem.setShaderColor(0.7f, 0.7f, 0.7f, 1.0f); // Oscurece (70% de brillo)
+            RenderSystem.setShaderColor(color[0] * 0.7F, color[1]* 0.7F, color[2] *0.7F, 1.0f); // Oscurece (70% de brillo)
         } else {
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f); // Color normal
+            RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]); // Color normal
         }
 
         if(this.isLock || !isSelect){
-            RenderSystem.setShaderColor(0.3f, 0.3f, 0.3f, 1.0f); // Color normal
+            RenderSystem.setShaderColor(color[0] * 0.3F, color[1] * 0.3F, color[2] * 0.3F, 1.0f); // Color normal
         }
 
         blit(poseStack, this.x, this.y, 0, 0, this.width, this.height, this.width, this.height);

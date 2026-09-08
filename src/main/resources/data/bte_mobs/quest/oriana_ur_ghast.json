@@ -14,7 +14,7 @@
   "rewards": [
     {
       "type": "UNLOCK_RECIPE",
-      "itemId": "twilightforest:carminite",
+      "recipeId": "twilightforest:carminite",
       "recipeType": "blacksmith"
     }
   ],

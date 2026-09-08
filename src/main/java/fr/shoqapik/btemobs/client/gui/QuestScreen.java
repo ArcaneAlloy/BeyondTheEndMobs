@@ -92,7 +92,8 @@ public class QuestScreen extends Screen {
             String rawTitle = "title.quest."+rumor.getKey().id.toString().split(":")[1];
             String translatedTitle = rawTitle.contains(".") ? I18n.get(rawTitle) : rawTitle;
 
-            CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20, Component.literal(translatedTitle),List.of(Component.literal(rumor.getKey().getToolTip())),
+            float[] color = rumor.getValue().isReclaim ? new float[]{0,1.0F,0,1.0F} : new float[]{1.0F,1.0F,1.0f,1.0f};
+            CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20,color, Component.literal(translatedTitle),List.of(Component.literal(rumor.getKey().getToolTip())),
                     (p_95981_) -> {
                         if(isUnlock){
                             buttons.forEach(button1 -> ((CustomButton)button1).isSelect = false);
@@ -100,8 +101,7 @@ public class QuestScreen extends Screen {
                             refreshButton();
                             ((CustomButton)p_95981_).isSelect=true;
                         }
-                    }
-                    );
+                    });
 
             button.setIsLock(!isUnlock);
             buttons.add(this.addRenderableWidget(button));
@@ -225,7 +225,8 @@ public class QuestScreen extends Screen {
                 String rawTitle = "title.quest."+entry.getKey().id.toString().split(":")[1];
                 String translatedTitle = rawTitle.contains(".") ? I18n.get(rawTitle) : rawTitle;
 
-                CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20, Component.literal(translatedTitle),List.of(Component.literal(entry.getKey().getToolTip())),
+                float[] color = entry.getValue().isReclaim ? new float[]{0,1.0F,0,1.0F} : new float[]{1.0F,1.0F,1.0f,1.0f};
+                CustomButton button = new CustomButton(backgroundTexture, null , 0, 0, 100, 20,color, Component.literal(translatedTitle),List.of(Component.literal(entry.getKey().getToolTip())),
                         (p_95981_) -> {
                             if(isUnlock){
                                 buttons.forEach(button1 -> ((CustomButton)button1).isSelect = false);
@@ -233,11 +234,10 @@ public class QuestScreen extends Screen {
                                 refreshButton();
                                 ((CustomButton)p_95981_).isSelect=true;
                             }
-                        }
-                );
+                        });
 
                 button.setIsLock(!isUnlock);
-                if (currentQuest.id == entry.getKey().id){
+                if (entry.getValue().isComplete && !entry.getValue().isReclaim){
                     button.isSelect = true;
                 }
                 buttons.add(this.addRenderableWidget(button));

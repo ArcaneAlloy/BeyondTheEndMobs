@@ -14,7 +14,7 @@
   "rewards": [
     {
       "type": "UNLOCK_RECIPE",
-      "itemId": "twilightforest:fiery_ingot",
+      "recipeId": "twilightforest:fiery_ingot",
       "recipeType": "blacksmith"
     }
   ],
