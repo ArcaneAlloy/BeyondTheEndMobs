@@ -3,6 +3,8 @@
   "description": "Los Iceologers son peligrosos magos del hielo. Derrota a uno.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "HUNTER",

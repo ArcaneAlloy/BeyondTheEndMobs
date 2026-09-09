@@ -3,6 +3,8 @@
   "description": "Es hora de mejorar tu espada. Forja una Knightmetal Sword.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

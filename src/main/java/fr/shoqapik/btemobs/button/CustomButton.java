@@ -104,7 +104,7 @@ public class CustomButton extends Button {
     @Override
     public void renderToolTip(PoseStack p_93736_, int p_93737_, int p_93738_) {
         super.renderToolTip(p_93736_, p_93737_, p_93738_);
-
+        if (this.listComponents==null)return;
         if (!this.listComponents.isEmpty()){
             Minecraft.getInstance().screen.renderComponentTooltip(p_93736_, this.listComponents,p_93737_,p_93738_);
         }

@@ -3,6 +3,8 @@
   "description": "La población de rabbits ha crecido demasiado. Caza 10.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "HUNTER",

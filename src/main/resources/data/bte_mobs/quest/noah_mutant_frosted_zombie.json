@@ -3,6 +3,8 @@
   "description": "El Mutant Frosted Zombie es una bestia congelada. Derrótalo.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

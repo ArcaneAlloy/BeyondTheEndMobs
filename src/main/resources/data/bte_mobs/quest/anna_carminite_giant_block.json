@@ -3,6 +3,8 @@
   "description": "Viaja a la Isla de los Giants y obtén un Giant Carminite Block. Desbloquea el tier Diamante.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

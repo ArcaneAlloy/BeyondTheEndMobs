@@ -3,6 +3,8 @@
   "description": "El Minoshroom habita en el Laberinto. Derrótalo.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

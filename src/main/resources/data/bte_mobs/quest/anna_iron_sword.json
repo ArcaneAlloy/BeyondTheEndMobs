@@ -3,6 +3,8 @@
   "description": "Todo herrero empieza con lo básico. Craftea una espada de hierro.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

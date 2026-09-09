@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.BteMobsMod;
 import fr.shoqapik.btemobs.quest.RewardData;
+import fr.shoqapik.btemobs.quest.UnlockRecipeRewardData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -11,8 +12,18 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ButtonReward extends Button {
     public RewardData data;
@@ -44,8 +55,56 @@ public class ButtonReward extends Button {
     @Override
     public void renderToolTip(PoseStack p_93736_, int p_93737_, int p_93738_) {
         super.renderToolTip(p_93736_, p_93737_, p_93738_);
-        this.minecraft.screen.renderComponentTooltip(p_93736_, this.minecraft.screen.getTooltipFromItem(item), p_93737_, p_93738_, item);
+        if (this.item.isEmpty()){
+            this.minecraft.screen.renderComponentTooltip(p_93736_, getMessageForType(),p_93737_,p_93738_);
+        }else {
+            this.minecraft.screen.renderComponentTooltip(p_93736_, this.minecraft.screen.getTooltipFromItem(item), p_93737_, p_93738_, item);
 
+        }
+
+    }
+
+    private List<Component> getMessageForType() {
+        boolean isGroupItem = this.data.getObjectId().contains("#");
+        String name = this.data.getObjectId().split(":")[1];
+        switch (this.data.type){
+            case UNLOCK_OPTION_DIALOG -> {
+                return List.of(Component.literal("Unlock Option Dialog "+ name));
+            }
+            case UNLOCK_RECIPE -> {
+                if (isGroupItem){
+
+                    List<Component> list = new ArrayList<>();
+                    list.add(Component.literal("Unlock Recipes :"));
+                    ResourceLocation tagId = new ResourceLocation(data.getObjectId().substring(1));
+
+                    TagKey<Item> tag = ItemTags.create(tagId);
+
+                    IForgeRegistry<Item> itemRegistry = ForgeRegistries.ITEMS;
+                    int count = 0;
+                    for (ResourceLocation rl : itemRegistry.getKeys()){
+                        ItemStack item = new ItemStack(ForgeRegistries.ITEMS.getValue(rl));
+
+                        if (item.is(tag)){
+                            count++;
+                            list.add(item.getDisplayName());
+                        }
+                        if (count>10){
+                            list.add(Component.literal("more items"));
+                            break;
+                        }
+                    }
+                    return list;
+                }
+                return List.of(Component.literal("Unlock Recipe "+ name));
+            }
+            case UNLOCK_ZONE -> {
+                return List.of(Component.literal("Unlock Zone "+ name));
+            }
+            default -> {
+                return List.of(Component.literal("Reward not implement. "));
+            }
+        }
     }
 
     public boolean isMouseOver(double p_93672_, double p_93673_) {

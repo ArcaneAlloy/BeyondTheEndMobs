@@ -3,6 +3,8 @@
   "description": "Los Gusters vagan por el desierto. Derrota a uno y trae su ojo.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

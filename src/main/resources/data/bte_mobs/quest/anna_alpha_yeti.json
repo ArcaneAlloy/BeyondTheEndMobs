@@ -3,6 +3,7 @@
   "description": "El Alpha Yeti reina en las montañas nevadas del Twilight Forest.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
   "tasks": [
     {
       "type": "BOSS_HUNTER",

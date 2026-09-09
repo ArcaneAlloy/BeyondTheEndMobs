@@ -29,6 +29,15 @@
       "type": "UNLOCK_RECIPE",
       "recipeId": "#bte_mobs:druid_craft1",
       "recipeType" : "druid_recipe_type"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "minecraft:diamond_axe",
+      "recipeType" : "blacksmith"
+    },
+    {
+      "type": "UNLOCK_ZONE",
+      "zoneId": "bte_mobs:the_twilight_forest"
     }
   ],
   "conditionUnlockData": [

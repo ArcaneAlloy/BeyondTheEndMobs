@@ -3,6 +3,8 @@
   "description": "El Lich ha infestado un templo antiguo. Derrótalo para abrir el portal al Twilight Forest.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

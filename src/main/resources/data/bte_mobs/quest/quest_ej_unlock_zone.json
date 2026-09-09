@@ -17,7 +17,7 @@
   "rewards": [
     {
      "type": "UNLOCK_ZONE",
-      "zoneId": "the_twilight_forest"
+      "zoneId": "bte_mobs:the_twilight_forest"
     }
   ],
   "conditionUnlockData": [

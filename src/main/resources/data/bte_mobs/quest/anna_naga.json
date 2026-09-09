@@ -3,6 +3,8 @@
   "description": "La Naga es la primera guardiana del Twilight Forest. Derrótala.",
   "difficult": "MEDIUM",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

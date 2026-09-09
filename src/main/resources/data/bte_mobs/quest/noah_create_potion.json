@@ -3,6 +3,8 @@
   "description": "Demuestra tu habilidad alquímica creando una poción.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

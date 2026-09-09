@@ -3,6 +3,8 @@
   "description": "Los no-muertos dejan restos pútridos. Recoge algo de carne podrida.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

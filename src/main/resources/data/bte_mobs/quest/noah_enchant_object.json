@@ -3,6 +3,8 @@
   "description": "Usa una mesa de encantamientos para encantar un objeto.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

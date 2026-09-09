@@ -3,6 +3,8 @@
   "description": "Crea un Nature's Compass para poder localizar biomas.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

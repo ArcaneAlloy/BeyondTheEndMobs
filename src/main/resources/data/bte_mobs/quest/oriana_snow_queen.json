@@ -3,6 +3,8 @@
   "description": "La Snow Queen reina en el Aurora Palace. Derrótala y entrega su drop a Anna.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

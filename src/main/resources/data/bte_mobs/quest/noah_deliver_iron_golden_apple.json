@@ -3,6 +3,8 @@
   "description": "Entrega un lingote de hierro y una manzana de oro.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

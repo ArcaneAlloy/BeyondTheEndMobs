@@ -3,6 +3,8 @@
   "description": "Prepara y entrega 1x Chocolate Bar.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

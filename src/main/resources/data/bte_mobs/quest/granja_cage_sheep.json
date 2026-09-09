@@ -3,6 +3,8 @@
   "description": "Captura un Sheep usando una Cage.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

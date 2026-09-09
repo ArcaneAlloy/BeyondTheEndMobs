@@ -3,6 +3,8 @@
   "description": "Los Artifacts son objetos mágicos únicos. Reúne 15 de ellos.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

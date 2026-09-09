@@ -3,6 +3,8 @@
   "description": "Consigue tu propio caballo personal.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

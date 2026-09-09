@@ -3,6 +3,8 @@
   "description": "Los Knight Phantoms protegen el Goblin Knight Stronghold. Derrótalos.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

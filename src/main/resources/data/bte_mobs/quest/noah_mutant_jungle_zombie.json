@@ -3,6 +3,8 @@
   "description": "El Mutant Jungle Zombie acecha en la jungla. Derrótalo.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

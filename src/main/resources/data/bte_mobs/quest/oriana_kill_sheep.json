@@ -3,6 +3,9 @@
   "description": "La población de sheep ha crecido demasiado. Caza 10.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
+
   "tasks": [
     {
       "type": "HUNTER",

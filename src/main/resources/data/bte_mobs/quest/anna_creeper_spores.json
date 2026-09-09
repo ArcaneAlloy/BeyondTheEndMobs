@@ -3,6 +3,8 @@
   "description": "Las esporas de Creeper son un material único. Consigue unas.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

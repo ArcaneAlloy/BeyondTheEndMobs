@@ -3,6 +3,8 @@
   "description": "Derrota a un Windcaller y tráeme su Wind Essence.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

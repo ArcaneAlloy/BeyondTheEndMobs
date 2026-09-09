@@ -19,11 +19,6 @@
       "type": "ITEM",
       "itemId": "minecraft:gold_ingot",
       "count": 3
-    },
-    {
-      "type": "UNLOCK_OPTION_DIALOG",
-      "optionDialogId": "warlock:open_craft",
-      "npcType": "WARLOCK"
     }
   ],
   "conditionUnlockData": [

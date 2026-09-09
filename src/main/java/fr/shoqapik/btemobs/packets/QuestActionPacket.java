@@ -67,15 +67,10 @@ public class QuestActionPacket {
                                             IForgeRegistry<Item> itemRegistry = ForgeRegistries.ITEMS;
                                             for (ResourceLocation rl : itemRegistry.getKeys()){
                                                 ItemStack item = new ItemStack(ForgeRegistries.ITEMS.getValue(rl));
-                                                for (TagKey<Item> tagItem : item.getTags().toList()){
-                                                    BteMobsMod.LOGGER.info("item {}",tagItem.toString());
-                                                }
 
                                                 if (item.is(tag)){
-                                                    BteMobsMod.LOGGER.info("tiene el tag correcto {}",item);
                                                     if (data instanceof UnlockRecipeRewardData unlockData) {
                                                         RecipeType<?> type = getRecipeTypeForId(unlockData);
-                                                        BteMobsMod.LOGGER.info("type {}",type);
 
                                                         if (type == null) {
                                                             return;
@@ -169,23 +164,27 @@ public class QuestActionPacket {
     }
 
 
-    public static QuestActionPacket decode(FriendlyByteBuf packetBuffer) {
-        Quest quest;
-        if (packetBuffer.array().length>2){
-             quest= Quest.decode(packetBuffer);
-        }else {
-            quest = null;
+    public static QuestActionPacket decode(FriendlyByteBuf buf) {
+        Quest quest = null;
+
+        if (buf.readBoolean()) {
+            quest = Quest.decode(buf);
         }
-        int action = packetBuffer.readInt();
-        int idPlayer = packetBuffer.readInt();
-        return new QuestActionPacket(quest,action,idPlayer);
+
+        int action = buf.readInt();
+        int idPlayer = buf.readInt();
+
+        return new QuestActionPacket(quest, action, idPlayer);
     }
 
-    public static void encode(QuestActionPacket msg, FriendlyByteBuf packetBuffer) {
-        if (msg.quest!=null){
-            Quest.encode(msg.quest,packetBuffer);
+    public static void encode(QuestActionPacket msg, FriendlyByteBuf buf) {
+        buf.writeBoolean(msg.quest != null);
+
+        if (msg.quest != null) {
+            Quest.encode(msg.quest, buf);
         }
-        packetBuffer.writeInt(msg.action);
-        packetBuffer.writeInt(msg.idPlayer);
+
+        buf.writeInt(msg.action);
+        buf.writeInt(msg.idPlayer);
     }
 }

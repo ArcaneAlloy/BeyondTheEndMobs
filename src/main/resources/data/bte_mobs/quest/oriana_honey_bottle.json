@@ -3,6 +3,8 @@
   "description": "Las abejas producen miel deliciosa. Consigue una botella.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "COLLECT",

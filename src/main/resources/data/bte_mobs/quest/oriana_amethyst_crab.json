@@ -3,6 +3,8 @@
   "description": "El Amethyst Crab habita en las geodas. Derrótalo.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

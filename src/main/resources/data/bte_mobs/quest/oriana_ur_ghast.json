@@ -3,6 +3,8 @@
   "description": "El Ur-Ghast domina la Dark Tower. Derrótalo y entrega su Carminite a Anna.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
+
   "tasks": [
     {
       "type": "BOSS_HUNTER",

@@ -38,7 +38,11 @@ public class Quest {
     public static void encode(Quest quest, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeUtf(quest.id.toString());
         packetBuffer.writeUtf(quest.entityType.name());
-        packetBuffer.writeUtf(quest.toolTip);
+        packetBuffer.writeBoolean(quest.toolTip!=null);
+        if (quest.toolTip!=null){
+            packetBuffer.writeUtf(quest.toolTip);
+        }
+
         packetBuffer.writeUtf(quest.description);
         packetBuffer.writeInt(quest.experience);
 
@@ -79,8 +83,12 @@ public class Quest {
     public static Quest decode(FriendlyByteBuf packetBuffer) {
         ResourceLocation id = ResourceLocation.tryParse(packetBuffer.readUtf());
         BteNpcType entityId = BteNpcType.valueOf(packetBuffer.readUtf());
-
-        String tooltip = packetBuffer.readUtf();
+        String tooltip;
+        if (packetBuffer.readBoolean()){
+            tooltip = packetBuffer.readUtf();
+        }else {
+            tooltip = "";
+        }
         String description = packetBuffer.readUtf();
         int xp = packetBuffer.readInt();
 
