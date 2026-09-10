@@ -4,6 +4,7 @@
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
   "toolTip" : "tooltip de ejemplo",
+  "priorityQuest" : "SIDE_QUEST",
 
   "tasks": [
     {
