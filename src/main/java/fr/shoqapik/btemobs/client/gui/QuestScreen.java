@@ -10,6 +10,7 @@ import fr.shoqapik.btemobs.capability.RecipeCapability;
 import fr.shoqapik.btemobs.capability.StatTaskData;
 import fr.shoqapik.btemobs.capability.UnlockState;
 import fr.shoqapik.btemobs.client.widget.ButtonReward;
+import fr.shoqapik.btemobs.client.widget.ButtonTask;
 import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.packets.QuestActionPacket;
 import fr.shoqapik.btemobs.quest.Quest;
@@ -55,6 +56,8 @@ public class QuestScreen extends Screen {
     private Quest currentQuest =null;
     private List<Button> buttons = new ArrayList<>();
     private List<ButtonReward> slotRewards= new ArrayList<>();
+    private List<ButtonTask> slotTask= new ArrayList<>();
+
     private Button stateQuest;
     private boolean isComplete;
     private boolean isReclaim;
@@ -171,9 +174,16 @@ public class QuestScreen extends Screen {
 
     public void refreshButton(){
         slotRewards.clear();
+        slotTask.clear();
         int i = 0;
         int x = (int) (this.leftPos - (this.width / 8)  +90);
         int y = (int) (this.height - 80 - 130);
+        for (StatTaskData data : this.quests.get(this.currentQuest).statTaskData){
+            ButtonTask buttonReward = new ButtonTask(x+113 ,y+39  + 17 * i,16,16,data,minecraft);
+            slotTask.add(buttonReward);
+            i++;
+        }
+        i = 0;
         for (RewardData data : this.currentQuest.getRewards()){
             ButtonReward buttonReward = new ButtonReward(x+12 + 18 * i ,y+39,16,16,data,minecraft);
             slotRewards.add(buttonReward);
@@ -254,13 +264,13 @@ public class QuestScreen extends Screen {
             return 1;
         }
         if (state.isComplete && !state.isReclaim) {
-            return -1; // completada, recompensa pendiente
+            return -1;
         }
 
         if (!state.isComplete) {
-            return 0; // todavía no completada
+            return 0;
         }
-        return 2; // completada y recompensa obtenida
+        return 2;
     }
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
@@ -311,25 +321,20 @@ public class QuestScreen extends Screen {
             drawWordWrap(Component.literal("Task :"), x + 112, y + 30, 220, 16777215, font, poseStack);
             int i = 0;
             int j = 0;
-            Component prevComponent = null;
-            for (StatTaskData data : quests.get(currentQuest).statTaskData){
+            for (ButtonTask buttonTask : slotTask){
                 poseStack.pushPose();
-                int d = 0;
-                if (prevComponent !=null){
-                    d = font.width(prevComponent);
-                }
-                poseStack.translate(x + 12 + d*j  +101,y + i * 6 + 38,0.0D);
+                poseStack.translate(x +113,y + i * 16 + 38,0.0D);
                 poseStack.scale(0.5F,0.5F,0.5F);
-                Component component = getComponentForType(data);
-                drawWordWrap(component,0 ,0 , 150, 16777215, font, poseStack);
-                bar(poseStack,data);
+                this.drawWordWrap(Component.literal(buttonTask.data.count +"/"+buttonTask.data.maxCount), (int) (x-29), (int) (y-25),100,16777215,font,poseStack);
+                bar(poseStack,buttonTask.data);
                 i++;
                 if (i == 3 ){
                     j++;
                     i = 0;
                 }
-                prevComponent = component;
                 poseStack.popPose();
+                buttonTask.render(poseStack,mouseX,mouseY,partialTick);
+
             }
 
             poseStack.popPose();
@@ -350,7 +355,7 @@ public class QuestScreen extends Screen {
         int k =i/2 - 91;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, GUI_BARS_LOCATION);
-        poseStack.translate(-50.0,-12.0,0);
+        poseStack.translate(-74.0 ,5.0,0);
         this.drawBar(poseStack, k, j, (float) statTaskData.count/(float) statTaskData.maxCount);
         Component component = Component.empty();
         int l = this.minecraft.font.width(component);
@@ -438,6 +443,7 @@ public class QuestScreen extends Screen {
 
         this.down.visible = visibleEndIndex < quests.size();
         this.down.active = visibleEndIndex < quests.size();
+        this.stateQuest.setMessage(Component.literal(this.isComplete ? "Quest Complete." : "Quest Incomplete."));
     }
 
     public void drawWordWrap(FormattedText text, int x, int y, int width, int color, Font font, PoseStack stack) {

@@ -3,6 +3,8 @@
   "description": "Alimenta a un Big Chungus en el Twilight Forest para obtener las Magic Beans.",
   "difficult": "MEDIUM",
   "dimension": "TWILIGHT_FOREST",
+  "toolTip" : "tooltip de ejemplo",
+  "priorityQuest" : "SIDE_QUEST",
   "tasks": [
     {
       "type": "COLLECT",

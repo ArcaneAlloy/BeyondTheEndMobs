@@ -8,7 +8,7 @@
 
   "tasks": [
     {
-      "type": "BOSS_HUNTER",
+      "type": "HUNTER",
       "description": "Derrota a la Hydra",
       "count": 1,
       "entityIdLocation": "twilightforest:hydra"

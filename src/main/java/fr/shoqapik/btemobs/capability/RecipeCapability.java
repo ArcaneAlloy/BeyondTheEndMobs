@@ -171,7 +171,7 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
                         List<StatTaskData> taskDataList = new ArrayList<>();
                         List<UnlockState> unlockStates = new ArrayList<>();
                         for (TaskData data:quest.getTasks()){
-                            taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.type));
+                            taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.description,data.type));
                         }
                         for (RewardData rewardData : quest.getRewards()){
                             dataList.add(new StatRewardData(rewardData.getObjectId(),0,rewardData.count,false,rewardData.type));
@@ -291,7 +291,7 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
                 List<StatTaskData> taskDataList = new ArrayList<>();
                 List<UnlockState> unlockStates = new ArrayList<>();
                 for (TaskData data:quest.getTasks()){
-                    taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.type));
+                    taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.description,data.type));
                 }
                 for (RewardData rewardData : quest.getRewards()){
                     if (rewardData.type == RewardData.Type.UNLOCK_OPTION_DIALOG){

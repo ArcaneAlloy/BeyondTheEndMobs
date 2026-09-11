@@ -8,7 +8,7 @@
 
   "tasks": [
     {
-      "type": "BOSS_HUNTER",
+      "type": "HUNTER",
       "description": "Derrota a un Amethyst Crab",
       "count": 1,
       "entityIdLocation": "cataclysm:amethyst_crab"
