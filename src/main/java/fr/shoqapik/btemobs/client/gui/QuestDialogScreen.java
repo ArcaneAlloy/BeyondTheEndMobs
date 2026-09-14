@@ -48,15 +48,21 @@ public class QuestDialogScreen extends Screen {
     private String currentLine = "";
     private int page;
     private ResourceLocation currentDialogSound;
+    private boolean muteSound;
 
     private List<Button> buttons = new ArrayList<>();
     private boolean declined;
 
     public QuestDialogScreen(int entityId, BteNpcType bteNpcType, OptionDialogs quest) {
+        this(entityId, bteNpcType, quest, false);
+    }
+
+    public QuestDialogScreen(int entityId, BteNpcType bteNpcType, OptionDialogs quest, boolean muteSound) {
         super(Component.literal(bteNpcType.name().toLowerCase(Locale.ROOT)));
         this.entityId = entityId;
         this.bteNpcType = bteNpcType;
         this.quest = quest;
+        this.muteSound = muteSound;
     }
 
 
@@ -121,7 +127,7 @@ public class QuestDialogScreen extends Screen {
         String translatedDialog = rawDialog.contains(".") ? I18n.get(rawDialog) : rawDialog;
 
         if (letterIndex < translatedDialog.length()) {
-            if (!typing && page < this.quest.getDialogSounds().size()) {
+            if (!typing && !muteSound && page < this.quest.getDialogSounds().size()) {
 
                 if (currentDialogSound != null) {
                     Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);

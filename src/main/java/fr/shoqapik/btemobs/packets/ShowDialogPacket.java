@@ -19,11 +19,17 @@ public class ShowDialogPacket {
     public int entityId;
     public BteNpcType bteNpcType;
     public OptionDialogs quest;
+    public boolean muteSound;
 
     public ShowDialogPacket(int entityId, BteNpcType bteNpcType, OptionDialogs quest) {
+        this(entityId, bteNpcType, quest, false);
+    }
+
+    public ShowDialogPacket(int entityId, BteNpcType bteNpcType, OptionDialogs quest, boolean muteSound) {
         this.entityId = entityId;
         this.bteNpcType = bteNpcType;
         this.quest = quest;
+        this.muteSound = muteSound;
     }
 
     public static void handle(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
@@ -39,13 +45,15 @@ public class ShowDialogPacket {
         int entityId = packetBuffer.readInt();
         String bteNpcType = packetBuffer.readUtf();
         OptionDialogs quest = OptionDialogs.decode(packetBuffer);
-        return new ShowDialogPacket(entityId, BteNpcType.valueOf(bteNpcType), quest);
+        boolean muteSound = packetBuffer.readBoolean();
+        return new ShowDialogPacket(entityId, BteNpcType.valueOf(bteNpcType), quest, muteSound);
     }
 
     public static void encode(ShowDialogPacket msg, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeInt(msg.entityId);
         packetBuffer.writeUtf(msg.bteNpcType.name());
         OptionDialogs.encode(msg.quest, packetBuffer);
+        packetBuffer.writeBoolean(msg.muteSound);
     }
 
 }

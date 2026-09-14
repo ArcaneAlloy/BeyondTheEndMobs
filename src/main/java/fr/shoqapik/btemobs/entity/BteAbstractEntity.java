@@ -62,6 +62,24 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
 
     private List<UUID> interactedPlayers = new ArrayList<>();
 
+    // Contador (0/1) por jugador: indica si ya se reprodujo el sonido del
+    // dialogo "tasking" (repetido) desde la ultima vez que el jugador entro
+    // en la dimension del lobby. No se persiste porque se reinicia al salir
+    // de ender_journey:the_forgotten_realm.
+    private final java.util.Set<UUID> taskingSoundPlayedPlayers = new java.util.HashSet<>();
+
+    public boolean hasTaskingSoundCounter(UUID playerUuid) {
+        return taskingSoundPlayedPlayers.contains(playerUuid);
+    }
+
+    public void markTaskingSoundPlayed(UUID playerUuid) {
+        taskingSoundPlayedPlayers.add(playerUuid);
+    }
+
+    public void resetTaskingSoundCounter(UUID playerUuid) {
+        taskingSoundPlayedPlayers.remove(playerUuid);
+    }
+
     public BteAbstractEntity(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
     }

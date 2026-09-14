@@ -79,7 +79,7 @@ public class BteMobsModClient {
     }
 
     public static void handleDialogPacket(ShowDialogPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest));
+        Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest, msg.muteSound));
     }
 
     public static void handleRumorsPacket(int id) {

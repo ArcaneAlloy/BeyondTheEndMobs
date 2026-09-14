@@ -21,6 +21,7 @@ import fr.shoqapik.btemobs.rumors.RumorsManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -38,6 +39,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.UUID;
+
+import static fr.shoqapik.btemobs.SacredPlaceHandler.FORGOTTEN_REALM;
 
 @Mod.EventBusSubscriber(modid = BteMobsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEvents {
@@ -196,9 +201,40 @@ public class CommonEvents {
             if(quest == null) quest = OptionDialogsManager.getQuest(entityId, OptionDialogs.Type.TASKING);
             if(quest != null && event.getTarget() instanceof BteAbstractEntity) {
                 BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) event.getTarget();
+                UUID playerUuid = event.getEntity().getUUID();
 
-                BteMobsMod.sendToClient(new ShowDialogPacket(event.getTarget().getId(), bteAbstractEntity.getNpcType(), quest), (ServerPlayer) event.getEntity());
-                bteAbstractEntity.getInteractedPlayers().add(event.getEntity().getUUID());
+                boolean muteSound = false;
+                if (quest.getType() == OptionDialogs.Type.TASKING) {
+                    if (bteAbstractEntity.hasTaskingSoundCounter(playerUuid)) {
+                        // El contador de este NPC ya esta en 1: no repetir el sonido.
+                        muteSound = true;
+                    } else {
+                        // Segunda vez que habla con este NPC: contador 0 -> 1.
+                        bteAbstractEntity.markTaskingSoundPlayed(playerUuid);
+                    }
+                }
+
+                BteMobsMod.sendToClient(new ShowDialogPacket(event.getTarget().getId(), bteAbstractEntity.getNpcType(), quest, muteSound), (ServerPlayer) event.getEntity());
+                bteAbstractEntity.getInteractedPlayers().add(playerUuid);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        // Al salir del lobby (ender_journey:the_forgotten_realm), se reinicia
+        // a 0 el contador de sonido "tasking" de cada NPC para ese jugador.
+        if (!event.getFrom().equals(FORGOTTEN_REALM)) return;
+        if (event.getTo().equals(FORGOTTEN_REALM)) return;
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;
+
+        ServerLevel forgottenRealmLevel = serverPlayer.getServer().getLevel(FORGOTTEN_REALM);
+        if (forgottenRealmLevel == null) return;
+
+        UUID playerUuid = serverPlayer.getUUID();
+        for (Entity entity : forgottenRealmLevel.getAllEntities()) {
+            if (entity instanceof BteAbstractEntity bteAbstractEntity) {
+                bteAbstractEntity.resetTaskingSoundCounter(playerUuid);
             }
         }
     }
