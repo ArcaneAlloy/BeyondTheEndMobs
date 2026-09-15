@@ -133,5 +133,10 @@
   "bte_mobs.tier.3": "Épico",
   "bte_mobs.tier.4": "Legendario",
   "bte_mobs.tier.5": "Mítico",
-  "bte_mobs.enchanted_book.tooltip": "Clic derecho para desbloquear la receta"
+  "bte_mobs.enchanted_book.tooltip": "Clic derecho para desbloquear la receta",
+  "bte_mobs.usage.used_by_prefix": "Usado en:",
+  "bte_mobs.usage.crafting": "Crafteo",
+  "bte_mobs.usage.upgrading": "Mejora",
+  "bte_mobs.usage.enchanting": "Encantamiento",
+  "bte_mobs.usage.potion": "Pociones"
 }

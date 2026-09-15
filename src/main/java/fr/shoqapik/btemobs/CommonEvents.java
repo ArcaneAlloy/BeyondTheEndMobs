@@ -279,6 +279,141 @@ public class CommonEvents {
         };
     }
 
+    // ── Tooltip de uso por NPC (Anna/Blacksmith, Antonio/Explorer, Oriana/Druid, Noah/Warlock) ──
+    // Mapa: item id -> lista de tags "crudos", RECONSTRUIDO EN VIVO a partir del RecipeManager
+    // cada vez que las recetas se sincronizan/recargan (ver rebuildItemUsage() mas abajo y el
+    // handler de RecipesUpdatedEvent en ClientForgeEvents). Ya no depende de ningun archivo
+    // generado a mano: anadir/editar/borrar una receta bte_mobs:* se refleja solo. Tags posibles:
+    //   CRAFTED_BLACKSMITH  - el item es resultado de una receta de Anna (blacksmith / upgrade)
+    //   CRAFTED_EXPLORER    - el item es resultado de una receta de Antonio (explorer)
+    //   CRAFTED_DRUID       - el item es resultado de una receta de Oriana (druid)
+    //   UPGRADING           - el item es la base de una mejora en la Blacksmith
+    //   MATERIAL_CRAFTING   - el item es un ingrediente (no base) de blacksmith/upgrade/explorer/druid
+    //   ENCHANTING          - el item es material para encantamientos de Noah (warlock)
+    //   POTION              - el item es material para pociones de Noah (warlock), incluye redstone,
+    //                         glowstone y dragon's breath
+    // Para el tooltip, esos tags crudos se agrupan en 4 categorias de display (una sola linea
+    // "Used By: X, Y, Z"): CRAFTING (cualquier CRAFTED_* o MATERIAL_CRAFTING), UPGRADING, ENCHANTING, POTION.
+    private static volatile java.util.Map<String, java.util.List<String>> ITEM_USAGE_CACHE = java.util.Collections.emptyMap();
+
+    private static final java.util.List<String> USAGE_DISPLAY_GROUP_ORDER = java.util.List.of(
+        "CRAFTING", "UPGRADING", "ENCHANTING", "POTION"
+    );
+
+    public static java.util.List<String> getUsageDisplayGroupOrder() {
+        return USAGE_DISPLAY_GROUP_ORDER;
+    }
+
+    public static String getUsageDisplayGroup(String rawTag) {
+        return switch (rawTag) {
+            case "CRAFTED_BLACKSMITH", "CRAFTED_EXPLORER", "CRAFTED_DRUID", "MATERIAL_CRAFTING" -> "CRAFTING";
+            case "UPGRADING" -> "UPGRADING";
+            case "ENCHANTING" -> "ENCHANTING";
+            case "POTION" -> "POTION";
+            default -> null;
+        };
+    }
+
+    public static java.util.Map<String, java.util.List<String>> getItemUsage() {
+        return ITEM_USAGE_CACHE;
+    }
+
+    /**
+     * Reconstruye el mapa de uso a partir del RecipeManager actual (recetas ya sincronizadas al
+     * cliente). Se llama desde RecipesUpdatedEvent, asi que se ejecuta sola al entrar a un mundo
+     * y cada vez que se recargan datapacks (/reload) - no hace falta generar nada a mano nunca.
+     */
+    public static void rebuildItemUsage(net.minecraft.world.item.crafting.RecipeManager recipeManager) {
+        java.util.Map<String, java.util.Set<String>> usage = new java.util.HashMap<>();
+
+        java.util.function.BiConsumer<net.minecraft.world.item.ItemStack, String> tagStack = (stack, tag) -> {
+            if (stack == null || stack.isEmpty()) return;
+            net.minecraft.resources.ResourceLocation rl = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            if (rl == null) return;
+            usage.computeIfAbsent(rl.toString(), k -> new java.util.LinkedHashSet<>()).add(tag);
+        };
+
+        java.util.function.BiConsumer<net.minecraft.world.item.crafting.Ingredient, String> tagIngredient = (ingredient, tag) -> {
+            if (ingredient == null) return;
+            for (net.minecraft.world.item.ItemStack stack : ingredient.getItems()) {
+                tagStack.accept(stack, tag);
+            }
+        };
+
+        for (fr.shoqapik.btemobs.recipe.BlacksmithRecipe recipe :
+                recipeManager.getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.BLACKSMITH_RECIPE.get())) {
+            tagStack.accept(recipe.getResultItem(), "CRAFTED_BLACKSMITH");
+            for (net.minecraft.world.item.crafting.Ingredient ing : recipe.getIngredients()) {
+                tagIngredient.accept(ing, "MATERIAL_CRAFTING");
+            }
+        }
+
+        for (fr.shoqapik.btemobs.recipe.BlacksmithUpgradeRecipe recipe :
+                recipeManager.getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get())) {
+            tagStack.accept(recipe.getResultItem(), "CRAFTED_BLACKSMITH");
+            tagIngredient.accept(recipe.base, "UPGRADING");
+            for (net.minecraft.world.item.crafting.Ingredient ing : recipe.getIngredients()) {
+                if (ing == recipe.base) continue; // ya etiquetado como UPGRADING, no como material generico
+                tagIngredient.accept(ing, "MATERIAL_CRAFTING");
+            }
+        }
+
+        for (fr.shoqapik.btemobs.recipe.ExplorerRecipe recipe :
+                recipeManager.getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.EXPLORER_RECIPE_TYPE.get())) {
+            tagStack.accept(recipe.getResultItem(), "CRAFTED_EXPLORER");
+            tagIngredient.accept(recipe.getRequiredItems(), "MATERIAL_CRAFTING");
+        }
+
+        for (fr.shoqapik.btemobs.recipe.api.DruidRecipe recipe :
+                recipeManager.getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get())) {
+            tagStack.accept(recipe.getResultItem(), "CRAFTED_DRUID");
+            tagIngredient.accept(recipe.getRequiredItems(), "MATERIAL_CRAFTING");
+        }
+
+        for (fr.shoqapik.btemobs.recipe.WarlockRecipe recipe :
+                recipeManager.getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.WARLOCK_RECIPE.get())) {
+            tagIngredient.accept(recipe.getRequiredItems(), "ENCHANTING");
+        }
+
+        for (fr.shoqapik.btemobs.recipe.WarlockPotionRecipe recipe :
+                recipeManager.getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get())) {
+            tagStack.accept(recipe.getIngredientPrimary(), "POTION");
+        }
+
+        // Modificadores universales de pociones: estan hardcodeados en WarlockPotionRecipe#matches
+        // (redstone/glowstone/dragon's breath en slots fijos), no aparecen en el JSON de cada receta.
+        usage.computeIfAbsent("minecraft:redstone", k -> new java.util.LinkedHashSet<>()).add("POTION");
+        usage.computeIfAbsent("minecraft:glowstone_dust", k -> new java.util.LinkedHashSet<>()).add("POTION");
+        usage.computeIfAbsent("minecraft:dragon_breath", k -> new java.util.LinkedHashSet<>()).add("POTION");
+
+        java.util.Map<String, java.util.List<String>> built = new java.util.HashMap<>();
+        for (var entry : usage.entrySet()) {
+            built.put(entry.getKey(), new java.util.ArrayList<>(entry.getValue()));
+        }
+        ITEM_USAGE_CACHE = built;
+        BteMobsMod.LOGGER.info("[bte_mobs] Item usage tooltip cache rebuilt: {} items tagged", built.size());
+    }
+
+    public static net.minecraft.ChatFormatting getUsageGroupStyle(String group) {
+        return switch (group) {
+            case "CRAFTING" -> net.minecraft.ChatFormatting.GOLD;
+            case "UPGRADING" -> net.minecraft.ChatFormatting.YELLOW;
+            case "ENCHANTING" -> net.minecraft.ChatFormatting.AQUA;
+            case "POTION" -> net.minecraft.ChatFormatting.LIGHT_PURPLE;
+            default -> net.minecraft.ChatFormatting.GRAY;
+        };
+    }
+
+    public static String getUsageGroupLangKey(String group) {
+        return switch (group) {
+            case "CRAFTING" -> "bte_mobs.usage.crafting";
+            case "UPGRADING" -> "bte_mobs.usage.upgrading";
+            case "ENCHANTING" -> "bte_mobs.usage.enchanting";
+            case "POTION" -> "bte_mobs.usage.potion";
+            default -> "bte_mobs.usage.crafting";
+        };
+    }
+
     @SubscribeEvent
     public static void addQuestsData(AddReloadListenerEvent event){
         event.addListener(new OptionDialogsManager());

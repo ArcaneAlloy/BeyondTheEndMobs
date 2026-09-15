@@ -141,5 +141,10 @@
   "bte_mobs.tier.3": "Epic",
   "bte_mobs.tier.4": "Legendary",
   "bte_mobs.tier.5": "Mythic",
-  "bte_mobs.enchanted_book.tooltip": "Right-click to unlock the recipe"
+  "bte_mobs.enchanted_book.tooltip": "Right-click to unlock the recipe",
+  "bte_mobs.usage.used_by_prefix": "Used By:",
+  "bte_mobs.usage.crafting": "Crafting",
+  "bte_mobs.usage.upgrading": "Upgrading",
+  "bte_mobs.usage.enchanting": "Enchanting",
+  "bte_mobs.usage.potion": "Brewing Potions"
 }
