@@ -8,7 +8,7 @@
 
   "tasks": [
     {
-      "type": "",
+      "type": "COLLECT",
       "description": "Captura un Sheep con una Cage",
       "count": 1,
       "entityIdLocation": "minecraft:sheep"
