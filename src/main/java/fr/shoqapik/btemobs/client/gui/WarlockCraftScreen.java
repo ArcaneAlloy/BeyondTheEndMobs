@@ -281,6 +281,7 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
             }
         }
         this.renderGhostRecipe(p_97795_, this.leftPos, this.topPos, false, p_97798_);
+        this.renderGhostRecipeCounts();
 
         this.backButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
         this.forwardButton.render(p_97795_, p_97796_, p_97797_, p_97798_);
@@ -328,6 +329,16 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
             this.minecraft.screen.renderComponentTooltip(pPoseStack, this.minecraft.screen.getTooltipFromItem(itemstack), pMouseX, pMouseY, itemstack);
         }
 
+    }
+
+    private void renderGhostRecipeCounts() {
+        for (int i = 0; i < this.ghostRecipe.size(); ++i) {
+            GhostRecipe.GhostIngredient ingredient = this.ghostRecipe.get(i);
+            ItemStack stack = ingredient.getItem();
+            if (stack.getCount() > 1) {
+                this.minecraft.getItemRenderer().renderGuiItemDecorations(this.font, stack, ingredient.getX() + this.leftPos, ingredient.getY() + this.topPos);
+            }
+        }
     }
     private Component getFilterButtonTooltip() {
         return this.filterButton.isStateTriggered() ? this.getRecipeFilterName() : ALL_RECIPES_TOOLTIP;
