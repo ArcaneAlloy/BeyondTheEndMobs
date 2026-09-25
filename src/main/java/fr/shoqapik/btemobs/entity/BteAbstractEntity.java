@@ -232,6 +232,38 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
         return false;
     }
 
+    /**
+     * Coloca el resultado del crafteo directamente sobre el bloque de trabajo,
+     * sin animacion. Solo en servidor. Devuelve false si no se puede (sin
+     * bloque de trabajo, ya crafteando, o el bloque ya tiene un item), para
+     * que el llamante use el flujo animado normal.
+     */
+    public boolean placeCraftItemInstantly(ItemStack result) {
+        if(this.level.isClientSide || this.workBlock == null || this.isCrafting() || result.isEmpty()) {
+            return false;
+        }
+
+        BlockEntity blockEntity = this.level.getBlockEntity(this.workBlock);
+        if(!(blockEntity instanceof BteAbstractWorkBlockEntity)) {
+            return false;
+        }
+
+        IItemHandler handler = blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).orElse(null);
+        if(handler == null || !handler.getStackInSlot(0).isEmpty()) {
+            return false;
+        }
+
+        handler.insertItem(0, result.copy(), false);
+        // En el flujo animado el cliente inserta el item por su cuenta en el
+        // tick 115; aqui no hay animacion, asi que sincronizamos el bloque.
+        blockEntity.setChanged();
+
+        ServerLevel serverLevel = (ServerLevel) this.level;
+        serverLevel.sendParticles(ParticleTypes.CRIT, workBlock.getX() + 0.5D, workBlock.getY() + 1.1D, workBlock.getZ() + 0.5D, 6, 0.1D, 0.3D, 0.1D, 0.1D);
+        serverLevel.playSound(null, workBlock, SoundManager.HAMMER.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        return true;
+    }
+
     public boolean isCrafting() {
         return crafting;
     }

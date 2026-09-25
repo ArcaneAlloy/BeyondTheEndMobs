@@ -138,5 +138,7 @@
   "bte_mobs.usage.crafting": "Crafteo",
   "bte_mobs.usage.upgrading": "Mejora",
   "bte_mobs.usage.enchanting": "Encantamiento",
-  "bte_mobs.usage.potion": "Pociones"
+  "bte_mobs.usage.potion": "Pociones",
+  "gui.bte_mobs.blacksmith.no_animations": "Sin animaciones",
+  "gui.bte_mobs.blacksmith.no_animations.tooltip": "Omite la animación de martilleo de la Herrera. El objeto aparece sobre el yunque al instante."
 }

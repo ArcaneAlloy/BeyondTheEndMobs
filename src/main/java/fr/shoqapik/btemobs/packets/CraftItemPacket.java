@@ -13,17 +13,15 @@ import java.util.function.Supplier;
 public class CraftItemPacket {
 
     public final ResourceLocation recipe;
+    public final boolean skipAnimation;
 
-    public CraftItemPacket(Recipe<?> recipe) {
-        if(recipe == null) {
-            this.recipe = null;
-        } else {
-            this.recipe = recipe.getId();
-        }
+    public CraftItemPacket(Recipe<?> recipe, boolean skipAnimation) {
+        this(recipe == null ? null : recipe.getId(), skipAnimation);
     }
 
-    public CraftItemPacket(ResourceLocation recipe) {
+    public CraftItemPacket(ResourceLocation recipe, boolean skipAnimation) {
         this.recipe = recipe;
+        this.skipAnimation = skipAnimation;
     }
 
     public static void handle(CraftItemPacket msg, Supplier<NetworkEvent.Context> ctx) {
@@ -35,13 +33,9 @@ public class CraftItemPacket {
 
 
     public static CraftItemPacket decode(FriendlyByteBuf packetBuffer) {
-        boolean hasRecipe = packetBuffer.readBoolean();
-        if (hasRecipe) {
-            ResourceLocation location = packetBuffer.readResourceLocation();
-            return new CraftItemPacket(location);
-        } else {
-            return new CraftItemPacket((ResourceLocation) null);
-        }
+        ResourceLocation location = packetBuffer.readBoolean() ? packetBuffer.readResourceLocation() : null;
+        boolean skipAnimation = packetBuffer.readBoolean();
+        return new CraftItemPacket(location, skipAnimation);
     }
 
     public static void encode(CraftItemPacket msg, FriendlyByteBuf packetBuffer) {
@@ -51,5 +45,6 @@ public class CraftItemPacket {
         } else {
             packetBuffer.writeBoolean(false);
         }
+        packetBuffer.writeBoolean(msg.skipAnimation);
     }
 }

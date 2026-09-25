@@ -146,5 +146,7 @@
   "bte_mobs.usage.crafting": "Crafting",
   "bte_mobs.usage.upgrading": "Upgrading",
   "bte_mobs.usage.enchanting": "Enchanting",
-  "bte_mobs.usage.potion": "Brewing Potions"
+  "bte_mobs.usage.potion": "Brewing Potions",
+  "gui.bte_mobs.blacksmith.no_animations": "No Animations",
+  "gui.bte_mobs.blacksmith.no_animations.tooltip": "Skip the Blacksmith's hammering animation. The crafted item appears on the forge instantly."
 }

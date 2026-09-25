@@ -204,9 +204,15 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
         return recipe.assemble(this.craftSlots);
     }
 
-    public void placeResult(Recipe<?> recipe, ItemStack result) {
+    public void placeResult(Recipe<?> recipe, ItemStack result, boolean skipAnimation) {
         BteAbstractEntity entity = (BteAbstractEntity) player.level.getEntity(entityId);
         if(entity != null) {
+            // Modo sin animacion: el resultado va directo al bloque de trabajo.
+            // Si no es posible (sin bloque de trabajo, ocupado, etc.) se usa
+            // el flujo normal con animacion.
+            if(skipAnimation && entity.placeCraftItemInstantly(result)) {
+                return;
+            }
             entity.setCraftItem(result);
             entity.setCrafting(true);
             BteMobsMod.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.level.getChunkAt(player.getOnPos())), new ActionPacket(entityId, "start_crafting"));
@@ -233,8 +239,8 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
         return new ArrayList<>(validRecipes);
     }
 
-    public void craftItemClient(Recipe<?> recipe) {
-        BteMobsMod.sendToServer(new CraftItemPacket(recipe));
+    public void craftItemClient(Recipe<?> recipe, boolean skipAnimation) {
+        BteMobsMod.sendToServer(new CraftItemPacket(recipe, skipAnimation));
     }
     private int getRecipeWeight(BteAbstractRecipe recipe) {
         int total = 0;
@@ -251,7 +257,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
 
         return total;
     }
-    public void craftItemServer(ServerPlayer serverPlayer, Optional<? extends Recipe<?>> clickedRecipe) {
+    public void craftItemServer(ServerPlayer serverPlayer, Optional<? extends Recipe<?>> clickedRecipe, boolean skipAnimation) {
         // Usar la receta enviada por el cliente (por ID), pero SOLO si coincide
         // con lo que hay realmente en los craftSlots en este momento. El cliente
         // manda la ultima receta "clickada" en el libro de recetas, que puede
@@ -292,7 +298,7 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
             if(!hasRequirementsForCraft(recipe)) return;
             // No validamos hasItems(inventario) aqui: handlePlacement ya movio
             // los ingredientes a craftSlots antes de que llegara este packet.
-            placeResult(recipe, assembleResult(recipe));
+            placeResult(recipe, assembleResult(recipe), skipAnimation);
             for(int i = 0; i < this.craftSlots.getContainerSize(); ++i) {
                 Inventory inventory = serverPlayer.getInventory();
                 if (inventory.player instanceof ServerPlayer) {

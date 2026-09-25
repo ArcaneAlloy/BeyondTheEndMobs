@@ -7,6 +7,7 @@ import fr.shoqapik.btemobs.capability.StatTaskData;
 import fr.shoqapik.btemobs.client.ModClientEvents;
 import fr.shoqapik.btemobs.client.gui.QuestScreen;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
+import fr.shoqapik.btemobs.config.BteMobsClientConfig;
 import fr.shoqapik.btemobs.entity.*;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
@@ -55,7 +56,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkHooks;
@@ -78,7 +81,7 @@ public class BteMobsMod {
     public static final String MODID = "bte_mobs";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "2";
     public static double x=0;
     public static double y=0;
     public static double z=0;
@@ -109,6 +112,7 @@ public class BteMobsMod {
         BteMobsBlocks.ITEMS.register(bus);
 
         SoundManager.SOUND_EVENTS.register(bus);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BteMobsClientConfig.SPEC);
         MinecraftForge.EVENT_BUS.addListener(BteCapability::registerCapabilities);
         INSTANCE.registerMessage(0, ShowDialogPacket.class, ShowDialogPacket::encode, ShowDialogPacket::decode, ShowDialogPacket::handle);
         INSTANCE.registerMessage(1, ActionPacket.class, ActionPacket::encode, ActionPacket::decode, ActionPacket::handle);
@@ -300,7 +304,7 @@ public class BteMobsMod {
             BteAbstractCraftMenu menu = (BteAbstractCraftMenu) ctx.get().getSender().containerMenu;
             Optional<? extends Recipe<?>> recipe = Optional.empty();
             if(msg.recipe != null) recipe = ctx.get().getSender().getServer().getRecipeManager().byKey(msg.recipe);
-            menu.craftItemServer(ctx.get().getSender(), recipe);
+            menu.craftItemServer(ctx.get().getSender(), recipe, msg.skipAnimation);
         }
     }
 

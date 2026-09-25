@@ -38,6 +38,14 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     public abstract ResourceLocation getTexture();
 
+    /**
+     * Si devuelve true, el NPC no reproduce la animacion de crafteo y el
+     * resultado aparece directamente sobre su bloque de trabajo.
+     */
+    protected boolean shouldSkipCraftAnimation() {
+        return false;
+    }
+
     protected void init() {
         super.init();
         this.widthTooNarrow = this.width < 379;
@@ -66,7 +74,7 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
                 // Usar la ultima receta clickada en el libro si disponible
                 // Si no, enviar null y dejar que el servidor elija la receta correcta
                 Recipe<?> recipe = BteAbstractCraftScreen.this.recipeBookComponent.recipeBookPage.getLastClickedRecipe();
-                BteAbstractCraftScreen.this.menu.craftItemClient(recipe);
+                BteAbstractCraftScreen.this.menu.craftItemClient(recipe, BteAbstractCraftScreen.this.shouldSkipCraftAnimation());
                 BteAbstractCraftScreen.this.craftButton.active = false;
             }
         }));
