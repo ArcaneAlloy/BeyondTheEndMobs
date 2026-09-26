@@ -132,7 +132,7 @@ public class CompediumScreen extends Screen {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, new ResourceLocation(
                     BteMobsMod.MODID,
-                    "textures/gui/dialogs/oriana_tdialogo_extendido.png"
+                    "textures/gui/dialogs/druid_tdialogo_extendido.png"
             ));
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

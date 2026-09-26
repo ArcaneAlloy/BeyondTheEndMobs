@@ -276,7 +276,7 @@ public class QuestScreen extends Screen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if(this.currentQuest !=null){
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs/antonio_tdialogo_extendido.png"));
+            RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs/"+this.currentQuest.getEntityType().name().toLowerCase()+"_tdialogo_extendido.png"));
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
@@ -298,16 +298,11 @@ public class QuestScreen extends Screen {
             int bottom = top + this.font.lineHeight + 2;
             drawWordWrap(Component.literal(translatedDesc),x + 12 , y + 100 , 197, 16777215, font, poseStack);
             poseStack.pushPose();
-            poseStack.translate(42,0,0);
-            fill(poseStack, left, top, right, bottom, currentQuest.getDifficult().color);
-            drawWordWrap(Component.literal(currentQuest.getDifficult().name()),x + 76 , y + 15 , 100, 16777215, font, poseStack);
+            renderLabel(poseStack, (int) (x + 112 -20), (int) (y + 11), new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_dif_"+difficulty.toLowerCase()+".png"));
             poseStack.popPose();
 
             poseStack.pushPose();
-            right = left + this.font.width(currentQuest.getDimension().name()) + 10;
-            poseStack.translate(90,0,0);
-            fill(poseStack, left, top, right, bottom, 0x4FFF0000);
-            drawWordWrap(Component.literal(currentQuest.getDimension().name()),x + 76 , y + 15 , 220, 16777215, font, poseStack);
+            renderLabel(poseStack, (int) (x + 174 -20), (int) (y + 11),new ResourceLocation(BteMobsMod.MODID,"textures/gui/widget/label_world_"+this.currentQuest.getDimension().name().toLowerCase()+".png"));
             poseStack.popPose();
             poseStack.pushPose();
 
@@ -318,7 +313,8 @@ public class QuestScreen extends Screen {
             fill(poseStack, left1, top1, right1, bottom1, 0x4FFF0000);
             poseStack.popPose();
             poseStack.pushPose();
-            drawWordWrap(Component.literal("Task :"), x + 112, y + 30, 220, 16777215, font, poseStack);
+            renderLabel(poseStack, (int) (x + 112), (int) (y + 26), new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_task.png"));
+//            drawWordWrap(Component.literal("Task :"), x + 112, y + 30, 220, 16777215, font, poseStack);
             int i = 0;
             int j = 0;
             for (ButtonTask buttonTask : slotTask){
@@ -338,15 +334,24 @@ public class QuestScreen extends Screen {
             }
 
             poseStack.popPose();
-
-            drawWordWrap(Component.literal("Rewards :"), x + 12, y + 30, 220, 16777215, font, poseStack);
-
+            renderLabel(poseStack, (int) (x + 12), (int) (y + 26), new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_rewards.png"));
             poseStack.popPose();
 
             renderButton(poseStack, mouseX, mouseY, partialTick);
 
         }
         super.render(poseStack, mouseX, mouseY, partialTick);
+    }
+    public void renderLabel(PoseStack poseStack,int x,int y,ResourceLocation location){
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0,location);
+
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        GuiComponent.blit(poseStack, x , y , 0, 0,73, 13, 73, 13);
+
     }
     public void bar(PoseStack poseStack,StatTaskData statTaskData){
         poseStack.pushPose();

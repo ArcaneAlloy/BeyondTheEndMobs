@@ -7,7 +7,6 @@ import fr.shoqapik.btemobs.capability.StatTaskData;
 import fr.shoqapik.btemobs.client.ModClientEvents;
 import fr.shoqapik.btemobs.client.gui.QuestScreen;
 import fr.shoqapik.btemobs.compendium.PageCompendium;
-import fr.shoqapik.btemobs.config.BteMobsClientConfig;
 import fr.shoqapik.btemobs.entity.*;
 import fr.shoqapik.btemobs.menu.BlacksmithRepairMenu;
 import fr.shoqapik.btemobs.menu.BteAbstractCraftMenu;
@@ -112,7 +111,6 @@ public class BteMobsMod {
         BteMobsBlocks.ITEMS.register(bus);
 
         SoundManager.SOUND_EVENTS.register(bus);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BteMobsClientConfig.SPEC);
         MinecraftForge.EVENT_BUS.addListener(BteCapability::registerCapabilities);
         INSTANCE.registerMessage(0, ShowDialogPacket.class, ShowDialogPacket::encode, ShowDialogPacket::decode, ShowDialogPacket::handle);
         INSTANCE.registerMessage(1, ActionPacket.class, ActionPacket::encode, ActionPacket::decode, ActionPacket::handle);

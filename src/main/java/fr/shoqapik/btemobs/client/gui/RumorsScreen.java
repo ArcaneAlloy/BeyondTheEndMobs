@@ -102,7 +102,7 @@ public class RumorsScreen extends Screen {
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0,
-                    new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs/antonio_tdialogo_extendido.png"));
+                    new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs/explorer_tdialogo_extendido.png"));
 
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();

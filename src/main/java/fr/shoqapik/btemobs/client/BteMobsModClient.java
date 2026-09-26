@@ -40,7 +40,7 @@ public class BteMobsModClient {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        MenuScreens.register(BteMobsContainers.BLACKSMITH_CRAFT_MENU.get(), BlacksmithCraftScreen::new);
+//        MenuScreens.register(BteMobsContainers.BLACKSMITH_CRAFT_MENU.get(), BlacksmithCraftScreen::new);
         MenuScreens.register(BteMobsContainers.BLACKSMITH_REPAIR_MENU.get(), BlacksmithRepairScreen::new);
         MenuScreens.register(BteMobsContainers.WARLOCK_CRAFT_MENU.get(), WarlockCraftScreen::new);
         MenuScreens.register(BteMobsContainers.EXPLORER_TABLE_MENU.get(), ExplorerTableScreen::new);
@@ -99,9 +99,9 @@ public class BteMobsModClient {
 
     public static void handleToggleCraftButtonPacket(ToggleCraftButton msg, Supplier<NetworkEvent.Context> ctx) {
         Screen screen = Minecraft.getInstance().screen;
-        if(screen instanceof BlacksmithCraftScreen blacksmithScreen) {
-            blacksmithScreen.setCraftButtonActive(msg.active);
-        }
+//        if(screen instanceof BlacksmithCraftScreen blacksmithScreen) {
+//            blacksmithScreen.setCraftButtonActive(msg.active);
+//        }
     }
 
     public static void handlePlaceGhostRecipe(PlaceGhostRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
