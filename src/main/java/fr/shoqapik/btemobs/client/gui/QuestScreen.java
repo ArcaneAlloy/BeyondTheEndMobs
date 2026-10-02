@@ -96,6 +96,9 @@ public class QuestScreen extends Screen {
     private List<ButtonTask> slotTask= new ArrayList<>();
 
     private Button stateQuest;
+    /** Casilla "Seguir": muestra la quest en el panel de seguimiento (QuestTracker). */
+    private Button trackBox;
+    private static final ResourceLocation CHECKBOX = new ResourceLocation("textures/gui/checkbox.png");
     private boolean isComplete;
     private boolean isReclaim;
     private boolean dirty = false;
@@ -222,10 +225,36 @@ public class QuestScreen extends Screen {
                 drawCenteredString(p_93676_, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
             }
         });
+        this.trackBox = this.addRenderableWidget(new Button(this.stateQuest.x + this.stateQuest.getWidth() + 6, this.stateQuest.y, 20, 20,
+                Component.translatable("gui.bte_mobs.tracker.track"), b -> {
+            if (currentQuest == null) return;
+            fr.shoqapik.btemobs.client.QuestTracker.ToggleResult result = fr.shoqapik.btemobs.client.QuestTracker.toggle(currentQuest);
+            if (result == fr.shoqapik.btemobs.client.QuestTracker.ToggleResult.LIMIT && minecraft.player != null) {
+                minecraft.player.displayClientMessage(Component.translatable("gui.bte_mobs.tracker.limit",
+                        fr.shoqapik.btemobs.client.QuestTracker.max()).withStyle(net.minecraft.ChatFormatting.RED), true);
+            }
+        }, (button, poseStack, mouseX, mouseY) -> renderTooltip(poseStack,
+                Component.translatable("gui.bte_mobs.tracker.track_tooltip",
+                        fr.shoqapik.btemobs.client.QuestTracker.count(), fr.shoqapik.btemobs.client.QuestTracker.max()), mouseX, mouseY)) {
+            @Override
+            public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderTexture(0, CHECKBOX);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                boolean tracked = fr.shoqapik.btemobs.client.QuestTracker.isTracked(currentQuest);
+                // checkbox.png: u = resaltado (ratón encima), v = marcado
+                GuiComponent.blit(poseStack, this.x, this.y, this.isHovered ? 20.0F : 0.0F, tracked ? 20.0F : 0.0F, 20, 20, 64, 64);
+                drawString(poseStack, font, this.getMessage(), this.x + 24, this.y + (this.height - 8) / 2, 0xE0E0E0);
+                if (this.isHovered) this.renderToolTip(poseStack, mouseX, mouseY);
+            }
+        });
         this.addRenderableWidget(this.up);
         this.addRenderableWidget(this.down);
         this.layoutButtons();
         this.stateQuest.visible = false;
+        this.trackBox.visible = false;
         if (this.currentQuest!=null){
             this.refreshButton();
         }
@@ -262,6 +291,7 @@ public class QuestScreen extends Screen {
             isReclaim = RecipeCapability.get(minecraft.player).getQuestReclaim(currentQuest);
             stateQuest.visible = true;
             stateQuest.active = !readOnly && !isReclaim;
+            trackBox.visible = !isReclaim;
         }
     }
 
