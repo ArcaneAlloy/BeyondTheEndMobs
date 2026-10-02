@@ -1,0 +1,37 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Submersible Compass, que te guía hasta la Sunken City.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 12,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Caparazón de Nautilo",
+      "count": 4,
+      "entityIdLocation": "minecraft:nautilus_shell"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Fragmento de Prismarina",
+      "count": 1,
+      "entityIdLocation": "minecraft:prismarine_shard"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_cataclysm_sunken_city",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_cataclysm_sunken_city",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 15
+}

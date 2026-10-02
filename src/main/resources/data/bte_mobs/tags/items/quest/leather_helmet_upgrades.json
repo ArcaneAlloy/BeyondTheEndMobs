@@ -1,0 +1,57 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dungeons_gear:archers_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:battle_robes_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:ember_robes_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:evocation_robes_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:guards_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:hunters_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:soul_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:souldancer_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:beehive_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:beenest_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:grim_helmet",
+      "required": false
+    },
+    {
+      "id": "dungeons_gear:phantom_helmet",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:frontier_cap",
+      "required": false
+    }
+  ]
+}

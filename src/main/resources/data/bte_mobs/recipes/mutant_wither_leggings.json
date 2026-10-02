@@ -3,9 +3,14 @@
   "category": "ARMORS",
   "tier": 3,
   "base": {
-    "item": "minecraft:diamond_leggings"
+    "item": "dungeons_gear:wither_leggings"
   },
   "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:diamond",
+      "count": 7
+    },
     {
       "type": "bte_mobs:item",
       "item": "mutantmore:mutant_wither_skeleton_limb",

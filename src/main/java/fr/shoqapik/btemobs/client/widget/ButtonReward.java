@@ -43,18 +43,48 @@ public class ButtonReward extends Button {
     public void render(PoseStack p_93657_, int p_93658_, int p_93659_, float p_93660_) {
         super.render(p_93657_, p_93658_, p_93659_, p_93660_);
 
-        switch (data.type) {
-            case ITEM -> renderItem(p_93657_);
-            default -> renderTexture(p_93657_);
+        if (data.type == RewardData.Type.ITEM) {
+            renderItem(p_93657_);
+        } else if (!getRecipeItems().isEmpty()) {
+            renderStack(currentRecipeIcon(), false);   // icono del item de la receta (rota si hay varias)
+        } else {
+            renderTexture(p_93657_);
         }
 
 
 
     }
 
+    /** El tooltip lo dibuja QuestScreen al final del frame (drawTooltip), para que nada lo tape. */
     @Override
     public void renderToolTip(PoseStack p_93736_, int p_93737_, int p_93738_) {
-        super.renderToolTip(p_93736_, p_93737_, p_93738_);
+    }
+
+    public void drawTooltip(PoseStack p_93736_, int p_93737_, int p_93738_) {
+        // Una sola receta: tooltip del item con una línea "Desbloquea la receta:" encima
+        if ((data.type == RewardData.Type.UNLOCK_RECIPE || data.type == RewardData.Type.UNLOCK_RECIPES_BY_INGREDIENT)
+                && getRecipeItems().size() == 1) {
+            ItemStack single = getRecipeItems().get(0);
+            List<Component> lines = new ArrayList<>();
+            lines.add(Component.translatable("gui.bte_mobs.quest.unlock_recipe").withStyle(net.minecraft.ChatFormatting.GOLD));
+            lines.addAll(this.minecraft.screen.getTooltipFromItem(single));
+            addRequiresLine(lines);
+            if (net.minecraftforge.fml.ModList.get().isLoaded("jei")) {
+                lines.add(Component.translatable("gui.bte_mobs.quest.click_jei").withStyle(net.minecraft.ChatFormatting.GRAY));
+            }
+            this.minecraft.screen.renderComponentTooltip(p_93736_, lines, p_93737_, p_93738_, single);
+            return;
+        }
+        // Varias recetas: tooltip corto; la lista completa se abre con clic (panel en QuestScreen)
+        if (hasRecipeList()) {
+            List<ItemStack> items = getRecipeItems();
+            List<Component> lines = new ArrayList<>();
+            lines.add(Component.translatable("gui.bte_mobs.quest.unlock_recipes", items.size()));
+            addRequiresLine(lines);
+            lines.add(Component.translatable("gui.bte_mobs.quest.click_recipes").withStyle(net.minecraft.ChatFormatting.GRAY));
+            this.minecraft.screen.renderComponentTooltip(p_93736_, lines, p_93737_, p_93738_);
+            return;
+        }
         if (this.item.isEmpty()){
             this.minecraft.screen.renderComponentTooltip(p_93736_, getMessageForType(),p_93737_,p_93738_);
         }else {
@@ -64,12 +94,24 @@ public class ButtonReward extends Button {
 
     }
 
+    /** "Requiere también: <quest>" si la receta necesita otra quest reclamada. */
+    private void addRequiresLine(List<Component> lines) {
+        if (data instanceof fr.shoqapik.btemobs.quest.UnlockRecipeRewardData d && d.requiresQuest != null) {
+            String path = d.requiresQuest.contains(":") ? d.requiresQuest.substring(d.requiresQuest.indexOf(':') + 1) : d.requiresQuest;
+            lines.add(Component.translatable("gui.bte_mobs.quest.requires_quest",
+                    Component.translatable("title.quest." + path)).withStyle(net.minecraft.ChatFormatting.RED));
+        }
+    }
+
     private List<Component> getMessageForType() {
         boolean isGroupItem = this.data.getObjectId().contains("#");
         String name = this.data.getObjectId().split(":")[1];
         switch (this.data.type){
             case UNLOCK_OPTION_DIALOG -> {
-                return List.of(Component.literal("Unlock Option Dialog "+ name));
+                String key = "gui.bte_mobs.quest.unlock_option." + this.data.getObjectId().replace(':', '.');
+                return List.of(net.minecraft.client.resources.language.I18n.exists(key)
+                        ? Component.translatable(key)
+                        : Component.literal("Unlock Option Dialog " + name));
             }
             case UNLOCK_RECIPE -> {
                 if (isGroupItem){
@@ -98,6 +140,13 @@ public class ButtonReward extends Button {
                 }
                 return List.of(Component.literal("Unlock Recipe "+ name));
             }
+            case UNLOCK_RECIPES_BY_INGREDIENT -> {
+                // Ninguna receta que mostrar (p. ej. ya las desbloquea otra quest): se indica el ingrediente
+                ResourceLocation ingredientId = ResourceLocation.tryParse(this.data.getObjectId());
+                net.minecraft.world.item.Item ingredient = ingredientId != null ? ForgeRegistries.ITEMS.getValue(ingredientId) : null;
+                Component ingredientName = ingredient != null ? new ItemStack(ingredient).getHoverName() : Component.literal(name);
+                return List.of(Component.translatable("gui.bte_mobs.quest.unlock_recipes_ingredient", ingredientName));
+            }
             case UNLOCK_ZONE -> {
                 return List.of(Component.literal("Unlock Zone "+ name));
             }
@@ -107,6 +156,50 @@ public class ButtonReward extends Button {
         }
     }
 
+    private List<ItemStack> recipeItems;
+
+    /** Items cuyas recetas desbloquea esta recompensa (tag "#mod:tag" o un item suelto). Vacío si no es UNLOCK_RECIPE. */
+    public List<ItemStack> getRecipeItems() {
+        if (recipeItems != null) return recipeItems;
+        List<ItemStack> list = new ArrayList<>();
+        if (data.type == RewardData.Type.UNLOCK_RECIPES_BY_INGREDIENT) {
+            // Resultados distintos de las recetas que desbloquea (calculado con las recetas y quests que conoce el cliente)
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.getConnection() != null && mc.player != null) {
+                fr.shoqapik.btemobs.capability.RecipeCapability<?> cap = fr.shoqapik.btemobs.capability.RecipeCapability.get(mc.player);
+                java.util.List<fr.shoqapik.btemobs.quest.Quest> known = new java.util.ArrayList<>();
+                if (cap != null) cap.quests.values().forEach(m -> known.addAll(m.keySet()));
+                java.util.Set<net.minecraft.world.item.Item> seenItems = new java.util.LinkedHashSet<>();
+                for (net.minecraft.world.item.crafting.Recipe<?> r : fr.shoqapik.btemobs.quest.QuestRecipeLocks.recipesFor(
+                        mc.getConnection().getRecipeManager(), known, data)) {
+                    ItemStack res = r.getResultItem();
+                    if (!res.isEmpty() && seenItems.add(res.getItem())) list.add(new ItemStack(res.getItem()));
+                }
+            }
+            recipeItems = list;
+            return list;
+        }
+        if (data.type == RewardData.Type.UNLOCK_RECIPE) {
+            String id = data.getObjectId();
+            if (id.startsWith("#")) {
+                ResourceLocation tagId = ResourceLocation.tryParse(id.substring(1));
+                if (tagId != null && ForgeRegistries.ITEMS.tags() != null) {
+                    ForgeRegistries.ITEMS.tags().getTag(ItemTags.create(tagId)).forEach(i -> list.add(new ItemStack(i)));
+                }
+            } else {
+                ResourceLocation itemId = ResourceLocation.tryParse(id);
+                if (itemId != null && ForgeRegistries.ITEMS.containsKey(itemId)) list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(itemId)));
+            }
+        }
+        recipeItems = list;
+        return list;
+    }
+
+    /** true si desbloquea varias recetas (se muestran en el panel que se abre con clic). */
+    public boolean hasRecipeList() {
+        return getRecipeItems().size() > 1;
+    }
+
     public boolean isMouseOver(double p_93672_, double p_93673_) {
         return p_93672_ >= (double)this.x && p_93673_ >= (double)this.y && p_93672_ < (double)(this.x + this.width) && p_93673_ < (double)(this.y + this.height);
     }
@@ -114,9 +207,30 @@ public class ButtonReward extends Button {
     public ItemStack getItemOfRewardData(){
         ItemStack stack = ItemStack.EMPTY;
         if (data.type == RewardData.Type.ITEM){
-            stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getObjectId())),data.count);
+            stack = data instanceof fr.shoqapik.btemobs.quest.ItemRewardData itemData
+                    ? itemData.createStack()
+                    : new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getObjectId())),data.count);
         }
         return stack;
+    }
+
+    /** Cada cuántos milisegundos cambia el icono cuando la recompensa desbloquea varias recetas (como en JEI). */
+    public static final long ICON_CYCLE_MS = 1000;
+
+    /** Item de receta que se muestra ahora: fijo si es una sola, rotando si son varias. */
+    public ItemStack currentRecipeIcon() {
+        List<ItemStack> items = getRecipeItems();
+        if (items.isEmpty()) return ItemStack.EMPTY;
+        int index = (int) ((System.currentTimeMillis() / ICON_CYCLE_MS) % items.size());
+        return items.get(index);
+    }
+
+    private void renderStack(ItemStack stack, boolean decorations) {
+        Minecraft mc = Minecraft.getInstance();
+        int ix = this.x + (this.width - 16) / 2;
+        int iy = this.y + (this.height - 16) / 2;
+        mc.getItemRenderer().renderAndDecorateItem(stack, ix, iy);
+        if (decorations) mc.getItemRenderer().renderGuiItemDecorations(mc.font, stack, ix, iy);
     }
 
     private void renderItem(PoseStack poseStack) {
@@ -125,8 +239,11 @@ public class ButtonReward extends Button {
         ItemRenderer renderer = mc.getItemRenderer();
         ItemStack stack = item;
 
-        renderer.renderAndDecorateItem(stack, this.x, this.y);
-        renderer.renderGuiItemDecorations(mc.font, stack, this.x, this.y);
+        // El botón puede ser más grande que el item (16x16): lo centramos dentro
+        int ix = this.x + (this.width - 16) / 2;
+        int iy = this.y + (this.height - 16) / 2;
+        renderer.renderAndDecorateItem(stack, ix, iy);
+        renderer.renderGuiItemDecorations(mc.font, stack, ix, iy);
     }
 
     private void renderTexture(PoseStack poseStack) {
@@ -137,6 +254,6 @@ public class ButtonReward extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        GuiComponent.blit(poseStack, this.x, this.y, 0, 0, 16, 16, 16, 16);
+        GuiComponent.blit(poseStack, this.x + (this.width - 16) / 2, this.y + (this.height - 16) / 2, 0, 0, 16, 16, 16, 16);
     }
 }

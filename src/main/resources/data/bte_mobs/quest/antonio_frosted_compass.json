@@ -1,0 +1,37 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Brújula Helada, que te guía hasta la Frosted Prison.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 13,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Hielo compacto",
+      "count": 4,
+      "entityIdLocation": "minecraft:packed_ice"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Hielo azul",
+      "count": 1,
+      "entityIdLocation": "minecraft:blue_ice"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_cataclysm_frosted_prison",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_cataclysm_frosted_prison",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

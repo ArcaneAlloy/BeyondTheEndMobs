@@ -1,0 +1,42 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Molten Compass, que te guía hasta la Soul Blacksmith.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 343,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Escombros Ancestrales",
+      "count": 4,
+      "entityIdLocation": "minecraft:ancient_debris"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Ladrillos del Nether",
+      "count": 1,
+      "entityIdLocation": "minecraft:nether_bricks"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_cataclysm_soul_black_smith",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_cataclysm_soul_black_smith",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 20
+}

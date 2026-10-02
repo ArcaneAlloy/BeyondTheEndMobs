@@ -1,0 +1,37 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Jungle Compass, que te guía hasta un Jungle Monument.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 6,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Roca Musgosa",
+      "count": 4,
+      "entityIdLocation": "minecraft:mossy_cobblestone"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Semillas de Cacao",
+      "count": 1,
+      "entityIdLocation": "minecraft:cocoa_beans"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_dungeons_enhanced_jungle_monument",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_dungeons_enhanced_jungle_monument",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

@@ -1,0 +1,42 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Entrega una Enchanted Iron Apple y una Enchanted Golden Apple a Noah.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 121,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Enchanted Iron Apple",
+      "count": 1,
+      "entityIdLocation": "minecraft:enchanted_iron_apple"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Enchanted Golden Apple",
+      "count": 1,
+      "entityIdLocation": "minecraft:enchanted_golden_apple"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:enchanted_iron_apple",
+      "count": 5
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:enchanted_golden_apple",
+      "count": 5
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_deliver_iron_golden_apple",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 10
+}

@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Ignis en la Burning Arena.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 542,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Ignis",
+      "count": 1,
+      "entityIdLocation": "cataclysm:ignis"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/ignitium_armor",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 50
+}

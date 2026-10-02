@@ -70,8 +70,25 @@ public class CommonEvents {
             RecipeCapability cap = RecipeCapability.get(player);
             if(cap != null && event.getEntity().isAlive()){
                 cap.tick((Player) event.getEntity());
+                if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                    fr.shoqapik.btemobs.quest.QuestTriggers.tickPlayer(serverPlayer);
+                }
             }
         }
+    }
+
+    /** Tareas CRAFT_UNIQUE: crafteo en la mesa de crafteo vanilla. */
+    @SubscribeEvent
+    public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
+        if (event.getEntity().level.isClientSide) return;
+        fr.shoqapik.btemobs.quest.QuestTriggers.onItemCrafted(event.getEntity(), event.getCrafting());
+    }
+
+    /** Tareas FEED_ENTITY: clic derecho a una entidad con un item en la mano. */
+    @SubscribeEvent
+    public static void onEntityInteract(net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract event) {
+        if (event.getLevel().isClientSide) return;
+        fr.shoqapik.btemobs.quest.QuestTriggers.onEntityFed(event.getEntity(), event.getTarget(), event.getItemStack());
     }
 
     @SubscribeEvent
@@ -87,7 +104,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
         if(event.getEntity().level.isClientSide) return;
-        if (!event.isWasDeath()) return;
+        // También al salir del End (clone sin muerte): Forge no copia los capabilities por sí solo
 
         Player oldPlayer = event.getOriginal();
         Player newPlayer = event.getEntity();
@@ -101,6 +118,23 @@ public class CommonEvents {
             BteMobsMod.sendToClient(new SyncRecipeManager(newPlayer.getId(), cap.serializeNBT(), event.isWasDeath()), (ServerPlayer) newPlayer);
         }
         oldPlayer.invalidateCaps();
+    }
+
+    /** Al cambiar de dimensión o reaparecer el cliente crea un jugador nuevo (sin datos): hay que reenviarle quests y recetas. */
+    @SubscribeEvent
+    public static void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            RecipeCapability<?> cap = RecipeCapability.get(player);
+            if (cap != null) cap.requestResync();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            RecipeCapability<?> cap = RecipeCapability.get(player);
+            if (cap != null) cap.requestResync();
+        }
     }
 
     @SubscribeEvent
@@ -148,7 +182,9 @@ public class CommonEvents {
             }
         }
 
-        if(event.player instanceof ServerPlayer serverPlayer){
+        if(event.phase == TickEvent.Phase.END && event.player instanceof ServerPlayer serverPlayer){
+            // Solo cada segundo y solo se envía al cliente cuando el nivel cambia (antes se enviaba 40 veces por segundo)
+            if (serverPlayer.tickCount % 20 != 0) return;
 
             int currentUnlockId = getUnlockIdForPlayer(serverPlayer);
 
@@ -159,14 +195,40 @@ public class CommonEvents {
                     BteMobsMod.unlockLevel = Rumor.UnlockLevel.END;
                     BteMobsMod.unlockLevel1 = PageCompendium.UnlockLevel.END;
                 }
-                BteMobsMod.sendToClient(new SyncUnlockLevelPacket(1), serverPlayer);
+                sendUnlockLevelIfChanged(serverPlayer, 1);
                 return;
             }
             Advancement enterNether = serverPlayer.getServer().getAdvancements()
                     .getAdvancement(new ResourceLocation("minecraft", "nether/root"));
             if(enterNether != null && serverPlayer.getAdvancements().getOrStartProgress(enterNether).isDone()) {
-                BteMobsMod.sendToClient(new SyncUnlockLevelPacket(0), serverPlayer);
+                sendUnlockLevelIfChanged(serverPlayer, 0);
             }
+        }
+    }
+
+    private static final java.util.Map<UUID, Integer> lastUnlockLevelSent = new java.util.HashMap<>();
+
+    private static void sendUnlockLevelIfChanged(ServerPlayer player, int level) {
+        Integer last = lastUnlockLevelSent.get(player.getUUID());
+        if (last != null && last == level) return;
+        lastUnlockLevelSent.put(player.getUUID(), level);
+        BteMobsMod.sendToClient(new SyncUnlockLevelPacket(level), player);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        lastUnlockLevelSent.remove(event.getEntity().getUUID());
+    }
+
+    /** Envía las definiciones de las quests a los clientes (al entrar y tras /reload). */
+    @SubscribeEvent
+    public static void onDatapackSync(net.minecraftforge.event.OnDatapackSyncEvent event) {
+        fr.shoqapik.btemobs.packets.SyncQuestsPacket packet =
+                new fr.shoqapik.btemobs.packets.SyncQuestsPacket(new java.util.ArrayList<>(QuestManager.getQuests()));
+        if (event.getPlayer() != null) {
+            BteMobsMod.sendToClient(packet, event.getPlayer());
+        } else {
+            for (ServerPlayer player : event.getPlayerList().getPlayers()) BteMobsMod.sendToClient(packet, player);
         }
     }
 
@@ -491,8 +553,7 @@ public class CommonEvents {
             BteMobsMod.getServer().getRecipeManager().getAllRecipesFor(fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.WARLOCK_RECIPE.get());
 
         for (fr.shoqapik.btemobs.recipe.WarlockRecipe recipe : warlockRecipes) {
-            fr.shoqapik.btemobs.UnlockRecipe unlockRecipe = ServerData.get().getUnlockRecipe(recipe);
-            if (unlockRecipe == null) continue;
+            fr.shoqapik.btemobs.UnlockRecipe unlockRecipe = ServerData.get().getOrCreateUnlockRecipe(recipe);
             if (!unlockRecipe.is(stack)) continue;
 
             event.setCanceled(true);
@@ -521,7 +582,8 @@ public class CommonEvents {
                 java.util.List<net.minecraft.world.item.crafting.Recipe<?>> toUnlock = new java.util.ArrayList<>();
                 toUnlock.add(recipe);
                 net.minecraft.advancements.CriteriaTriggers.RECIPE_UNLOCKED.trigger(player, recipe);
-                BteMobsMod.addRecipe(player, fr.shoqapik.btemobs.registry.BteMobsRecipeTypes.WARLOCK_RECIPE.get(), toUnlock);
+                // Cooperativo: el encantamiento se desbloquea para todos los jugadores
+                RecipeSharing.unlockForEveryone(toUnlock);
                 stack.shrink(1);
                 net.minecraft.network.chat.Component enchantName2 = net.minecraft.network.chat.Component.translatable(
                     recipe.getEnchantment().getDescriptionId())

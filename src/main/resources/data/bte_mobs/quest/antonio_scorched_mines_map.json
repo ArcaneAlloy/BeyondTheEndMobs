@@ -1,0 +1,38 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega una Carga de fuego a Antonio y te dará un mapa hasta las Scorched Mines.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 2,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Carga de fuego a Antonio",
+      "count": 1,
+      "entityIdLocation": "minecraft:fire_charge"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1,
+      "nbt": {
+        "targetStructure": "dungeons_arise:scorched_mines",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.scorched_mines\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.scorched_mines\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.overworld\",\"color\":\"green\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

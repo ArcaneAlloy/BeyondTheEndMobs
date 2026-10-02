@@ -1,0 +1,32 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Void Worm en el End.",
+  "difficult": "HARD",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 643,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Void Worm",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:void_worm"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:haunted_bow",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 50
+}

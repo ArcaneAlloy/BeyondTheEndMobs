@@ -1,15 +1,15 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Las esporas de Creeper son un material único. Consigue unas.",
+  "description": "Consigue Creeper Spores matando a un Creeper con su propia explosión y entrégaselas a Anna.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 101,
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Obtén Creeper Spores",
+      "description": "Entrega Creeper Spores a Anna",
       "count": 1,
       "entityIdLocation": "savage_and_ravage:creeper_spores"
     }
@@ -17,10 +17,15 @@
   "rewards": [
     {
       "type": "UNLOCK_RECIPE",
-      "recipeId": "bte_mobs:griefer_armor",
-      "recipeType": "blacksmith"
+      "recipeId": "#bte_mobs:quest/griefer_armor",
+      "recipeType": "blacksmith_upgrade"
     }
   ],
-  "conditionUnlockData": [],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_scorched_mines",
+      "type": "PARENT_QUEST"
+    }
+  ],
   "experience": 10
 }

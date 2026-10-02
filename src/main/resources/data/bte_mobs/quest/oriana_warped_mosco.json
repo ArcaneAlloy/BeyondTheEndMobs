@@ -1,0 +1,31 @@
+{
+  "entityType": "DRUID",
+  "description": "Derrota al Warped Mosco.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 541,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Warped Mosco",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:warped_mosco"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:hemolymph_blaster",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:oriana_crimson_mosquito",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

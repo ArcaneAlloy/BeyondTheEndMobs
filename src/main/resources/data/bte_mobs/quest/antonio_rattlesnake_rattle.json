@@ -1,0 +1,43 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Derrota a una Rattlesnake en la entrada del Labyrinth y entrega su cola a Antonio.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 542,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Rattlesnake Tail a Antonio",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:rattlesnake_rattle"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1,
+      "nbt": {
+        "targetStructure": "idas:labyrinth",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.labyrinth\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.labyrinth\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.overworld\",\"color\":\"green\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

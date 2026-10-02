@@ -1,7 +1,7 @@
 {
   "type": "bte_mobs:blacksmith_upgrade",
   "category": "WEAPONS",
-  "tier": 4,
+  "tier": 5,
   "base": {
     "item": "dungeons_gear:twin_bow"
   },
@@ -10,6 +10,11 @@
       "type": "bte_mobs:item",
       "item": "celestisynth:lunar_scrap",
       "count": 6
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_shulker_shell",
+      "count": 1
     }
   ],
   "result": {

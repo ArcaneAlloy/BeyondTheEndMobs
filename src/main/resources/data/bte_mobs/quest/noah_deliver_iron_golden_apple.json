@@ -1,17 +1,17 @@
 {
   "entityType": "WARLOCK",
-  "description": "Entrega un lingote de hierro y una manzana de oro.",
+  "description": "Entrega una Iron Apple y una Golden Apple a Noah.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 3,
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega 1x Iron Ingot",
+      "description": "Entrega 1x Iron Apple",
       "count": 1,
-      "entityIdLocation": "minecraft:iron_ingot"
+      "entityIdLocation": "minecraft:iron_apple"
     },
     {
       "type": "COLLECT",

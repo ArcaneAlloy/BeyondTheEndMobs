@@ -1,11 +1,11 @@
 {
   "entityType": "DRUID",
-  "description": "El Ur-Ghast domina la Dark Tower. Derrótalo y entrega su Carminite a Anna.",
+  "description": "Derrota al Ur-Ghast en la Dark Tower y consigue sus Lágrimas de Fuego.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 342,
   "tasks": [
     {
       "type": "BOSS_HUNTER",
@@ -17,8 +17,8 @@
   "rewards": [
     {
       "type": "UNLOCK_RECIPE",
-      "recipeId": "twilightforest:carminite",
-      "recipeType": "blacksmith"
+      "recipeId": "#bte_mobs:quest/fiery_tools",
+      "recipeType": "blacksmith_upgrade"
     }
   ],
   "conditionUnlockData": [

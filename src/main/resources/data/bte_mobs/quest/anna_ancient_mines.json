@@ -1,0 +1,36 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Llega a la sala más profunda de las Ancient Mines y mina el Zephyr Deposit del Trono.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 541,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Mina el Zephyr Deposit",
+      "count": 1,
+      "entityIdLocation": "celestisynth:zephyr_deposit"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "celestisynth:aquaflora",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "celestisynth:breezebreaker",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

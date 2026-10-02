@@ -1,7 +1,10 @@
 {
-  "type": "bte_mobs:blacksmith",
+  "type": "bte_mobs:blacksmith_upgrade",
   "category": "ARMORS",
   "tier": 1,
+  "base": {
+    "item": "minecraft:leather_helmet"
+  },
   "ingredients": [
     {
       "type": "bte_mobs:item",
@@ -10,7 +13,6 @@
     }
   ],
   "result": {
-    "item": "minecraft:iron_helmet",
-    "count": 1
+    "item": "minecraft:iron_helmet"
   }
 }

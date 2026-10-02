@@ -14,6 +14,10 @@ public class ConditionUnlockData {
 
     public enum Type{
         ADVANCEMENT,
-        PARENT_QUEST
+        PARENT_QUEST,
+        /** Portal del Nether del Forgotten Realm abierto (mecánica de enders_journey: se abre al conseguir 8 Ender Eyes). */
+        NETHER_PORTAL,
+        /** Portal del End del Forgotten Realm abierto (mecánica de enders_journey: se abre al conseguir 16 Ender Eyes). */
+        END_PORTAL
     }
 }

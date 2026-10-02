@@ -1,0 +1,44 @@
+{
+  "entityType": "DRUID",
+  "description": "Derrota a los Crimson Mosquito del Nether y consigue su probóscide y un saco de sangre.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 421,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Obtén una Mosquito Proboscis",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:mosquito_proboscis"
+    },
+    {
+      "type": "OBTAIN",
+      "description": "Obtén un Blood Sac",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:blood_sac"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPES_BY_INGREDIENT",
+      "ingredient": "alexsmobs:mosquito_proboscis"
+    },
+    {
+      "type": "UNLOCK_RECIPES_BY_INGREDIENT",
+      "ingredient": "alexsmobs:blood_sac"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:anna_carminite_giant_block",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

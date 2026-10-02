@@ -1,0 +1,37 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Maledictus en la Cursed Pyramid.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 544,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Maledictus",
+      "count": 1,
+      "entityIdLocation": "cataclysm:maledictus"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:cursed_bow",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/cursium_armor",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 40
+}

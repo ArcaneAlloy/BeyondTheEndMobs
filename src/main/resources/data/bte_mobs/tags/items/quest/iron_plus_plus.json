@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "dungeons_gear:opulent_helmet",
+    "dungeons_gear:opulent_chestplate",
+    "dungeons_gear:opulent_leggings",
+    "dungeons_gear:opulent_boots",
+    "dungeons_gear:highland_helmet",
+    "dungeons_gear:highland_chestplate",
+    "dungeons_gear:highland_leggings",
+    "dungeons_gear:highland_boots"
+  ]
+}

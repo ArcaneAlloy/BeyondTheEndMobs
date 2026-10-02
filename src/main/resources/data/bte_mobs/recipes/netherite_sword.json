@@ -1,9 +1,9 @@
 {
   "type": "bte_mobs:blacksmith_upgrade",
   "category": "WEAPONS",
-  "tier": 3,
+  "tier": 4,
   "base": {
-    "item": "minecraft:diamond_sword"
+    "item": "illagerrevolutionmod:illagium_sword"
   },
   "ingredients": [
     {

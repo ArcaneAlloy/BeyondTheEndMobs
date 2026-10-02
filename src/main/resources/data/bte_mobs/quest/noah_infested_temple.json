@@ -1,11 +1,11 @@
 {
   "entityType": "WARLOCK",
-  "description": "El Lich ha infestado un templo antiguo. Derrótalo para abrir el portal al Twilight Forest.",
+  "description": "El Lich ha infestado un templo antiguo. Llega a la cima y derrótalo para abrir el portal al Twilight Forest.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 241,
   "tasks": [
     {
       "type": "BOSS_HUNTER",
@@ -16,11 +16,19 @@
   ],
   "rewards": [
     {
-      "type": "ITEM",
-      "itemId": "minecraft:diamond",
-      "count": 1
+      "type": "UNLOCK_ZONE",
+      "zoneId": "bte_mobs:the_twilight_forest"
     }
   ],
-  "conditionUnlockData": [],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_mutant_frosted_zombie",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "bte_mobs:noah_mutant_jungle_zombie",
+      "type": "PARENT_QUEST"
+    }
+  ],
   "experience": 30
 }

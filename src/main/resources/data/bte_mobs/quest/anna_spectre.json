@@ -1,0 +1,32 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota a un Spectre en el End.",
+  "difficult": "HARD",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 642,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a un Spectre",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:spectre"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:sabrewing",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 40
+}

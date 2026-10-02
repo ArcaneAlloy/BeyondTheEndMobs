@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Mejora el casco de cuero en la forja de Anna. Hay muchas mejoras posibles: con 2 lingotes de hierro puedes hacer el casco de Arquero, o prueba con lana de colores para las túnicas.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "MAIN_QUEST",
+  "order": 2,
+  "tasks": [
+    {
+      "type": "BLACKSMITH_CRAFT",
+      "description": "Mejora el casco de cuero con Anna",
+      "count": 1,
+      "entityIdLocation": "#bte_mobs:quest/leather_helmet_upgrades"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_leather_helmet",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 10
+}

@@ -1,0 +1,26 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Craftea un casco de cuero en la forja de Anna.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "MAIN_QUEST",
+  "order": 1,
+  "tasks": [
+    {
+      "type": "BLACKSMITH_CRAFT",
+      "description": "Craftea un casco de cuero con Anna",
+      "count": 1,
+      "entityIdLocation": "minecraft:leather_helmet"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:iron_ingot",
+      "count": 2
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

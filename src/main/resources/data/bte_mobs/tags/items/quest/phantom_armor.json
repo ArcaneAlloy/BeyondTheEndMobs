@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "twilightforest:phantom_helmet",
+    "twilightforest:phantom_chestplate",
+    {
+      "id": "forgottentf:phantom_leggings",
+      "required": false
+    },
+    {
+      "id": "forgottentf:phantom_boots",
+      "required": false
+    }
+  ]
+}

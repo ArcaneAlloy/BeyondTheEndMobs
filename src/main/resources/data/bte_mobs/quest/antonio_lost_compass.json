@@ -1,0 +1,42 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Lost Compass, que te guía hasta una Catacomb.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 322,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Arena de Almas",
+      "count": 4,
+      "entityIdLocation": "minecraft:soul_sand"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Hueso",
+      "count": 1,
+      "entityIdLocation": "minecraft:bone"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_bygonenether_catacomb",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_bygonenether_catacomb",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 15
+}

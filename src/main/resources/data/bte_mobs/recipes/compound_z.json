@@ -2,11 +2,11 @@
   "type": "bte_mobs:druid_recipe",
   "ingredients": [
     {
-      "item": "mutantmore:formula_y",
+      "item": "minecraft:fire_charge",
       "count": 1
     },
     {
-      "item": "mutantmore:mutant_wither_skeleton_skull",
+      "item": "minecraft:obsidian",
       "count": 1
     }
   ],

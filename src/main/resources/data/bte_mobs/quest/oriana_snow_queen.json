@@ -1,11 +1,11 @@
 {
   "entityType": "DRUID",
-  "description": "La Snow Queen reina en el Aurora Palace. Derrótala y entrega su drop a Anna.",
+  "description": "Derrota a la Snow Queen y entrega su drop.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 341,
   "tasks": [
     {
       "type": "BOSS_HUNTER",
@@ -16,9 +16,8 @@
   ],
   "rewards": [
     {
-      "type": "UNLOCK_RECIPE",
-      "recipeId": "twilightforest:ice_bomb",
-      "recipeType": "blacksmith"
+      "type": "UNLOCK_RECIPES_BY_INGREDIENT",
+      "ingredient": "alexsmobs:froststalker_horn"
     }
   ],
   "conditionUnlockData": [

@@ -37,6 +37,25 @@ public class JEIPlugin implements IModPlugin {
         return new ResourceLocation(BteMobsMod.MODID, "jei_plugin");
     }
 
+    private static mezz.jei.api.runtime.IJeiRuntime runtime;
+
+    @Override
+    public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime jeiRuntime) {
+        runtime = jeiRuntime;
+    }
+
+    /**
+     * Abre en JEI las recetas que producen este item (como pulsar R sobre él).
+     * Solo se debe llamar si JEI está cargado (ModList.get().isLoaded("jei")).
+     */
+    public static boolean showRecipesFor(net.minecraft.world.item.ItemStack stack) {
+        if (runtime == null || stack.isEmpty()) return false;
+        mezz.jei.api.recipe.IFocus<net.minecraft.world.item.ItemStack> focus = runtime.getJeiHelpers().getFocusFactory()
+                .createFocus(mezz.jei.api.recipe.RecipeIngredientRole.OUTPUT, mezz.jei.api.constants.VanillaTypes.ITEM_STACK, stack);
+        runtime.getRecipesGui().show(focus);
+        return true;
+    }
+
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new DruidCraftCategory(registration.getJeiHelpers().getGuiHelper()));

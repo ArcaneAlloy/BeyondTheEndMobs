@@ -298,7 +298,15 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
             if(!hasRequirementsForCraft(recipe)) return;
             // No validamos hasItems(inventario) aqui: handlePlacement ya movio
             // los ingredientes a craftSlots antes de que llegara este packet.
-            placeResult(recipe, assembleResult(recipe), skipAnimation);
+            ItemStack crafted = assembleResult(recipe);
+            ItemStack craftedCopy = crafted.copy();
+            placeResult(recipe, crafted, skipAnimation);
+            // Tareas de quest CRAFT_UNIQUE (p. ej. craftear 15 Artifacts distintos)
+            fr.shoqapik.btemobs.quest.QuestTriggers.onItemCrafted(serverPlayer, craftedCopy);
+            // Tareas BLACKSMITH_CRAFT (craftear o mejorar en la interfaz de Anna)
+            if (this instanceof BlacksmithCraftMenu) {
+                fr.shoqapik.btemobs.quest.QuestTriggers.onBlacksmithCraft(serverPlayer, craftedCopy);
+            }
             for(int i = 0; i < this.craftSlots.getContainerSize(); ++i) {
                 Inventory inventory = serverPlayer.getInventory();
                 if (inventory.player instanceof ServerPlayer) {

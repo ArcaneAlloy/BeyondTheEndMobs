@@ -93,6 +93,8 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
 
             public void onTake(Player player, ItemStack itemStack) {
                 if(player.level.isClientSide) return;
+                // Tareas de quest BREW_POTION
+                fr.shoqapik.btemobs.quest.QuestTriggers.onWarlockPotionBrewed(player);
                 WarlockPotionMenu.this.craftSlots.setItem(6,ItemStack.EMPTY);
                 ItemStack redstone = WarlockPotionMenu.this.craftSlots.getItem(0);
                 ItemStack glowing = WarlockPotionMenu.this.craftSlots.getItem(1);

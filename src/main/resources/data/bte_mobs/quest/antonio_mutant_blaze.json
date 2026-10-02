@@ -1,0 +1,45 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Derrota a un Mutant Blaze.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 344,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a un Mutant Blaze",
+      "count": 1,
+      "entityIdLocation": "mutantmore:mutant_blaze"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "monstersandmushrooms:magmacubestaff",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "mutantmore:mutant_blaze_core_fragment",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "mutantmore:mutant_blaze_shields",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_plague_asylum",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 30
+}

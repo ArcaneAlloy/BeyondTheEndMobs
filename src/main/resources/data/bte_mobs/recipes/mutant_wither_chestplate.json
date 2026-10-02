@@ -3,9 +3,14 @@
   "category": "ARMORS",
   "tier": 3,
   "base": {
-    "item": "minecraft:diamond_chestplate"
+    "item": "dungeons_gear:wither_chestplate"
   },
   "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:diamond",
+      "count": 8
+    },
     {
       "type": "bte_mobs:item",
       "item": "mutantmore:mutant_wither_skeleton_rib",

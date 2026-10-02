@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:iron_sword",
+    "minecraft:iron_pickaxe",
+    "minecraft:iron_axe",
+    "minecraft:iron_shovel",
+    "minecraft:iron_hoe",
+    "twilightforest:ironwood_sword",
+    "twilightforest:ironwood_pickaxe",
+    "twilightforest:ironwood_axe",
+    "twilightforest:ironwood_shovel",
+    "twilightforest:ironwood_hoe",
+    "twilightforest:ironwood_helmet",
+    "twilightforest:ironwood_chestplate",
+    "twilightforest:ironwood_leggings",
+    "twilightforest:ironwood_boots"
+  ]
+}

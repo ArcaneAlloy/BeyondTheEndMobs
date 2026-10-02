@@ -100,6 +100,7 @@ public class SyncRecipeManager {
                                 for (int j = 0;j < listTag1.size() ; j++){
                                     CompoundTag data2 = listTag1.getCompound(j);
                                     Quest quest = QuestManager.getQuest(data2.getString("id"));
+                                    if (quest == null) continue; // definiciones aún no recibidas / quest desactivada
                                     map2.get(type).put(quest,new QuestStateData(data2.getCompound("data")));
                                 }
                             }

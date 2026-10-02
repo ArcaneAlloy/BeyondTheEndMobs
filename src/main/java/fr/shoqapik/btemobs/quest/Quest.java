@@ -19,6 +19,8 @@ public class Quest {
     private final Difficult difficult;
     private final LocationDimension dimension;
     private final PriorityQuest priorityQuest;
+    // Posición en la lista del NPC (menor = más arriba). Opcional en el JSON ("order"); si falta, 0.
+    private int order;
 
     public Quest(BteNpcType entityId, String description, String toolTip, List<TaskData> tasks, List<RewardData> rewards,
                  List<ConditionUnlockData> conditionUnlockData, Difficult difficult,
@@ -60,8 +62,12 @@ public class Quest {
             packetBuffer.writeUtf(rewardData.getObjectId());
             if (rewardData.type == RewardData.Type.ITEM){
                 packetBuffer.writeInt(rewardData.count);
+                String nbt = rewardData instanceof ItemRewardData item ? item.nbt : null;
+                packetBuffer.writeBoolean(nbt != null);
+                if (nbt != null) packetBuffer.writeUtf(nbt);
             }else if (rewardData instanceof UnlockRecipeRewardData data){
                 packetBuffer.writeUtf(data.recipeType);
+                packetBuffer.writeUtf(data.requiresQuest == null ? "" : data.requiresQuest);
             }else if (rewardData instanceof UnlockZoneRewardData){
                // No hace falta por ahora
             }else if (rewardData instanceof UnlockOptionDialogRewardData data){
@@ -78,6 +84,7 @@ public class Quest {
         packetBuffer.writeUtf(quest.difficult.name());
         packetBuffer.writeUtf(quest.dimension.name());
         packetBuffer.writeEnum(quest.priorityQuest);
+        packetBuffer.writeInt(quest.order);
     }
 
     public static Quest decode(FriendlyByteBuf packetBuffer) {
@@ -106,15 +113,19 @@ public class Quest {
             String objectId = packetBuffer.readUtf();
             if (type == RewardData.Type.ITEM){
                 int count = packetBuffer.readInt();
-                rewards.add(new ItemRewardData(objectId,count));
+                String nbt = packetBuffer.readBoolean() ? packetBuffer.readUtf() : null;
+                rewards.add(new ItemRewardData(objectId,count,nbt));
             }else if (type == RewardData.Type.UNLOCK_OPTION_DIALOG){
                 BteNpcType bteNpcType = BteNpcType.valueOf(packetBuffer.readUtf());
                 rewards.add(new UnlockOptionDialogRewardData(bteNpcType,objectId));
             }else if (type == RewardData.Type.UNLOCK_RECIPE){
                 String recipeType = packetBuffer.readUtf();
-                rewards.add(new UnlockRecipeRewardData(objectId,recipeType));
+                String requiresQuest = packetBuffer.readUtf();
+                rewards.add(new UnlockRecipeRewardData(objectId,recipeType,requiresQuest));
             }else if (type == RewardData.Type.UNLOCK_ZONE){
                 rewards.add(new UnlockZoneRewardData(objectId));
+            }else if (type == RewardData.Type.UNLOCK_RECIPES_BY_INGREDIENT){
+                rewards.add(new IngredientRecipesRewardData(objectId));
             }
 
         }
@@ -131,6 +142,7 @@ public class Quest {
         PriorityQuest priorityQuest1 = packetBuffer.readEnum(PriorityQuest.class);
         Quest quest = new Quest(entityId, description,tooltip , tasks, rewards, conditionUnlocks, difficult1, dimension1,priorityQuest1, xp);
         quest.id = id;
+        quest.order = packetBuffer.readInt();
         return quest;
     }
 
@@ -176,6 +188,10 @@ public class Quest {
 
     public PriorityQuest getPriorityQuest() {
         return priorityQuest;
+    }
+
+    public int getOrder() {
+        return order;
     }
 
     public enum Difficult {

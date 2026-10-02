@@ -1,0 +1,42 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Bulwark Compass, que te guía hasta un Bastion Remnant.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 321,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Netherrack",
+      "count": 4,
+      "entityIdLocation": "minecraft:netherrack"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Lingote de Oro",
+      "count": 1,
+      "entityIdLocation": "minecraft:gold_ingot"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_minecraft_bastion_remnant",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_minecraft_bastion_remnant",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 15
+}

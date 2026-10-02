@@ -1,0 +1,36 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Encuentra la Llave del Carcelero en la sala de los prisioneros, en lo alto de la Pillager Fortress, y entrégasela a Anna.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 425,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega la Llave del Carcelero",
+      "count": 1,
+      "entityIdLocation": "kubejs:jailer_key"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/illagium_blacksmith",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/illagium_druid",
+      "recipeType": "druid_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_carminite_giant_block",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

@@ -1,24 +1,35 @@
 {
   "entityType": "EXPLORER",
-  "description": "Crea un Nature's Compass para poder localizar biomas.",
+  "description": "Entrega a Antonio los materiales del Nature's Compass, que te guía hasta el bioma que elijas.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 7,
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Craftea un Nature's Compass",
+      "description": "Entrega 4x Tronco de Roble",
+      "count": 4,
+      "entityIdLocation": "minecraft:oak_log"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Palo",
       "count": 1,
-      "entityIdLocation": "naturescompass:naturescompass"
+      "entityIdLocation": "minecraft:stick"
     }
   ],
   "rewards": [
     {
       "type": "ITEM",
-      "itemId": "minecraft:experience_bottle",
-      "count": 16
+      "itemId": "naturescompass:naturescompass",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "naturescompass:naturescompass",
+      "recipeType": "explorer_recipe_type"
     }
   ],
   "conditionUnlockData": [],

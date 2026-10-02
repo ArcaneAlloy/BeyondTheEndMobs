@@ -1,0 +1,25 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "WEAPONS",
+  "tier": 1,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "mutantmore:mutant_hoglin_tusk",
+      "count": 1
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:gold_ingot",
+      "count": 12
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:leather",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "mutantmore:hogfist_gauntlet"
+  }
+}

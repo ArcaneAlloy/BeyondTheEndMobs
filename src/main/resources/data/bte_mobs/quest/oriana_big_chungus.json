@@ -1,23 +1,29 @@
 {
   "entityType": "DRUID",
-  "description": "Alimenta a un Big Chungus en el Twilight Forest para obtener las Magic Beans.",
+  "description": "Alimenta a un Big Chungus con una Golden Carrot.",
   "difficult": "MEDIUM",
-  "dimension": "TWILIGHT_FOREST",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 321,
   "tasks": [
     {
-      "type": "COLLECT",
-      "description": "Alimenta a un Big Chungus",
+      "type": "FEED_ENTITY",
+      "description": "Alimenta a un Big Chungus con una Golden Carrot",
       "count": 1,
-      "entityIdLocation": "minecraft:carrot"
+      "entityIdLocation": "alexsmobs:bunfungus|minecraft:golden_carrot"
     }
   ],
   "rewards": [
     {
       "type": "ITEM",
-      "itemId": "neapolitan:magic_beans",
+      "itemId": "twilightforest:magic_beans",
       "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "twilightforest:magic_beans",
+      "recipeType": "druid_recipe_type"
     }
   ],
   "conditionUnlockData": [

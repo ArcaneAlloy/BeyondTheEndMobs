@@ -1,26 +1,26 @@
 {
   "entityType": "WARLOCK",
-  "description": "Los Artifacts son objetos mágicos únicos. Reúne 15 de ellos.",
+  "description": "Craftea 15 Artifacts distintos de Dungeons Gear.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 21,
   "tasks": [
     {
-      "type": "COLLECT",
-      "description": "Craftea 15 Artifacts",
+      "type": "CRAFT_UNIQUE",
+      "description": "Craftea 15 Artifacts distintos",
       "count": 15,
-      "entityIdLocation": "minecraft:experience_bottle"
+      "entityIdLocation": "#bte_mobs:quest/dungeons_gear_artifacts"
     }
   ],
   "rewards": [
     {
-      "type": "ITEM",
-      "itemId": "minecraft:experience_bottle",
-      "count": 32
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:corrupted_beacon",
+      "recipeType": "blacksmith"
     }
   ],
   "conditionUnlockData": [],
-  "experience": 20
+  "experience": 15
 }

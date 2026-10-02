@@ -15,6 +15,7 @@ public abstract class RewardData {
         UNLOCK_RECIPE,
         UNLOCK_OPTION_DIALOG,
         UNLOCK_ZONE,
+        UNLOCK_RECIPES_BY_INGREDIENT,
         UNLOCK_SYSTEM,
         UNLOCK_ABILITY
     }

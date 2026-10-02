@@ -1,0 +1,36 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Explora el Nether Reactor, derrota al Ghast que habita la estructura y entrega a Noah el objeto que suelta.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 321,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega el Núcleo del Reactor",
+      "count": 1,
+      "entityIdLocation": "kubejs:reactor_core"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPES_BY_INGREDIENT",
+      "ingredient": "alexsmobs:soul_heart"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:soul_hunter_crossbow",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 15
+}

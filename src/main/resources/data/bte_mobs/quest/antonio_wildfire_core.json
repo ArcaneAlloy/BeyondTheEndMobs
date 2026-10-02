@@ -1,0 +1,43 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Consigue un Wildfire Core y entrégaselo a Antonio.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 324,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Wildfire Core a Antonio",
+      "count": 1,
+      "entityIdLocation": "dungeons_mobs:wildfire_core"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1,
+      "nbt": {
+        "targetStructure": "incendium:pipeline",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.pipeline\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.pipeline\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.nether\",\"color\":\"red\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 15
+}

@@ -23,7 +23,9 @@ import java.util.Map;
 public class QuestManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().registerTypeAdapter(RewardData.class,new RewardDataDeserializer()).create();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final List<Quest> quests = Lists.newArrayList();
+    private static volatile List<Quest> quests = Lists.newArrayList();
+    /** Se incrementa cada vez que se recargan las quests (para re-sincronizar el progreso guardado). */
+    public static int generation = 0;
 
     public QuestManager() {
         super(GSON, "quest");
@@ -44,7 +46,7 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
             return;
         }
 
-        quests.clear();
+        List<Quest> loaded = new ArrayList<>();
         for (Map.Entry<ResourceLocation, JsonElement> entry : p_10793_.entrySet()) {
             ResourceLocation resourcelocation = entry.getKey();
             try {
@@ -54,16 +56,27 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
                     continue;
                 }
                 quest.id = resourcelocation;
-                quests.add(quest);
+                loaded.add(quest);
             } catch (IllegalArgumentException | JsonParseException jsonparseexception) {
                 LOGGER.error("Parsing error loading quest {}", resourcelocation, jsonparseexception);
             }
         }
+        // Se sustituye la lista entera (no clear+add) para no dejar a otro hilo leyendo una lista a medias
+        quests = loaded;
         LOGGER.info("[QuestManager] Loaded {} quest", quests.size());
+        QuestRecipeLocks.invalidate();
+        generation++;
     }
 
     public static List<Quest> getQuests() {
         return quests;
+    }
+
+    /** Cliente remoto: definiciones recibidas del servidor (en un solo jugador/host se usa la lista del servidor). */
+    public static void setClientQuests(List<Quest> fromServer) {
+        quests = new ArrayList<>(fromServer);
+        QuestRecipeLocks.invalidate();
+        generation++;
     }
     public static Map<BteNpcType,List<Quest>> getQuestsForType(){
         Map<BteNpcType,List<Quest>> map = new HashMap<>();

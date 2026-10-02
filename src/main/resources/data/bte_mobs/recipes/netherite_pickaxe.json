@@ -1,9 +1,9 @@
 {
   "type": "bte_mobs:blacksmith_upgrade",
   "category": "TOOLS",
-  "tier": 3,
+  "tier": 4,
   "base": {
-    "item": "minecraft:diamond_pickaxe"
+    "item": "illagerrevolutionmod:illagium_pickaxe"
   },
   "ingredients": [
     {

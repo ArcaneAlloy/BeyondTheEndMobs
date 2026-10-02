@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "dungeons_gear:imploding_crossbow",
+    "dungeons_gear:slayer_crossbow",
+    "dungeons_gear:red_snake",
+    "dungeons_gear:elite_power_bow"
+  ]
+}

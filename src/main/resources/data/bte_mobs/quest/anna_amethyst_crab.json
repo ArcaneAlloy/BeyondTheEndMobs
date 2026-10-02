@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota a un Amethyst Crab en las cuevas de amatista.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 421,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a un Amethyst Crab",
+      "count": 1,
+      "entityIdLocation": "cataclysm:amethyst_crab"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:bloom_stone_pauldrons",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_carminite_giant_block",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 20
+}

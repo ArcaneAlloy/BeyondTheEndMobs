@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Llega al núcleo del Labyrinth y consigue el Solar Crystal del pedestal de la sala del tesoro.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 543,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Obtén el Solar Crystal",
+      "count": 1,
+      "entityIdLocation": "celestisynth:solar_crystal"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "celestisynth:solaris",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

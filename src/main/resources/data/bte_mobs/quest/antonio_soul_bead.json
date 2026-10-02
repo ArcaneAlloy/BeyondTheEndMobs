@@ -1,0 +1,49 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Consigue un Soul Bead y entrégaselo a Antonio.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 323,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Soul Bead a Antonio",
+      "count": 1,
+      "entityIdLocation": "quark:soul_bead"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1,
+      "nbt": {
+        "targetStructure": "incendium:nether_reactor",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.nether_reactor\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.nether_reactor\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.nether\",\"color\":\"red\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:corrupted_crossbow",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 15
+}

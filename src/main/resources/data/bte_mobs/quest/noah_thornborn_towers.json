@@ -1,0 +1,36 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Llega a la cima de una de las Thornborn Towers, custodiadas por phantoms y esqueletos.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 23,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega la Corona Thornborn",
+      "count": 1,
+      "entityIdLocation": "kubejs:thornborn_crown"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 8
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:skeleton_skull",
+      "count": 3
+    },
+    {
+      "type": "UNLOCK_OPTION_DIALOG",
+      "npcType": "WARLOCK",
+      "optionDialogId": "warlock:remove"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 15
+}

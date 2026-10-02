@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cataclysm:cursium_helmet",
+    "cataclysm:cursium_chestplate",
+    "cataclysm:cursium_leggings",
+    "cataclysm:cursium_boots"
+  ]
+}

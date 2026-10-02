@@ -1,0 +1,42 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Fiery Compass, que te guía hasta la Burning Arena.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 341,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Escombros Ancestrales",
+      "count": 4,
+      "entityIdLocation": "minecraft:ancient_debris"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Vara de Blaze",
+      "count": 1,
+      "entityIdLocation": "minecraft:blaze_rod"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_cataclysm_burning_arena",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_cataclysm_burning_arena",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 20
+}

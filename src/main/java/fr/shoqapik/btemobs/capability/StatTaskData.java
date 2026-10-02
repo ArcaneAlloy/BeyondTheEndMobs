@@ -2,6 +2,11 @@ package fr.shoqapik.btemobs.capability;
 
 import fr.shoqapik.btemobs.quest.TaskData;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class StatTaskData {
     public String id;
@@ -10,6 +15,8 @@ public class StatTaskData {
     public boolean complete = false;
     public TaskData.Type taskType;
     public String description;
+    /** Ids ya contados (tareas CRAFT_UNIQUE). */
+    public Set<String> seen = new HashSet<>();
     public StatTaskData(String id,int count,int maxCount,boolean complete,String description , TaskData.Type taskType){
         this.id = id;
         this.count = count;
@@ -25,6 +32,8 @@ public class StatTaskData {
         this.complete = tag.getBoolean("complete");
         this.taskType = TaskData.Type.valueOf(tag.getString("type"));
         this.description = tag.getString("description");
+        ListTag seenTag = tag.getList("seen", 8);
+        for (int i = 0; i < seenTag.size(); i++) this.seen.add(seenTag.getString(i));
     }
     public CompoundTag save(){
         CompoundTag tag = new CompoundTag();
@@ -34,6 +43,11 @@ public class StatTaskData {
         tag.putBoolean("complete",complete);
         tag.putString("type",this.taskType.name());
         tag.putString("description",this.description);
+        if (!this.seen.isEmpty()) {
+            ListTag seenTag = new ListTag();
+            for (String s : this.seen) seenTag.add(StringTag.valueOf(s));
+            tag.put("seen", seenTag);
+        }
         return tag;
     }
     public int getCount() {

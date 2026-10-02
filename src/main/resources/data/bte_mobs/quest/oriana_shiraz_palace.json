@@ -1,0 +1,41 @@
+{
+  "entityType": "DRUID",
+  "description": "Llega a la cima del Shiraz Palace y consigue la Lamp of Cinders del cofre del tesoro.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 121,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Obtén la Lamp of Cinders",
+      "count": 1,
+      "entityIdLocation": "twilightforest:lamp_of_cinders"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 8
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:skeleton_skull",
+      "count": 3
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "twilightforest:lamp_of_cinders",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_plague_asylum",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

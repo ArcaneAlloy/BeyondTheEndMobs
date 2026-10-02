@@ -2,6 +2,8 @@ package fr.shoqapik.btemobs.capability;
 
 
 import fr.shoqapik.btemobs.BteMobsMod;
+import fr.shoqapik.btemobs.RecipeSharing;
+import fr.shoqapik.btemobs.ServerData;
 import fr.shoqapik.btemobs.api.RecipePlayer;
 import fr.shoqapik.btemobs.entity.BteNpcType;
 import fr.shoqapik.btemobs.packets.SyncRecipeManager;
@@ -44,51 +46,72 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
     public Map<Quest,QuestStateData> getQuestForNpc(BteNpcType npcType){
         return quests.get(npcType);
     }
+    /** Cantidad de items del inventario del jugador que cumplen la especificación ("mod:item" o "#mod:tag"). */
+    public static int countItems(Player player, String spec) {
+        int total = 0;
+        net.minecraft.world.entity.player.Inventory inv = player.getInventory();
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            net.minecraft.world.item.ItemStack stack = inv.getItem(i);
+            if (QuestTriggers.matchesItem(spec, stack)) total += stack.getCount();
+        }
+        return total;
+    }
+
+    /**
+     * Recalcula las tareas COLLECT con el inventario de ESTE jugador y si cada quest está completa.
+     * En cooperativo el estado es compartido: muestra el progreso del último jugador que lo ha revisado
+     * (al abrir la ventana de quests se revisa con el inventario de quien la abre). Al reclamar se vuelve
+     * a comprobar con el inventario de quien reclama.
+     */
     public void checkChangedInventory(){
+        if (this.player == null) return;
+        boolean changed = false;
         for (Map<Quest, QuestStateData> questMap : quests.values()) {
             for (QuestStateData data : questMap.values()) {
-
-                List<StatTaskData> list = data.statTaskData;
+                if (data.isReclaim) continue;
                 boolean unlock = data.unlockStates.isEmpty() || data.unlockStates.stream().allMatch(e -> e.unlock);
-                int taskComplete = 0;
-
-                if (unlock) {
-                    for (StatTaskData task : list) {
-                        if (!task.complete) {
-                            if (task.taskType == TaskData.Type.COLLECT) {
-                                task.count = Math.min(task.maxCount,
-                                        player.getInventory().countItem(ForgeRegistries.ITEMS.getValue(new ResourceLocation(task.id))));
-                                if (task.count == task.maxCount) {
-                                    taskComplete++;
-                                }
-                            }
-                        } else {
-                            taskComplete++;
+                if (!unlock) continue;
+                boolean allDone = true;
+                for (StatTaskData task : data.statTaskData) {
+                    if (task.taskType == TaskData.Type.COLLECT) {
+                        int count = Math.min(task.maxCount, countItems(this.player, task.id));
+                        if (count != task.count) {
+                            task.count = count;
+                            changed = true;
                         }
+                        if (count < task.maxCount) allDone = false;
+                    } else if (!task.complete) {
+                        allDone = false;
                     }
-
-                    if (taskComplete == list.size()) {
-                        data.isComplete = true;
-                        this.dirty = true;
-                    }
+                }
+                if (data.isComplete != allDone) {
+                    data.isComplete = allDone;
+                    changed = true;
                 }
             }
         }
+        if (changed) this.dirty = true;
     }
+
+    /** Marca como cumplidos los requisitos PARENT_QUEST que dependen de esta quest. */
     public void completeQuest(Quest quest){
-        for (Map<Quest, QuestStateData> questMap : quests.values()) {
-            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
-                QuestStateData data = entry.getValue();
+        completeParent(this.quests, this.unlockActions, quest.id.toString());
+        this.dirty = true;
+    }
+
+    private static void completeParent(Map<BteNpcType, Map<Quest, QuestStateData>> all, List<UnlockAction> actions, String questId) {
+        for (Map<Quest, QuestStateData> questMap : all.values()) {
+            for (QuestStateData data : questMap.values()) {
                 for (UnlockState state : data.unlockStates) {
-                    if (state.type == ConditionUnlockData.Type.PARENT_QUEST && state.id.equals(quest.id.toString())) {
+                    if (state.type == ConditionUnlockData.Type.PARENT_QUEST && state.id.equals(questId)) {
                         state.unlock = true;
                     }
                 }
             }
         }
-        for (UnlockAction unlockAction : this.unlockActions){
+        for (UnlockAction unlockAction : actions){
             for (UnlockState state : unlockAction.unlockStates) {
-                if (state.type == ConditionUnlockData.Type.PARENT_QUEST && state.id.equals(quest.id.toString())) {
+                if (state.type == ConditionUnlockData.Type.PARENT_QUEST && state.id.equals(questId)) {
                     state.unlock = true;
                 }
             }
@@ -96,37 +119,165 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
     }
 
     public void hunterQuestUpdate(LivingDeathEvent event){
+        String entityId = event.getEntity().getEncodeId();
+        if (entityId == null) return;
+        java.util.function.Predicate<StatTaskData> kill = task -> {
+            if (!entityId.equals(task.id)) return false;
+            task.count++;
+            return true;
+        };
+        updateTasks(TaskData.Type.HUNTER, kill);
+        updateTasks(TaskData.Type.BOSS_HUNTER, kill);
+    }
+
+    /** Estado guardado de una quest por su id (o null). */
+    public QuestStateData findState(ResourceLocation id) {
         for (Map<Quest, QuestStateData> questMap : quests.values()) {
             for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
-
-                if (entry.getValue().isComplete)continue;
-                List<StatTaskData> list = entry.getValue().statTaskData;
-                boolean unlock = (entry.getValue().unlockStates.isEmpty() || entry.getValue().unlockStates.stream().allMatch(e->e.unlock));
-                int taskComplete = 0;
-                if (unlock){
-                    for (StatTaskData statTaskData : list) {
-                        if (!statTaskData.complete){
-                            if (statTaskData.id.equals(event.getEntity().getEncodeId())) {
-
-                                statTaskData.count = Math.min(statTaskData.count + 1, statTaskData.maxCount);
-                                if (statTaskData.count== statTaskData.maxCount){
-                                    statTaskData.complete = true;
-                                    taskComplete++;
-                                }
-                            }
-                        }else {
-                            taskComplete++;
-                        }
-
-                    }
-                    if (taskComplete == list.size()){
-                        entry.getValue().isComplete = true;
-                        this.dirty = true;
-                    }
-                }
-
+                if (entry.getKey() != null && entry.getKey().id.equals(id)) return entry.getValue();
             }
         }
+        return null;
+    }
+
+    /**
+     * Actualiza las tareas de un tipo en todas las quests desbloqueadas y no completadas.
+     * El updater devuelve true si ha cambiado el progreso de esa tarea.
+     */
+    public void updateTasks(TaskData.Type type, java.util.function.Predicate<StatTaskData> updater) {
+        boolean changed = false;
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (QuestStateData state : questMap.values()) {
+                if (state.isComplete || state.isReclaim) continue;
+                boolean unlock = state.unlockStates.isEmpty() || state.unlockStates.stream().allMatch(e -> e.unlock);
+                if (!unlock) continue;
+                for (StatTaskData task : state.statTaskData) {
+                    if (task.complete || task.taskType != type) continue;
+                    if (updater.test(task)) {
+                        task.count = Math.min(task.count, task.maxCount);
+                        if (task.count >= task.maxCount) task.complete = true;
+                        changed = true;
+                    }
+                }
+            }
+        }
+        if (changed) {
+            this.dirty = true;
+            // Recalcula si alguna quest ha quedado completa (tiene en cuenta también las tareas COLLECT)
+            checkChangedInventory();
+        }
+    }
+
+    /**
+     * Desbloquea los requisitos ADVANCEMENT que el jugador ya tiene (p. ej. minecraft:nether/root).
+     * Llamado periódicamente desde QuestTriggers.tickPlayer.
+     */
+    public void checkAdvancementConditions(ServerPlayer player) {
+        boolean changed = false;
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (QuestStateData state : questMap.values()) {
+                for (UnlockState us : state.unlockStates) {
+                    if (!us.unlock && (us.type == ConditionUnlockData.Type.NETHER_PORTAL || us.type == ConditionUnlockData.Type.END_PORTAL)
+                            && isPortalOpen(player, us.type == ConditionUnlockData.Type.END_PORTAL ? END_PORTAL_EYES : NETHER_PORTAL_EYES)) {
+                        us.unlock = true;
+                        changed = true;
+                        continue;
+                    }
+                    if (us.unlock || us.type != ConditionUnlockData.Type.ADVANCEMENT) continue;
+                    ResourceLocation advId = ResourceLocation.tryParse(us.id);
+                    if (advId == null) continue;
+                    net.minecraft.advancements.Advancement adv = player.getServer().getAdvancements().getAdvancement(advId);
+                    if (adv != null && player.getAdvancements().getOrStartProgress(adv).isDone()) {
+                        us.unlock = true;
+                        changed = true;
+                    }
+                }
+            }
+        }
+        if (changed) {
+            this.dirty = true;
+            checkChangedInventory();
+        }
+    }
+
+    /** Ender Eyes con los que enders_journey abre físicamente los portales del Forgotten Realm. */
+    public static final int NETHER_PORTAL_EYES = 8;
+    public static final int END_PORTAL_EYES = 16;
+
+    /**
+     * true si el portal está abierto: enders_journey abre el del Nether con 8 Ender Eyes conseguidos y el del End con 16.
+     * En cooperativo basta con que lo cumpla un jugador (el estado de las quests es compartido, igual que el portal).
+     */
+    private static boolean isPortalOpen(ServerPlayer player, int eyes) {
+        try {
+            return mc.duzo.ender_journey.capabilities.PortalPlayer.get(player)
+                    .map(p -> p.getEyesEarn() >= eyes).orElse(false);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /**
+     * Si los requisitos del JSON de una quest han cambiado respecto a lo guardado en el jugador,
+     * se regeneran conservando el estado de los que siguen igual. Un PARENT_QUEST nuevo cuenta
+     * como cumplido si el jugador ya reclamó esa quest.
+     */
+    private static boolean reconcileUnlockStates(Map<BteNpcType, Map<Quest, QuestStateData>> all) {
+        boolean changed = false;
+        Map<String, QuestStateData> byId = new HashMap<>();
+        for (Map<Quest, QuestStateData> m : all.values())
+            for (Map.Entry<Quest, QuestStateData> e : m.entrySet()) if (e.getKey() != null) byId.put(e.getKey().id.toString(), e.getValue());
+
+        for (Map<Quest, QuestStateData> m : all.values()) {
+            for (Map.Entry<Quest, QuestStateData> e : m.entrySet()) {
+                if (e.getKey() == null) continue;
+                List<ConditionUnlockData> defs = e.getKey().getConditionUnlockData();
+                List<UnlockState> saved = e.getValue().unlockStates;
+                boolean same = defs.size() == saved.size();
+                for (int i = 0; same && i < defs.size(); i++) {
+                    same = defs.get(i).type == saved.get(i).type && defs.get(i).locationId.equals(saved.get(i).id);
+                }
+                if (same) continue;
+                List<UnlockState> fresh = new ArrayList<>();
+                for (ConditionUnlockData d : defs) {
+                    UnlockState old = saved.stream().filter(s -> s.type == d.type && s.id.equals(d.locationId)).findFirst().orElse(null);
+                    boolean unlocked = old != null && old.unlock;
+                    if (!unlocked && d.type == ConditionUnlockData.Type.PARENT_QUEST) {
+                        QuestStateData parent = byId.get(d.locationId);
+                        unlocked = parent != null && parent.isReclaim;
+                    }
+                    fresh.add(new UnlockState(d.locationId, d.type, unlocked));
+                }
+                e.getValue().unlockStates = fresh;
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    /** true si hay alguna tarea pendiente de ese tipo (para no hacer trabajo innecesario). */
+    public boolean hasPendingTask(TaskData.Type type) {
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (QuestStateData state : questMap.values()) {
+                if (state.isComplete || state.isReclaim) continue;
+                for (StatTaskData task : state.statTaskData) {
+                    if (!task.complete && task.taskType == type) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** Las tareas guardadas coinciden con la definición actual de la quest (mismo número, tipo, id y cantidad). */
+    private static boolean tasksMatch(Quest quest, QuestStateData state) {
+        List<TaskData> defs = quest.getTasks();
+        if (defs.size() != state.statTaskData.size()) return false;
+        for (int i = 0; i < defs.size(); i++) {
+            TaskData d = defs.get(i);
+            StatTaskData s = state.statTaskData.get(i);
+            if (d.type != s.taskType || !d.getEntityIdLocation().equals(s.id) || d.count != s.maxCount) return false;
+        }
+        return true;
     }
 
     @Override
@@ -161,40 +312,242 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
         this.player = player;
     }
 
+    // ------------------------------------------------------------------ Modo cooperativo
+
+    /** Se incrementa cada vez que cambia el estado compartido; cada jugador se resincroniza al verlo cambiar. */
+    private static int sharedVersion = 0;
+    private int seenSharedVersion = -1;
+
+    /** Fuerza reenviar el estado a su cliente en el siguiente tick (el cliente crea un jugador nuevo al cambiar de dimensión o reaparecer). */
+    public void requestResync() {
+        this.seenSharedVersion = -1;
+    }
+    /** true cuando this.quests / this.unlockActions apuntan al estado compartido del mundo (ServerData). */
+    private boolean sharedBound = false;
+
     @Override
     public void tick(Player player) {
-        if(!level.isClientSide){
-            if (this.quests.size() != QuestManager.getQuests().size()){
-                for (Quest quest : QuestManager.getQuests()){
-                    if (!this.quests.get(quest.getEntityType()).containsKey(quest)){
-                        List<StatRewardData> dataList = new ArrayList<>();
-                        List<StatTaskData> taskDataList = new ArrayList<>();
-                        List<UnlockState> unlockStates = new ArrayList<>();
-                        for (TaskData data:quest.getTasks()){
-                            taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.description,data.type));
-                        }
-                        for (RewardData rewardData : quest.getRewards()){
-                            dataList.add(new StatRewardData(rewardData.getObjectId(),0,rewardData.count,false,rewardData.type));
-                        }
-                        for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
-                            unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
-                        }
-                        quests.get(quest.getEntityType()).put(quest,new QuestStateData(false,false,dataList,taskDataList,unlockStates));
+        if (level == null || level.isClientSide || !(player instanceof ServerPlayer serverPlayer)) return;
+        if (!sharedBound) bindShared(serverPlayer);
+
+        ServerData serverData = ServerData.get();
+        if (serverData.questGeneration != QuestManager.generation) {
+            if (syncWithQuestManager(this.quests, this.unlockActions)) this.dirty = true;
+            serverData.questGeneration = QuestManager.generation;
+        }
+
+        if (this.dirty) {
+            sharedVersion++;
+            this.dirty = false;
+        }
+        if (this.seenSharedVersion != sharedVersion) {
+            this.seenSharedVersion = sharedVersion;
+            BteMobsMod.sendToClient(new SyncRecipeManager(player.getId(), this.serializeNBT(), false), serverPlayer);
+        }
+    }
+
+    /**
+     * Enlaza las quests de este jugador con las del mundo. El primer jugador (o una partida antigua) aporta su
+     * progreso como estado inicial; el resto lo fusiona (quests reclamadas, contadores, requisitos cumplidos).
+     * También comparte sus recetas con los demás y recibe las ya desbloqueadas.
+     */
+    private void bindShared(ServerPlayer player) {
+        ServerData serverData = ServerData.get();
+        Map<BteNpcType, Map<Quest, QuestStateData>> shared = serverData.getSharedQuests();
+        if (shared == null) {
+            serverData.setSharedQuests(this.quests, this.unlockActions);
+        } else if (shared != this.quests) {
+            List<String> reclaimed = mergeInto(this.quests, this.unlockActions, shared, serverData.getSharedUnlockActions());
+            this.quests = shared;
+            this.unlockActions = serverData.getSharedUnlockActions();
+            for (String id : reclaimed) completeParent(this.quests, this.unlockActions, id);
+            // Revalida quests/acciones tras la fusión (p. ej. requisitos antiguos que traía la partida de este jugador)
+            serverData.questGeneration = -1;
+        }
+        this.sharedBound = true;
+        RecipeSharing.shareFromPlayer(player);
+        RecipeSharing.syncPlayer(player);
+        this.dirty = true;
+    }
+
+    /** Fusiona el progreso de un jugador en el compartido. Devuelve los ids de quests que pasan a estar reclamadas. */
+    private static List<String> mergeInto(Map<BteNpcType, Map<Quest, QuestStateData>> mine, List<UnlockAction> myActions,
+                                          Map<BteNpcType, Map<Quest, QuestStateData>> shared, List<UnlockAction> sharedActions) {
+        List<String> reclaimed = new ArrayList<>();
+        Map<String, QuestStateData> sharedById = new HashMap<>();
+        for (Map<Quest, QuestStateData> m : shared.values())
+            for (Map.Entry<Quest, QuestStateData> e : m.entrySet()) if (e.getKey() != null) sharedById.put(e.getKey().id.toString(), e.getValue());
+
+        for (Map.Entry<BteNpcType, Map<Quest, QuestStateData>> typeEntry : mine.entrySet()) {
+            for (Map.Entry<Quest, QuestStateData> e : typeEntry.getValue().entrySet()) {
+                if (e.getKey() == null) continue;
+                String id = e.getKey().id.toString();
+                QuestStateData m = e.getValue();
+                QuestStateData s = sharedById.get(id);
+                if (s == null) {
+                    shared.computeIfAbsent(typeEntry.getKey(), k -> new HashMap<>()).put(e.getKey(), m);
+                    if (m.isReclaim) reclaimed.add(id);
+                    continue;
+                }
+                if (s.isReclaim) continue;
+                if (m.isReclaim) {
+                    s.isReclaim = true;
+                    s.isComplete = true;
+                    reclaimed.add(id);
+                    continue;
+                }
+                if (m.statTaskData.size() == s.statTaskData.size()) {
+                    for (int i = 0; i < m.statTaskData.size(); i++) {
+                        StatTaskData mt = m.statTaskData.get(i);
+                        StatTaskData st = s.statTaskData.get(i);
+                        if (mt.taskType != st.taskType || !mt.id.equals(st.id) || mt.taskType == TaskData.Type.COLLECT) continue;
+                        st.seen.addAll(mt.seen);
+                        st.count = Math.min(st.maxCount, Math.max(Math.max(st.count, mt.count), st.seen.size()));
+                        st.complete = st.complete || mt.complete || st.count >= st.maxCount;
                     }
                 }
-                this.dirty = true;
-            }
-            if(this.dirty){
-                BteMobsMod.sendToClient(new SyncRecipeManager(player.getId(),this.serializeNBT(),false), (ServerPlayer) player);
-                this.dirty = false;
+                for (UnlockState ms : m.unlockStates) {
+                    if (!ms.unlock) continue;
+                    for (UnlockState ss : s.unlockStates) {
+                        if (ss.type == ms.type && ss.id.equals(ms.id)) ss.unlock = true;
+                    }
+                }
             }
         }
+        for (UnlockAction ma : myActions) {
+            UnlockAction sa = sharedActions.stream().filter(a -> a.action.equals(ma.action)).findFirst().orElse(null);
+            if (sa == null) {
+                sharedActions.add(ma);
+                continue;
+            }
+            for (UnlockState ms : ma.unlockStates) {
+                if (!ms.unlock) continue;
+                for (UnlockState ss : sa.unlockStates) {
+                    if (ss.type == ms.type && ss.id.equals(ms.id)) ss.unlock = true;
+                }
+            }
+        }
+        return reclaimed;
+    }
+
+    /**
+     * Ajusta el mapa de quests a las quests cargadas ahora mismo (tras arrancar o hacer /reload):
+     * añade las nuevas, quita las desactivadas y actualiza las tareas/requisitos que hayan cambiado.
+     */
+    public static boolean syncWithQuestManager(Map<BteNpcType, Map<Quest, QuestStateData>> all, List<UnlockAction> actions) {
+        List<Quest> current = QuestManager.getQuests();
+        if (current.isEmpty()) return false;
+        boolean changed = false;
+        Map<String, QuestStateData> byId = new HashMap<>();
+        for (Map<Quest, QuestStateData> m : all.values())
+            for (Map.Entry<Quest, QuestStateData> e : m.entrySet()) if (e.getKey() != null) byId.putIfAbsent(e.getKey().id.toString(), e.getValue());
+
+        Map<BteNpcType, Map<Quest, QuestStateData>> fresh = new HashMap<>();
+        for (BteNpcType type : BteNpcType.values()) fresh.put(type, new HashMap<>());
+        for (Quest quest : current) {
+            QuestStateData state = byId.get(quest.id.toString());
+            if (state == null) {
+                state = newState(quest, actions);
+                changed = true;
+            } else if (!state.isComplete && !state.isReclaim && !tasksMatch(quest, state)) {
+                state.statTaskData = freshTasks(quest);
+                changed = true;
+            }
+            fresh.computeIfAbsent(quest.getEntityType(), k -> new HashMap<>()).put(quest, state);
+        }
+        for (Map.Entry<BteNpcType, Map<Quest, QuestStateData>> e : fresh.entrySet()) {
+            Map<Quest, QuestStateData> old = all.get(e.getKey());
+            if (old == null || old.size() != e.getValue().size() || !old.keySet().containsAll(e.getValue().keySet())) changed = true;
+        }
+        if (changed) {
+            for (Map.Entry<BteNpcType, Map<Quest, QuestStateData>> e : fresh.entrySet()) {
+                Map<Quest, QuestStateData> target = all.computeIfAbsent(e.getKey(), k -> new HashMap<>());
+                target.clear();
+                target.putAll(e.getValue());
+            }
+        }
+        if (reconcileUnlockStates(all)) changed = true;
+        if (ensureDialogActions(all, actions)) changed = true;
+        return changed;
+    }
+
+    /**
+     * Garantiza que cada recompensa UNLOCK_OPTION_DIALOG tenga su acción bloqueada registrada, también en partidas
+     * guardadas antes de añadir la recompensa a la quest. Si la quest ya estaba reclamada, la opción queda desbloqueada.
+     */
+    private static boolean ensureDialogActions(Map<BteNpcType, Map<Quest, QuestStateData>> all, List<UnlockAction> actions) {
+        boolean changed = false;
+        // Quita requisitos de quests que ya no dan esa recompensa (p. ej. si se movió a otra quest)
+        java.util.Set<String> valid = new java.util.HashSet<>();
+        for (Map<Quest, QuestStateData> m : all.values())
+            for (Quest q : m.keySet()) {
+                if (q == null) continue;
+                for (RewardData r : q.getRewards())
+                    if (r.type == RewardData.Type.UNLOCK_OPTION_DIALOG) valid.add(r.getObjectId() + "|" + q.id);
+            }
+        for (UnlockAction action : actions) {
+            if (action.unlockStates.removeIf(st -> st.type == ConditionUnlockData.Type.PARENT_QUEST
+                    && !valid.contains(action.action + "|" + st.id))) changed = true;
+        }
+        for (Map<Quest, QuestStateData> m : all.values()) {
+            for (Map.Entry<Quest, QuestStateData> e : m.entrySet()) {
+                if (e.getKey() == null) continue;
+                String questId = e.getKey().id.toString();
+                for (RewardData reward : e.getKey().getRewards()) {
+                    if (reward.type != RewardData.Type.UNLOCK_OPTION_DIALOG) continue;
+                    UnlockAction action = actions.stream().filter(a -> a.action.equals(reward.getObjectId())).findAny().orElse(null);
+                    if (action == null) {
+                        action = new UnlockAction(reward.getObjectId(), new ArrayList<>());
+                        actions.add(action);
+                    }
+                    boolean present = action.unlockStates.stream().anyMatch(st -> st.type == ConditionUnlockData.Type.PARENT_QUEST && st.id.equals(questId));
+                    if (!present) {
+                        action.unlockStates.add(new UnlockState(questId, ConditionUnlockData.Type.PARENT_QUEST, e.getValue().isReclaim));
+                        changed = true;
+                    }
+                }
+            }
+        }
+        return changed;
+    }
+
+    private static List<StatTaskData> freshTasks(Quest quest) {
+        List<StatTaskData> tasks = new ArrayList<>();
+        for (TaskData data : quest.getTasks()) {
+            tasks.add(new StatTaskData(data.getEntityIdLocation(), 0, data.count, false, data.description, data.type));
+        }
+        return tasks;
+    }
+
+    /** Estado inicial de una quest (y registra sus acciones de diálogo bloqueadas). */
+    private static QuestStateData newState(Quest quest, List<UnlockAction> actions) {
+        List<StatRewardData> dataList = new ArrayList<>();
+        List<UnlockState> unlockStates = new ArrayList<>();
+        String questId = quest.id.toString();
+        for (RewardData rewardData : quest.getRewards()){
+            if (rewardData.type == RewardData.Type.UNLOCK_OPTION_DIALOG){
+                UnlockAction unlockAction = actions.stream().filter(data -> data.action.equals(rewardData.getObjectId())).findAny().orElse(null);
+                if (unlockAction == null){
+                    unlockAction = new UnlockAction(rewardData.getObjectId(), new ArrayList<>());
+                    actions.add(unlockAction);
+                }
+                boolean present = unlockAction.unlockStates.stream().anyMatch(st -> st.type == ConditionUnlockData.Type.PARENT_QUEST && st.id.equals(questId));
+                if (!present) unlockAction.unlockStates.add(new UnlockState(questId, ConditionUnlockData.Type.PARENT_QUEST, false));
+            }
+            dataList.add(new StatRewardData(rewardData.getObjectId(),0,rewardData.count,false,rewardData.type));
+        }
+        for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
+            unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
+        }
+        return new QuestStateData(false, false, dataList, freshTasks(quest), unlockStates);
     }
 
     public void copyFrom(RecipeCapability cap){
         this.recipeManager = cap.recipeManager;
         this.quests = cap.quests;
         this.unlockActions = cap.unlockActions;
+        // Si el anterior ya estaba enlazado al estado compartido no hace falta volver a fusionar ni resincronizar recetas
+        this.sharedBound = cap.sharedBound;
         this.dirty = true;
     }
 
@@ -206,36 +559,22 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
     @Override
     public void setRecipesForType(RecipeType<T> type, List<T> recipes) {
         Map<RecipeType<T>,List<T>> map = new HashMap<>(this.getRecipeManager());
-        map.put(type,recipes);
+        map.put(type,new ArrayList<>(recipes));
         this.recipeManager = map;
     }
 
     @Override
     public void addRecipeForType(RecipeType<T> type, T recipe) {
-        if(this.recipeManager.containsKey(type)){
-            if(!this.recipeManager.get(type).contains(recipe)){
-                this.recipeManager.get(type).add(recipe);
-            }
-        }else {
-            this.recipeManager.put(type,List.of(recipe));
+        List<T> list = this.recipeManager.computeIfAbsent(type, k -> new ArrayList<>());
+        boolean present = list.stream().anyMatch(r -> r.getId().equals(recipe.getId()));
+        if (!present) {
+            list.add(recipe);
+            this.dirty = true;
         }
-
-        this.dirty = true;
     }
 
-
-    public void addRecipesForType(RecipeType<T> type, List<T> recipe) {
-        if(this.recipeManager.containsKey(type)){
-            for(T r : recipe){
-                if(!this.recipeManager.get(type).contains(r)){
-                    this.recipeManager.get(type).add(r);
-                }
-            }
-
-        }else {
-            this.recipeManager.put(type,recipe);
-        }
-        this.dirty = true;
+    public void addRecipesForType(RecipeType<T> type, List<T> recipes) {
+        for (T r : recipes) addRecipeForType(type, r);
     }
 
     public void setRecipeManager(Map<RecipeType<T>,List<T>> map){
@@ -259,24 +598,13 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
 
         if(!this.level.isClientSide){
             this.initQuest();
-            this.initActionState();
             this.dirty = true;
         }
     }
 
-    private void initActionState() {
-
-
-    }
-
     public void completeQuest(ResourceLocation id){
-        for (Map<Quest, QuestStateData> questMap : quests.values()) {
-            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
-                if (entry.getKey().id.equals(id)) {
-                    entry.getValue().isReclaim = true;
-                }
-            }
-        }
+        QuestStateData state = findState(id);
+        if (state != null) state.isReclaim = true;
         dirty = true;
     }
 
@@ -285,39 +613,86 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
         for (BteNpcType type : BteNpcType.values()){
             map.put(type,new HashMap<>());
         }
-        for (Map.Entry<BteNpcType,List<Quest>> entry : QuestManager.getQuestsForType().entrySet()){
-            for (Quest quest : entry.getValue()){
-                List<StatRewardData> dataList = new ArrayList<>();
-                List<StatTaskData> taskDataList = new ArrayList<>();
-                List<UnlockState> unlockStates = new ArrayList<>();
-                for (TaskData data:quest.getTasks()){
-                    taskDataList.add(new StatTaskData(data.getEntityIdLocation(),0,data.count,false,data.description,data.type));
-                }
-                for (RewardData rewardData : quest.getRewards()){
-                    if (rewardData.type == RewardData.Type.UNLOCK_OPTION_DIALOG){
-                        UnlockAction unlockAction = this.unlockActions.stream().filter(data-> data.action.equals(rewardData.getObjectId())).findAny().orElse(null);
-                        if (unlockAction!=null){
-                            unlockAction.unlockStates.add(new UnlockState(quest.id.toString(), ConditionUnlockData.Type.PARENT_QUEST,false));
-                        }else {
-                            List<UnlockState> states = new ArrayList<>();
-                            states.add(new UnlockState(quest.id.toString(), ConditionUnlockData.Type.PARENT_QUEST,false));
-                            this.unlockActions.add(new UnlockAction(rewardData.getObjectId() ,states));
-                        }
-                    }
-                    dataList.add(new StatRewardData(rewardData.getObjectId(),0,rewardData.count,false,rewardData.type));
-                }
-                for (ConditionUnlockData unlockData : quest.getConditionUnlockData()){
-                    unlockStates.add(new UnlockState(unlockData.locationId,unlockData.type,false));
-                }
-                map.get(entry.getKey()).put(quest,new QuestStateData(false,false,dataList,taskDataList,unlockStates));
-            }
+        List<UnlockAction> actions = new ArrayList<>();
+        for (Quest quest : QuestManager.getQuests()){
+            map.computeIfAbsent(quest.getEntityType(), k -> new HashMap<>()).put(quest, newState(quest, actions));
         }
         this.quests = map;
+        this.unlockActions = actions;
+    }
+
+    // ------------------------------------------------------------------ NBT
+
+    /** Guarda quests + acciones de diálogo (se usa para el jugador y para el estado compartido del mundo). */
+    public static CompoundTag saveQuests(Map<BteNpcType, Map<Quest, QuestStateData>> quests, List<UnlockAction> unlockActions) {
+        CompoundTag nbt = new CompoundTag();
+        ListTag list = new ListTag();
+        quests.forEach((type, questMap) -> {
+            if (type == null) return;
+            CompoundTag tag = new CompoundTag();
+            tag.putString("type", type.name());
+            ListTag tags = new ListTag();
+            questMap.forEach((quest, state) -> {
+                if (quest == null) return;
+                CompoundTag tag1 = new CompoundTag();
+                tag1.putString("id", quest.id.toString());
+                tag1.put("data", state.save());
+                tags.add(tag1);
+            });
+            tag.put("list", tags);
+            list.add(tag);
+        });
+        nbt.put("quests", list);
+        ListTag listTag = new ListTag();
+        if (unlockActions != null) {
+            for (UnlockAction unlockAction : unlockActions) listTag.add(unlockAction.save());
+        }
+        nbt.put("unlockAction", listTag);
+        return nbt;
+    }
+
+    public static Map<BteNpcType, Map<Quest, QuestStateData>> loadQuests(CompoundTag nbt) {
+        Map<BteNpcType,Map<Quest,QuestStateData>> map1 = new HashMap<>();
+        for (BteNpcType type : BteNpcType.values()){
+            map1.put(type,new HashMap<>());
+        }
+        if (nbt.contains("quests")){
+            ListTag listTag = nbt.getList("quests",10);
+            for (int i = 0 ; i < listTag.size() ; i++){
+                CompoundTag nbt1 = listTag.getCompound(i);
+                if (!nbt1.contains("list")) continue;
+                ListTag listTag1 = nbt1.getList("list",10);
+                for (int j = 0;j < listTag1.size() ; j++){
+                    CompoundTag nbt2 = listTag1.getCompound(j);
+                    Quest quest = QuestManager.getQuest(nbt2.getString("id"));
+                    if (quest == null) continue; // quest renombrada/eliminada/desactivada
+                    QuestStateData state = new QuestStateData(nbt2.getCompound("data"));
+                    // Si el JSON de la quest ha cambiado sus tareas y aún no está completada, se regeneran
+                    if (!state.isComplete && !state.isReclaim && !tasksMatch(quest, state)) {
+                        state.statTaskData = freshTasks(quest);
+                    }
+                    map1.computeIfAbsent(quest.getEntityType(), k -> new HashMap<>()).put(quest, state);
+                }
+            }
+        }
+        reconcileUnlockStates(map1);
+        return map1;
+    }
+
+    public static List<UnlockAction> loadUnlockActions(CompoundTag nbt) {
+        List<UnlockAction> unlockActions = new ArrayList<>();
+        if (nbt.contains("unlockAction")){
+            ListTag list = nbt.getList("unlockAction",10);
+            for (int i = 0 ; i < list.size() ; i++){
+                unlockActions.add(new UnlockAction(list.getCompound(i)));
+            }
+        }
+        return unlockActions;
     }
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
+        CompoundTag nbt = saveQuests(this.quests, this.unlockActions);
         if(!getRecipeManager().isEmpty()){
             ListTag list = new ListTag();
             getRecipeManager().forEach((key,value)->{
@@ -336,31 +711,6 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
             });
             nbt.put("manager",list);
         }
-        if (!quests.isEmpty()){
-            ListTag list = new ListTag();
-            quests.entrySet().forEach((entry)->{
-                if(entry.getKey()==null){
-                    return;
-                }
-                CompoundTag tag = new CompoundTag();
-                tag.putString("type",entry.getKey().name());
-                ListTag tags = new ListTag();
-                entry.getValue().entrySet().forEach(entry1->{
-                    CompoundTag tag1 = new CompoundTag();
-                    tag1.putString("id",entry1.getKey().id.toString());
-                    tag1.put("data",entry1.getValue().save());
-                    tags.add(tag1);
-                });
-                tag.put("list",tags);
-                list.add(tag);
-            });
-            nbt.put("quests",list);
-        }
-        ListTag listTag = new ListTag();
-        for (UnlockAction unlockAction : this.unlockActions){
-            listTag.add(unlockAction.save());
-        }
-        nbt.put("unlockAction",listTag);
         return nbt;
     }
 
@@ -386,40 +736,10 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
                 map.put((RecipeType<T>) type,recipes);
             }
         }
-        Map<BteNpcType,Map<Quest,QuestStateData>> map1 = new HashMap<>();
-        for (BteNpcType type : BteNpcType.values()){
-            map1.put(type,new HashMap<>());
-        }
-        if (nbt.contains("quests")){
-            ListTag listTag = nbt.getList("quests",10);
-
-            for (int i = 0 ; i < listTag.size() ; i++){
-                CompoundTag nbt1 = listTag.getCompound(i);
-                BteNpcType type = BteNpcType.valueOf(nbt1.getString("type"));
-                if (nbt1.contains("list")){
-                    ListTag listTag1 = nbt1.getList("list",10);
-                    for (int j = 0;j < listTag1.size() ; j++){
-                        CompoundTag nbt2 = listTag1.getCompound(j);
-                        Quest quest = QuestManager.getQuest(nbt2.getString("id"));
-                        if (quest == null) continue; // ID de quest guardado que ya no existe (renombrada/eliminada); se ignora en vez de corromper el mapa
-                        map1.get(type).put(quest,new QuestStateData(nbt2.getCompound("data")));
-                    }
-                }
-            }
-
-        }
-
-        List<UnlockAction> unlockActions = new ArrayList<>();
-        if (nbt.contains("unlockAction")){
-            ListTag list = nbt.getList("unlockAction",10);
-            for (int i = 0 ; i < list.size() ; i++){
-                CompoundTag data1 = list.getCompound(i);
-                unlockActions.add(new UnlockAction(data1));
-            }
-        }
-        this.unlockActions = unlockActions;
+        this.unlockActions = loadUnlockActions(nbt);
         this.recipeManager = map;
-        this.quests = map1;
+        this.quests = loadQuests(nbt);
+        this.sharedBound = false;
         this.dirty = true;
     }
 

@@ -8,7 +8,7 @@
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "twilightforest:fiery_blood",
+      "item": "twilightforest:fiery_tears",
       "count": 2
     }
   ],

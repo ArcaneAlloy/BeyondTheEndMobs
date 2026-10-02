@@ -139,6 +139,8 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                         }
                     }
                     player.experienceLevel-=WarlockCraftMenu.this.experience.get();
+                    // Tareas de quest WARLOCK_ENCHANT
+                    if (!player.level.isClientSide) fr.shoqapik.btemobs.quest.QuestTriggers.onWarlockEnchant(player, itemStack);
                     WarlockCraftMenu.this.experience.set(0);
                     WarlockCraftMenu.this.clickedRecipe = Optional.empty();
                 }

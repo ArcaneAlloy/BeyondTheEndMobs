@@ -85,12 +85,16 @@ public class QuestDialogScreen extends Screen {
 
             ResourceLocation backgroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/background.png", bteNpcType.name().toLowerCase(Locale.ROOT)));
             ResourceLocation foregroundTexture = new ResourceLocation(BteMobsMod.MODID, String.format("textures/gui/buttons/%s/%s.png", bteNpcType.name().toLowerCase(Locale.ROOT), questAnswer.getAction().toLowerCase(Locale.ROOT)));
+            // Sin icono si la textura no existe (evita el cuadro morado y negro, p. ej. en "quests")
+            if (Minecraft.getInstance().getResourceManager().getResource(foregroundTexture).isEmpty()) foregroundTexture = null;
 
             String answerKey = questAnswer.getFormattedAwnser();
             String translatedAnswer = answerKey.contains(".") ? I18n.get(answerKey) : answerKey;
 
             CustomButton button = new CustomButton(backgroundTexture, foregroundTexture, x, y + index * 25, 100, 20, Component.literal(translatedAnswer),
                     (p_95981_) -> {
+                        // Opción bloqueada por una quest: no hace nada (el tooltip explica qué quest la desbloquea)
+                        if (p_95981_ instanceof CustomButton cbLocked && cbLocked.isLock()) return;
                         if (questAnswer.getAction().equals("quests")){
                             Minecraft.getInstance().setScreen(new QuestScreen(this.entityId,bteNpcType, RecipeCapability.get(Minecraft.getInstance().player).getQuestForNpc(bteNpcType)));
                         }else if (questAnswer.getAction().equals("rumor")) {
@@ -112,7 +116,13 @@ public class QuestDialogScreen extends Screen {
                         }
                     }
             );
-            button.setIsLock(!RecipeCapability.get(getMinecraft().player).isUnlockAction(bteNpcType.name().toLowerCase()+":"+questAnswer.getAction()));
+            String actionKey = bteNpcType.name().toLowerCase()+":"+questAnswer.getAction();
+            RecipeCapability<?> dialogCap = RecipeCapability.get(getMinecraft().player);
+            boolean locked = !dialogCap.isUnlockAction(actionKey);
+            button.setIsLock(locked);
+            // Tooltip con la quest que la desbloquea (se dibuja al final del frame para que ningún botón lo tape)
+            button.deferTooltip = true;
+            if (locked) button.listComponents = fr.shoqapik.btemobs.client.gui.QuestTexts.lockedActionTooltip(dialogCap.unlockActions, actionKey);
             buttons.add(this.addRenderableWidget(button));
 
             index++;
@@ -188,6 +198,13 @@ public class QuestDialogScreen extends Screen {
         }
 
         super.render(poseStack, mouseX, mouseY, partialTick);
+
+        for (Button b : buttons) {
+            if (b instanceof CustomButton cb && cb.isLock() && cb.visible && cb.isMouseOver(mouseX, mouseY)
+                    && cb.listComponents != null && !cb.listComponents.isEmpty()) {
+                this.renderComponentTooltip(poseStack, cb.listComponents, mouseX, mouseY);
+            }
+        }
     }
 
     public void drawWordWrap(FormattedText text, int x, int y, int width, int color, Font font, PoseStack stack) {

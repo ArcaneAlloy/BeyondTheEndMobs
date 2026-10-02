@@ -1,6 +1,11 @@
 package fr.shoqapik.btemobs;
 
 
+import fr.shoqapik.btemobs.capability.QuestStateData;
+import fr.shoqapik.btemobs.capability.RecipeCapability;
+import fr.shoqapik.btemobs.capability.UnlockAction;
+import fr.shoqapik.btemobs.entity.BteNpcType;
+import fr.shoqapik.btemobs.quest.Quest;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +29,35 @@ import java.util.*;
 public class ServerData extends SavedData {
 	private Map<RecipeType<?>,List<UnlockRecipe>> recipes;
 	private boolean unlockTwilightForestPortal = false;
+
+	// ---- Modo cooperativo: progreso de quests compartido por todos los jugadores del mundo ----
+	private Map<BteNpcType, Map<Quest, QuestStateData>> sharedQuests;
+	private List<UnlockAction> sharedUnlockActions;
+	/** Datos leídos del disco; se interpretan la primera vez que se piden (cuando las quests ya están cargadas). */
+	private CompoundTag pendingSharedQuests;
+	/** Generación de QuestManager con la que se sincronizó sharedQuests por última vez (no se guarda). */
+	public int questGeneration = -1;
+
+	public Map<BteNpcType, Map<Quest, QuestStateData>> getSharedQuests() {
+		if (this.sharedQuests == null && this.pendingSharedQuests != null) {
+			this.sharedQuests = RecipeCapability.loadQuests(this.pendingSharedQuests);
+			this.sharedUnlockActions = RecipeCapability.loadUnlockActions(this.pendingSharedQuests);
+			this.pendingSharedQuests = null;
+		}
+		return this.sharedQuests;
+	}
+
+	public List<UnlockAction> getSharedUnlockActions() {
+		getSharedQuests();
+		return this.sharedUnlockActions;
+	}
+
+	public void setSharedQuests(Map<BteNpcType, Map<Quest, QuestStateData>> quests, List<UnlockAction> unlockActions) {
+		this.sharedQuests = quests;
+		this.sharedUnlockActions = unlockActions;
+		this.pendingSharedQuests = null;
+		this.questGeneration = -1;
+	}
 
 	public Map<RecipeType<?>,List<UnlockRecipe>> getRecipesManager() {
 		if (this.recipes == null) {
@@ -49,16 +83,35 @@ public class ServerData extends SavedData {
 	public List<UnlockRecipe> getUnlockRecipesForType(RecipeType<?> type){
 		return getRecipesManager().getOrDefault(type,new ArrayList<>());
 	}
+	// Se compara por id: tras un /reload los objetos Recipe cambian pero el id se mantiene
 	public boolean isUnlock(Recipe<?> recipe){
-		Optional<UnlockRecipe> recipe1 = getUnlockRecipesForType(recipe.getType()).stream().filter(e->e.recipe==recipe).findFirst();
-
-		return recipe1.isPresent() && !recipe1.get().isLock && recipe1.get().wasFound;
+		UnlockRecipe unlock = getUnlockRecipe(recipe);
+		return unlock != null && !unlock.isLock && unlock.wasFound;
 	}
 
 	public UnlockRecipe getUnlockRecipe(Recipe<?> recipe){
-		Optional<UnlockRecipe> recipe1 = getUnlockRecipesForType(recipe.getType()).stream().filter(e->e.recipe==recipe).findFirst();
+		for (UnlockRecipe e : getUnlockRecipesForType(recipe.getType())) {
+			if (e.recipe != null && e.recipe.getId().equals(recipe.getId())) return e;
+		}
+		return null;
+	}
 
-		return recipe1.orElse(null);
+	/** Como getUnlockRecipe, pero crea la entrada (bloqueada) si la receta es nueva (p. ej. añadida por un datapack). */
+	public UnlockRecipe getOrCreateUnlockRecipe(Recipe<?> recipe){
+		UnlockRecipe unlock = getUnlockRecipe(recipe);
+		if (unlock == null) {
+			unlock = new UnlockRecipe(recipe, true);
+			getRecipesManager().computeIfAbsent(recipe.getType(), k -> new ArrayList<>()).add(unlock);
+		}
+		return unlock;
+	}
+
+	/** Marca la receta como desbloqueada para todo el mundo. */
+	public void markUnlocked(Recipe<?> recipe){
+		UnlockRecipe unlock = getOrCreateUnlockRecipe(recipe);
+		unlock.setWasFound(true);
+		unlock.setIsLock(false);
+		setDirty();
 	}
 
 	public boolean unlockTwilightForestPortal(){
@@ -100,6 +153,11 @@ public class ServerData extends SavedData {
 			});
 		}
 		data.putBoolean("unlockTheTwilightForest",this.unlockTwilightForestPortal);
+		if (this.sharedQuests != null) {
+			data.put("sharedQuests", RecipeCapability.saveQuests(this.sharedQuests, this.sharedUnlockActions));
+		} else if (this.pendingSharedQuests != null) {
+			data.put("sharedQuests", this.pendingSharedQuests);
+		}
 		data.put("unlockRecipes",listTag);
 		return data;
 	}
@@ -128,6 +186,9 @@ public class ServerData extends SavedData {
 			}
 		}
 		created.unlockTwilightForestPortal = data.getBoolean("unlockTheTwilightForest");
+		if (data.contains("sharedQuests")) {
+			created.pendingSharedQuests = data.getCompound("sharedQuests");
+		}
 		created.recipes = map;
 		return created;
 	}

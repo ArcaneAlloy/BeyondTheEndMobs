@@ -3,13 +3,13 @@
   "category": "ARMORS",
   "tier": 4,
   "base": {
-    "item": "minecraft:netherite_leggings"
+    "item": "twilightforest:yeti_leggings"
   },
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "alexsmobs:ectoplasm",
-      "count": 7
+      "item": "minecraft:netherite_ingot",
+      "count": 1
     }
   ],
   "result": {

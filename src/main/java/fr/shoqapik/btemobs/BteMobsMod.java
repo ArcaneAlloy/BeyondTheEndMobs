@@ -1,5 +1,6 @@
 package fr.shoqapik.btemobs;
 
+import fr.shoqapik.btemobs.config.BteMobsClientConfig;
 import fr.shoqapik.btemobs.capability.BteCapability;
 import fr.shoqapik.btemobs.capability.QuestStateData;
 import fr.shoqapik.btemobs.capability.RecipeCapability;
@@ -111,6 +112,7 @@ public class BteMobsMod {
         BteMobsBlocks.ITEMS.register(bus);
 
         SoundManager.SOUND_EVENTS.register(bus);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BteMobsClientConfig.SPEC);
         MinecraftForge.EVENT_BUS.addListener(BteCapability::registerCapabilities);
         INSTANCE.registerMessage(0, ShowDialogPacket.class, ShowDialogPacket::encode, ShowDialogPacket::decode, ShowDialogPacket::handle);
         INSTANCE.registerMessage(1, ActionPacket.class, ActionPacket::encode, ActionPacket::decode, ActionPacket::handle);
@@ -130,6 +132,7 @@ public class BteMobsMod {
         INSTANCE.registerMessage(14,SyncUnlockLevelPacket.class,SyncUnlockLevelPacket::encode,SyncUnlockLevelPacket::decode,SyncUnlockLevelPacket::handle);
         INSTANCE.registerMessage(15,SyncRecipeManager.class,SyncRecipeManager::encode,SyncRecipeManager::decode,SyncRecipeManager::handle);
         INSTANCE.registerMessage(16,QuestActionPacket.class,QuestActionPacket::encode,QuestActionPacket::decode,QuestActionPacket::handle);
+        INSTANCE.registerMessage(17,fr.shoqapik.btemobs.packets.SyncQuestsPacket.class,fr.shoqapik.btemobs.packets.SyncQuestsPacket::encode,fr.shoqapik.btemobs.packets.SyncQuestsPacket::decode,fr.shoqapik.btemobs.packets.SyncQuestsPacket::handle);
     }
     @OnlyIn(Dist.CLIENT)
     public static List<EnchantType> getEnchantType (Player player){
@@ -194,6 +197,9 @@ public class BteMobsMod {
             }
         }
         if (msg.actionType.equals("upgrade")){
+            // Bloqueada hasta completar la quest que la desbloquea (recompensa UNLOCK_OPTION_DIALOG "warlock:upgrade")
+            RecipeCapability<?> actionCap = RecipeCapability.get(ctx.get().getSender());
+            if (actionCap != null && !actionCap.isUnlockAction("warlock:upgrade")) return;
             BteAbstractEntity bteAbstractEntity = (BteAbstractEntity) ctx.get().getSender().getLevel().getEntity(msg.entityId);
             if(bteAbstractEntity instanceof WarlockEntity warlockEntity){
                 warlockEntity.openUpgradeGui(ctx.get().getSender());
@@ -219,7 +225,8 @@ public class BteMobsMod {
 
     public static void handleUnlockRecipePacket(CheckUnlockRecipePacket msg, Supplier<NetworkEvent.Context> ctx) {
         List<Recipe<?>> recipes = new ArrayList<>();
-        RecipeCapability.get(ctx.get().getSender()).checkChangedInventory();
+        // Las tareas COLLECT ya no se recalculan en cada cambio de inventario: en cooperativo el estado es compartido y
+        // alternaría entre los inventarios de los jugadores. Se recalculan al abrir la ventana de quests y al reclamar.
 
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get(),new ArrayList<>());
         checkStateRecipe(ctx.get().getSender(), BteMobsRecipeTypes.WARLOCK_POTION_RECIPE.get(),new ArrayList<>());
@@ -230,6 +237,8 @@ public class BteMobsMod {
 
         for(Recipe<?> recipe : list) {
             if(ctx.get().getSender().getRecipeBook().contains(recipe.getId())) continue;
+            // Las recetas que son recompensa de una quest solo se desbloquean completándola
+            if(fr.shoqapik.btemobs.quest.QuestRecipeLocks.isQuestLocked(recipe)) continue;
             if(recipe.getIngredients().stream().map(Ingredient::getItems).anyMatch(e->{
                 for (ItemStack stack : e) {
                     if (ctx.get().getSender().getInventory().contains(stack)) {
@@ -242,17 +251,18 @@ public class BteMobsMod {
             }
         }
 
-        ctx.get().getSender().awardRecipes(recipes);
+        // Cooperativo: la receta se desbloquea para todos los jugadores
+        RecipeSharing.unlockForEveryone(recipes);
     }
 
     public static <C extends Container,T extends Recipe<C>> void checkStateRecipe(ServerPlayer player,RecipeType<T> type,List<Recipe<?>> recipes){
         List<T> recipes2  = getServer().getRecipeManager().getAllRecipesFor(type);
         for (T recipe : recipes2){
+            // Ya desbloqueada en el mundo: todos los jugadores la tienen (se reparte al desbloquear y al conectarse)
             if(ServerData.get().isUnlock(recipe)) continue;
-            boolean flag = false;
-            ServerData.get().getUnlockRecipe(recipe).setWasFound(true);
-
-            if(ServerData.get().getUnlockRecipe(recipe).wasFound &&  ServerData.get().getUnlockRecipe(recipe).isLock && recipe.getIngredients().stream().map(Ingredient::getItems).anyMatch(e->{
+            // Las recetas que son recompensa de una quest solo se desbloquean completándola
+            if(fr.shoqapik.btemobs.quest.QuestRecipeLocks.isQuestLocked(recipe)) continue;
+            if(recipe.getIngredients().stream().map(Ingredient::getItems).anyMatch(e->{
                 for (ItemStack stack : e) {
                     if (player.getInventory().contains(stack)) {
                         return true;
@@ -260,14 +270,11 @@ public class BteMobsMod {
                 }
                 return false;
             })){
-                ServerData.get().getUnlockRecipe(recipe).isLock = false;
-                flag = true;
-            }
-            if(flag){
                 recipes.add(recipe);
             }
         }
-        BteMobsMod.addRecipe(player,type,recipes);
+        // Cooperativo: la receta se desbloquea para todos los jugadores
+        RecipeSharing.unlockForEveryone(recipes);
     }
 
     public static void addRecipe(Player player,RecipeType<?> type, List<Recipe<?>> list){

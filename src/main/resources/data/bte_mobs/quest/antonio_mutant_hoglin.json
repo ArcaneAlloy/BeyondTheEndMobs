@@ -1,0 +1,45 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Derrota a un Mutant Hoglin.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 345,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a un Mutant Hoglin",
+      "count": 1,
+      "entityIdLocation": "mutantmore:mutant_hoglin"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "mutantmore:hoglance",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "mutantmore:hogfist_gauntlet",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "mutantmore:hog_helm",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_plague_asylum",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 30
+}

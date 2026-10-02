@@ -1,15 +1,15 @@
 {
   "entityType": "WARLOCK",
-  "description": "Demuestra tu habilidad alquímica creando una poción.",
+  "description": "Crea cualquier poción en la mesa de pociones de Noah.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 1,
   "tasks": [
     {
-      "type": "COLLECT",
-      "description": "Crea una poción",
+      "type": "BREW_POTION",
+      "description": "Crea una poción con Noah",
       "count": 1,
       "entityIdLocation": "minecraft:potion"
     }

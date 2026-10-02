@@ -13,8 +13,8 @@
     },
     {
       "type": "bte_mobs:item",
-      "item": "dungeons_gear:goat_boots",
-      "count": 5
+      "item": "minecraft:goat_hide",
+      "count": 4
     }
   ],
   "result": {

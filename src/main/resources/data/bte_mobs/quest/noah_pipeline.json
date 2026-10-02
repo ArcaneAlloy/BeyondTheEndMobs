@@ -1,0 +1,36 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Lootea el tesoro del Pipeline.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 322,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega la Válvula del Pipeline",
+      "count": 1,
+      "entityIdLocation": "kubejs:pipeline_valve"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/wildfire_core_blacksmith",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/wildfire_core_upgrade",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 15
+}

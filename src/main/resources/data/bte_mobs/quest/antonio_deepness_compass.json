@@ -1,0 +1,37 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Deepness Compass, que te guía hasta una Ancient City.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 11,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Pizarra Profunda Labrada",
+      "count": 4,
+      "entityIdLocation": "minecraft:cobbled_deepslate"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Antorcha de Almas",
+      "count": 1,
+      "entityIdLocation": "minecraft:soul_torch"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_minecraft_ancient_city",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_minecraft_ancient_city",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 15
+}

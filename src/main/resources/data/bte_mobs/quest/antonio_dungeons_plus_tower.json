@@ -1,0 +1,26 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Por todo el mundo hay altas torres de observación con unas vistas preciosas. Sube a una y quizá aprendas a volar.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 1,
+  "tasks": [
+    {
+      "type": "ACTIVATE_WAYSTONE",
+      "description": "Activa una Waystone fuera del Lobby",
+      "count": 1,
+      "entityIdLocation": "waystones:waystone"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "paraglider:paraglider",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

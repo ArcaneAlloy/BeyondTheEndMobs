@@ -22,6 +22,8 @@ public class CustomButton extends Button {
     private boolean isLock=false;
     public boolean isSelect = true;
     public List<Component> listComponents = new ArrayList<>();
+    /** Si es true, el botón no dibuja su tooltip; lo hace la pantalla al final del frame (para que nada lo tape). */
+    public boolean deferTooltip = false;
     public float[] color = new float[]{
             1.0F,1.0F,1.0F,1.0F
     };
@@ -93,7 +95,7 @@ public class CustomButton extends Button {
 
             RenderSystem.setShaderTexture(0, foregroundTexture);
             blit(poseStack, iconX, iconY, 0, 0, iconWidth, iconHeight, iconWidth, iconHeight);
-            if (this.isMouseOver(mouseX,mouseY)) {
+            if (!this.deferTooltip && this.isMouseOver(mouseX,mouseY)) {
                 this.renderToolTip(poseStack,mouseX, mouseY);
             }
         } else {
@@ -108,6 +110,10 @@ public class CustomButton extends Button {
         if (!this.listComponents.isEmpty()){
             Minecraft.getInstance().screen.renderComponentTooltip(p_93736_, this.listComponents,p_93737_,p_93738_);
         }
+    }
+
+    public boolean isLock() {
+        return this.isLock;
     }
 
     public void setIsLock(boolean flag){

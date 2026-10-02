@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "mutantmore:mutant_wither_skeleton_skull",
+    "mutantmore:mutant_wither_skeleton_boots",
+    "mutantmore:mutant_wither_skeleton_chestplate",
+    "mutantmore:mutant_wither_skeleton_leggings",
+    "mutantmore:withered_scimitar"
+  ]
+}

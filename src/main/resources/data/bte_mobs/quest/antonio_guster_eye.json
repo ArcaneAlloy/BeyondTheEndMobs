@@ -1,11 +1,11 @@
 {
   "entityType": "EXPLORER",
-  "description": "Los Gusters vagan por el desierto. Derrota a uno y trae su ojo.",
+  "description": "Consigue un Guster Eye y entrégaselo a Antonio.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 101,
   "tasks": [
     {
       "type": "COLLECT",
@@ -18,9 +18,26 @@
     {
       "type": "ITEM",
       "itemId": "supplementaries:cartographers_quill",
-      "count": 1
+      "count": 1,
+      "nbt": {
+        "targetStructure": "dungeons_arise:shiraz_palace",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.shiraz_palace\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.shiraz_palace\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.overworld\",\"color\":\"green\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
     }
   ],
-  "conditionUnlockData": [],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_plague_asylum",
+      "type": "PARENT_QUEST"
+    }
+  ],
   "experience": 10
 }

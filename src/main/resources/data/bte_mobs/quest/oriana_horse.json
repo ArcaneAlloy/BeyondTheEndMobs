@@ -1,15 +1,15 @@
 {
   "entityType": "DRUID",
-  "description": "Consigue tu propio caballo personal.",
+  "description": "Marca un caballo como tu Personal Horse.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 1,
   "tasks": [
     {
-      "type": "COLLECT",
-      "description": "Obtén un caballo",
+      "type": "PERSONAL_HORSE",
+      "description": "Marca un caballo como Personal Horse",
       "count": 1,
       "entityIdLocation": "minecraft:saddle"
     }
@@ -17,8 +17,8 @@
   "rewards": [
     {
       "type": "ITEM",
-      "itemId": "minecraft:experience_bottle",
-      "count": 16
+      "itemId": "minecraft:saddle",
+      "count": 1
     }
   ],
   "conditionUnlockData": [],

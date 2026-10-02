@@ -1,0 +1,48 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Mechanical Compass, que te guía hasta la Ancient Factory.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 342,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Withered Debris",
+      "count": 4,
+      "entityIdLocation": "bygonenether:withered_debris"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Lingote de Hierro",
+      "count": 1,
+      "entityIdLocation": "minecraft:iron_ingot"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_cataclysm_ancient_factory",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_cataclysm_ancient_factory",
+      "recipeType": "explorer_recipe_type"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:lightning_harp_crossbow",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 20
+}

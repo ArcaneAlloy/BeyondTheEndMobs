@@ -1,24 +1,24 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Los Knight Phantoms protegen el Goblin Knight Stronghold. Derrótalos.",
+  "description": "Derrota a los Knight Phantom del Stronghold del Twilight Forest. En su tesoro hay Esencia Fantasma para que Anna forje la armadura fantasma.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 344,
   "tasks": [
     {
       "type": "BOSS_HUNTER",
-      "description": "Derrota al Knight Phantom",
+      "description": "Derrota a los Knight Phantom",
       "count": 1,
       "entityIdLocation": "twilightforest:knight_phantom"
     }
   ],
   "rewards": [
     {
-      "type": "ITEM",
-      "itemId": "minecraft:experience_bottle",
-      "count": 32
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/phantom_armor",
+      "recipeType": "blacksmith_upgrade"
     }
   ],
   "conditionUnlockData": [
@@ -27,5 +27,5 @@
       "type": "PARENT_QUEST"
     }
   ],
-  "experience": 25
+  "experience": 30
 }

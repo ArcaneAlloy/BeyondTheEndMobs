@@ -1,0 +1,46 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota a la Netherite Monstrosity y entrega su drop a Anna.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 441,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a la Netherite Monstrosity",
+      "count": 1,
+      "entityIdLocation": "cataclysm:netherite_monstrosity"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPES_BY_INGREDIENT",
+      "ingredient": "minecraft:netherite_ingot"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:twin_bow",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_pillager_fortress"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:shivering_bow",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:oriana_snow_queen"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:anna_carminite_giant_block",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

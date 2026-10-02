@@ -1,23 +1,34 @@
 {
   "entityType": "EXPLORER",
-  "description": "Derrota a un Windcaller y tráeme su Wind Essence.",
+  "description": "Derrota a un Windcaller y entrega a Antonio su Wind Essence junto con los materiales de la Levitation Stone.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 8,
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega 1x Wind Essence a Antonio",
+      "description": "Entrega 1x Wind Essence",
       "count": 1,
       "entityIdLocation": "dungeons_mobs:wind_essence"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Piedra",
+      "count": 4,
+      "entityIdLocation": "minecraft:stone"
     }
   ],
   "rewards": [
     {
+      "type": "ITEM",
+      "itemId": "castle_in_the_sky:levitation_stone",
+      "count": 1
+    },
+    {
       "type": "UNLOCK_RECIPE",
-      "recipeId": "minecraft:levitation_stone",
+      "recipeId": "castle_in_the_sky:levitation_stone",
       "recipeType": "blacksmith"
     }
   ],

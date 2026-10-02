@@ -1,15 +1,15 @@
 {
   "entityType": "WARLOCK",
-  "description": "Encuentra un libro encantado en tus aventuras.",
+  "description": "Encuentra un libro encantado en tus aventuras. No hace falta entregarlo.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 2,
   "tasks": [
     {
-      "type": "COLLECT",
-      "description": "Encuentra un libro encantado",
+      "type": "OBTAIN",
+      "description": "Consigue un libro encantado",
       "count": 1,
       "entityIdLocation": "minecraft:enchanted_book"
     }
@@ -17,8 +17,13 @@
   "rewards": [
     {
       "type": "ITEM",
-      "itemId": "minecraft:experience_bottle",
-      "count": 32
+      "itemId": "minecraft:skeleton_skull",
+      "count": 1
+    },
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 4
     }
   ],
   "conditionUnlockData": [],

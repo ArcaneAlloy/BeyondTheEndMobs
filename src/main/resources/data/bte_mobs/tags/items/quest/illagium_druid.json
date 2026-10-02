@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "illagerrevolutionmod:mauler_armor_illagium",
+    "illagerrevolutionmod:claws_armor_illagium",
+    "illagerrevolutionmod:scrapper_armor_illagium",
+    "illagerrevolutionmod:wild_ravager_armor_illagium"
+  ]
+}

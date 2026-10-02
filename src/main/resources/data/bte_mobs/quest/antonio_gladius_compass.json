@@ -1,0 +1,37 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Gladius Compass, que te guía hasta el Coliseum.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 9,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Diamante",
+      "count": 4,
+      "entityIdLocation": "minecraft:diamond"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Fragmento de Amatista",
+      "count": 1,
+      "entityIdLocation": "minecraft:amethyst_shard"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_dungeons_arise_coliseum",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_dungeons_arise_coliseum",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 15
+}

@@ -1,0 +1,42 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Nameless Compass, que te guía hasta la Ruined Citadel.",
+  "difficult": "HARD",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 642,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Piedra del End",
+      "count": 4,
+      "entityIdLocation": "minecraft:end_stone"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Obsidiana Llorosa",
+      "count": 1,
+      "entityIdLocation": "minecraft:crying_obsidian"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_cataclysm_ruined_citadel",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_cataclysm_ruined_citadel",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 20
+}

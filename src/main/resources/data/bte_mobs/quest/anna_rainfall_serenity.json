@@ -1,0 +1,35 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota a un Mutant Shulker en el End y consigue su caparazón para forjar la Rainfall Serenity.",
+  "difficult": "HARD",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 641,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a un Mutant Shulker",
+      "count": 1,
+      "entityIdLocation": "mutantmore:mutant_shulker"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "celestisynth:rainfall_serenity",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_keep_kayra",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 50
+}

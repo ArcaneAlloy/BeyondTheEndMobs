@@ -3,9 +3,14 @@
   "category": "ARMORS",
   "tier": 3,
   "base": {
-    "item": "minecraft:diamond_boots"
+    "item": "dungeons_gear:wither_boots"
   },
   "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:diamond",
+      "count": 4
+    },
     {
       "type": "bte_mobs:item",
       "item": "mutantmore:mutant_wither_skeleton_limb",

@@ -1,0 +1,31 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Llega a lo alto de la torre de la Soul Prison y consigue el objeto del cofre de la cima.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 323,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega el Grillete de Almas",
+      "count": 1,
+      "entityIdLocation": "kubejs:soul_shackle"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:experience_bottle",
+      "count": 16
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 15
+}

@@ -1,0 +1,23 @@
+{
+  "type": "bte_mobs:blacksmith_upgrade",
+  "category": "ARMORS",
+  "tier": 3,
+  "base": {
+    "item": "dungeons_gear:wither_helmet"
+  },
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:diamond",
+      "count": 5
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:wither_skeleton_skull",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "mutantmore:mutant_wither_skeleton_skull"
+  }
+}

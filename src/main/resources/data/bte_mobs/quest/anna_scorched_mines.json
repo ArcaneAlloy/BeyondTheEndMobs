@@ -1,0 +1,36 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Encuentra el Manual de Forja Abrasado en los dormitorios de las Scorched Mines y entrégaselo a Anna.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 41,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega el Manual de Forja Abrasado",
+      "count": 1,
+      "entityIdLocation": "kubejs:forge_manual"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/iron_tools",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/iron_armor",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/iron_ranged",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 30
+}

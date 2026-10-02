@@ -1,0 +1,41 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Adéntrate en el Sanctum y trae a Noah la reliquia que guarda en una de sus torres.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 341,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega la Reliquia del Sanctum",
+      "count": 1,
+      "entityIdLocation": "kubejs:sanctum_relic"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 32
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:skeleton_skull",
+      "count": 9
+    },
+    {
+      "type": "UNLOCK_OPTION_DIALOG",
+      "npcType": "WARLOCK",
+      "optionDialogId": "warlock:upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 30
+}

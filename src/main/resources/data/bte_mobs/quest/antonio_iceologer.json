@@ -1,15 +1,15 @@
 {
   "entityType": "EXPLORER",
-  "description": "Los Iceologers son peligrosos magos del hielo. Derrota a uno.",
+  "description": "Derrota a un Iceologer.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 5,
   "tasks": [
     {
       "type": "HUNTER",
-      "description": "Derrota a un Iceologer",
+      "description": "Mata 1 Iceologer",
       "count": 1,
       "entityIdLocation": "savage_and_ravage:iceologer"
     }
@@ -17,10 +17,22 @@
   "rewards": [
     {
       "type": "ITEM",
-      "itemId": "minecraft:experience_bottle",
-      "count": 16
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1,
+      "nbt": {
+        "targetStructure": "dungeons_plus:snowy_temple",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.snowy_temple\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.snowy_temple\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.overworld\",\"color\":\"green\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
     }
   ],
   "conditionUnlockData": [],
-  "experience": 15
+  "experience": 10
 }

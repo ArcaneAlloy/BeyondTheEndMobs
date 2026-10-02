@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "illagerrevolutionmod:illagium_alt_runed_blade",
+    "illagerrevolutionmod:illagium_axe",
+    "illagerrevolutionmod:illagium_crossbow",
+    "illagerrevolutionmod:illagium_hoe",
+    "illagerrevolutionmod:helmet_miner_reinforced",
+    "illagerrevolutionmod:illagium_pickaxe",
+    "illagerrevolutionmod:illagium_runed_blade",
+    "illagerrevolutionmod:illagium_shovel",
+    "illagerrevolutionmod:illagium_sword"
+  ]
+}

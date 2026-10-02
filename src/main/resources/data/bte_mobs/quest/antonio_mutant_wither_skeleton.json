@@ -1,0 +1,45 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Derrota a un Mutant Wither Skeleton.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 441,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota a un Mutant Wither Skeleton",
+      "count": 1,
+      "entityIdLocation": "mutantmore:mutant_wither_skeleton"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/mutant_wither",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:bow_of_lost_souls",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_plague_asylum",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:anna_carminite_giant_block",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "twilightforest:naga_chestplate",
+    "twilightforest:naga_leggings",
+    {
+      "id": "forgottentf:naga_helmet",
+      "required": false
+    },
+    {
+      "id": "forgottentf:naga_boots",
+      "required": false
+    }
+  ]
+}

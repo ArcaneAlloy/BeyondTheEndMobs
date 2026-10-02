@@ -1,11 +1,11 @@
 {
   "entityType": "EXPLORER",
-  "description": "Los no-muertos dejan restos pútridos. Recoge algo de carne podrida.",
+  "description": "Los no-muertos dejan restos pútridos. Entrega 5 Rotten Flesh a Antonio.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 3,
   "tasks": [
     {
       "type": "COLLECT",
@@ -18,9 +18,21 @@
     {
       "type": "ITEM",
       "itemId": "supplementaries:cartographers_quill",
-      "count": 1
+      "count": 1,
+      "nbt": {
+        "targetStructure": "dungeons_arise:plague_asylum",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.plague_asylum\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.plague_asylum\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.overworld\",\"color\":\"green\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
     }
   ],
   "conditionUnlockData": [],
-  "experience": 5
+  "experience": 10
 }

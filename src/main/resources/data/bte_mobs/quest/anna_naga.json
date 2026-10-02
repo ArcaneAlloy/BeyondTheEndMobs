@@ -1,11 +1,11 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "La Naga es la primera guardiana del Twilight Forest. Derrótala.",
+  "description": "Derrota a la Naga. Con sus escamas Anna puede forjar la armadura completa de Naga.",
   "difficult": "MEDIUM",
   "dimension": "TWILIGHT_FOREST",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 321,
   "tasks": [
     {
       "type": "BOSS_HUNTER",
@@ -16,9 +16,9 @@
   ],
   "rewards": [
     {
-      "type": "ITEM",
-      "itemId": "minecraft:experience_bottle",
-      "count": 32
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/naga_armor",
+      "recipeType": "blacksmith"
     }
   ],
   "conditionUnlockData": [
@@ -27,5 +27,5 @@
       "type": "PARENT_QUEST"
     }
   ],
-  "experience": 20
+  "experience": 15
 }

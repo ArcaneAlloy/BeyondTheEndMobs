@@ -1,0 +1,37 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Entrega a Antonio los materiales de la Sandy Compass, que te guía hasta la Cursed Pyramid.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 10,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Arenisca",
+      "count": 4,
+      "entityIdLocation": "minecraft:sandstone"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Cactus",
+      "count": 1,
+      "entityIdLocation": "minecraft:cactus"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "beyondtheendcompass:compass_cataclysm_cursed_pyramid",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "beyondtheendcompass:compass_cataclysm_cursed_pyramid",
+      "recipeType": "explorer_recipe_type"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}
