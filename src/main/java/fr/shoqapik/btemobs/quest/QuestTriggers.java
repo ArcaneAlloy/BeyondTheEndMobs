@@ -156,6 +156,7 @@ public final class QuestTriggers {
         RecipeCapability<?> cap = RecipeCapability.get(player);
         if (cap == null) return;
         cap.checkAdvancementConditions(player);
+        cap.checkBossKillAdvancements(player);
         if (cap.hasPendingTask(TaskData.Type.OBTAIN)) checkObtain(player, cap);
         QuestReadyNotifier.tick(player, cap);
         if (player.tickCount % 40 != 0) return;

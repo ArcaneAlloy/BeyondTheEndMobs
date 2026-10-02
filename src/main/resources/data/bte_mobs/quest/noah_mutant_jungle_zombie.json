@@ -4,7 +4,7 @@
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
-  "priorityQuest": "SIDE_QUEST",
+  "priorityQuest": "MAIN_QUEST",
   "order": 142,
   "tasks": [
     {

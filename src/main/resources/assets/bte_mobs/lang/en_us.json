@@ -392,6 +392,8 @@
   "task.quest.antonio_wind_essence.0": "Deliver 1x Wind Essence",
   "task.quest.antonio_wind_essence.1": "Deliver 4x Stone",
   "gui.bte_mobs.quest.unlock_recipes_ingredient": "Unlocks the recipes that use: %s",
+  "gui.bte_mobs.quest.unlock_twilight_portal": "Opens the portal to the Twilight Forest in the Lobby fountain",
+  "message.bte_mobs.twilight_portal_opened": "The portal to the Twilight Forest has opened in the Lobby fountain!",
   "title.quest.noah_thornborn_towers": "Thornborn Towers",
   "desc.quest.noah_thornborn_towers": "Reach the top of one of the Thornborn Towers, guarded by phantoms and skeletons.",
   "task.quest.noah_thornborn_towers.0": "Deliver the Thornborn Crown",

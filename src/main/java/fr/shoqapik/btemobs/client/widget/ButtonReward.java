@@ -148,6 +148,9 @@ public class ButtonReward extends Button {
                 return List.of(Component.translatable("gui.bte_mobs.quest.unlock_recipes_ingredient", ingredientName));
             }
             case UNLOCK_ZONE -> {
+                if (name != null && name.endsWith("the_twilight_forest")) {
+                    return List.of(Component.translatable("gui.bte_mobs.quest.unlock_twilight_portal"));
+                }
                 return List.of(Component.literal("Unlock Zone "+ name));
             }
             default -> {

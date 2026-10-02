@@ -126,17 +126,10 @@ public class QuestActionPacket {
                 RecipeSharing.unlockForEveryone(recipes);
                 BteMobsMod.LOGGER.info("Quest {}: desbloqueadas {} recetas ({})", quest.id, recipes.size(), data.getObjectId());
             }else if (data.type == RewardData.Type.UNLOCK_ZONE){
-                ServerLevel level = player.getServer().overworld(); // el portal va siempre en el Overworld
-
                 // Acepta "the_twilight_forest" y "bte_mobs:the_twilight_forest"
                 String zonePath = data.getObjectId().contains(":") ? data.getObjectId().substring(data.getObjectId().indexOf(':') + 1) : data.getObjectId();
-                if (Objects.equals(zonePath, "the_twilight_forest") && !ServerData.get().unlockTwilightForestPortal()){
-                    BlockPos pos1 = new BlockPos(-1,78,1);
-                    BlockPos pos2 = new BlockPos(1,78,-1);
-                    for (BlockPos pos : BlockPos.betweenClosed(pos1,pos2)){
-                        level.setBlock(pos.immutable(), TFBlocks.TWILIGHT_PORTAL.get().defaultBlockState(),2);
-                    }
-                    ServerData.get().unlockPortal();
+                if (Objects.equals(zonePath, "the_twilight_forest")) {
+                    fr.shoqapik.btemobs.quest.TwilightPortalUnlock.open(player.getServer());
                 }
             }
         }

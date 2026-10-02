@@ -59,7 +59,14 @@ public class QuestDebugCommand {
                                         QuestManager.getQuests().stream().map(q -> q.id), builder))
                                 .executes(ctx -> unlock(ctx, ResourceLocationArgument.getId(ctx, "quest")))))
                 .then(Commands.literal("relockall")
-                        .executes(QuestDebugCommand::relockAll)));
+                        .executes(QuestDebugCommand::relockAll))
+                .then(Commands.literal("twilightportal")
+                        .executes(ctx -> {
+                            boolean ok = fr.shoqapik.btemobs.quest.TwilightPortalUnlock.build(ctx.getSource().getServer());
+                            if (ok) ctx.getSource().sendSuccess(Component.literal("Portal al Twilight Forest construido en la fuente del Lobby"), true);
+                            else ctx.getSource().sendFailure(Component.literal("No existe la dimensión del Lobby"));
+                            return ok ? 1 : 0;
+                        })));
     }
 
     /** Capability del jugador que ejecuta el comando (o de cualquier jugador conectado si se lanza desde la consola). */

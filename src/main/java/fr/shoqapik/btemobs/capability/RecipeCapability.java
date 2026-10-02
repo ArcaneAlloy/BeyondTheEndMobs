@@ -200,6 +200,39 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
         }
     }
 
+    /**
+     * Tareas BOSS_HUNTER que se cumplen con un logro oculto de bte_mobs (data/bte_mobs/advancements/kills/<mod>/<entidad>.json).
+     * El logro se gana al matar al jefe aunque la quest aún no esté desbloqueada, así que la muerte no se pierde
+     * (p. ej. el Lich del Infested Temple, que solo aparece una vez por templo). Las tareas sin logro siguen
+     * funcionando solo con la muerte (hunterQuestUpdate).
+     */
+    public void checkBossKillAdvancements(ServerPlayer player) {
+        boolean changed = false;
+        for (Map<Quest, QuestStateData> questMap : quests.values()) {
+            for (QuestStateData state : questMap.values()) {
+                if (state.isComplete || state.isReclaim) continue;
+                boolean unlock = state.unlockStates.isEmpty() || state.unlockStates.stream().allMatch(e -> e.unlock);
+                if (!unlock) continue;
+                for (StatTaskData task : state.statTaskData) {
+                    if (task.complete || task.taskType != TaskData.Type.BOSS_HUNTER || task.id == null) continue;
+                    ResourceLocation entityId = ResourceLocation.tryParse(task.id);
+                    if (entityId == null) continue;
+                    ResourceLocation advId = new ResourceLocation(BteMobsMod.MODID, "kills/" + entityId.getNamespace() + "/" + entityId.getPath());
+                    net.minecraft.advancements.Advancement adv = player.getServer().getAdvancements().getAdvancement(advId);
+                    if (adv != null && player.getAdvancements().getOrStartProgress(adv).isDone()) {
+                        task.count = task.maxCount;
+                        task.complete = true;
+                        changed = true;
+                    }
+                }
+            }
+        }
+        if (changed) {
+            this.dirty = true;
+            checkChangedInventory();
+        }
+    }
+
     /** Ender Eyes con los que enders_journey abre físicamente los portales del Forgotten Realm. */
     public static final int NETHER_PORTAL_EYES = 8;
     public static final int END_PORTAL_EYES = 16;

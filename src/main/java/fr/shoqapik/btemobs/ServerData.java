@@ -119,6 +119,7 @@ public class ServerData extends SavedData {
 	}
 	public void unlockPortal(){
 		this.unlockTwilightForestPortal = true;
+		setDirty();
 	}
 
 	public static ServerData get() {
