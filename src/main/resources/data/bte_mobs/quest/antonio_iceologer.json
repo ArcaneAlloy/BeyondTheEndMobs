@@ -11,7 +11,7 @@
       "type": "HUNTER",
       "description": "Mata 1 Iceologer",
       "count": 1,
-      "entityIdLocation": "savage_and_ravage:iceologer"
+      "entityIdLocation": "#bte_mobs:quest/iceologers"
     }
   ],
   "rewards": [

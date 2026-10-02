@@ -121,8 +121,14 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
     public void hunterQuestUpdate(LivingDeathEvent event){
         String entityId = event.getEntity().getEncodeId();
         if (entityId == null) return;
+        net.minecraft.world.entity.EntityType<?> entityType = event.getEntity().getType();
         java.util.function.Predicate<StatTaskData> kill = task -> {
-            if (!entityId.equals(task.id)) return false;
+            if (task.id == null) return false;
+            // "#mod:tag" = cualquier entidad del tag de entidades (p. ej. los Iceologer de varios mods)
+            if (task.id.startsWith("#")) {
+                ResourceLocation tagId = ResourceLocation.tryParse(task.id.substring(1));
+                if (tagId == null || !entityType.is(net.minecraft.tags.TagKey.create(net.minecraft.core.Registry.ENTITY_TYPE_REGISTRY, tagId))) return false;
+            } else if (!entityId.equals(task.id)) return false;
             task.count++;
             return true;
         };

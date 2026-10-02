@@ -84,7 +84,8 @@ public class ButtonTask extends Button {
     public List<ItemStack> getListItems() {
         if (listItems != null) return listItems;
         List<ItemStack> list = new java.util.ArrayList<>();
-        if (data.id != null && data.id.startsWith("#") && data.taskType != TaskData.Type.FEED_ENTITY) {
+        if (data.id != null && data.id.startsWith("#") && data.taskType != TaskData.Type.FEED_ENTITY
+                && data.taskType != TaskData.Type.HUNTER && data.taskType != TaskData.Type.BOSS_HUNTER) {
             ResourceLocation tagId = ResourceLocation.tryParse(data.id.substring(1));
             if (tagId != null && ForgeRegistries.ITEMS.tags() != null) {
                 ForgeRegistries.ITEMS.tags().getTag(net.minecraft.tags.ItemTags.create(tagId)).forEach(i -> list.add(new ItemStack(i)));

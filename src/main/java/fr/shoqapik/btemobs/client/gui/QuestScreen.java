@@ -685,8 +685,12 @@ public class QuestScreen extends Screen {
         String name = "";
         switch (data.taskType){
             case HUNTER -> {
-                EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(data.id));
-                name= type.getDescription().getString();
+                if (data.id.startsWith("#")) {
+                    name = data.description;
+                } else {
+                    EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(data.id));
+                    name = type != null ? type.getDescription().getString() : data.id;
+                }
             }
             case COLLECT -> {
                 ItemStack stack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.id)));

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "savage_and_ravage:iceologer", "required": false },
+    { "id": "dungeons_mobs:iceologer", "required": false }
+  ]
+}
