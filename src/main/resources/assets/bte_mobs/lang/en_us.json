@@ -3,6 +3,7 @@
   "entity.bte_mobs.warlock": "Noah",
   "entity.bte_mobs.explorer": "Antonio",
   "entity.bte_mobs.druid": "Oriana",
+  "toast.bte_mobs.quest_ready": "Quest ready · Go to %s",
   "gui.jei.category.warlock_enchant.exp": "Experience",
   "gui.jei.category.warlock_enchant.eyes": "Eyes to unlock",
   "answer.bte.blacksmith_quest": "Quests!",

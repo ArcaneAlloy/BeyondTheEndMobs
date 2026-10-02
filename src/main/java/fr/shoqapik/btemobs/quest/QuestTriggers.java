@@ -157,6 +157,7 @@ public final class QuestTriggers {
         if (cap == null) return;
         cap.checkAdvancementConditions(player);
         if (cap.hasPendingTask(TaskData.Type.OBTAIN)) checkObtain(player, cap);
+        QuestReadyNotifier.tick(player, cap);
         if (player.tickCount % 40 != 0) return;
         if (cap.hasPendingTask(TaskData.Type.ACTIVATE_WAYSTONE)) checkWaystones(player, cap);
         if (cap.hasPendingTask(TaskData.Type.PERSONAL_HORSE) && hasPersonalHorse(player)) {

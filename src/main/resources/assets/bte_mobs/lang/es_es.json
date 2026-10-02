@@ -3,6 +3,7 @@
   "entity.bte_mobs.warlock": "Noah",
   "entity.bte_mobs.explorer": "Antonio",
   "entity.bte_mobs.druid": "Oriana",
+  "toast.bte_mobs.quest_ready": "Quest lista · Ve con %s",
   "gui.jei.category.warlock_enchant.exp": "Experiencia",
   "gui.jei.category.warlock_enchant.eyes": "Ojos Necesarios",
   "dialog.bte.druid_quest_pres.1": "Hmm...? ¿Quién eres...?",
