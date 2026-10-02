@@ -44,6 +44,11 @@ public final class QuestReadyClient {
     private static final double MARKER_RANGE = 64.0D;
     private static final int MARKER_COLOR = 0xFFD700;
 
+    /** true si el NPC tiene alguna quest lista para reclamar. */
+    public static boolean hasReady(BteNpcType type) {
+        return READY_NPCS.contains(type);
+    }
+
     public static void handle(QuestReadyPacket msg) {
         READY_NPCS.clear();
         READY_NPCS.addAll(msg.npcsWithReady);

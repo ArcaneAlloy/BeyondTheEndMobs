@@ -85,6 +85,10 @@ public class QuestScreen extends Screen {
     protected int scrolledY=0;
     private int entityId;
     private BteNpcType bteNpcType;
+    /** Abierta desde el inventario (QuestLogScreen): solo consulta, no se puede reclamar. */
+    private boolean readOnly = false;
+    @Nullable
+    private net.minecraft.client.gui.screens.Screen parent;
     private Map<Quest, QuestStateData> quests;
     private Quest currentQuest =null;
     private List<Button> buttons = new ArrayList<>();
@@ -104,6 +108,8 @@ public class QuestScreen extends Screen {
     /** Texto del botón de estado según la quest seleccionada (claves en los archivos lang). */
     private Component questStateMessage() {
         if (this.isReclaim) return Component.translatable("gui.bte_mobs.quest.completed");
+        if (this.readOnly && this.isComplete) return Component.translatable("gui.bte_mobs.quest.claim_at",
+                Component.translatable("entity.bte_mobs." + bteNpcType.name().toLowerCase(Locale.ROOT)));
         if (this.isComplete) return Component.translatable("gui.bte_mobs.quest.claim");
         return Component.translatable("gui.bte_mobs.quest.incomplete");
     }
@@ -113,6 +119,22 @@ public class QuestScreen extends Screen {
         this.bteNpcType = bteNpcType;
         this.quests = quests;
 
+    }
+
+    /** Solo consulta (botón de quests del inventario): mismas quests, pero sin poder reclamarlas. */
+    public QuestScreen(BteNpcType bteNpcType, @Nullable net.minecraft.client.gui.screens.Screen parent) {
+        this(-1, bteNpcType, new java.util.HashMap<>());
+        this.readOnly = true;
+        this.parent = parent;
+    }
+
+    @Override
+    public void onClose() {
+        if (this.parent != null) {
+            this.minecraft.setScreen(this.parent);
+        } else {
+            super.onClose();
+        }
     }
 
     @Override
@@ -166,7 +188,7 @@ public class QuestScreen extends Screen {
         });
         this.stateQuest = this.addRenderableWidget(new Button((this.leftPos - (this.width / 8))+137 ,(this.height - 80) + QUEST_BUTTON_OFFSET_Y,150,20,Component.translatable("gui.bte_mobs.quest.incomplete"),(p)->{
             refreshButton();
-            if (this.isComplete && !this.isReclaim){
+            if (!this.readOnly && this.isComplete && !this.isReclaim){
                 BteMobsMod.sendToServer(new QuestActionPacket(currentQuest,0,minecraft.player.getId()));
                 stateQuest.active = false;
                 this.dirty = true;
@@ -239,7 +261,7 @@ public class QuestScreen extends Screen {
             isComplete = RecipeCapability.get(minecraft.player).getQuestComplete(currentQuest);
             isReclaim = RecipeCapability.get(minecraft.player).getQuestReclaim(currentQuest);
             stateQuest.visible = true;
-            stateQuest.active = !isReclaim;
+            stateQuest.active = !readOnly && !isReclaim;
         }
     }
 
@@ -332,6 +354,11 @@ public class QuestScreen extends Screen {
     }
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        if (this.readOnly) {
+            Component header = Component.translatable("gui.bte_mobs.quest_log.npc_title",
+                    Component.translatable("entity.bte_mobs." + bteNpcType.name().toLowerCase(Locale.ROOT)));
+            drawCenteredString(poseStack, this.font, header, this.width / 2, 8, 0xFFD700);
+        }
         if(this.currentQuest !=null){
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, new ResourceLocation(BteMobsMod.MODID, "textures/gui/dialogs/"+this.currentQuest.getEntityType().name().toLowerCase()+"_tdialogo_extendido.png"));
