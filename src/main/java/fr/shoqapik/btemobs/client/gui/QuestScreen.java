@@ -249,8 +249,9 @@ public class QuestScreen extends Screen {
                     drawCenteredString(p_93676_, font, this.getMessage(), this.x + (this.width - 18) / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
                     minecraft.getItemRenderer().renderAndDecorateFakeItem(costIcon, this.x + this.width - 20, this.y + 2);
                     if (this.isHovered) {
-                        QuestScreen.this.renderTooltip(p_93676_, Component.translatable("gui.bte_mobs.quest.reclaim_tooltip",
-                                currentQuest.getReclaim().count, costIcon.getHoverName()), p_93677_, p_93678_);
+                        // Partido en varias líneas para que no se salga de la pantalla
+                        QuestScreen.this.renderTooltip(p_93676_, font.split(Component.translatable("gui.bte_mobs.quest.reclaim_tooltip",
+                                currentQuest.getReclaim().count, costIcon.getHoverName()), 150), p_93677_, p_93678_);
                     }
                 }
             }

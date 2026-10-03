@@ -313,6 +313,23 @@ public final class QuestTracker {
             if (line.seq() != null) font.drawShadow(poseStack, line.seq(), line.indent(), lineY, 0xFFFFFF);
             lineY += line.height();
         }
+        // Tecla para ocultar el panel, a la derecha de la cabecera (si cabe y la tecla está asignada)
+        if (!TOGGLE_KEY.isUnbound()) {
+            Component hint = Component.translatable("gui.bte_mobs.tracker.hide_hint", TOGGLE_KEY.getTranslatedKeyMessage())
+                    .withStyle(ChatFormatting.DARK_GRAY);
+            int titleWidth = font.width(lines.get(0).seq());
+            int hintWidth = font.width(hint);
+            int room = PANEL_WIDTH - titleWidth - 8;
+            float hintScale = Math.min(1.0F, room / (float) hintWidth);
+            if (hintScale >= 0.6F) {
+                // Si no cabe entera se dibuja algo más pequeña, alineada a la derecha y centrada en la línea
+                poseStack.pushPose();
+                poseStack.translate(PANEL_WIDTH - hintWidth * hintScale, (1.0F - hintScale) * 4.0F, 0);
+                poseStack.scale(hintScale, hintScale, 1.0F);
+                font.drawShadow(poseStack, hint, 0, 0, 0xFFFFFF);
+                poseStack.popPose();
+            }
+        }
         poseStack.popPose();
     }
 

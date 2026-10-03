@@ -4,7 +4,7 @@
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
-  "priorityQuest": "SIDE_QUEST",
+  "priorityQuest": "MAIN_QUEST",
   "order": 241,
   "tasks": [
     {
@@ -22,11 +22,11 @@
   ],
   "conditionUnlockData": [
     {
-      "locationId": "bte_mobs:noah_mutant_frosted_zombie",
+      "locationId": "bte_mobs:oriana_mutant_frosted_zombie",
       "type": "PARENT_QUEST"
     },
     {
-      "locationId": "bte_mobs:noah_mutant_jungle_zombie",
+      "locationId": "bte_mobs:oriana_mutant_jungle_zombie",
       "type": "PARENT_QUEST"
     }
   ],

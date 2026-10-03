@@ -1,5 +1,5 @@
 {
-  "entityType": "WARLOCK",
+  "entityType": "DRUID",
   "description": "Derrota al Mutant Frosted Zombie.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
@@ -28,7 +28,7 @@
   ],
   "conditionUnlockData": [
     {
-      "locationId": "bte_mobs:noah_plague_asylum",
+      "locationId": "bte_mobs:oriana_plague_asylum",
       "type": "PARENT_QUEST"
     }
   ],

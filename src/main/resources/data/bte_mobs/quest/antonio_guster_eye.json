@@ -4,7 +4,7 @@
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
-  "priorityQuest": "SIDE_QUEST",
+  "priorityQuest": "MAIN_QUEST",
   "order": 101,
   "tasks": [
     {
@@ -35,7 +35,7 @@
   ],
   "conditionUnlockData": [
     {
-      "locationId": "bte_mobs:noah_plague_asylum",
+      "locationId": "bte_mobs:oriana_plague_asylum",
       "type": "PARENT_QUEST"
     }
   ],

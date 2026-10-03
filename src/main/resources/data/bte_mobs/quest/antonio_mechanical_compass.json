@@ -4,7 +4,7 @@
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
-  "priorityQuest": "SIDE_QUEST",
+  "priorityQuest": "MAIN_QUEST",
   "order": 342,
   "tasks": [
     {
@@ -15,15 +15,20 @@
     },
     {
       "type": "COLLECT",
-      "description": "Entrega 1x Lingote de Hierro",
+      "description": "Entrega 1x Estrella del Nether",
       "count": 1,
-      "entityIdLocation": "minecraft:iron_ingot"
+      "entityIdLocation": "minecraft:nether_star"
     }
   ],
   "rewards": [
     {
       "type": "ITEM",
       "itemId": "beyondtheendcompass:compass_cataclysm_ancient_factory",
+      "count": 1
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:nether_star",
       "count": 1
     },
     {

@@ -1,5 +1,5 @@
 {
-  "entityType": "EXPLORER",
+  "entityType": "DRUID",
   "description": "Derrota a un Mutant Wither Skeleton.",
   "difficult": "HARD",
   "dimension": "NETHER",
@@ -29,7 +29,7 @@
   ],
   "conditionUnlockData": [
     {
-      "locationId": "bte_mobs:noah_plague_asylum",
+      "locationId": "bte_mobs:oriana_plague_asylum",
       "type": "PARENT_QUEST"
     },
     {

@@ -4,7 +4,7 @@
   "difficult": "HARD",
   "dimension": "END",
   "toolTip": "tooltip de ejemplo",
-  "priorityQuest": "SIDE_QUEST",
+  "priorityQuest": "MAIN_QUEST",
   "order": 642,
   "tasks": [
     {
