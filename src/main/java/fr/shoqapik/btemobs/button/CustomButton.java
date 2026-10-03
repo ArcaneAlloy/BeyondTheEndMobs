@@ -99,8 +99,47 @@ public class CustomButton extends Button {
                 this.renderToolTip(poseStack,mouseX, mouseY);
             }
         } else {
-            drawCenteredString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 0xFFFFFF);
+            renderScrollingText(poseStack, 0xFFFFFF);
         }
+    }
+
+    /** Margen interior (el marco de la textura) dentro del que se dibuja el texto. */
+    private static final int TEXT_PADDING = 6;
+
+    /**
+     * Texto centrado; si no cabe en el botón, se desplaza de lado a lado (ida y vuelta, con pausa en cada extremo)
+     * recortado al interior del botón, como los botones de las versiones nuevas de Minecraft.
+     */
+    private void renderScrollingText(PoseStack poseStack, int color) {
+        Minecraft mc = Minecraft.getInstance();
+        net.minecraft.client.gui.Font font = mc.font;
+        Component text = this.getMessage();
+        int textWidth = font.width(text);
+        int left = this.x + TEXT_PADDING;
+        int right = this.x + this.width - TEXT_PADDING;
+        int inner = right - left;
+        int textY = this.y + (this.height - 8) / 2;
+        if (textWidth <= inner) {
+            drawCenteredString(poseStack, font, text, this.x + this.width / 2, textY, color);
+            return;
+        }
+        int overflow = textWidth - inner;
+        double seconds = net.minecraft.Util.getMillis() / 1000.0D;
+        double period = Math.max(overflow * 0.5D, 3.0D);
+        // 0 -> 1 -> 0 suavizado: se para un momento en cada extremo
+        double t = Math.sin(Math.PI / 2.0D * Math.cos(Math.PI * 2.0D * seconds / period)) / 2.0D + 0.5D;
+        int offset = (int) Math.round(t * overflow);
+
+        // Recorte al interior del botón (coordenadas de ventana)
+        com.mojang.blaze3d.platform.Window window = mc.getWindow();
+        double scale = window.getGuiScale();
+        int sx = (int) (left * scale);
+        int sy = (int) (window.getHeight() - (this.y + this.height) * scale);
+        int sw = (int) (inner * scale);
+        int sh = (int) (this.height * scale);
+        RenderSystem.enableScissor(Math.max(0, sx), Math.max(0, sy), Math.max(0, sw), Math.max(0, sh));
+        drawString(poseStack, font, text, left - offset, textY, color);
+        RenderSystem.disableScissor();
     }
 
     @Override

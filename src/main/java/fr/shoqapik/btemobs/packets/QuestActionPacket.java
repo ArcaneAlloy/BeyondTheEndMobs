@@ -61,6 +61,13 @@ public class QuestActionPacket {
                     if (cap == null) return;
                     claim(player, cap, msg.quest.id);
                 }
+                case 2 ->{
+                    ServerPlayer player = ctx.get().getSender();
+                    if (player == null || msg.quest == null || player.getId() != msg.idPlayer) return;
+                    RecipeCapability cap = RecipeCapability.get(player);
+                    if (cap == null) return;
+                    reclaimRewards(player, cap, msg.quest.id);
+                }
                 case 1->{
                     RecipeCapability cap = RecipeCapability.get(ctx.get().getSender());
                     if (cap!=null){
@@ -145,6 +152,38 @@ public class QuestActionPacket {
                 player.getDisplayName(), Component.translatable("title.quest." + quest.id.getPath()))
                 .withStyle(ChatFormatting.GOLD);
         player.getServer().getPlayerList().broadcastSystemMessage(msg, false);
+    }
+
+    /**
+     * Volver a pedir las recompensas de objeto de una quest ya reclamada (quests con "reclaim" en el JSON, p. ej. los
+     * mapas de Antonio), pagando el coste (por defecto 1 Skeleton Skull). No repite recetas, zonas ni experiencia.
+     */
+    private static void reclaimRewards(ServerPlayer player, RecipeCapability cap, ResourceLocation questId) {
+        Quest quest = QuestManager.getQuest(questId.toString());
+        QuestStateData state = cap.findState(questId);
+        if (quest == null || state == null || quest.getReclaim() == null || !state.isReclaim) return;
+        Quest.ReclaimCost cost = quest.getReclaim();
+        Item costItem = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(cost.itemId));
+        if (costItem == null || costItem == net.minecraft.world.item.Items.AIR) return;
+
+        int have = player.getInventory().countItem(costItem);
+        if (have < cost.count) {
+            player.displayClientMessage(Component.translatable("gui.bte_mobs.quest.reclaim_missing",
+                    cost.count, new ItemStack(costItem).getHoverName()).withStyle(ChatFormatting.RED), true);
+            return;
+        }
+        player.getInventory().clearOrCountMatchingItems(stack -> stack.is(costItem), cost.count, player.inventoryMenu.getCraftSlots());
+
+        for (RewardData data : quest.getRewards()) {
+            if (data.type != RewardData.Type.ITEM) continue;
+            ItemStack reward = data instanceof ItemRewardData itemData
+                    ? itemData.createStack()
+                    : new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(data.getObjectId())), data.count);
+            if (!player.getInventory().add(reward)) player.drop(reward, false);
+        }
+        player.displayClientMessage(Component.translatable("gui.bte_mobs.quest.reclaimed",
+                Component.translatable("title.quest." + quest.id.getPath())).withStyle(ChatFormatting.GREEN), true);
+        BteMobsMod.LOGGER.info("Quest {}: recompensas pedidas de nuevo por {}", quest.id, player.getGameProfile().getName());
     }
 
     /** true si la quest (id "mod:quest" o solo "quest", namespace bte_mobs) ya está reclamada. */

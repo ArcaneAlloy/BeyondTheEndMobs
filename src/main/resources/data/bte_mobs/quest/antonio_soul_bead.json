@@ -45,5 +45,9 @@
       "type": "NETHER_PORTAL"
     }
   ],
+  "reclaim": {
+    "itemId": "minecraft:skeleton_skull",
+    "count": 1
+  },
   "experience": 15
 }

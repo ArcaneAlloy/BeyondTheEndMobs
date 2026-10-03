@@ -21,6 +21,16 @@ public class Quest {
     private final PriorityQuest priorityQuest;
     // Posición en la lista del NPC (menor = más arriba). Opcional en el JSON ("order"); si falta, 0.
     private int order;
+    /**
+     * Opcional en el JSON ("reclaim": {"itemId": "minecraft:skeleton_skull", "count": 1}): una vez reclamada, la quest
+     * permite volver a pedir sus recompensas de tipo ITEM (p. ej. el mapa de una estructura) pagando ese coste.
+     */
+    private ReclaimCost reclaim;
+
+    public static class ReclaimCost {
+        public String itemId = "minecraft:skeleton_skull";
+        public int count = 1;
+    }
 
     public Quest(BteNpcType entityId, String description, String toolTip, List<TaskData> tasks, List<RewardData> rewards,
                  List<ConditionUnlockData> conditionUnlockData, Difficult difficult,
@@ -85,6 +95,11 @@ public class Quest {
         packetBuffer.writeUtf(quest.dimension.name());
         packetBuffer.writeEnum(quest.priorityQuest);
         packetBuffer.writeInt(quest.order);
+        packetBuffer.writeBoolean(quest.reclaim != null);
+        if (quest.reclaim != null) {
+            packetBuffer.writeUtf(quest.reclaim.itemId);
+            packetBuffer.writeInt(quest.reclaim.count);
+        }
     }
 
     public static Quest decode(FriendlyByteBuf packetBuffer) {
@@ -143,6 +158,11 @@ public class Quest {
         Quest quest = new Quest(entityId, description,tooltip , tasks, rewards, conditionUnlocks, difficult1, dimension1,priorityQuest1, xp);
         quest.id = id;
         quest.order = packetBuffer.readInt();
+        if (packetBuffer.readBoolean()) {
+            quest.reclaim = new ReclaimCost();
+            quest.reclaim.itemId = packetBuffer.readUtf();
+            quest.reclaim.count = packetBuffer.readInt();
+        }
         return quest;
     }
 
@@ -188,6 +208,11 @@ public class Quest {
 
     public PriorityQuest getPriorityQuest() {
         return priorityQuest;
+    }
+
+    /** Coste para volver a pedir las recompensas (null si la quest no lo permite). */
+    public ReclaimCost getReclaim() {
+        return reclaim;
     }
 
     public int getOrder() {

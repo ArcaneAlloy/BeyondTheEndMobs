@@ -110,12 +110,28 @@ public class QuestScreen extends Screen {
 
     /** Texto del botón de estado según la quest seleccionada (claves en los archivos lang). */
     private Component questStateMessage() {
+        if (this.isReclaim && canReclaimAgain()) {
+            return Component.translatable("gui.bte_mobs.quest.reclaim_again", this.currentQuest.getReclaim().count);
+        }
         if (this.isReclaim) return Component.translatable("gui.bte_mobs.quest.completed");
         if (this.readOnly && this.isComplete) return Component.translatable("gui.bte_mobs.quest.claim_at",
                 Component.translatable("entity.bte_mobs." + bteNpcType.name().toLowerCase(Locale.ROOT)));
         if (this.isComplete) return Component.translatable("gui.bte_mobs.quest.claim");
         return Component.translatable("gui.bte_mobs.quest.incomplete");
     }
+    /** Icono del coste para volver a pedir las recompensas (vacío si no se puede). */
+    private ItemStack reclaimCostStack() {
+        if (!canReclaimAgain()) return ItemStack.EMPTY;
+        ResourceLocation id = ResourceLocation.tryParse(this.currentQuest.getReclaim().itemId);
+        if (id == null || !ForgeRegistries.ITEMS.containsKey(id)) return ItemStack.EMPTY;
+        return new ItemStack(ForgeRegistries.ITEMS.getValue(id), this.currentQuest.getReclaim().count);
+    }
+
+    /** Quest ya reclamada cuyas recompensas se pueden pedir otra vez pagando (no desde el libro de quests). */
+    private boolean canReclaimAgain() {
+        return !this.readOnly && this.isReclaim && this.currentQuest != null && this.currentQuest.getReclaim() != null;
+    }
+
     public QuestScreen(int entityId, BteNpcType bteNpcType, Map<Quest, QuestStateData> quests) {
         super(Component.literal(bteNpcType.name().toLowerCase(Locale.ROOT)));
         this.entityId = entityId;
@@ -195,6 +211,9 @@ public class QuestScreen extends Screen {
                 BteMobsMod.sendToServer(new QuestActionPacket(currentQuest,0,minecraft.player.getId()));
                 stateQuest.active = false;
                 this.dirty = true;
+            } else if (canReclaimAgain()) {
+                // Pedir otra vez las recompensas (p. ej. otro mapa) pagando el coste
+                BteMobsMod.sendToServer(new QuestActionPacket(currentQuest,2,minecraft.player.getId()));
             }
         }){
             @Override
@@ -205,7 +224,7 @@ public class QuestScreen extends Screen {
                 RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
                 int index = isComplete ? 1 : 0 ;
                 if (isReclaim){
-                    index = 2;
+                    index = canReclaimAgain() ? 1 : 2;
                 }
                 // El texto se actualiza en cada frame para que siempre coincida con el estado
                 this.setMessage(questStateMessage());
@@ -222,7 +241,18 @@ public class QuestScreen extends Screen {
                 this.blit(p_93676_, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
                 this.renderBg(p_93676_, minecraft, p_93677_, p_93678_);
                 int j = getFGColor();
-                drawCenteredString(p_93676_, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+                ItemStack costIcon = reclaimCostStack();
+                if (costIcon.isEmpty()) {
+                    drawCenteredString(p_93676_, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+                } else {
+                    // "Pedir otra vez (1x)" + icono del coste a la derecha; el nombre del coste va en el tooltip
+                    drawCenteredString(p_93676_, font, this.getMessage(), this.x + (this.width - 18) / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+                    minecraft.getItemRenderer().renderAndDecorateFakeItem(costIcon, this.x + this.width - 20, this.y + 2);
+                    if (this.isHovered) {
+                        QuestScreen.this.renderTooltip(p_93676_, Component.translatable("gui.bte_mobs.quest.reclaim_tooltip",
+                                currentQuest.getReclaim().count, costIcon.getHoverName()), p_93677_, p_93678_);
+                    }
+                }
             }
         });
         this.trackBox = this.addRenderableWidget(new Button(this.stateQuest.x + this.stateQuest.getWidth() + 6, this.stateQuest.y, 20, 20,
@@ -290,7 +320,7 @@ public class QuestScreen extends Screen {
             isComplete = RecipeCapability.get(minecraft.player).getQuestComplete(currentQuest);
             isReclaim = RecipeCapability.get(minecraft.player).getQuestReclaim(currentQuest);
             stateQuest.visible = true;
-            stateQuest.active = !readOnly && !isReclaim;
+            stateQuest.active = !readOnly && (!isReclaim || canReclaimAgain());
             trackBox.visible = !isReclaim;
         }
     }

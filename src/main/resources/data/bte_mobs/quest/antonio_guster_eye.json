@@ -39,5 +39,9 @@
       "type": "PARENT_QUEST"
     }
   ],
+  "reclaim": {
+    "itemId": "minecraft:skeleton_skull",
+    "count": 1
+  },
   "experience": 10
 }
