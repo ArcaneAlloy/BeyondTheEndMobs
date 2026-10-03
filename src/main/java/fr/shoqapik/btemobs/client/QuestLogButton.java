@@ -27,7 +27,7 @@ public final class QuestLogButton {
     private QuestLogButton() {}
 
     /** Posición respecto a la esquina superior izquierda del inventario. */
-    private static final int OFFSET_X = -25;
+    private static final int OFFSET_X = -24;
     private static final int OFFSET_Y = 30;
     private static final int SIZE = 20;
 
