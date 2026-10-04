@@ -2,7 +2,7 @@
   "entityType": "WARLOCK",
   "description": "Llega a lo alto de la torre de la Soul Prison y consigue el objeto del cofre de la cima.",
   "difficult": "MEDIUM",
-  "dimension": "OVERWORLD",
+  "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",
   "order": 323,
