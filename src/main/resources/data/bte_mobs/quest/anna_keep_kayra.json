@@ -1,0 +1,30 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Llega a la cima de la Keep Kayra y consigue el Lunar Scrap.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 541,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Obtén el Lunar Scrap",
+      "count": 1,
+      "entityIdLocation": "celestisynth:lunar_scrap"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPES_BY_INGREDIENT",
+      "ingredient": "celestisynth:lunar_scrap"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

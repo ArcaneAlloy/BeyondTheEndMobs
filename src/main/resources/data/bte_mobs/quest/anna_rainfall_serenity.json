@@ -23,7 +23,7 @@
   ],
   "conditionUnlockData": [
     {
-      "locationId": "bte_mobs:antonio_keep_kayra",
+      "locationId": "bte_mobs:anna_keep_kayra",
       "type": "PARENT_QUEST"
     },
     {
