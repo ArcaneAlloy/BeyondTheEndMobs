@@ -1,6 +1,6 @@
 {
   "entityType": "DRUID",
-  "description": "Derrota a los Crimson Mosquito del Nether y consigue su probóscide y un saco de sangre.",
+  "description": "Oriana te guía en el conocimiento de las criaturas y los secretos que guarda el mundo. Sigue el rastro de lo que busca y recupera el objeto necesario: derrota a los Crimson Mosquito del Nether y consigue su probóscide y un saco de sangre.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

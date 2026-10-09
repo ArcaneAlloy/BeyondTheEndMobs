@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Derrota a los Knight Phantom del Stronghold del Twilight Forest. En su tesoro hay Esencia Fantasma para que Anna forje la armadura fantasma.",
+  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota a los Knight Phantom del Stronghold del Twilight Forest. En su tesoro hay Esencia Fantasma para que Anna forje la armadura fantasma.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
   "toolTip": "tooltip de ejemplo",

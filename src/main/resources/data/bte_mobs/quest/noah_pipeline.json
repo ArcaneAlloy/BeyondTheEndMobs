@@ -1,6 +1,6 @@
 {
   "entityType": "WARLOCK",
-  "description": "Lootea el tesoro del Pipeline.",
+  "description": "Los conocimientos de Noah pueden ayudarte a sobrevivir a la amenaza que se cierne sobre este mundo. Explora el lugar indicado y recupera aquello que necesita: lootea el tesoro del Pipeline.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Entrega a Antonio los materiales de la Lost Compass, que te guía hasta una Catacomb.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: entrega a Antonio los materiales de la Lost Compass, que te guía hasta una Catacomb.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

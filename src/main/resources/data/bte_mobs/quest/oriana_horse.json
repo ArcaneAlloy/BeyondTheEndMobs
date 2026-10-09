@@ -1,6 +1,6 @@
 {
   "entityType": "DRUID",
-  "description": "Marca un caballo como tu Personal Horse.",
+  "description": "No toda aventura se resuelve con la fuerza. Aprende a convivir con las criaturas que habitan este mundo y completa la tarea que Oriana te encomienda: marca un caballo como tu Personal Horse.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

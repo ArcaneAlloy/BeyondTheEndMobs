@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "En el Nether hay una prisión de almas custodiada por un ghast. Entrega a Antonio una Lágrima de Ghast y te dirá dónde encontrarla.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: en el Nether hay una prisión de almas custodiada por un ghast. Entrega a Antonio una Lágrima de Ghast y te dirá dónde encontrarla.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

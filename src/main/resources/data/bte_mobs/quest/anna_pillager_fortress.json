@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Encuentra la Llave del Carcelero en la sala de los prisioneros, en lo alto de la Pillager Fortress, y entrégasela a Anna.",
+  "description": "La forja de Anna puede alcanzar nuevas cotas, pero necesita materiales y conocimientos que no se encuentran en cualquier lugar. Explora, recupera lo que busca y llévaselo: encuentra la Llave del Carcelero en la sala de los prisioneros, en lo alto de la Pillager Fortress, y entrégasela a Anna.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

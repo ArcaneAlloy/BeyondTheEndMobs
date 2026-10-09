@@ -1,6 +1,6 @@
 {
   "entityType": "DRUID",
-  "description": "Llega al centro del Plague Asylum y consigue el objeto del cofre sellado entre cristales azules.",
+  "description": "Oriana te guía en el conocimiento de las criaturas y los secretos que guarda el mundo. Sigue el rastro de lo que busca y recupera el objeto necesario: llega al centro del Plague Asylum y consigue el objeto del cofre sellado entre cristales azules.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

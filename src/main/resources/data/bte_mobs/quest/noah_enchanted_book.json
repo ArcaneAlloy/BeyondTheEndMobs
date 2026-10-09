@@ -1,6 +1,6 @@
 {
   "entityType": "WARLOCK",
-  "description": "Encuentra un libro encantado en tus aventuras. No hace falta entregarlo.",
+  "description": "Los conocimientos de Noah pueden ayudarte a sobrevivir a la amenaza que se cierne sobre este mundo. Explora el lugar indicado y recupera aquello que necesita: encuentra un libro encantado en tus aventuras. No hace falta entregarlo.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

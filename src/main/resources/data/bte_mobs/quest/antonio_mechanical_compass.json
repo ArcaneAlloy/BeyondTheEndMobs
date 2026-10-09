@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Entrega a Antonio los materiales de la Mechanical Compass, que te guía hasta la Ancient Factory.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: entrega a Antonio los materiales de la Mechanical Compass, que te guía hasta la Ancient Factory. Te devolverá la Estrella del Nether: la necesitas para invocar al jefe de allí.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

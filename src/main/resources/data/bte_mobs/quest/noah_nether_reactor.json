@@ -1,6 +1,6 @@
 {
   "entityType": "WARLOCK",
-  "description": "Explora el Nether Reactor, derrota al Ghast que habita la estructura y entrega a Noah el objeto que suelta.",
+  "description": "Los conocimientos de Noah pueden ayudarte a sobrevivir a la amenaza que se cierne sobre este mundo. Explora el lugar indicado y recupera aquello que necesita: explora el Nether Reactor, derrota al Ghast que habita la estructura y entrega a Noah el objeto que suelta.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

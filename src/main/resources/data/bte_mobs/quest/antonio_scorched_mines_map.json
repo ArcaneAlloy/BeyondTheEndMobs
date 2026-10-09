@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Entrega una Carga de fuego a Antonio y te dará un mapa hasta las Scorched Mines.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: entrega una Carga de fuego a Antonio y te dará un mapa hasta las Scorched Mines.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Consigue un Carminite Giant Block en la Isla de los Gigantes usando el Giant Pickaxe y entrégaselo a Anna.",
+  "description": "La forja de Anna puede alcanzar nuevas cotas, pero necesita materiales y conocimientos que no se encuentran en cualquier lugar. Explora, recupera lo que busca y llévaselo: consigue un Carminite Giant Block en la Isla de los Gigantes usando el Giant Pickaxe y entrégaselo a Anna.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
   "toolTip": "tooltip de ejemplo",

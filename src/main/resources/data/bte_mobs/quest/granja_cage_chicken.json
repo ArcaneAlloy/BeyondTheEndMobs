@@ -1,11 +1,10 @@
 {
   "entityType": "NPC5",
-  "description": "Captura un Chicken usando una Cage.",
+  "description": "Un buen refugio también forma parte de una granja próspera. Prepara el espacio adecuado y completa el encargo: captura un Chicken con una Cage.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
   "tasks": [
     {
       "type": "COLLECT",

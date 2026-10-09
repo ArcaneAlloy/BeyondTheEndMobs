@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Mejora el casco de cuero en la forja de Anna. Hay muchas mejoras posibles: con 2 lingotes de hierro puedes hacer el casco de Arquero, o prueba con lana de colores para las túnicas.",
+  "description": "Toda gran aventura comienza con herramientas fiables. Acude a la forja de Anna y completa este primer encargo: mejora el casco de cuero en la forja de Anna. Hay muchas mejoras posibles: con 2 lingotes de hierro puedes hacer el casco de Arquero, o prueba con lana de colores para las túnicas.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

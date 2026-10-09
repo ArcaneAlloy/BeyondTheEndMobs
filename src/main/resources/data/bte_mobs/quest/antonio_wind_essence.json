@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Derrota a un Windcaller y entrega a Antonio su Wind Essence junto con los materiales de la Levitation Stone.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: derrota a un Windcaller y entrega a Antonio su Wind Essence junto con los materiales de la Levitation Stone.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

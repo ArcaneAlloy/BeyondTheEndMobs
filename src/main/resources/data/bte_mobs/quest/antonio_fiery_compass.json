@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Entrega a Antonio los materiales de la Fiery Compass, que te guía hasta la Burning Arena.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: entrega a Antonio los materiales de la Fiery Compass, que te guía hasta la Burning Arena.",
   "difficult": "HARD",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

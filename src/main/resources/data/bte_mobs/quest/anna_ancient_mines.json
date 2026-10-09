@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Llega a la sala más profunda de las Ancient Mines y mina el Zephyr Deposit del Trono.",
+  "description": "La forja de Anna puede alcanzar nuevas cotas, pero necesita materiales y conocimientos que no se encuentran en cualquier lugar. Explora, recupera lo que busca y llévaselo: llega a la sala más profunda de las Ancient Mines y mina el Zephyr Deposit del Trono.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

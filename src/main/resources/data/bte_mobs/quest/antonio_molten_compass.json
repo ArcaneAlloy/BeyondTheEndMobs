@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Entrega a Antonio los materiales de la Molten Compass, que te guía hasta la Soul Blacksmith.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: entrega a Antonio los materiales de la Molten Compass, que te guía hasta la Soul Blacksmith.",
   "difficult": "HARD",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

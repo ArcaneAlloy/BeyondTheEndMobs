@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Derrota al Ignis en la Burning Arena.",
+  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota al Ignis en la Burning Arena.",
   "difficult": "HARD",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",

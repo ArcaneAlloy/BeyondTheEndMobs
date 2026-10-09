@@ -1,6 +1,6 @@
 {
   "entityType": "WARLOCK",
-  "description": "Entrega una Enchanted Iron Apple y una Enchanted Golden Apple a Noah.",
+  "description": "Los conocimientos de Noah pueden ayudarte a sobrevivir a la amenaza que se cierne sobre este mundo. Explora el lugar indicado y recupera aquello que necesita: entrega una Enchanted Iron Apple y una Enchanted Golden Apple a Noah.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

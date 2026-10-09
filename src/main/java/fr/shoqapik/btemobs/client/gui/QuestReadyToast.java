@@ -3,32 +3,57 @@ package fr.shoqapik.btemobs.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fr.shoqapik.btemobs.entity.BteNpcType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.Locale;
+
 /**
- * Aviso en la esquina (como los logros): "Quest lista para reclamar" + título de la quest + NPC al que ir.
+ * Aviso en la esquina (como los logros): "Quest lista · Ve a <NPC>" + título de la quest, con la cara del NPC
+ * (la misma que en el libro de quests del inventario).
  */
 public class QuestReadyToast implements Toast {
 
     private static final long DISPLAY_TIME = 6000L;
 
+    /** Ancho del fondo de vanilla y límites del aviso (se ensancha para que quepa el texto). */
+    private static final int BASE_WIDTH = 160;
+    private static final int MAX_WIDTH = 260;
+
+    /** Cara del NPC: textura de 56x56 dibujada a 28x28 (como en el libro de quests). */
+    private static final int FACE_SIZE = 28;
+    private static final int FACE_TEX = 56;
+    private static final int TEXT_X = 34;
+
+    private final Component header;
     private final Component questTitle;
     private final BteNpcType npc;
-    private final ItemStack icon;
+    private final int width;
 
     public QuestReadyToast(Component questTitle, BteNpcType npc) {
         this.questTitle = questTitle;
         this.npc = npc;
-        this.icon = iconFor(npc);
+        String npcKey = npc == null ? "" : "entity.bte_mobs." + npc.name().toLowerCase(Locale.ROOT);
+        this.header = Component.translatable("toast.bte_mobs.quest_ready", Component.translatable(npcKey));
+        Font font = Minecraft.getInstance().font;
+        int text = Math.max(font.width(this.header), font.width(questTitle));
+        this.width = Math.max(BASE_WIDTH, Math.min(MAX_WIDTH, TEXT_X + text + 8));
     }
 
-    private static ItemStack iconFor(BteNpcType npc) {
+    @Override
+    public int width() {
+        return this.width;
+    }
+
+    private static ItemStack fallbackIcon(BteNpcType npc) {
         if (npc == null) return new ItemStack(Items.WRITABLE_BOOK);
         return switch (npc) {
             case BLACKSMITH -> new ItemStack(Items.ANVIL);
@@ -44,20 +69,47 @@ public class QuestReadyToast implements Toast {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        // Mismo fondo que los avisos de logros de vanilla
-        toastComponent.blit(poseStack, 0, 0, 0, 0, this.width(), this.height());
+        renderBackground(poseStack, toastComponent);
 
         Font font = toastComponent.getMinecraft().font;
-        String npcKey = npc == null ? "" : "entity.bte_mobs." + npc.name().toLowerCase(java.util.Locale.ROOT);
-        Component header = Component.translatable("toast.bte_mobs.quest_ready", Component.translatable(npcKey));
-        font.draw(poseStack, header, 30.0F, 7.0F, 0xFFFF55);
+        String header = this.header.getString();
+        int max = this.width - TEXT_X - 6;
+        if (font.width(header) > max) header = font.plainSubstrByWidth(header, max - font.width("…")) + "…";
+        font.draw(poseStack, header, TEXT_X, 7.0F, 0xFFFF55);
 
         String title = questTitle.getString();
-        int max = this.width() - 36;
         if (font.width(title) > max) title = font.plainSubstrByWidth(title, max - font.width("…")) + "…";
-        font.draw(poseStack, title, 30.0F, 18.0F, 0xFFFFFF);
+        font.draw(poseStack, title, TEXT_X, 18.0F, 0xFFFFFF);
 
-        toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(this.icon, 8, 8);
+        ResourceLocation face = npc == null ? null : QuestLogScreen.face(npc);
+        if (face != null) {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderTexture(0, face);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            int y = (this.height() - FACE_SIZE) / 2;
+            GuiComponent.blit(poseStack, 3, y, FACE_SIZE, FACE_SIZE, 0, 0, FACE_TEX, FACE_TEX, FACE_TEX, FACE_TEX);
+            RenderSystem.disableBlend();
+        } else {
+            toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(fallbackIcon(npc), 8, 8);
+        }
         return timeSinceLastVisible >= DISPLAY_TIME ? Visibility.HIDE : Visibility.SHOW;
+    }
+
+    /** Fondo de los avisos de logros de vanilla (160 de ancho), estirado por el centro si el aviso es más ancho. */
+    private void renderBackground(PoseStack poseStack, ToastComponent toastComponent) {
+        int w = this.width;
+        int h = this.height();
+        if (w <= BASE_WIDTH) {
+            toastComponent.blit(poseStack, 0, 0, 0, 0, w, h);
+            return;
+        }
+        int edge = 64;
+        toastComponent.blit(poseStack, 0, 0, 0, 0, edge, h);
+        for (int x = edge; x < w - edge; x += BASE_WIDTH - 2 * edge) {
+            toastComponent.blit(poseStack, x, 0, edge, 0, Math.min(BASE_WIDTH - 2 * edge, w - edge - x), h);
+        }
+        toastComponent.blit(poseStack, w - edge, 0, BASE_WIDTH - edge, 0, edge, h);
     }
 }

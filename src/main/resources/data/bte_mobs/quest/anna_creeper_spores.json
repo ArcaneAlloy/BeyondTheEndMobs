@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Consigue Creeper Spores matando a un Creeper con su propia explosión y entrégaselas a Anna.",
+  "description": "La forja de Anna puede alcanzar nuevas cotas, pero necesita materiales y conocimientos que no se encuentran en cualquier lugar. Explora, recupera lo que busca y llévaselo: consigue Creeper Spores matando a un Creeper con su propia explosión y entrégaselas a Anna.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

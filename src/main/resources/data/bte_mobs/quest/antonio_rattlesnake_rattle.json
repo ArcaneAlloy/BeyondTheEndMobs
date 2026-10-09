@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Derrota a una Rattlesnake en la entrada del Labyrinth y entrega su cola a Antonio.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: derrota a una Rattlesnake en la entrada del Labyrinth y entrega su cola a Antonio.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

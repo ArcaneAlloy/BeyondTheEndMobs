@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Antonio ha oído hablar de una fortaleza perdida, la Keep Kayra. Entrégale una Bola de Slime y te trazará el camino.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: antonio ha oído hablar de una fortaleza perdida, la Keep Kayra. Entrégale una Bola de Slime y te trazará el camino.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

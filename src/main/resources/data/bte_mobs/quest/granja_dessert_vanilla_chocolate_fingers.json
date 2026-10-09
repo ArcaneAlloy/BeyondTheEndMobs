@@ -1,11 +1,10 @@
 {
   "entityType": "NPC5",
-  "description": "Prepara y entrega 1x Vanilla Chocolate Fingers.",
+  "description": "En la cocina de la granja siempre hay algo nuevo que preparar. Reúne los ingredientes y elabora el dulce solicitado: entrega 1x Vanilla Chocolate Fingers.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
   "tasks": [
     {
       "type": "COLLECT",

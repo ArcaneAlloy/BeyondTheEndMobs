@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Derrota a un Spectre en el End.",
+  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota a un Spectre en el End.",
   "difficult": "HARD",
   "dimension": "END",
   "toolTip": "tooltip de ejemplo",

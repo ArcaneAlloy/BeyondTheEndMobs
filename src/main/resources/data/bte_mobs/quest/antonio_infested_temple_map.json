@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Antonio sabe dónde se esconde el templo infestado por el Lich. Entrégale 5 huesos y te trazará el camino.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: antonio sabe dónde se esconde el templo infestado por el Lich. Entrégale 5 huesos y te trazará el camino.",
   "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

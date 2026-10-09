@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Derrota a la Hydra y entrega su drop a Anna.",
+  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota a la Hydra y entrega su drop a Anna.",
   "difficult": "HARD",
   "dimension": "TWILIGHT_FOREST",
   "toolTip": "tooltip de ejemplo",

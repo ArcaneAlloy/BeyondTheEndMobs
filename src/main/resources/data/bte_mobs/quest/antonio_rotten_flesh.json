@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Los no-muertos dejan restos pútridos. Entrega 5 Rotten Flesh a Antonio.",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: los no-muertos dejan restos pútridos. Entrega 5 Rotten Flesh a Antonio.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",

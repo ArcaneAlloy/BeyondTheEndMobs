@@ -1,11 +1,10 @@
 {
   "entityType": "NPC5",
-  "description": "Entrega 1x Wheat Seeds a la granja.",
+  "description": "La granja necesita nuevas provisiones y cada cultivo tiene su momento y sus cuidados. Atiende esta tarea y reúne lo necesario: entrega 1x Wheat Seeds.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
-  "toolTip" : "tooltip de ejemplo",
-  "priorityQuest" : "SIDE_QUEST",
-
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
   "tasks": [
     {
       "type": "COLLECT",

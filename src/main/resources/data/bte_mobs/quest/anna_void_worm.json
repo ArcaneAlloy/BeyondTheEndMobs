@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Derrota al Void Worm en el End.",
+  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota al Void Worm en el End.",
   "difficult": "HARD",
   "dimension": "END",
   "toolTip": "tooltip de ejemplo",
