@@ -38,6 +38,8 @@ public class QuestReadyToast implements Toast {
     private final BteNpcType npc;
     /** Icono de objeto (avisos que no son de un NPC); null para usar la cara del NPC. */
     private final ItemStack icon;
+    /** Icono como textura de 16x16 (p. ej. el ojo del botón de Ender Eyes GUI); tiene prioridad sobre el resto. */
+    private ResourceLocation iconTexture;
     private final int width;
 
     public QuestReadyToast(Component questTitle, BteNpcType npc) {
@@ -47,7 +49,13 @@ public class QuestReadyToast implements Toast {
 
     /** Aviso con el mismo estilo pero con cabecera, texto e icono propios (p. ej. el final de la bienvenida). */
     public QuestReadyToast(Component header, Component text, ItemStack icon) {
-        this(header, text, null, icon);
+        this(header, text, (BteNpcType) null, icon);
+    }
+
+    /** Aviso con cabecera y texto propios y un icono de 16x16 dibujado desde una textura. */
+    public QuestReadyToast(Component header, Component text, ResourceLocation iconTexture) {
+        this(header, text, null, (ItemStack) null);
+        this.iconTexture = iconTexture;
     }
 
     private QuestReadyToast(Component header, Component questTitle, BteNpcType npc, ItemStack icon) {
@@ -94,7 +102,15 @@ public class QuestReadyToast implements Toast {
         font.draw(poseStack, title, TEXT_X, 18.0F, 0xFFFFFF);
 
         ResourceLocation face = npc == null ? null : QuestLogScreen.face(npc);
-        if (face != null) {
+        if (this.iconTexture != null) {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderTexture(0, this.iconTexture);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            GuiComponent.blit(poseStack, 9, (this.height() - 16) / 2, 0.0F, 0.0F, 16, 16, 16, 16);
+            RenderSystem.disableBlend();
+        } else if (face != null) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, face);

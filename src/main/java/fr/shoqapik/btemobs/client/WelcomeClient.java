@@ -14,8 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -33,6 +32,10 @@ import java.util.List;
 public final class WelcomeClient {
 
     private WelcomeClient() {}
+
+    /** Ojo del botón de Ender Eyes GUI (el del inventario), para el aviso final. */
+    private static final ResourceLocation ENDER_EYES_ICON =
+            new ResourceLocation(BteMobsMod.MODID, "textures/gui/quest_log/ender_eyes.png");
 
     /** Títulos de la bienvenida: gui.bte_mobs.welcome.<n>.title / .subtitle */
     private static final int CARDS = 3;
@@ -58,7 +61,7 @@ public final class WelcomeClient {
             mc.getToasts().addToast(new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_done", key),
                     Component.translatable("toast.bte_mobs.welcome_done.desc"),
-                    new ItemStack(Items.ENDER_EYE)));
+                    ENDER_EYES_ICON));
             mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PLAYER_LEVELUP, 1.2F, 0.6F));
             return;
         }
