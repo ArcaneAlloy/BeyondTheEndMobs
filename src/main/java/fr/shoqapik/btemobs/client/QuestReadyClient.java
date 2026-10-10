@@ -116,7 +116,7 @@ public final class QuestReadyClient {
     private static double extraHeight(BteNpcType type) {
         return switch (type) {
             case BLACKSMITH -> 0.5D;
-            case WARLOCK -> 0.5D;
+            case WARLOCK, NPC5 -> 0.5D;
             case DRUID -> 0.9D;
             default -> 0.0D;
         };

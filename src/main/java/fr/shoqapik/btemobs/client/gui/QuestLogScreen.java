@@ -57,7 +57,7 @@ public class QuestLogScreen extends Screen {
         String name = switch (npc) {
             case BLACKSMITH -> "anna";
             case EXPLORER -> "antonio";
-            case WARLOCK -> "noah";
+            case WARLOCK, NPC5 -> "noah";
             case DRUID -> "oriana";
             default -> null;
         };

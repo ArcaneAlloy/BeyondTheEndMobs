@@ -198,8 +198,20 @@ public final class QuestTriggers {
         });
     }
 
-    @SuppressWarnings("unchecked")
+    /** true si el jugador tiene activada alguna waystone en esa dimensión (bienvenida: la waystone del Lobby). */
+    public static boolean hasActiveWaystoneIn(ServerPlayer player, ResourceKey<Level> dimension) {
+        for (net.minecraft.core.GlobalPos pos : activeWaystones(player, true)) {
+            if (pos.dimension().equals(dimension)) return true;
+        }
+        return false;
+    }
+
     private static List<net.minecraft.core.GlobalPos> activeWaystonesOutsideLobby(ServerPlayer player) {
+        return activeWaystones(player, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<net.minecraft.core.GlobalPos> activeWaystones(ServerPlayer player, boolean includeLobby) {
         List<net.minecraft.core.GlobalPos> result = new ArrayList<>();
         if (waystoneLookupFailed) return result;
         try {
@@ -216,7 +228,7 @@ public final class QuestTriggers {
                 Object dim = getWaystoneDimension.invoke(waystone);
                 Object pos = getWaystonePos.invoke(waystone);
                 if (!(dim instanceof ResourceKey<?> key) || !(pos instanceof BlockPos blockPos)) continue;
-                if (key.equals(SacredPlaceHandler.FORGOTTEN_REALM)) continue;
+                if (!includeLobby && key.equals(SacredPlaceHandler.FORGOTTEN_REALM)) continue;
                 result.add(net.minecraft.core.GlobalPos.of((ResourceKey<Level>) key, blockPos));
             }
         } catch (ClassNotFoundException | NoSuchMethodException e) {

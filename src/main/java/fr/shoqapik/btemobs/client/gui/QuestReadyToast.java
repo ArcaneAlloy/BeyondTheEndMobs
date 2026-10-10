@@ -52,6 +52,11 @@ public class QuestReadyToast implements Toast {
         this(header, text, (BteNpcType) null, icon);
     }
 
+    /** Aviso con cabecera y texto propios y la cara de un NPC. */
+    public static QuestReadyToast withFace(Component header, Component text, BteNpcType npc) {
+        return new QuestReadyToast(header, text, npc, null);
+    }
+
     /** Aviso con cabecera y texto propios y un icono de 16x16 dibujado desde una textura. */
     public QuestReadyToast(Component header, Component text, ResourceLocation iconTexture) {
         this(header, text, null, (ItemStack) null);

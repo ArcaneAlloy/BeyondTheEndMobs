@@ -259,13 +259,40 @@ public final class QuestTracker {
         if (welcome) {
             Block block = new Block();
             addWrapped(block.title, font, Component.translatable("gui.bte_mobs.welcome.objective",
-                    WelcomeClient.talkedCount(), WelcomeHandler.NPCS.length).withStyle(ChatFormatting.YELLOW), 0, 1);
-            for (BteNpcType npc : WelcomeHandler.NPCS) {
-                boolean done = WelcomeClient.talkedTo(npc);
-                Component name = Component.translatable("entity.bte_mobs." + npc.name().toLowerCase(Locale.ROOT));
-                addWrapped(block.detail, font, Component.literal(done ? "✔ " : "- ").append(name)
-                        .withStyle(done ? ChatFormatting.DARK_GREEN : ChatFormatting.GRAY), 6, 1);
+                    WelcomeClient.doneCount(), WelcomeHandler.ORDER.length).withStyle(ChatFormatting.YELLOW), 0, 1);
+            // En orden: hechos en verde, el que toca resaltado, los siguientes en gris oscuro
+            WelcomeHandler.Step target = WelcomeClient.currentTarget();
+            // Solo una ventana corta de pasos (el anterior, el actual y los dos siguientes) para no llenar el panel
+            int currentIndex = java.util.Arrays.asList(WelcomeHandler.ORDER).indexOf(target);
+            int from = Math.max(0, currentIndex - 1), to = Math.min(WelcomeHandler.ORDER.length - 1, currentIndex + 2);
+            for (int i = from; i <= to; i++) {
+                WelcomeHandler.Step step = WelcomeHandler.ORDER[i];
+                boolean done = WelcomeClient.isDone(step);
+                boolean now = step == target;
+                Component name = step.npc != null
+                        ? Component.translatable("entity.bte_mobs." + step.npc.name().toLowerCase(Locale.ROOT))
+                        : Component.translatable("gui.bte_mobs.welcome.step." + step.name().toLowerCase(Locale.ROOT));
+                Component line;
+                if (now) {
+                    line = Component.translatable(step.npc != null ? "gui.bte_mobs.welcome.objective.next"
+                            : step == WelcomeHandler.Step.TELEPORT || step == WelcomeHandler.Step.HOME_RETURN ? "gui.bte_mobs.welcome.objective.use"
+                            : step == WelcomeHandler.Step.HOME_ZONE ? "gui.bte_mobs.welcome.objective.visit"
+                            : step == WelcomeHandler.Step.ALTAR ? "gui.bte_mobs.welcome.objective.visit_room"
+                            : step == WelcomeHandler.Step.ELEVATOR ? "gui.bte_mobs.welcome.objective.go"
+                            : step == WelcomeHandler.Step.PORTAL_ROOM || step == WelcomeHandler.Step.BTE_PORTAL ? "gui.bte_mobs.welcome.objective.go_down"
+                            : step == WelcomeHandler.Step.BACK_TO_PORTAL_ROOM ? "gui.bte_mobs.welcome.objective.go_up"
+                            : step == WelcomeHandler.Step.WAYSTONE ? "gui.bte_mobs.welcome.objective.activate"
+                            : step == WelcomeHandler.Step.WAYSTONE_RENAME ? "gui.bte_mobs.welcome.objective.rename"
+                            : step == WelcomeHandler.Step.EE_EYE || step == WelcomeHandler.Step.EE_RECIPES || step == WelcomeHandler.Step.MATRIX ? "gui.bte_mobs.welcome.objective.open_any"
+                            : "gui.bte_mobs.welcome.objective.open", name).withStyle(ChatFormatting.WHITE);
+                } else {
+                    line = Component.literal(done ? "✔ " : "- ").append(name)
+                            .withStyle(done ? ChatFormatting.DARK_GREEN : ChatFormatting.DARK_GRAY);
+                }
+                addWrapped(block.detail, font, line, 6, 1);
             }
+            addWrapped(block.detail, font, Component.translatable("gui.bte_mobs.welcome.skip_hint",
+                    WelcomeClient.SKIP_KEY.getTranslatedKeyMessage()).withStyle(ChatFormatting.DARK_GRAY), 6, 1);
             blocks.add(block);
         }
         for (Map.Entry<Quest, QuestStateData> entry : entries) {
