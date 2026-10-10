@@ -66,6 +66,16 @@ public class QuestDebugCommand {
                             if (ok) ctx.getSource().sendSuccess(Component.literal("Portal al Twilight Forest construido en la fuente del Lobby"), true);
                             else ctx.getSource().sendFailure(Component.literal("No existe la dimensión del Lobby"));
                             return ok ? 1 : 0;
+                        }))
+                .then(Commands.literal("welcome")
+                        .executes(ctx -> {
+                            if (!(ctx.getSource().getEntity() instanceof net.minecraft.server.level.ServerPlayer player)) {
+                                ctx.getSource().sendFailure(Component.literal("Solo puede usarlo un jugador"));
+                                return 0;
+                            }
+                            fr.shoqapik.btemobs.quest.WelcomeHandler.reset(player);
+                            ctx.getSource().sendSuccess(Component.literal("Bienvenida reiniciada"), false);
+                            return 1;
                         })));
     }
 

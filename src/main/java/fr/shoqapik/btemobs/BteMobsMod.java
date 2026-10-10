@@ -134,6 +134,7 @@ public class BteMobsMod {
         INSTANCE.registerMessage(16,QuestActionPacket.class,QuestActionPacket::encode,QuestActionPacket::decode,QuestActionPacket::handle);
         INSTANCE.registerMessage(17,fr.shoqapik.btemobs.packets.SyncQuestsPacket.class,fr.shoqapik.btemobs.packets.SyncQuestsPacket::encode,fr.shoqapik.btemobs.packets.SyncQuestsPacket::decode,fr.shoqapik.btemobs.packets.SyncQuestsPacket::handle);
         INSTANCE.registerMessage(18,fr.shoqapik.btemobs.packets.QuestReadyPacket.class,fr.shoqapik.btemobs.packets.QuestReadyPacket::encode,fr.shoqapik.btemobs.packets.QuestReadyPacket::decode,fr.shoqapik.btemobs.packets.QuestReadyPacket::handle);
+        INSTANCE.registerMessage(19,fr.shoqapik.btemobs.packets.WelcomePacket.class,fr.shoqapik.btemobs.packets.WelcomePacket::encode,fr.shoqapik.btemobs.packets.WelcomePacket::decode,fr.shoqapik.btemobs.packets.WelcomePacket::handle);
     }
     @OnlyIn(Dist.CLIENT)
     public static List<EnchantType> getEnchantType (Player player){

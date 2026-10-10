@@ -461,5 +461,14 @@
   "task.quest.antonio_scorched_mines_map.0": "Deliver 1x Fire Charge to Antonio",
   "title.quest.anna_rainfall_serenity": "Rainfall Serenity",
   "desc.quest.anna_rainfall_serenity": "Defeat a Mutant Shulker in the End and get its shell to forge the Rainfall Serenity.",
-  "task.quest.anna_rainfall_serenity.0": "Defeat a Mutant Shulker"
+  "task.quest.anna_rainfall_serenity.0": "Defeat a Mutant Shulker",
+  "gui.bte_mobs.welcome.1.title": "Ender's Journey",
+  "gui.bte_mobs.welcome.1.subtitle": "Welcome to The Forgotten Realm",
+  "gui.bte_mobs.welcome.2.title": "24 Ender Eyes",
+  "gui.bte_mobs.welcome.2.subtitle": "Collect them all to open the Beyond The End portal",
+  "gui.bte_mobs.welcome.3.title": "You are not alone",
+  "gui.bte_mobs.welcome.3.subtitle": "The 4 dwellers of the Lobby will help you on your journey",
+  "gui.bte_mobs.welcome.objective": "Talk to the Lobby dwellers (%s/%s)",
+  "toast.bte_mobs.welcome_done": "Open your inventory [%s]",
+  "toast.bte_mobs.welcome_done.desc": "Your Ender Eyes and quests are there"
 }

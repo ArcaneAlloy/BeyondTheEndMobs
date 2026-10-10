@@ -1,5 +1,6 @@
 package fr.shoqapik.btemobs.client;
 
+import fr.shoqapik.btemobs.quest.WelcomeHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -223,7 +224,8 @@ public final class QuestTracker {
 
     private static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         Minecraft mc = Minecraft.getInstance();
-        if (TRACKED.isEmpty() || !BteMobsClientConfig.TRACKER_VISIBLE.get()) return;
+        boolean welcome = WelcomeClient.objectiveVisible();
+        if ((TRACKED.isEmpty() && !welcome) || !BteMobsClientConfig.TRACKER_VISIBLE.get()) return;
         if (mc.options.hideGui || mc.player == null || mc.screen != null) return;
         RecipeCapability<?> cap = RecipeCapability.get(mc.player);
         if (cap == null) return;
@@ -242,7 +244,7 @@ public final class QuestTracker {
             entries.add(entry);
         }
         if (removed) save();
-        if (entries.isEmpty()) return;
+        if (entries.isEmpty() && !welcome) return;
 
         Font font = mc.font;
         float scale = BteMobsClientConfig.TRACKER_SCALE.get().floatValue();
@@ -253,6 +255,19 @@ public final class QuestTracker {
 
         // Cada quest: título + detalle (tareas o "¡Lista!")
         List<Block> blocks = new ArrayList<>();
+        // Objetivo de la bienvenida (no es una quest): hablar con los 4 NPCs del Lobby, siempre el primero
+        if (welcome) {
+            Block block = new Block();
+            addWrapped(block.title, font, Component.translatable("gui.bte_mobs.welcome.objective",
+                    WelcomeClient.talkedCount(), WelcomeHandler.NPCS.length).withStyle(ChatFormatting.YELLOW), 0, 1);
+            for (BteNpcType npc : WelcomeHandler.NPCS) {
+                boolean done = WelcomeClient.talkedTo(npc);
+                Component name = Component.translatable("entity.bte_mobs." + npc.name().toLowerCase(Locale.ROOT));
+                addWrapped(block.detail, font, Component.literal(done ? "✔ " : "- ").append(name)
+                        .withStyle(done ? ChatFormatting.DARK_GREEN : ChatFormatting.GRAY), 6, 1);
+            }
+            blocks.add(block);
+        }
         for (Map.Entry<Quest, QuestStateData> entry : entries) {
             Quest quest = entry.getKey();
             QuestStateData state = entry.getValue();

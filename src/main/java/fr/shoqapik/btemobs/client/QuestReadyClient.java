@@ -71,10 +71,11 @@ public final class QuestReadyClient {
         READY_NPCS.clear();
     }
 
-    /** "!" dorado flotando sobre los NPCs con quests listas para reclamar. */
+    /** "!" dorado flotando sobre los NPCs con quests listas para reclamar (y, en la bienvenida, los que aún no conoce). */
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES || READY_NPCS.isEmpty()) return;
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
+        if (READY_NPCS.isEmpty() && !WelcomeClient.anyPending()) return;
         Minecraft mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
         if (level == null || mc.player == null) return;
@@ -90,7 +91,9 @@ public final class QuestReadyClient {
         float bob = (float) Math.sin((level.getGameTime() + partialTick) / 8.0D) * 0.08F;
 
         for (BteAbstractEntity npc : level.getEntitiesOfClass(BteAbstractEntity.class, area)) {
-            if (!READY_NPCS.contains(npc.getNpcType()) || npc.isInvisible()) continue;
+            // Quest lista para reclamar, o NPC con el que aún no ha hablado (bienvenida)
+            boolean marked = READY_NPCS.contains(npc.getNpcType()) || WelcomeClient.pending(npc.getNpcType());
+            if (!marked || npc.isInvisible()) continue;
             double x = npc.xOld + (npc.getX() - npc.xOld) * partialTick - cam.x;
             double y = npc.yOld + (npc.getY() - npc.yOld) * partialTick - cam.y + npc.getBbHeight() + 0.55D + extraHeight(npc.getNpcType()) + bob;
             double z = npc.zOld + (npc.getZ() - npc.zOld) * partialTick - cam.z;

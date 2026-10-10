@@ -36,13 +36,25 @@ public class QuestReadyToast implements Toast {
     private final Component header;
     private final Component questTitle;
     private final BteNpcType npc;
+    /** Icono de objeto (avisos que no son de un NPC); null para usar la cara del NPC. */
+    private final ItemStack icon;
     private final int width;
 
     public QuestReadyToast(Component questTitle, BteNpcType npc) {
+        this(Component.translatable("toast.bte_mobs.quest_ready", Component.translatable(
+                npc == null ? "" : "entity.bte_mobs." + npc.name().toLowerCase(Locale.ROOT))), questTitle, npc, null);
+    }
+
+    /** Aviso con el mismo estilo pero con cabecera, texto e icono propios (p. ej. el final de la bienvenida). */
+    public QuestReadyToast(Component header, Component text, ItemStack icon) {
+        this(header, text, null, icon);
+    }
+
+    private QuestReadyToast(Component header, Component questTitle, BteNpcType npc, ItemStack icon) {
+        this.header = header;
         this.questTitle = questTitle;
         this.npc = npc;
-        String npcKey = npc == null ? "" : "entity.bte_mobs." + npc.name().toLowerCase(Locale.ROOT);
-        this.header = Component.translatable("toast.bte_mobs.quest_ready", Component.translatable(npcKey));
+        this.icon = icon;
         Font font = Minecraft.getInstance().font;
         int text = Math.max(font.width(this.header), font.width(questTitle));
         this.width = Math.max(BASE_WIDTH, Math.min(MAX_WIDTH, TEXT_X + text + 8));
@@ -92,7 +104,8 @@ public class QuestReadyToast implements Toast {
             GuiComponent.blit(poseStack, 3, y, FACE_SIZE, FACE_SIZE, 0, 0, FACE_TEX, FACE_TEX, FACE_TEX, FACE_TEX);
             RenderSystem.disableBlend();
         } else {
-            toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(fallbackIcon(npc), 8, 8);
+            ItemStack stack = this.icon != null ? this.icon : fallbackIcon(npc);
+            toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(stack, 9, 8);
         }
         return timeSinceLastVisible >= DISPLAY_TIME ? Visibility.HIDE : Visibility.SHOW;
     }
