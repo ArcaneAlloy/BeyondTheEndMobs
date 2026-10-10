@@ -197,6 +197,11 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
             }
         }
 
+        // Luces de la naturaleza girando a su alrededor (sustituyen a los objetos al azar)
+        if (this.level.isClientSide) {
+            fr.shoqapik.btemobs.client.DruidWisps.tick(this);
+        }
+
         if(this.animIdle>=0){
             this.animIdle--;
             if(this.animIdle<=0){

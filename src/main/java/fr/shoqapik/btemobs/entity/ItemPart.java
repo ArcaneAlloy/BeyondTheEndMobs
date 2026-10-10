@@ -52,9 +52,6 @@ public class ItemPart extends PartEntity<DruidEntity> {
         this.name = name;
         this.setSize(EntityDimensions.fixed(sizeX,sizeY));
         this.isSampleItem = isFlag;
-        if(!this.level.isClientSide && isFlag){
-            this.selectSampleItem();
-        }
         this.maxSampleTime = 200;
     }
     protected void setSize(EntityDimensions size) {
@@ -93,9 +90,7 @@ public class ItemPart extends PartEntity<DruidEntity> {
         if(isSampleItem){
             this.sampleTime++;
             if(this.sampleTime>this.maxSampleTime){
-                if(!level.isClientSide){
-                    this.selectSampleItem();
-                }
+                // Ya no se muestran objetos al azar alrededor del Druida (ahora son partículas: DruidWisps)
                 this.sampleTime=0;
             }
             //this.setPos(this.getX(),this.getY()*Mth.cos(this.tickCount*30)*0.25f,this.getZ());

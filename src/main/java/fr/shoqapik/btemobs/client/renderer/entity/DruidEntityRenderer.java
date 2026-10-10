@@ -3,6 +3,7 @@ package fr.shoqapik.btemobs.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
+import fr.shoqapik.btemobs.client.DruidWisps;
 import fr.shoqapik.btemobs.client.model.DruidModel;
 import fr.shoqapik.btemobs.client.model.OrbModel;
 import fr.shoqapik.btemobs.entity.DruidEntity;
@@ -32,10 +33,18 @@ public class DruidEntityRenderer extends GeoEntityRenderer<DruidEntity> {
     }
 
     @Override
+    public void render(DruidEntity druidEntity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        super.render(druidEntity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+        // Luciérnagas en órbita sobre su cabeza (sustituyen a los objetos al azar)
+        DruidWisps.render(druidEntity, partialTick, poseStack, bufferSource, this.entityRenderDispatcher.cameraOrientation());
+    }
+
+    @Override
     public void render(GeoModel model, DruidEntity druidEntity, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         super.render(model, druidEntity, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         for(ItemPart part:druidEntity.items){
-            if(part.item!=null){
+            // Las muestras (objetos al azar girando) ya no se dibujan: ahora son partículas (DruidWisps)
+            if(part.item!=null && !part.isSampleItem){
                 this.renderItemPart(part,druidEntity,poseStack,partialTick,bufferSource,packedLight);
             }
         }
