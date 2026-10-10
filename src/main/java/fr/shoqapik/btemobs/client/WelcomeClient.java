@@ -108,6 +108,8 @@ public final class WelcomeClient {
     private static boolean announceAfterCards = false;
     /** Al acabar los títulos del último paso sale el aviso de tutorial terminado. */
     private static boolean doneAfterCards = false;
+    /** Se están mostrando los títulos de bienvenida: al acabar se avisa al servidor para que no vuelvan a salir. */
+    private static boolean introSequence = false;
     /** Títulos que se están mostrando, ticks de espera antes del primero y si ocultan el haz mientras salen. */
     private static String[] cards = INTRO_CARDS;
     private static int cardsDelay = 50;
@@ -178,7 +180,10 @@ public final class WelcomeClient {
         }
         active = true;
         revealPending = false;
-        if (msg.intro) startCards(INTRO_CARDS, START_DELAY, true);
+        if (msg.intro) {
+            startCards(INTRO_CARDS, START_DELAY, true);
+            introSequence = true;
+        }
     }
 
     /** Argumentos de los subtítulos por título (p. ej. las teclas del ascensor). */
@@ -430,6 +435,7 @@ public final class WelcomeClient {
         cardPrefix = null;
         announceAfterCards = false;
         doneAfterCards = false;
+        introSequence = false;
         mc.player.displayClientMessage(Component.empty(), true);
         mc.getToasts().addToast(new QuestReadyToast(
                 Component.translatable("toast.bte_mobs.welcome_skipped"),
@@ -912,6 +918,10 @@ public final class WelcomeClient {
                         if (cardIndex >= cards.length) {
                             introTick = -1;
                             // Tras los títulos de entrada aparecen el haz y el "!" sobre el primer NPC
+                            if (introSequence) {
+                                introSequence = false;
+                                BteMobsMod.sendToServer(new fr.shoqapik.btemobs.packets.WelcomeIntroSeenPacket());
+                            }
                             if (announceAfterCards) {
                                 // Fin de la guía del NPC: ahora sí se le manda al siguiente
                                 announceAfterCards = false;
@@ -1285,7 +1295,12 @@ public final class WelcomeClient {
             active = false;
             talked = 0;
             introTick = -1;
+            cardPhase = 0;
             revealPending = false;
+            cardPrefix = null;
+            introSequence = false;
+            announceAfterCards = false;
+            doneAfterCards = false;
             obeliskPos = null;
             waystonePos = null;
             terminalPos = null;

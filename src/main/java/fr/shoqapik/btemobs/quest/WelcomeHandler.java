@@ -37,6 +37,8 @@ public final class WelcomeHandler {
     private static final String SHOWN = "shown";
     private static final String TALKED = "talked";
     private static final String DONE = "done";
+    /** Ya ha pasado los títulos de bienvenida (no vuelven a salir al entrar al mundo). */
+    private static final String INTRO = "intro_seen";
 
     /** Bloque del paso del Obelisco de Experiencia. */
     public static final ResourceLocation OBELISK_ID = new ResourceLocation("experienceobelisk", "experience_obelisk");
@@ -198,10 +200,11 @@ public final class WelcomeHandler {
         CompoundTag tag = data(player);
         if (tag.getBoolean(DONE)) return;
         tag.putBoolean(SHOWN, true);
-        // Los títulos salen cada vez que entra mientras no haya empezado el recorrido (aún no ha hablado con el
-        // primer NPC). Una vez empezado, al volver solo se restauran el haz de luz, el "!" y el objetivo.
+        // Los títulos de bienvenida salen una sola vez: hasta que el jugador los pasa (el cliente avisa al acabar).
+        // Si sale del mundo a mitad, vuelven a salir. Después, al entrar solo se restauran el haz, el "!" y el objetivo.
         int talked = tag.getInt(TALKED);
-        BteMobsMod.sendToClient(new WelcomePacket(talked == 0, talked, false), player);
+        boolean intro = talked == 0 && !tag.getBoolean(INTRO);
+        BteMobsMod.sendToClient(new WelcomePacket(intro, talked, false), player);
     }
 
     /** Hablar con un NPC del Lobby cuenta para el objetivo (se mira antes de que el NPC procese el clic). */
@@ -234,6 +237,7 @@ public final class WelcomeHandler {
         if (step == null || !matches.test(step)) return;
         done |= step.bit();
         tag.putInt(TALKED, done);
+        tag.putBoolean(INTRO, true);
         boolean finished = current(done) == null;
         if (finished) tag.putBoolean(DONE, true);
         BteMobsMod.sendToClient(new WelcomePacket(false, done, finished), player);
@@ -308,6 +312,11 @@ public final class WelcomeHandler {
         LAST_POS.remove(event.getEntity().getUUID());
     }
 
+    /** El cliente ha terminado de mostrar los títulos de bienvenida. */
+    public static void introSeen(ServerPlayer player) {
+        data(player).putBoolean(INTRO, true);
+    }
+
     /** El jugador ha saltado el tutorial (manteniendo la tecla): se da por terminado y no vuelve a salir. */
     public static void skip(ServerPlayer player) {
         CompoundTag tag = data(player);
@@ -322,6 +331,7 @@ public final class WelcomeHandler {
         tag.putBoolean(SHOWN, true);
         tag.putInt(TALKED, 0);
         tag.putBoolean(DONE, false);
+        tag.putBoolean(INTRO, false);
         BteMobsMod.sendToClient(new WelcomePacket(true, 0, false), player);
     }
 }
