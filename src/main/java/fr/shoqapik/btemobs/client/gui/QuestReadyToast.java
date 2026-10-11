@@ -41,6 +41,14 @@ public class QuestReadyToast implements Toast {
     /** Icono como textura de 16x16 (p. ej. el ojo del botón de Ender Eyes GUI); tiene prioridad sobre el resto. */
     private ResourceLocation iconTexture;
     private final int width;
+    /** Aviso fijo: se queda mientras se cumpla (p. ej. hasta hablar con el NPC al que manda); null = dura DISPLAY_TIME. */
+    private java.util.function.BooleanSupplier stickyWhile;
+
+    /** Hace que el aviso no desaparezca solo: se queda mientras la condición se cumpla. */
+    public QuestReadyToast sticky(java.util.function.BooleanSupplier condition) {
+        this.stickyWhile = condition;
+        return this;
+    }
 
     public QuestReadyToast(Component questTitle, BteNpcType npc) {
         this(Component.translatable("toast.bte_mobs.quest_ready", Component.translatable(
@@ -127,6 +135,10 @@ public class QuestReadyToast implements Toast {
         } else {
             ItemStack stack = this.icon != null ? this.icon : fallbackIcon(npc);
             toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(stack, 9, 8);
+        }
+        if (stickyWhile != null) {
+            // Se ve al menos un momento aunque la condición deje de cumplirse enseguida
+            return timeSinceLastVisible < 1500L || stickyWhile.getAsBoolean() ? Visibility.SHOW : Visibility.HIDE;
         }
         return timeSinceLastVisible >= DISPLAY_TIME ? Visibility.HIDE : Visibility.SHOW;
     }

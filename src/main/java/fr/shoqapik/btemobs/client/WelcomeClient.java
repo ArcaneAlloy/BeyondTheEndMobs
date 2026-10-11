@@ -110,6 +110,11 @@ public final class WelcomeClient {
     private static boolean doneAfterCards = false;
     /** Se están mostrando los títulos de bienvenida: al acabar se avisa al servidor para que no vuelvan a salir. */
     private static boolean introSequence = false;
+    /** Al recordar el paso actual (volver a entrar al mundo) solo sale el aviso, sin títulos. */
+    private static boolean suppressCards = false;
+    /** Último sitio marcado con el haz (y cuándo): el waypoint de Xaero se pone ahí. */
+    static Vec3 beamTarget = null;
+    static long beamTargetTime = -1000L;
     /** Títulos que se están mostrando, ticks de espera antes del primero y si ocultan el haz mientras salen. */
     private static String[] cards = INTRO_CARDS;
     private static int cardsDelay = 50;
@@ -183,6 +188,8 @@ public final class WelcomeClient {
         if (msg.intro) {
             startCards(INTRO_CARDS, START_DELAY, true);
             introSequence = true;
+        } else {
+            announceNext(Minecraft.getInstance(), false);
         }
     }
 
@@ -192,6 +199,7 @@ public final class WelcomeClient {
     private static String[] cardPrefix = null;
 
     private static void startCards(String[] keys, int delay, boolean hideTarget) {
+        if (suppressCards) return;
         if (cardPrefix != null) {
             String[] all = new String[cardPrefix.length + keys.length];
             System.arraycopy(cardPrefix, 0, all, 0, cardPrefix.length);
@@ -208,6 +216,24 @@ public final class WelcomeClient {
         cardIndex = 0;
         cardPhase = 0;
         phaseTick = 0;
+    }
+
+    /**
+     * Waypoint temporal de Xaero's Minimap / World Map en el sitio al que manda el haz, con el nombre del sitio.
+     * Se quita en cuanto no hay haz (paso dentro de un menú, títulos en pantalla, tutorial terminado...).
+     */
+    private static void tickWaypoint(Minecraft mc) {
+        if (mc.level == null || mc.player == null || mc.player.tickCount % 10 != 0) return;
+        WelcomeHandler.Step target = active ? currentTarget() : null;
+        if (target == null || beamTarget == null || mc.level.getGameTime() - beamTargetTime > 40) {
+            XaeroWaypoints.clear();
+            return;
+        }
+        Component name = target.npc != null
+                ? Component.translatable("entity.bte_mobs." + target.npc.name().toLowerCase(java.util.Locale.ROOT))
+                : Component.translatable("gui.bte_mobs.welcome.step." + target.name().toLowerCase(java.util.Locale.ROOT));
+        XaeroWaypoints.show(name.getString(), Mth.floor(beamTarget.x), Mth.floor(beamTarget.y), Mth.floor(beamTarget.z),
+                target.npc != null ? "AQUA" : "GOLD");
     }
 
     /** Paso del Summoning Altar: cuenta al acercarse al altar (entrar en su sala). */
@@ -270,15 +296,38 @@ public final class WelcomeClient {
 
     /** Aviso del paso siguiente (toast y sus títulos); el haz y el "!" salen solos con el objetivo actual. */
     private static void announceNext(Minecraft mc) {
+        announceNext(mc, true);
+    }
+
+    /**
+     * Aviso del paso siguiente. Se queda fijo arriba a la derecha hasta que el jugador completa ese paso.
+     * Sin títulos (withCards = false) se usa al volver a entrar al mundo, para recordar a dónde ir.
+     */
+    private static void announceNext(Minecraft mc, boolean withCards) {
+        suppressCards = !withCards;
+        try {
+            announceNextStep(mc);
+        } finally {
+            suppressCards = false;
+        }
+    }
+
+    /** El aviso se queda mientras ese paso siga siendo el actual (y el tutorial esté activo). */
+    private static void addStepToast(WelcomeHandler.Step step, QuestReadyToast toast) {
+        Minecraft.getInstance().getToasts().addToast(
+                toast.sticky(() -> active && !revealPending && WelcomeHandler.current(talked) == step));
+    }
+
+    private static void announceNextStep(Minecraft mc) {
         WelcomeHandler.Step next = WelcomeHandler.current(talked);
         if (next == null) return;
         if (next.npc != null) {
-            mc.getToasts().addToast(QuestReadyToast.withFace(
+            addStepToast(next, QuestReadyToast.withFace(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.desc", npcName(next.npc)),
                     next.npc));
         } else if (next == WelcomeHandler.Step.OBELISK) {
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.obelisk"),
                     obeliskIcon()));
@@ -286,12 +335,12 @@ public final class WelcomeClient {
             startCards(OBELISK_CARDS, 10, false);
         } else if (next == WelcomeHandler.Step.ENDER_EYES) {
             Component key = mc.options.keyInventory.getTranslatedKeyMessage();
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next.ender_eyes", key),
                     Component.translatable("toast.bte_mobs.welcome_next.ender_eyes.desc"),
                     ENDER_EYES_ICON));
         } else if (next == WelcomeHandler.Step.TELEPORT) {
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.teleport"),
                     new ItemStack(Items.ENDER_PEARL)));
@@ -299,7 +348,7 @@ public final class WelcomeClient {
             startCards(TELEPORT_CARDS, 10, false);
         } else if (next == WelcomeHandler.Step.WAYSTONE) {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("waystones", "waystone"));
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.waystone"),
                     item != null && item != Items.AIR ? new ItemStack(item) : new ItemStack(Items.LODESTONE)));
@@ -308,7 +357,7 @@ public final class WelcomeClient {
             Component sneak = mc.options.keyShift.getTranslatedKeyMessage();
             Component use = mc.options.keyUse.getTranslatedKeyMessage();
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("waystones", "waystone"));
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next.waystone_rename"),
                     Component.translatable("toast.bte_mobs.welcome_next.waystone_rename.desc", sneak, use),
                     item != null && item != Items.AIR ? new ItemStack(item) : new ItemStack(Items.NAME_TAG)));
@@ -316,54 +365,54 @@ public final class WelcomeClient {
             startCards(new String[]{"waystone_rename"}, 10, false);
         } else if (next == WelcomeHandler.Step.MATRIX) {
             Component key = mc.options.keyInventory.getTranslatedKeyMessage();
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next.ender_eyes", key),
                     Component.translatable("toast.bte_mobs.welcome_next.matrix"),
                     ENDER_EYES_ICON));
         } else if (next == WelcomeHandler.Step.HOME_ZONE) {
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.home_zone"),
                     new ItemStack(Items.GRASS_BLOCK)));
             startCards(new String[]{"home_zone"}, 30, false);
         } else if (next == WelcomeHandler.Step.HOME_RETURN) {
             // Ya está en su Home Zone: se le explica qué es y cómo volver
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.home_return"),
                     new ItemStack(Items.ENDER_PEARL)));
             startCards(new String[]{"home_zone_info", "home_return"}, 10, false);
         } else if (next == WelcomeHandler.Step.STORAGE) {
             Item terminal = ForgeRegistries.ITEMS.getValue(WelcomeHandler.CRAFTING_TERMINAL_ID);
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.storage"),
                     terminal != null && terminal != Items.AIR ? new ItemStack(terminal) : new ItemStack(Items.CHEST)));
             startCards(new String[]{"storage"}, 30, false);
         } else if (next == WelcomeHandler.Step.FURNACE) {
             Item furnace = ForgeRegistries.ITEMS.getValue(new ResourceLocation("jumbofurnace", "jumbo_furnace"));
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.furnace"),
                     furnace != null && furnace != Items.AIR ? new ItemStack(furnace) : new ItemStack(Items.FURNACE)));
             startCards(new String[]{"furnace"}, 10, false);
         } else if (next == WelcomeHandler.Step.DIM_STORAGE) {
             Item actuator = ForgeRegistries.ITEMS.getValue(WelcomeHandler.DIM_STORAGE_ID);
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.dim_storage"),
                     actuator != null && actuator != Items.AIR ? new ItemStack(actuator) : new ItemStack(Items.ENDER_CHEST)));
             startCards(new String[]{"dim_storage"}, 10, false);
         } else if (next == WelcomeHandler.Step.DIM_STORAGE_BUTTON) {
             Component key = mc.options.keyInventory.getTranslatedKeyMessage();
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next.ender_eyes", key),
                     Component.translatable("toast.bte_mobs.welcome_next.dim_storage_button"),
                     new ItemStack(Items.ENDER_CHEST)));
             startCards(new String[]{"dim_storage_button"}, 10, false);
         } else if (next == WelcomeHandler.Step.ALTAR) {
             Item altar = ForgeRegistries.ITEMS.getValue(new ResourceLocation("summoningrituals", "altar"));
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.altar"),
                     altar != null && altar != Items.AIR ? new ItemStack(altar) : new ItemStack(Items.ENCHANTING_TABLE)));
@@ -371,7 +420,7 @@ public final class WelcomeClient {
             // Dónde está el ascensor (lo marca el haz) y cómo se usa, con las teclas que tenga asignadas
             Component down = mc.options.keyShift.getTranslatedKeyMessage();
             Component up = mc.options.keyJump.getTranslatedKeyMessage();
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.elevator"),
                     new ItemStack(Items.ENDER_PEARL)));
@@ -379,31 +428,31 @@ public final class WelcomeClient {
             startCards(new String[]{"elevator"}, 10, false);
         } else if (next == WelcomeHandler.Step.PORTAL_ROOM) {
             Component down = mc.options.keyShift.getTranslatedKeyMessage();
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next.elevator_down", down),
                     Component.translatable("toast.bte_mobs.welcome_next.portal_room"),
                     new ItemStack(Items.ENDER_PEARL)));
         } else if (next == WelcomeHandler.Step.BACK_TO_PORTAL_ROOM) {
             // Desde el portal Beyond The End: volver a subir a la Portal Room
             Component up = mc.options.keyJump.getTranslatedKeyMessage();
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next.portal_noah", up),
                     Component.translatable("toast.bte_mobs.welcome_next.back_portal_room"),
                     new ItemStack(Items.ENDER_PEARL)));
         } else if (next == WelcomeHandler.Step.PORTAL_NOAH) {
             // Última: hablar con el Noah de la Portal Room
-            mc.getToasts().addToast(QuestReadyToast.withFace(
+            addStepToast(next, QuestReadyToast.withFace(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.portal_noah.desc"),
                     BteNpcType.NPC5));
         } else if (next == WelcomeHandler.Step.BTE_PORTAL) {
             Component down = mc.options.keyShift.getTranslatedKeyMessage();
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next.elevator_down", down),
                     Component.translatable("toast.bte_mobs.welcome_next.bte_portal"),
                     new ItemStack(Items.END_PORTAL_FRAME)));
         } else if (next == WelcomeHandler.Step.QUEST_LOG) {
-            mc.getToasts().addToast(new QuestReadyToast(
+            addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.quest_log"),
                     new ItemStack(Items.WRITABLE_BOOK)));
@@ -889,6 +938,7 @@ public final class WelcomeClient {
             tickReveal(mc);
             tickAltar(mc);
             tickSkip(mc);
+            tickWaypoint(mc);
             if (introTick < 0) return;
             // Se espera a que el mundo esté cargado y no haya pantallas abiertas (carga, menú de pausa...)
             if (mc.player == null || mc.level == null || mc.screen != null || mc.isPaused()) {
@@ -1076,6 +1126,8 @@ public final class WelcomeClient {
         /** behind: bloques que se desplaza el haz detrás de lo marcado (visto desde la cámara); 0 = justo en el sitio. */
         private static void drawBeam(ClientLevel level, PoseStack pose, MultiBufferSource buffers, Vec3 cam, float partialTick,
                                      double x, double y, double z, float[] color, double behind) {
+            beamTarget = new Vec3(x, y, z);
+            beamTargetTime = level.getGameTime();
             // El haz va justo detrás de lo marcado, visto desde la cámara, para que nunca lo tape
             double dx = x - cam.x, dz = z - cam.z;
             double len = Math.sqrt(dx * dx + dz * dz);
@@ -1306,6 +1358,9 @@ public final class WelcomeClient {
             terminalPos = null;
             furnacePos = null;
             NEAREST_CACHE.clear();
+            Minecraft.getInstance().getToasts().clear();
+            XaeroWaypoints.clear();
+            beamTarget = null;
         }
     }
 
@@ -1352,22 +1407,48 @@ public final class WelcomeClient {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        // Título grande (se reduce si no cabe en pantallas estrechas; más pequeño si la tarjeta lleva imagen)
+        // ---- Medidas (en coordenadas "virtuales"; luego todo se escala si no cabe por encima de la barra de vida)
         int[] image = CARD_IMAGES.get(cards[card]);
         float titleScale = Math.min(image != null ? 2.5F : 4.0F, (screenWidth - 24) / (float) Math.max(1, font.width(title)));
         titleScale = Math.max(1.5F, titleScale);
-        int centerY = screenHeight / 2 - 30;
+        float subScale = image != null ? 1.25F : 1.5F;
+        List<FormattedCharSequence> lines = font.split(subtitle, (int) ((screenWidth - 40) / subScale));
+        int titleH = (int) (font.lineHeight * titleScale);
+        int subH = (int) (lines.size() * (font.lineHeight + 1) * subScale);
+        int dw = 0, dh = 0;
+        if (image != null) {
+            float s = Math.min(Math.min(screenWidth - 40, 320) / (float) image[0], 150.0F / image[1]);
+            dw = Math.round(image[0] * s);
+            dh = Math.round(image[1] * s);
+        }
+        int imageBlock = image != null ? dh + 12 : 0;            // imagen + hueco hasta el título
+        int hintsH = 14 + 9 + (active ? 12 : 0);                  // "continuar" (+ "saltar")
+        int contentH = imageBlock + titleH + 8 + subH + hintsH;
+
+        // Zona libre: desde arriba hasta encima de la vida, la armadura, la comida y la barra rápida
+        int bottomReserve = 64;
+        int availTop = 6, availBottom = screenHeight - bottomReserve;
+        int avail = Math.max(40, availBottom - availTop);
+        float fit = Math.min(1.0F, avail / (float) contentH);
+        // Centrado en la zona libre, un poco por encima del centro como antes
+        float startY = availTop + Math.max(0.0F, (avail - contentH * fit) * 0.42F);
+        float cx = screenWidth / 2.0F;
+        poseStack.pushPose();
+        poseStack.translate(cx, startY, 0);
+        poseStack.scale(fit, fit, 1.0F);
+        poseStack.translate(-cx, 0, 0);
+        // A partir de aquí y = 0 es la parte de arriba del bloque
+
+        int y0 = 0;
         if (image != null) {
             // Imagen centrada encima del título, con marco dorado; entra con un pequeño zoom
-            float s = Math.min(Math.min(screenWidth - 40, 320) / (float) image[0], screenHeight * 0.42F / image[1]);
-            int dw = Math.round(image[0] * s), dh = Math.round(image[1] * s);
-            int top = Math.max(8, screenHeight / 2 - dh - 24);
+            int top = y0;
             int left = (screenWidth - dw) / 2;
             float zoom = cardPhase == 1 ? 0.92F + 0.08F * alpha : 1.0F;
             poseStack.pushPose();
-            poseStack.translate(screenWidth / 2.0F, top + dh / 2.0F, 0);
+            poseStack.translate(cx, top + dh / 2.0F, 0);
             poseStack.scale(zoom, zoom, 1.0F);
-            poseStack.translate(-screenWidth / 2.0F, -(top + dh / 2.0F), 0);
+            poseStack.translate(-cx, -(top + dh / 2.0F), 0);
             int frameA = (int) (alpha * 0xB0) << 24;
             GuiComponent.fill(poseStack, left - 4, top - 4, left + dw + 4, top + dh + 4, frameA);
             int border = Math.max(4, (int) (alpha * 255)) << 24 | 0xC9A227;
@@ -1383,20 +1464,19 @@ public final class WelcomeClient {
             GuiComponent.blit(poseStack, left, top, dw, dh, 0, 0, image[0], image[1], image[0], image[1]);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             poseStack.popPose();
-            centerY = top + dh + 12 + (int) (font.lineHeight * titleScale);
         }
+
+        // Título grande
+        int centerY = imageBlock + titleH;
         poseStack.pushPose();
-        poseStack.translate(screenWidth / 2.0F, centerY, 0);
+        poseStack.translate(cx, centerY, 0);
         poseStack.scale(titleScale, titleScale, 1.0F);
         font.drawShadow(poseStack, title, -font.width(title) / 2.0F, -font.lineHeight, 0xFFD700 | a);
         poseStack.popPose();
 
         // Subtítulo partido en líneas para que nunca se salga de la pantalla
-        float subScale = image != null ? 1.25F : 1.5F;
-        int maxWidth = (int) ((screenWidth - 40) / subScale);
-        List<FormattedCharSequence> lines = font.split(subtitle, maxWidth);
         poseStack.pushPose();
-        poseStack.translate(screenWidth / 2.0F, centerY + 8, 0);
+        poseStack.translate(cx, centerY + 8, 0);
         poseStack.scale(subScale, subScale, 1.0F);
         int y = 0;
         for (FormattedCharSequence line : lines) {
@@ -1406,7 +1486,7 @@ public final class WelcomeClient {
         poseStack.popPose();
 
         // Debajo: tecla para continuar (late suavemente cuando ya se puede pulsar) y cómo saltar el tutorial
-        int hintY = centerY + 8 + (int) (y * subScale) + 14;
+        int hintY = centerY + 8 + subH + 14;
         boolean ready = cardPhase == 2 && phaseTick >= MIN_STAY;
         float blink = ready ? 0.6F + 0.4F * (0.5F + 0.5F * Mth.sin((mc.player.tickCount + partialTick) * 0.2F)) : 0.35F;
         int ha = Math.max(4, (int) (alpha * blink * 255)) << 24;
@@ -1417,6 +1497,7 @@ public final class WelcomeClient {
             Component skip = Component.translatable("gui.bte_mobs.welcome.skip_hint", SKIP_KEY.getTranslatedKeyMessage());
             font.drawShadow(poseStack, skip, (screenWidth - font.width(skip)) / 2.0F, hintY + 12, 0xAAAAAA | sa);
         }
+        poseStack.popPose();
         RenderSystem.disableBlend();
     }
 }
