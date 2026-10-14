@@ -95,7 +95,15 @@ public final class WelcomeHandler {
         /** Hablar con el Noah de la Portal Room (NPC5). */
         PORTAL_NOAH(BteNpcType.NPC5),
         /** Volver a subir con el ascensor a la Portal Room (piso 2) después de ver el portal Beyond The End. */
-        BACK_TO_PORTAL_ROOM(null);
+        BACK_TO_PORTAL_ROOM(null),
+        /** Mochila de Backpacked: equiparla en la casilla "Back" de Curios (se salta sola si ya la lleva). */
+        BACKPACK_EQUIP(null),
+        /** Abrir la mochila (botón del inventario del addon btebackpackbutton, o su tecla). */
+        BACKPACK_OPEN(null),
+        /** Abrir "Customize" dentro de la mochila (skins de la mochila). */
+        BACKPACK_SKINS(null),
+        /** Llegar a la Storage Room (antes de abrir el Crafting Terminal); lo detecta el cliente por cercanía. */
+        STORAGE_ROOM(null);
 
         /** NPC del paso, o null si no es hablar con un NPC. */
         public final BteNpcType npc;
@@ -117,9 +125,10 @@ public final class WelcomeHandler {
      * allí con Noah. BTE_PORTAL y BACK_TO_PORTAL_ROOM ya no están en el orden (se podía hablar con Noah antes de bajar al portal).
      */
     public static final Step[] ORDER = {Step.BLACKSMITH, Step.EXPLORER, Step.WARLOCK, Step.OBELISK, Step.DRUID,
-            Step.ENDER_EYES, Step.EE_DIMENSION, Step.EE_EYE, Step.EE_RECIPES, Step.QUEST_LOG, Step.TELEPORT, Step.WAYSTONE, Step.WAYSTONE_RENAME, Step.HOME_ZONE, Step.HOME_RETURN,
-            Step.STORAGE, Step.FURNACE, Step.DIM_STORAGE, Step.DIM_STORAGE_BUTTON, Step.MATRIX, Step.ALTAR, Step.ELEVATOR,
-            Step.PORTAL_ROOM, Step.PORTAL_NOAH};
+            Step.ENDER_EYES, Step.EE_EYE, Step.EE_RECIPES, Step.QUEST_LOG, Step.TELEPORT, Step.WAYSTONE, Step.WAYSTONE_RENAME, Step.HOME_ZONE, Step.HOME_RETURN,
+            Step.STORAGE_ROOM, Step.STORAGE, Step.FURNACE, Step.DIM_STORAGE, Step.DIM_STORAGE_BUTTON, Step.MATRIX,
+            Step.BACKPACK_EQUIP, Step.BACKPACK_OPEN, Step.BACKPACK_SKINS, Step.ALTAR, Step.ELEVATOR,
+            Step.PORTAL_ROOM};
 
     /**
      * Ascensor del Lobby (bloques de ascensor, p. ej. "Orange Elevator"): tres plantas, la de arriba (y≈112), la
@@ -165,7 +174,8 @@ public final class WelcomeHandler {
     public static boolean isClientStep(Step step) {
         return step == Step.ENDER_EYES || step == Step.EE_DIMENSION || step == Step.EE_EYE || step == Step.EE_RECIPES
                 || step == Step.QUEST_LOG || step == Step.DIM_STORAGE_BUTTON || step == Step.ALTAR
-                || step == Step.WAYSTONE_RENAME || step == Step.MATRIX;
+                || step == Step.WAYSTONE_RENAME || step == Step.MATRIX
+                || step == Step.BACKPACK_OPEN || step == Step.BACKPACK_SKINS || step == Step.STORAGE_ROOM;
     }
 
     /** El cliente avisa de que ha abierto la pantalla de un paso (solo cuenta si es el que toca). */
@@ -203,6 +213,11 @@ public final class WelcomeHandler {
         // Los títulos de bienvenida salen una sola vez: hasta que el jugador los pasa (el cliente avisa al acabar).
         // Si sale del mundo a mitad, vuelven a salir. Después, al entrar solo se restauran el haz, el "!" y el objetivo.
         int talked = tag.getInt(TALKED);
+        // Si se han quitado pasos del orden (dimensiones, Noah de la Portal Room) puede que ya lo tenga todo hecho
+        if (talked != 0 && current(talked) == null) {
+            tag.putBoolean(DONE, true);
+            return;
+        }
         boolean intro = talked == 0 && !tag.getBoolean(INTRO);
         BteMobsMod.sendToClient(new WelcomePacket(intro, talked, false), player);
     }
@@ -280,6 +295,8 @@ public final class WelcomeHandler {
                 complete(player, s -> s == Step.BTE_PORTAL);
             } else if (step == Step.BACK_TO_PORTAL_ROOM && inLobby && elevatorFloor(player) == 1) {
                 complete(player, s -> s == Step.BACK_TO_PORTAL_ROOM);
+            } else if (step == Step.BACKPACK_EQUIP || step == Step.BACKPACK_OPEN || step == Step.BACKPACK_SKINS) {
+                tickBackpack(player, tag, step);
             } else if (step == Step.HOME_ZONE && inLobby && pos.x > HOME_ZONE_MIN_X) {
                 // Ya está en su Home Zone
                 complete(player, s -> s == Step.HOME_ZONE);
@@ -299,6 +316,65 @@ public final class WelcomeHandler {
         if (!event.getTo().location().equals(LOBBY_ID)) return;
         if (player.position().distanceToSqr(TP_X, TP_Y, TP_Z) > ARRIVAL_RADIUS_SQR) return;
         complete(player, step -> step == Step.TELEPORT || step == Step.HOME_RETURN);
+    }
+
+    // ------------------------------------------------------------------ Mochila (Backpacked)
+
+    private static final String BACKPACK_GIVEN = "backpack_given";
+    private static final ResourceLocation BACKPACK_ID = new ResourceLocation("backpacked", "backpack");
+    private static java.lang.reflect.Method getBackpackStack;
+    private static boolean backpackLookedUp = false;
+
+    /**
+     * Mochila equipada (Backpacked.getBackpackStack, por reflexión: no hay dependencia del mod).
+     * null si Backpacked no está o su API ha cambiado.
+     */
+    private static net.minecraft.world.item.ItemStack equippedBackpack(ServerPlayer player) {
+        if (!backpackLookedUp) {
+            backpackLookedUp = true;
+            try {
+                if (net.minecraftforge.fml.ModList.get().isLoaded("backpacked")) {
+                    getBackpackStack = Class.forName("com.mrcrayfish.backpacked.Backpacked")
+                            .getMethod("getBackpackStack", Player.class);
+                }
+            } catch (Throwable ignored) {
+                getBackpackStack = null;
+            }
+        }
+        if (getBackpackStack == null) return null;
+        try {
+            Object stack = getBackpackStack.invoke(null, player);
+            return stack instanceof net.minecraft.world.item.ItemStack s ? s : net.minecraft.world.item.ItemStack.EMPTY;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private static boolean hasBackpackItem(ServerPlayer player) {
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (BACKPACK_ID.equals(ForgeRegistries.ITEMS.getKey(player.getInventory().getItem(i).getItem()))) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Pasos de la mochila. Sin Backpacked se dan por hechos. Equiparla cuenta en cuanto la lleva puesta (si ya la
+     * llevaba, el paso se salta solo); si no tiene ninguna mochila, se le da una (una sola vez).
+     */
+    private static void tickBackpack(ServerPlayer player, CompoundTag tag, Step step) {
+        net.minecraft.world.item.ItemStack worn = equippedBackpack(player);
+        if (worn == null) {
+            complete(player, s -> s == step);
+            return;
+        }
+        if (step != Step.BACKPACK_EQUIP) return;
+        if (!worn.isEmpty()) {
+            complete(player, s -> s == Step.BACKPACK_EQUIP);
+        } else if (!tag.getBoolean(BACKPACK_GIVEN) && !hasBackpackItem(player)) {
+            tag.putBoolean(BACKPACK_GIVEN, true);
+            net.minecraft.world.item.Item item = ForgeRegistries.ITEMS.getValue(BACKPACK_ID);
+            if (item != null) player.getInventory().placeItemBackInInventory(new net.minecraft.world.item.ItemStack(item));
+        }
     }
 
     /** Al reaparecer tras morir no cuenta como teletransporte. */

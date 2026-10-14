@@ -54,6 +54,9 @@ public final class WelcomeClient {
     private WelcomeClient() {}
 
     /** Ojo del botón de Ender Eyes GUI (el del inventario), para el aviso final. */
+    /** Icono del botón "Teleport to The Forgotten Realm" (Forgotten Tome Menu), sin el fondo del botón. */
+    private static final ResourceLocation FORGOTTEN_REALM_ICON =
+            new ResourceLocation(BteMobsMod.MODID, "textures/gui/quest_log/forgotten_realm.png");
     private static final ResourceLocation ENDER_EYES_ICON =
             new ResourceLocation(BteMobsMod.MODID, "textures/gui/quest_log/ender_eyes.png");
 
@@ -239,16 +242,21 @@ public final class WelcomeClient {
     /** Paso del Summoning Altar: cuenta al acercarse al altar (entrar en su sala). */
     private static void tickAltar(Minecraft mc) {
         WelcomeHandler.Step target = currentTarget();
-        if (target != WelcomeHandler.Step.ALTAR || revealPending) {
+        boolean altar = target == WelcomeHandler.Step.ALTAR, storageRoom = target == WelcomeHandler.Step.STORAGE_ROOM;
+        if ((!altar && !storageRoom) || revealPending) {
             altarSent = false;
             return;
         }
         if (altarSent || mc.level == null || mc.player == null || mc.player.tickCount % 10 != 0) return;
-        BlockPos altar = findNearestBlockEntity(mc.level, mc.level.getGameTime(), ALTAR_KEY, WelcomeHandler::isAltar);
-        if (altar == null) return;
-        if (mc.player.position().distanceToSqr(altar.getX() + 0.5D, altar.getY(), altar.getZ() + 0.5D) <= ALTAR_ROOM_RADIUS_SQR) {
+        // Storage Room: cuenta al entrar en la sala (cerca del Crafting Terminal)
+        BlockPos pos = altar
+                ? findNearestBlockEntity(mc.level, mc.level.getGameTime(), ALTAR_KEY, WelcomeHandler::isAltar)
+                : findTerminal(mc.level, mc.level.getGameTime());
+        if (pos == null) return;
+        double radiusSqr = altar ? ALTAR_ROOM_RADIUS_SQR : STORAGE_ROOM_RADIUS_SQR;
+        if (mc.player.position().distanceToSqr(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D) <= radiusSqr) {
             altarSent = true;
-            BteMobsMod.sendToServer(new WelcomeStepPacket(WelcomeHandler.Step.ALTAR));
+            BteMobsMod.sendToServer(new WelcomeStepPacket(target));
         }
     }
 
@@ -314,8 +322,48 @@ public final class WelcomeClient {
 
     /** El aviso se queda mientras ese paso siga siendo el actual (y el tutorial esté activo). */
     private static void addStepToast(WelcomeHandler.Step step, QuestReadyToast toast) {
-        Minecraft.getInstance().getToasts().addToast(
-                toast.sticky(() -> active && !revealPending && WelcomeHandler.current(talked) == step));
+        // No va a la esquina de los avisos (taparía el minimapa): se dibuja arriba en el centro (drawStepHint)
+        stepHint = toast;
+        stepHintStep = step;
+        // Entra (con su sonido) cuando ya no quedan títulos por mostrar: primero el texto del centro, luego el aviso
+        stepHintSince = -1L;
+    }
+
+    /** Aviso del paso actual, fijo arriba en el centro de la pantalla hasta que se completa el paso. */
+    private static QuestReadyToast stepHint = null;
+    private static WelcomeHandler.Step stepHintStep = null;
+    private static long stepHintSince = 0L;
+
+    private static void drawStepHint(PoseStack poseStack, int screenWidth) {
+        if (stepHint == null) return;
+        if (!active || revealPending || WelcomeHandler.current(talked) != stepHintStep) {
+            stepHint = null;
+            return;
+        }
+        // Mientras haya títulos (en pantalla o a punto de salir) no se ve; al acabar entra deslizándose
+        if (introTick >= 0) {
+            stepHintSince = -1L;
+            return;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (stepHintSince < 0) {
+            stepHintSince = net.minecraft.Util.getMillis();
+            mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_TOAST_IN, 1.0F, 1.0F));
+        }
+        long time = net.minecraft.Util.getMillis() - stepHintSince;
+        float slide = Mth.clamp(time / 300.0F, 0.0F, 1.0F);
+        int w = stepHint.width(), h = stepHint.height();
+        float x = (screenWidth - w) / 2.0F, y = -h + (h + 4) * slide;
+        // Como hace ToastComponent: solo se mueve la matriz de vista del modelo, que afecta a todo (fondo, texto e
+        // iconos de objeto). Si además se moviera poseStack, el fondo y el texto se desplazarían el doble.
+        PoseStack modelView = RenderSystem.getModelViewStack();
+        modelView.pushPose();
+        modelView.translate(x, y, 0);
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.enableBlend();
+        stepHint.render(poseStack, mc.getToasts(), time);
+        modelView.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
 
     private static void announceNextStep(Minecraft mc) {
@@ -343,7 +391,7 @@ public final class WelcomeClient {
             addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.teleport"),
-                    new ItemStack(Items.ENDER_PEARL)));
+                    FORGOTTEN_REALM_ICON));
             // Explicación breve en el centro de la pantalla
             startCards(TELEPORT_CARDS, 10, false);
         } else if (next == WelcomeHandler.Step.WAYSTONE) {
@@ -369,26 +417,47 @@ public final class WelcomeClient {
                     Component.translatable("toast.bte_mobs.welcome_next.ender_eyes", key),
                     Component.translatable("toast.bte_mobs.welcome_next.matrix"),
                     ENDER_EYES_ICON));
+        } else if (next == WelcomeHandler.Step.BACKPACK_EQUIP) {
+            Component key = mc.options.keyInventory.getTranslatedKeyMessage();
+            addStepToast(next, new QuestReadyToast(
+                    Component.translatable("toast.bte_mobs.welcome_next.ender_eyes", key),
+                    Component.translatable("toast.bte_mobs.welcome_next.backpack_equip"),
+                    backpackIcon()));
+            CARD_ARGS.put("backpack_equip", new Object[]{key});
+            startCards(new String[]{"backpack_equip"}, 10, false);
+        } else if (next == WelcomeHandler.Step.BACKPACK_OPEN) {
+            Component key = mc.options.keyInventory.getTranslatedKeyMessage();
+            addStepToast(next, new QuestReadyToast(
+                    Component.translatable("toast.bte_mobs.welcome_next.ender_eyes", key),
+                    Component.translatable("toast.bte_mobs.welcome_next.backpack_open"),
+                    backpackIcon()));
+            CARD_ARGS.put("backpack_open", new Object[]{backpackKey()});
+            startCards(new String[]{"backpack_open"}, 10, false);
         } else if (next == WelcomeHandler.Step.HOME_ZONE) {
             addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.home_zone"),
-                    new ItemStack(Items.GRASS_BLOCK)));
+                    teleporterIcon()));
             startCards(new String[]{"home_zone"}, 30, false);
         } else if (next == WelcomeHandler.Step.HOME_RETURN) {
             // Ya está en su Home Zone: se le explica qué es y cómo volver
             addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.home_return"),
-                    new ItemStack(Items.ENDER_PEARL)));
+                    FORGOTTEN_REALM_ICON));
             startCards(new String[]{"home_zone_info", "home_return"}, 10, false);
+        } else if (next == WelcomeHandler.Step.STORAGE_ROOM) {
+            // Primero tiene que ir a la sala (lo marcan el haz y el waypoint)
+            addStepToast(next, new QuestReadyToast(
+                    Component.translatable("toast.bte_mobs.welcome_next"),
+                    Component.translatable("toast.bte_mobs.welcome_next.storage_room"),
+                    new ItemStack(Items.CHEST)));
         } else if (next == WelcomeHandler.Step.STORAGE) {
             Item terminal = ForgeRegistries.ITEMS.getValue(WelcomeHandler.CRAFTING_TERMINAL_ID);
             addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.storage"),
                     terminal != null && terminal != Items.AIR ? new ItemStack(terminal) : new ItemStack(Items.CHEST)));
-            startCards(new String[]{"storage"}, 30, false);
         } else if (next == WelcomeHandler.Step.FURNACE) {
             Item furnace = ForgeRegistries.ITEMS.getValue(new ResourceLocation("jumbofurnace", "jumbo_furnace"));
             addStepToast(next, new QuestReadyToast(
@@ -464,15 +533,37 @@ public final class WelcomeClient {
 
     /** Títulos al completar un paso (explican el sitio al que se acaba de llegar), o null. */
     private static String[] completionCards(int justDone) {
+        if ((justDone & WelcomeHandler.Step.STORAGE_ROOM.bit()) != 0) return new String[]{"storage"};
+        if ((justDone & WelcomeHandler.Step.BACKPACK_SKINS.bit()) != 0) return new String[]{"backpack_skins_info"};
         if ((justDone & WelcomeHandler.Step.ALTAR.bit()) != 0) return new String[]{"altar", "altar_apples"};
-        if ((justDone & WelcomeHandler.Step.PORTAL_ROOM.bit()) != 0) return new String[]{"portal_room"};
+        if ((justDone & WelcomeHandler.Step.PORTAL_ROOM.bit()) != 0) return new String[]{"portal_room", "bte_portal", "all_set"};
         if ((justDone & WelcomeHandler.Step.PORTAL_NOAH.bit()) != 0) return new String[]{"bte_portal", "all_set"};
         return null;
     }
 
+    /** Icono del teletransportador de Simple Teleporters (el que lleva a la Home Zone). */
+    private static ItemStack teleporterIcon() {
+        Item item = ForgeRegistries.ITEMS.getValue(WelcomeHandler.HOME_TELEPORTER_ID);
+        return item != null && item != Items.AIR ? new ItemStack(item) : new ItemStack(Items.GRASS_BLOCK);
+    }
+
+    /** Icono de la mochila de Backpacked (o un cofre si no está el mod). */
+    private static ItemStack backpackIcon() {
+        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("backpacked", "backpack"));
+        return item != null && item != Items.AIR ? new ItemStack(item) : new ItemStack(Items.CHEST);
+    }
+
+    /** Tecla de Backpacked para abrir la mochila ("key.backpack"), para nombrarla en el texto. */
+    private static Component backpackKey() {
+        for (net.minecraft.client.KeyMapping key : Minecraft.getInstance().options.keyMappings) {
+            if ("key.backpack".equals(key.getName())) return key.getTranslatedKeyMessage();
+        }
+        return Component.literal("B");
+    }
+
+    /** Icono del Obelisco de Experiencia: el bloque del mod no se ve bien en pequeño, así que una botella de experiencia. */
     private static ItemStack obeliskIcon() {
-        Item item = ForgeRegistries.ITEMS.getValue(WelcomeHandler.OBELISK_ID);
-        return item != null && item != Items.AIR ? new ItemStack(item) : new ItemStack(Items.EXPERIENCE_BOTTLE);
+        return new ItemStack(Items.EXPERIENCE_BOTTLE);
     }
 
     /** Salta el tutorial: se avisa al servidor (lo da por terminado) y se quita todo lo de la bienvenida. */
@@ -512,6 +603,12 @@ public final class WelcomeClient {
     private static final String DIM_STORAGE_SCREEN = "fr.shoqapik.occbutton.client.OccButtonStorageGui";
     private static final int DIM_STORAGE_BTN_X = -24, DIM_STORAGE_BTN_Y = 82, DIM_STORAGE_BTN_SIZE = 20;
 
+    /** Pantallas de Backpacked, de Curios y botón de la mochila del addon btebackpackbutton (por nombre). */
+    private static final String BACKPACK_SCREEN = "com.mrcrayfish.backpacked.client.gui.screen.inventory.BackpackScreen";
+    private static final String BACKPACK_CUSTOMISE_SCREEN = "com.mrcrayfish.backpacked.client.gui.screen.CustomiseBackpackScreen";
+    private static final String CURIOS_SCREEN = "top.theillusivec4.curios.client.gui.CuriosScreen";
+    private static final String BACKPACK_BUTTON = "com.arcanealloy.btebackpackbutton.client.BackpackInventoryButton";
+
     /** Botón "Teleport to The Forgotten Realm" de Forgotten Tome Menu (por reflexión: no hay dependencia del mod). */
     private static java.lang.reflect.Field tomeButtonField;
     private static boolean tomeButtonLookedUp = false;
@@ -536,6 +633,18 @@ public final class WelcomeClient {
     // ------------------------------------------------------------------ Menú de Ojos de Ender (Ender Eyes GUI, por reflexión)
 
     /** Botones de los menús de recetas del menú de Ojos de Ender. */
+    /** Los 4 menús de recetas en el orden de la fila de abajo: clave del texto y botón que lo abre. */
+    private static final String[] EE_RECIPE_MENUS = {"ee_recipes_nature", "ee_recipes_enchanting", "ee_recipes_blacksmith", "ee_recipes_potions"};
+    private static final String[] EE_RECIPE_MENU_BUTTONS = {"NatureButton", "EnchantmentBookButton", "BlacksmithButton", "PotionButton"};
+    /** Menús de recetas que ya ha abierto en el paso de las recetas (hay que entrar en los 4). */
+    private static final java.util.Set<String> EE_RECIPES_SEEN = new java.util.HashSet<>();
+
+    /** Siguiente menú de recetas que le falta por abrir (índice), o -1 si ya los ha visto todos. */
+    private static int nextRecipeMenu() {
+        for (int i = 0; i < EE_RECIPE_MENUS.length; i++) if (!EE_RECIPES_SEEN.contains(EE_RECIPE_MENUS[i])) return i;
+        return -1;
+    }
+
     private static final java.util.Set<String> EE_RECIPE_BUTTONS = java.util.Set.of(
             "NatureButton", "EnchantmentBookButton", "BlacksmithButton", "PotionButton");
     private static final String EE_MATRIX_SCREEN = "eu.asangarin.endereyesgui.client.screen.MatrixStorageScreen";
@@ -582,7 +691,7 @@ public final class WelcomeClient {
             case DRUID -> new float[]{0.4F, 1.0F, 0.45F};        // Oriana: verde
             case OBELISK -> new float[]{0.5F, 1.0F, 0.3F};       // Obelisco: verde experiencia
             case WAYSTONE, WAYSTONE_RENAME -> new float[]{0.9F, 0.5F, 1.0F}; // Waystone: rosa de sus runas
-            case STORAGE -> new float[]{1.0F, 0.8F, 0.35F};      // Crafting Terminal: dorado
+            case STORAGE, STORAGE_ROOM -> new float[]{1.0F, 0.8F, 0.35F}; // Storage Room / Crafting Terminal: dorado
             case FURNACE -> new float[]{1.0F, 0.45F, 0.15F};     // Jumbo Furnace: fuego
             case DIM_STORAGE -> new float[]{0.55F, 0.35F, 1.0F}; // Dimensional Storage: violeta
             case ALTAR -> new float[]{1.0F, 0.25F, 0.2F};        // Summoning Altar: rojo
@@ -605,7 +714,7 @@ public final class WelcomeClient {
 
     private static boolean isInGuiStep(WelcomeHandler.Step step) {
         return step == WelcomeHandler.Step.EE_DIMENSION || step == WelcomeHandler.Step.EE_EYE
-                || step == WelcomeHandler.Step.EE_RECIPES;
+                || step == WelcomeHandler.Step.EE_RECIPES || step == WelcomeHandler.Step.BACKPACK_SKINS;
     }
 
     /** ¿Hay un título en pantalla (apareciendo, esperando o desapareciendo)? */
@@ -910,6 +1019,8 @@ public final class WelcomeClient {
     private static final ResourceLocation ALTAR_KEY = new ResourceLocation("summoningrituals", "altar");
     /** Distancia al altar a la que se considera que ha entrado en su sala. */
     private static final double ALTAR_ROOM_RADIUS_SQR = 6.0D * 6.0D;
+    /** Distancia al Crafting Terminal a la que se considera que ha entrado en la Storage Room. */
+    private static final double STORAGE_ROOM_RADIUS_SQR = 8.0D * 8.0D;
     private static boolean altarSent = false;
 
     private static boolean isBlock(ClientLevel level, BlockPos pos, ResourceLocation id) {
@@ -1068,7 +1179,7 @@ public final class WelcomeClient {
                     drawBeam(level, pose, buffers, cam, partialTick, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, beamColor(target));
                     drawn = true;
                 }
-            } else if (target == WelcomeHandler.Step.STORAGE) {
+            } else if (target == WelcomeHandler.Step.STORAGE || target == WelcomeHandler.Step.STORAGE_ROOM) {
                 BlockPos pos = findTerminal(level, level.getGameTime());
                 if (pos != null) {
                     drawBeam(level, pose, buffers, cam, partialTick, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, beamColor(target));
@@ -1158,12 +1269,19 @@ public final class WelcomeClient {
                     Object eye = inspectedEyeObject(screen);
                     yield eye != null && eye.getClass().getSimpleName().equals("EnderEye");
                 }
-                case EE_RECIPES -> isEeRecipesScreen(screen);
+                case EE_RECIPES -> {
+                    String menu = isEeRecipesScreen(screen) ? eeRecipesBanner(screen) : null;
+                    if (menu != null) EE_RECIPES_SEEN.add(menu);
+                    yield menu != null && nextRecipeMenu() < 0;
+                }
                 case MATRIX -> EE_MATRIX_SCREEN.equals(screen.getClass().getName());
                 // Menú de ajustes de la waystone (cambiar el nombre): mano vacía + Shift + clic derecho
                 case WAYSTONE_RENAME -> screen.getClass().getName().startsWith("net.blay09.mods.waystones")
                         && screen.getClass().getSimpleName().contains("Settings");
                 case QUEST_LOG -> screen instanceof QuestLogScreen;
+                // La mochila (desde el botón del inventario o con su tecla) y su pantalla "Customize"
+                case BACKPACK_OPEN -> BACKPACK_SCREEN.equals(screen.getClass().getName());
+                case BACKPACK_SKINS -> BACKPACK_CUSTOMISE_SCREEN.equals(screen.getClass().getName());
                 // Solo desde el botón del inventario (con clic derecho en el bloque se abre la misma pantalla)
                 case DIM_STORAGE_BUTTON -> DIM_STORAGE_SCREEN.equals(screen.getClass().getName())
                         && event.getCurrentScreen() instanceof InventoryScreen;
@@ -1183,29 +1301,44 @@ public final class WelcomeClient {
             Screen screen = event.getScreen();
             String name = screen.getClass().getName();
             String banner = null, action = null;
+            /** Menú de Ojos de Ender: bloque que lleva la acción (0 dimensiones, 1 ojos, 2 recetas); -1 = no es ese menú. */
+            int eeBlock = -1;
             java.util.function.Predicate<AbstractWidget> highlightWidget = null;
             int w = screen.width, h = screen.height;
-            if (ENDER_EYES_SCREEN.equals(name)) {
+            boolean recipesDone = EE_RECIPES_SEEN.size() >= EE_RECIPE_MENUS.length
+                    && (target == WelcomeHandler.Step.EE_RECIPES || target == WelcomeHandler.Step.QUEST_LOG);
+            if (ENDER_EYES_SCREEN.equals(name) && recipesDone) {
+                // Ya ha visto los 4 menús de recetas: solo queda cerrar el menú
+                banner = "ee_done";
+                action = "close";
+            } else if (ENDER_EYES_SCREEN.equals(name)) {
                 switch (target) {
-                    case ENDER_EYES, EE_DIMENSION -> {
+                    case EE_DIMENSION -> {
                         banner = "ee_menu";
+                        eeBlock = 0;
                         action = "ee_dimension";
                         // Botón de la dimensión del Twilight Forest (fila de arriba, segunda posición)
                         highlightWidget = wd -> wd.x == w / 2 + (13 * -4 - 1) - 13 && wd.y == h / 2 + 13 * -8 - 13;
                     }
-                    case EE_EYE -> {
+                    case ENDER_EYES, EE_EYE -> {
                         banner = "ee_menu";
+                        eeBlock = 1;
                         action = "ee_eye";
                         AbstractWidget first = firstEye(screen, h / 2 + 13 * -8 - 13);
                         highlightWidget = wd -> wd == first;
                     }
                     case EE_RECIPES -> {
                         banner = "ee_menu";
+                        eeBlock = 2;
                         action = "ee_recipes";
-                        highlightWidget = wd -> EE_RECIPE_BUTTONS.contains(wd.getClass().getSimpleName());
+                        int next = nextRecipeMenu();
+                        String nextButton = next >= 0 ? EE_RECIPE_MENU_BUTTONS[next] : null;
+                        highlightWidget = wd -> wd.getClass().getSimpleName().equals(nextButton);
                     }
                     case MATRIX -> {
+                        // Solo su propio texto, junto al botón del Matrix Storage
                         banner = "matrix_menu";
+                        eeBlock = 3;
                         action = "matrix";
                         highlightWidget = wd -> wd.getClass().getSimpleName().equals("MatrixStorageButton");
                     }
@@ -1220,11 +1353,33 @@ public final class WelcomeClient {
                     action = "ee_back_recipes";
                 }
             } else if (EE_MATRIX_SCREEN.equals(name) && target == WelcomeHandler.Step.MATRIX) {
-                banner = "matrix_info";
-                action = "close";
+                // El panel morado ocupa el centro (300 de ancho como mucho): el texto va en el hueco de la izquierda
+                drawInLeftGap(event.getPoseStack(), screen, Math.min(300, w - 32), "matrix_info", "close");
+                return;
             } else if (isEeRecipesScreen(screen) && target == WelcomeHandler.Step.EE_RECIPES) {
+                // Cada menú de recetas tiene su explicación, dentro del panel morado de la derecha
+                String key = eeRecipesBanner(screen);
+                if (key != null) {
+                    drawInRecipePanel(event.getPoseStack(), screen, key, nextRecipeMenu() < 0 ? "close" : "ee_recipes_back_next");
+                    return;
+                }
                 banner = "ee_recipes_info";
                 action = "close";
+            } else if (target == WelcomeHandler.Step.BACKPACK_EQUIP && screen instanceof InventoryScreen) {
+                banner = "backpack_equip";
+                action = "backpack_curios";
+            } else if (target == WelcomeHandler.Step.BACKPACK_EQUIP && CURIOS_SCREEN.equals(name)) {
+                banner = "backpack_equip";
+                action = "backpack_back_slot";
+            } else if (target == WelcomeHandler.Step.BACKPACK_OPEN && screen instanceof InventoryScreen) {
+                banner = "backpack_open";
+                action = "backpack_button";
+            } else if (target == WelcomeHandler.Step.BACKPACK_SKINS && BACKPACK_SCREEN.equals(name)) {
+                banner = "backpack_menu";
+                action = "backpack_customise";
+                // El primer botón pequeño de arriba es "Customize" (el segundo, las opciones)
+                AbstractWidget customise = firstWidget(screen, "MiniButton");
+                highlightWidget = wd -> wd == customise;
             } else if (target == WelcomeHandler.Step.QUEST_LOG && (screen instanceof QuestLogScreen
                     || screen instanceof fr.shoqapik.btemobs.client.gui.QuestScreen)) {
                 banner = "quest_log_info";
@@ -1233,15 +1388,41 @@ public final class WelcomeClient {
             if (banner == null) return;
             if (highlightWidget != null) {
                 for (GuiEventListener child : screen.children()) {
-                    if (child instanceof AbstractWidget widget && widget.visible && highlightWidget.test(widget)) {
+                    if (child instanceof AbstractWidget widget && widget.visible && highlightWidget.test(widget)
+                            && !hitsTooltip(screen, event.getMouseX(), event.getMouseY(), widget.x, widget.y, widget.getWidth(), widget.getHeight())) {
                         highlight(event.getPoseStack(), event.getPartialTick(), widget.x, widget.y, widget.getWidth(), widget.getHeight());
                     }
                 }
             }
+            if (eeBlock == 3) {
+                drawNextToWidget(event.getPoseStack(), screen, firstWidget(screen, "MatrixStorageButton"), banner, action);
+                return;
+            }
+            if (eeBlock >= 0) {
+                drawEeMenuGuide(event.getPoseStack(), screen, eeBlock, action);
+                return;
+            }
             // En los menús de recetas y en los de quests va abajo a la derecha (a la izquierda tapa sus listas)
             boolean questScreen = screen instanceof QuestLogScreen || screen instanceof fr.shoqapik.btemobs.client.gui.QuestScreen;
-            boolean bottomRight = isEeRecipesScreen(screen) || questScreen;
-            drawBanner(event.getPoseStack(), w, h, banner, action, bottomRight, questScreen ? 180 : 220);
+            // La lista de NPCs (botón de quests del inventario) tiene sitio libre a la izquierda; la de quests de un NPC no
+            boolean bottomRight = isEeRecipesScreen(screen) || screen instanceof fr.shoqapik.btemobs.client.gui.QuestScreen;
+            drawBanner(event.getPoseStack(), screen, banner, action, bottomRight, questScreen ? 180 : 220);
+        }
+
+        /** ¿Está el ratón encima de algún botón (y por tanto puede verse su tooltip)? */
+        private static boolean mouseOverWidget(Screen screen, double mouseX, double mouseY) {
+            for (GuiEventListener child : screen.children()) {
+                if (child instanceof AbstractWidget wd && wd.visible && wd.isMouseOver(mouseX, mouseY)) return true;
+            }
+            return false;
+        }
+
+        /** Primer widget de la pantalla con ese nombre de clase (en el orden en que se añadieron). */
+        private static AbstractWidget firstWidget(Screen screen, String simpleName) {
+            for (GuiEventListener child : screen.children()) {
+                if (child instanceof AbstractWidget wd && wd.getClass().getSimpleName().equals(simpleName)) return wd;
+            }
+            return null;
         }
 
         /** Primer Ojo de Ender del menú (el de más arriba a la izquierda, debajo de la fila de dimensiones). */
@@ -1255,43 +1436,249 @@ public final class WelcomeClient {
             return best;
         }
 
-        /** Panel de guía a la izquierda: título, explicación y la acción que toca. */
-        private static void drawBanner(PoseStack pose, int screenWidth, int screenHeight, String banner, String action,
+        /**
+         * Panel de guía: título, explicación y la acción que toca. Se coloca donde no tape ningún botón: primero en el
+         * sitio preferido (a la izquierda, o abajo a la derecha) y si choca, en las otras esquinas y laterales.
+         */
+        private static void drawBanner(PoseStack pose, Screen screen, String banner, String action,
                                        boolean bottomRight, int maxWidth) {
-            Minecraft mc = Minecraft.getInstance();
-            Font font = mc.font;
+            int screenWidth = screen.width, screenHeight = screen.height;
             int room = bottomRight ? screenWidth / 2 - 40 : screenWidth / 2 - 150;
             float scale = room >= 160 ? 1.0F : 0.75F;
             int width = (int) (Math.max(96, Math.min(maxWidth, room)) / scale);
-            List<FormattedCharSequence> text = font.split(Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".text"), width);
-            List<FormattedCharSequence> todo = font.split(Component.translatable("gui.bte_mobs.welcome.banner.action." + action)
-                    .withStyle(net.minecraft.ChatFormatting.YELLOW), width);
             Component title = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".title");
-            int lines = 1 + text.size() + todo.size();
-            int height = lines * 10 + 10;
-            pose.pushPose();
-            if (bottomRight) {
-                pose.translate(screenWidth - (width + 4) * scale - 12, screenHeight - height * scale - 14, 500);
-            } else {
-                pose.translate(6, Math.max(6, (screenHeight - height * scale) / 2), 500);
+            Component text = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".text");
+            Component todo = action == null ? null : Component.translatable("gui.bte_mobs.welcome.banner.action." + action);
+            int height = panelHeight(width, text, todo);
+            int pw = (int) ((width + 8) * scale), ph = (int) ((height + 4) * scale);
+            int[][] spots = {
+                    bottomRight ? new int[]{screenWidth - pw - 8, screenHeight - ph - 10} : new int[]{6, (screenHeight - ph) / 2},
+                    {6, (screenHeight - ph) / 2},
+                    {6, 6},
+                    {6, screenHeight - ph - 6},
+                    {screenWidth - pw - 6, (screenHeight - ph) / 2},
+                    {screenWidth - pw - 6, 6},
+                    {screenWidth - pw - 6, screenHeight - ph - 6}};
+            int[] best = spots[0];
+            for (int[] spot : spots) {
+                if (!coversWidget(screen, spot[0], spot[1], pw, ph)) {
+                    best = spot;
+                    break;
+                }
             }
+            drawPanel(pose, best[0] + (int) (4 * scale), Math.max(6, best[1] + (int) (4 * scale)), width, scale, title, text, todo, 0, 0);
+        }
+
+        /** Alto (sin escalar) de un panel de ese ancho. */
+        private static int panelHeight(int width, Component text, Component todo) {
+            Font font = Minecraft.getInstance().font;
+            int lines = 1 + font.split(text, width).size() + (todo == null ? 0 : font.split(todo, width).size());
+            return lines * 10 + 10;
+        }
+
+        /**
+         * Dibuja un panel en (x, y) ya escalado. arrow: 0 sin flecha, 1 flecha a la derecha (apunta a lo que hay a su
+         * derecha), -1 a la izquierda; arrowY es la altura de la flecha en pantalla.
+         */
+        private static void drawPanel(PoseStack pose, int x, int y, int width, float scale, Component title, Component text,
+                                      Component todo, int arrow, int arrowY) {
+            Font font = Minecraft.getInstance().font;
+            List<FormattedCharSequence> lines = font.split(text, width);
+            List<FormattedCharSequence> todoLines = todo == null ? List.of()
+                    : font.split(todo.copy().withStyle(net.minecraft.ChatFormatting.YELLOW), width);
+            int height = panelHeight(width, text, todo);
+            pose.pushPose();
+            pose.translate(x, y, 500);
             pose.scale(scale, scale, 1.0F);
             GuiComponent.fill(pose, -4, -4, width + 4, height, 0xD0100010);
             GuiComponent.fill(pose, -4, -4, width + 4, -3, 0xFFFFD700);
             GuiComponent.fill(pose, -4, height - 1, width + 4, height, 0xFFFFD700);
-            int y = 0;
-            font.drawShadow(pose, title, 0, y, 0xFFD700);
-            y += 12;
-            for (FormattedCharSequence line : text) {
-                font.drawShadow(pose, line, 0, y, 0xFFFFFF);
-                y += 10;
+            int ty = 0;
+            font.drawShadow(pose, title, 0, ty, 0xFFD700);
+            ty += 12;
+            for (FormattedCharSequence line : lines) {
+                font.drawShadow(pose, line, 0, ty, 0xFFFFFF);
+                ty += 10;
             }
-            y += 2;
-            for (FormattedCharSequence line : todo) {
-                font.drawShadow(pose, line, 0, y, 0xFFFF55);
-                y += 10;
+            ty += 2;
+            for (FormattedCharSequence line : todoLines) {
+                font.drawShadow(pose, line, 0, ty, 0xFFFF55);
+                ty += 10;
             }
             pose.popPose();
+            if (arrow != 0) {
+                // Flecha que sale del panel hacia los botones que explica
+                Minecraft mc = Minecraft.getInstance();
+                float time = (mc.level != null ? mc.level.getGameTime() : 0) + mc.getFrameTime();
+                int bob = (int) (2 * (0.5F + 0.5F * Mth.sin(time * 0.25F)));
+                pose.pushPose();
+                pose.translate(0, 0, 500);
+                float ax = arrow > 0 ? x + (width + 4) * scale + 2 + bob : x - 4 * scale - 9 - bob;
+                font.drawShadow(pose, arrow > 0 ? "▶" : "◀", ax, arrowY - 4, 0xFFD700);
+                pose.popPose();
+            }
+        }
+
+        /** Texto del tutorial según el menú de recetas (null = el genérico). */
+        private static String eeRecipesBanner(Screen screen) {
+            String simple = screen.getClass().getSimpleName();
+            switch (simple) {
+                case "NatureRecipesScreen", "ExplorerDruidRecipesScreen" -> { return "ee_recipes_nature"; }
+                case "BlacksmithRecipesScreen" -> { return "ee_recipes_blacksmith"; }
+                case "EnchantmentRecipesScreen" -> {
+                    // La misma pantalla sirve para encantamientos y para las pociones del Brujo
+                    try {
+                        java.lang.reflect.Field f = screen.getClass().getDeclaredField("openPotions");
+                        f.setAccessible(true);
+                        return f.getBoolean(screen) ? "ee_recipes_potions" : "ee_recipes_enchanting";
+                    } catch (Throwable t) {
+                        return "ee_recipes_enchanting";
+                    }
+                }
+                default -> { return null; }
+            }
+        }
+
+        /**
+         * Panel pequeño centrado en la parte de abajo del panel morado de la derecha de los menús de recetas
+         * (en todos: x = ancho/2 + 8, ancho = ancho - ancho/2 - 24, de y = 22 hasta 28 px antes del borde de abajo).
+         */
+        private static void drawInRecipePanel(PoseStack pose, Screen screen, String banner, String action) {
+            int w = screen.width, h = screen.height;
+            int listW = (int) (w * 0.5F);
+            int px = listW + 8, pw = w - listW - 24, bottom = h - 28;
+            float scale = pw >= 260 ? 0.75F : 0.5F;
+            int panelW = Math.min(pw - 16, 300);
+            int width = (int) (panelW / scale) - 8;
+            Component title = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".title");
+            Component text = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".text");
+            Component todo = Component.translatable("gui.bte_mobs.welcome.banner.action." + action);
+            int ph = (int) ((panelHeight(width, text, todo) + 4) * scale);
+            int x = px + (pw - (int) ((width + 8) * scale)) / 2 + (int) (4 * scale);
+            int y = bottom - ph - 6 + (int) (4 * scale);
+            drawPanel(pose, x, y, width, scale, title, text, todo, 0, 0);
+        }
+
+        /**
+         * Panel en el hueco libre a la izquierda de un panel centrado de ese ancho, reducido para que quepa.
+         * Si no hay hueco suficiente, va abajo a la derecha como el resto.
+         */
+        private static void drawInLeftGap(PoseStack pose, Screen screen, int centerWidth, String banner, String action) {
+            int w = screen.width, h = screen.height;
+            int room = (w - centerWidth) / 2 - 12;
+            if (room < 70) {
+                drawBanner(pose, screen, banner, action, true, 180);
+                return;
+            }
+            float scale = room >= 150 ? 1.0F : (room >= 105 ? 0.75F : 0.5F);
+            int width = (int) (Math.min(room, 180) / scale) - 8;
+            Component title = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".title");
+            Component text = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".text");
+            Component todo = Component.translatable("gui.bte_mobs.welcome.banner.action." + action);
+            int ph = (int) ((panelHeight(width, text, todo) + 4) * scale);
+            int x = 6 + (int) (4 * scale);
+            int y = Math.max(6, (h - ph) / 2) + (int) (4 * scale);
+            drawPanel(pose, x, y, width, scale, title, text, todo, 0, 0);
+        }
+
+        /** ¿Taparía ese rectángulo algún botón visible de la pantalla? */
+        private static boolean coversWidget(Screen screen, int x, int y, int w, int h) {
+            for (GuiEventListener child : screen.children()) {
+                if (!(child instanceof AbstractWidget wd) || !wd.visible) continue;
+                if (x < wd.x + wd.getWidth() + 2 && x + w > wd.x - 2 && y < wd.y + wd.getHeight() + 2 && y + h > wd.y - 2) return true;
+            }
+            return false;
+        }
+
+        /**
+         * Menú de Ojos de Ender: tres bloques pequeños, cada uno junto a la fila de botones que explica (dimensiones
+         * arriba a la izquierda, Ojos de Ender a la derecha, recetas abajo a la izquierda), con una flecha hacia ella.
+         * La acción que toca va en su bloque. Ninguno tapa botones.
+         */
+        private static void drawEeMenuGuide(PoseStack pose, Screen screen, int actionBlock, String action) {
+            int w = screen.width, h = screen.height;
+            int dimRowY = h / 2 + 13 * -8 - 13;
+            int[] dims = null, eyes = null, recipes = null; // minX, minY, maxX, maxY
+            int eyeH = 26;
+            for (GuiEventListener child : screen.children()) {
+                if (!(child instanceof AbstractWidget wd) || !wd.visible) continue;
+                String simple = wd.getClass().getSimpleName();
+                int[] box = {wd.x, wd.y, wd.x + wd.getWidth(), wd.y + wd.getHeight()};
+                if (simple.equals("EnderEyeButton") && wd.y > dimRowY) {
+                    eyes = union(eyes, box);
+                    eyeH = wd.getHeight();
+                }
+                else if (EE_RECIPE_BUTTONS.contains(simple) || simple.equals("MatrixStorageButton")) recipes = union(recipes, box);
+                else if (wd.y == dimRowY) dims = union(dims, box);
+            }
+            int leftLimit = Integer.MAX_VALUE;
+            for (int[] g : new int[][]{dims, eyes, recipes}) if (g != null) leftLimit = Math.min(leftLimit, g[0]);
+            if (leftLimit == Integer.MAX_VALUE) leftLimit = w / 2 - 130;
+            String[] keys = {"ee_dims", "ee_eyes", "ee_recipes_row"};
+            int[][] groups = {dims, eyes, recipes};
+            for (int i = 0; i < 3; i++) {
+                int[] g = groups[i];
+                // Solo se explica la fila del paso actual (Ojos de Ender, y después las recetas)
+                if (g == null || i != actionBlock) continue;
+                boolean right = false;
+                int left = right ? g[2] + 16 : 6;
+                int room = right ? w - 6 - left : leftLimit - 16 - left;
+                if (room < 50) continue;
+                float scale = room >= 150 ? 1.0F : 0.75F;
+                int width = (int) (Math.min(room, 170) / scale) - 8;
+                Component title = Component.translatable("gui.bte_mobs.welcome.banner." + keys[i] + ".title");
+                Component text = Component.translatable("gui.bte_mobs.welcome.banner." + keys[i] + ".text");
+                Component todo = i == actionBlock && action != null
+                        ? ("ee_recipes".equals(action)
+                            ? Component.translatable("gui.bte_mobs.welcome.banner.action.ee_recipes_progress", EE_RECIPES_SEEN.size(), EE_RECIPE_MENUS.length)
+                            : Component.translatable("gui.bte_mobs.welcome.banner.action." + action)) : null;
+                int ph = (int) ((panelHeight(width, text, todo) + 4) * scale);
+                // Los Ojos de Ender: junto a la primera fila (la del ojo resaltado)
+                int centerY = i == 1 ? g[1] + eyeH / 2 : (g[1] + g[3]) / 2;
+                int top = Mth.clamp(centerY - ph / 2, 6, Math.max(6, h - ph - 6));
+                int x = right ? w - 6 - (int) ((width + 4) * scale) : left + (int) (4 * scale);
+                drawPanel(pose, x, top + (int) (4 * scale), width, scale, title, text, todo, right ? -1 : 1, centerY);
+            }
+        }
+
+        /** Panel pequeño a la derecha de un botón (o a la izquierda si no cabe), con una flecha hacia él. */
+        private static void drawNextToWidget(PoseStack pose, Screen screen, AbstractWidget target, String banner, String action) {
+            if (target == null) {
+                drawBanner(pose, screen, banner, action, false, 200);
+                return;
+            }
+            int w = screen.width, h = screen.height;
+            Component title = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".title");
+            Component text = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".text");
+            Component todo = Component.translatable("gui.bte_mobs.welcome.banner.action." + action);
+            int roomRight = w - 6 - (target.x + target.getWidth() + 16);
+            int roomLeft = target.x - 16 - 6;
+            boolean right = roomRight >= roomLeft;
+            int room = right ? roomRight : roomLeft;
+            float scale = room >= 150 ? 1.0F : 0.75F;
+            int width = (int) (Math.min(Math.max(room, 60), 170) / scale) - 8;
+            int ph = (int) ((panelHeight(width, text, todo) + 4) * scale);
+            int centerY = target.y + target.getHeight() / 2;
+            int top = Mth.clamp(centerY - ph / 2, 6, Math.max(6, h - ph - 6));
+            int x = right ? target.x + target.getWidth() + 16 + (int) (4 * scale)
+                    : target.x - 16 - (int) ((width + 4) * scale);
+            drawPanel(pose, x, top + (int) (4 * scale), width, scale, title, text, todo, right ? -1 : 1, centerY);
+        }
+
+        private static int[] union(int[] a, int[] b) {
+            if (a == null) return b;
+            return new int[]{Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])};
+        }
+
+        /**
+         * ¿Taparía el marco de ese botón el tooltip que se está viendo? El tooltip sale junto al ratón (a su derecha),
+         * así que solo se ocultan los marcos que caen en esa zona; el resto sigue visible.
+         */
+        private static boolean hitsTooltip(Screen screen, double mouseX, double mouseY, int x, int y, int w, int h) {
+            if (!mouseOverWidget(screen, mouseX, mouseY)) return false;
+            double zx0 = mouseX + 4, zx1 = mouseX + 230, zy0 = mouseY - 26, zy1 = mouseY + 46;
+            // Marco (2 px) y flecha (a la izquierda, unos 12 px)
+            return x - 14 < zx1 && x + w + 2 > zx0 && y - 2 < zy1 && y + h + 2 > zy0;
         }
 
         /** Marco dorado que late alrededor del botón del inventario que hay que pulsar. */
@@ -1300,11 +1687,14 @@ public final class WelcomeClient {
             WelcomeHandler.Step target = currentTarget();
             if (target == null || revealPending) return;
             boolean teleportStep = target == WelcomeHandler.Step.TELEPORT || target == WelcomeHandler.Step.HOME_RETURN;
-            if (!WelcomeHandler.isClientStep(target) && !teleportStep) return;
+            if (!WelcomeHandler.isClientStep(target) && !teleportStep && target != WelcomeHandler.Step.BACKPACK_EQUIP) return;
             if (!(event.getScreen() instanceof InventoryScreen screen)) return;
             Object tomeButton = teleportStep ? forgottenTomeButton() : null;
             if (target == WelcomeHandler.Step.DIM_STORAGE_BUTTON) {
                 // El botón del Dimensional Storage lo dibuja su mod encima del inventario (no es un widget)
+                int bx = screen.getGuiLeft() + DIM_STORAGE_BTN_X, by = screen.getGuiTop() + DIM_STORAGE_BTN_Y;
+                double mx = event.getMouseX(), my = event.getMouseY();
+                if (mx >= bx && mx < bx + DIM_STORAGE_BTN_SIZE && my >= by && my < by + DIM_STORAGE_BTN_SIZE) return;
                 highlight(event.getPoseStack(), event.getPartialTick(), screen.getGuiLeft() + DIM_STORAGE_BTN_X,
                         screen.getGuiTop() + DIM_STORAGE_BTN_Y, DIM_STORAGE_BTN_SIZE, DIM_STORAGE_BTN_SIZE);
                 return;
@@ -1315,10 +1705,14 @@ public final class WelcomeClient {
                 boolean isTarget = switch (target) {
                     case ENDER_EYES, MATRIX -> name.equals(ENDER_EYES_BUTTON);
                     case QUEST_LOG -> name.startsWith(QuestLogButton.class.getName());
+                    // Botón de Curios (junto al muñeco) y botón de la mochila del addon
+                    case BACKPACK_EQUIP -> widget.getClass().getSimpleName().equals("CuriosButton");
+                    case BACKPACK_OPEN -> name.startsWith(BACKPACK_BUTTON);
                     case TELEPORT, HOME_RETURN -> tomeButton != null && widget == tomeButton;
                     default -> false;
                 };
                 if (!isTarget) continue;
+                if (hitsTooltip(screen, event.getMouseX(), event.getMouseY(), widget.x, widget.y, widget.getWidth(), widget.getHeight())) break;
                 highlight(event.getPoseStack(), event.getPartialTick(), widget.x, widget.y, widget.getWidth(), widget.getHeight());
                 break;
             }
@@ -1358,6 +1752,8 @@ public final class WelcomeClient {
             terminalPos = null;
             furnacePos = null;
             NEAREST_CACHE.clear();
+            EE_RECIPES_SEEN.clear();
+            stepHint = null;
             Minecraft.getInstance().getToasts().clear();
             XaeroWaypoints.clear();
             beamTarget = null;
@@ -1384,9 +1780,10 @@ public final class WelcomeClient {
     // ------------------------------------------------------------------ Títulos
 
     private static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
-        if (introTick < 0) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.options.hideGui || mc.player == null || mc.screen != null) return;
+        drawStepHint(poseStack, screenWidth);
+        if (introTick < 0) return;
         if (cardPhase == 0 || cardIndex >= cards.length) return;
         float pt = phaseTick + (mc.isPaused() ? 0 : partialTick);
         float alpha = switch (cardPhase) {
@@ -1409,15 +1806,17 @@ public final class WelcomeClient {
 
         // ---- Medidas (en coordenadas "virtuales"; luego todo se escala si no cabe por encima de la barra de vida)
         int[] image = CARD_IMAGES.get(cards[card]);
-        float titleScale = Math.min(image != null ? 2.5F : 4.0F, (screenWidth - 24) / (float) Math.max(1, font.width(title)));
-        titleScale = Math.max(1.5F, titleScale);
-        float subScale = image != null ? 1.25F : 1.5F;
-        List<FormattedCharSequence> lines = font.split(subtitle, (int) ((screenWidth - 40) / subScale));
+        // Columna central: los lados quedan libres (minimapa, efectos, avisos de la esquina...)
+        int colW = Math.min(screenWidth - 40, Math.max(200, (int) (screenWidth * 0.6F)));
+        float titleScale = Math.min(image != null ? 2.0F : 3.0F, colW / (float) Math.max(1, font.width(title)));
+        titleScale = Math.max(1.0F, titleScale);
+        float subScale = image != null ? 1.0F : 1.25F;
+        List<FormattedCharSequence> lines = font.split(subtitle, (int) (colW / subScale));
         int titleH = (int) (font.lineHeight * titleScale);
         int subH = (int) (lines.size() * (font.lineHeight + 1) * subScale);
         int dw = 0, dh = 0;
         if (image != null) {
-            float s = Math.min(Math.min(screenWidth - 40, 320) / (float) image[0], 150.0F / image[1]);
+            float s = Math.min(Math.min(colW, 300) / (float) image[0], 140.0F / image[1]);
             dw = Math.round(image[0] * s);
             dh = Math.round(image[1] * s);
         }
