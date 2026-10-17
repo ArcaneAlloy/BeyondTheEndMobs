@@ -170,9 +170,17 @@ public final class WelcomeHandler {
     /** La Home Zone empieza en x≈5000 del Lobby (chunks 300-320); todo lo que esté más allá de x=4800 cuenta. */
     public static final double HOME_ZONE_MIN_X = 4800.0D;
 
+    /**
+     * Hablar con Anna, Antonio, Noah u Oriana: el paso cuenta cuando el jugador ve la guía del NPC (botón de su
+     * diálogo) o confirma que se la salta. Lo avisa el cliente.
+     */
+    public static boolean isGuideStep(Step step) {
+        return step == Step.BLACKSMITH || step == Step.EXPLORER || step == Step.WARLOCK || step == Step.DRUID;
+    }
+
     /** Pasos que detecta el cliente (pantallas que solo existen en el cliente) y avisa con WelcomeStepPacket. */
     public static boolean isClientStep(Step step) {
-        return step == Step.ENDER_EYES || step == Step.EE_DIMENSION || step == Step.EE_EYE || step == Step.EE_RECIPES
+        return isGuideStep(step) || step == Step.ENDER_EYES || step == Step.EE_DIMENSION || step == Step.EE_EYE || step == Step.EE_RECIPES
                 || step == Step.QUEST_LOG || step == Step.DIM_STORAGE_BUTTON || step == Step.ALTAR
                 || step == Step.WAYSTONE_RENAME || step == Step.MATRIX
                 || step == Step.BACKPACK_OPEN || step == Step.BACKPACK_SKINS || step == Step.STORAGE_ROOM;
@@ -220,6 +228,9 @@ public final class WelcomeHandler {
         }
         boolean intro = talked == 0 && !tag.getBoolean(INTRO);
         BteMobsMod.sendToClient(new WelcomePacket(intro, talked, false), player);
+        NPC_POS_SENT.remove(player.getUUID());
+        Step step = current(talked);
+        if (step != null && step.npc != null) sendNpcPos(player, step.npc);
     }
 
     /** Hablar con un NPC del Lobby cuenta para el objetivo (se mira antes de que el NPC procese el clic). */
@@ -228,7 +239,8 @@ public final class WelcomeHandler {
         if (event.getHand() != InteractionHand.MAIN_HAND) return;
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         if (!(event.getTarget() instanceof BteAbstractEntity npc)) return;
-        complete(player, step -> step.npc != null && step.npc == npc.getNpcType());
+        // Los NPCs con guía no cuentan al hablar: cuentan al ver (o saltar) su guía desde el diálogo
+        complete(player, step -> step.npc != null && step.npc == npc.getNpcType() && !isGuideStep(step));
     }
 
     /** Abrir (clic derecho) el Obelisco de Experiencia o el Crafting Terminal cuenta para su paso. */
@@ -256,6 +268,9 @@ public final class WelcomeHandler {
         boolean finished = current(done) == null;
         if (finished) tag.putBoolean(DONE, true);
         BteMobsMod.sendToClient(new WelcomePacket(false, done, finished), player);
+        // El haz del NPC siguiente sale ya, aunque esté lejos
+        Step next = current(done);
+        if (!finished && next != null && next.npc != null) sendNpcPos(player, next.npc);
     }
 
     // ------------------------------------------------------------------ Pasos del teletransporte y de la waystone
@@ -284,6 +299,7 @@ public final class WelcomeHandler {
         if (player.tickCount % 10 == 0) {
             CompoundTag tag = data(player);
             Step step = tag.getBoolean(DONE) ? null : current(tag.getInt(TALKED));
+            if (step != null && step.npc != null && player.tickCount % 20 == 0) sendNpcPos(player, step.npc);
             boolean inLobby = player.level.dimension().location().equals(LOBBY_ID);
             if (step == Step.WAYSTONE && QuestTriggers.hasActiveWaystoneIn(player, LOBBY)) {
                 complete(player, s -> s == Step.WAYSTONE);
@@ -377,6 +393,42 @@ public final class WelcomeHandler {
         }
     }
 
+    // ------------------------------------------------------------------ Posición del NPC que toca (haz desde lejos)
+
+    /** Última posición conocida de cada NPC por dimensión (los NPCs del Lobby no se mueven del sitio). */
+    private static final java.util.Map<String, net.minecraft.world.phys.Vec3> NPC_POS = new java.util.HashMap<>();
+    /** Lo último que se ha mandado a cada jugador, para no repetirlo cada segundo. */
+    private static final java.util.Map<java.util.UUID, String> NPC_POS_SENT = new java.util.HashMap<>();
+
+    /**
+     * El cliente solo tiene las entidades que están a unos pocos chunks, así que el haz y el waypoint del NPC no salían
+     * hasta acercarse. El servidor sí lo tiene cargado (está dentro de la distancia de visión): se busca aquí y se le
+     * manda su posición al cliente. Si ahora no está cargado se usa la última posición conocida.
+     */
+    private static void sendNpcPos(ServerPlayer player, BteNpcType type) {
+        net.minecraft.server.level.ServerLevel level = player.getLevel();
+        String dimension = level.dimension().location().toString();
+        String key = dimension + "|" + type.name();
+        net.minecraft.world.phys.Vec3 pos = null;
+        double best = Double.MAX_VALUE;
+        for (net.minecraft.world.entity.Entity entity : level.getAllEntities()) {
+            if (!(entity instanceof BteAbstractEntity npc) || npc.getNpcType() != type || !npc.isAlive()) continue;
+            double dist = npc.distanceToSqr(player);
+            if (dist < best) {
+                best = dist;
+                pos = npc.position();
+            }
+        }
+        if (pos != null) NPC_POS.put(key, pos);
+        else pos = NPC_POS.get(key);
+        if (pos == null) return;
+        String sent = key + "|" + (int) Math.floor(pos.x) + "|" + (int) Math.floor(pos.y) + "|" + (int) Math.floor(pos.z);
+        if (sent.equals(NPC_POS_SENT.get(player.getUUID()))) return;
+        NPC_POS_SENT.put(player.getUUID(), sent);
+        BteMobsMod.sendToClient(new fr.shoqapik.btemobs.packets.WelcomeNpcPosPacket(type, level.dimension().location(),
+                pos.x, pos.y, pos.z), player);
+    }
+
     /** Al reaparecer tras morir no cuenta como teletransporte. */
     @SubscribeEvent
     public static void onWelcomeRespawn(PlayerEvent.PlayerRespawnEvent event) {
@@ -386,6 +438,7 @@ public final class WelcomeHandler {
     @SubscribeEvent
     public static void onWelcomeLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         LAST_POS.remove(event.getEntity().getUUID());
+        NPC_POS_SENT.remove(event.getEntity().getUUID());
     }
 
     /** El cliente ha terminado de mostrar los títulos de bienvenida. */

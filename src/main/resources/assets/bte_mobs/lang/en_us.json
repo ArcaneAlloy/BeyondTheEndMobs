@@ -693,5 +693,15 @@
   "toast.bte_mobs.welcome_next.portal_noah.desc": "Talk to Noah about the portals",
   "gui.bte_mobs.welcome.step.back_to_portal_room": "Portal Room",
   "gui.bte_mobs.welcome.objective.go_up": "▶ Go back up to the %s",
-  "toast.bte_mobs.welcome_next.back_portal_room": "Floor 2: Portal Room"
+  "toast.bte_mobs.welcome_next.back_portal_room": "Floor 2: Portal Room",
+  "gui.bte_mobs.tutorial.npc.blacksmith": "Anna Warhammer",
+  "gui.bte_mobs.tutorial.npc.explorer": "Antonio",
+  "gui.bte_mobs.tutorial.npc.warlock": "Noah",
+  "gui.bte_mobs.tutorial.npc.druid": "Oriana",
+  "gui.bte_mobs.tutorial.button": "View %s's tutorial",
+  "gui.bte_mobs.tutorial.hint": "Click here if you want to see %s's tutorial",
+  "gui.bte_mobs.tutorial.skip.title": "Are you sure you want to skip %s's tutorial?",
+  "gui.bte_mobs.tutorial.skip.message": "You can check it again at any time from the button in their dialog.",
+  "gui.bte_mobs.tutorial.skip.yes": "Skip tutorial",
+  "gui.bte_mobs.tutorial.skip.no": "Go back"
 }

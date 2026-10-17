@@ -43,15 +43,18 @@ public class QuestScreen extends Screen {
     public static final ResourceLocation DIALOGS_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/default.png");
     private static final ResourceLocation GUI_BARS_LOCATION = new ResourceLocation(BteMobsMod.MODID,"textures/gui/bars.png");
 
-    protected int imageWidth = 254;
-    protected int imageHeight = 168;
+    // Medidas de las interfaces extendidas de cada NPC (textures/gui/dialogs/<npc>_tdialogo_extendido.png)
+    protected int imageWidth = 265;
+    protected int imageHeight = 196;
+    /** Alto que tenía la interfaz antigua: el panel crece hacia arriba para que su parte de abajo no se mueva. */
+    private static final int OLD_IMAGE_HEIGHT = 168;
     // Desplazamiento vertical de la cabecera (Easy/Overworld, Rewards, Task, items y barras). Positivo = más abajo.
     private static final int HEADER_OFFSET_Y = 0;
     // Columnas Rewards y Task: la etiqueta de cada una se centra en su mitad del panel
     // y los iconos se alinean a la izquierda con el borde izquierdo de la etiqueta.
     // Estos valores mueven la columna entera (etiqueta + iconos + barras). Positivo = más a la derecha.
     private static final int REWARDS_OFFSET_X = 0;
-    private static final int TASK_OFFSET_X = -6;
+    private static final int TASK_OFFSET_X = 0;
     // Medidas de los elementos de las columnas
     private static final int LABEL_WIDTH = 73;       // ancho de label_rewards.png / label_task.png
     private static final int SLOT_SIZE = 20;         // tamaño del botón de cada item (el item de 16x16 va centrado dentro)
@@ -75,14 +78,55 @@ public class QuestScreen extends Screen {
     // Menos margen = líneas más largas.
     private static final int DESCRIPTION_RIGHT_MARGIN = 18;
     protected int leftPos;
+    /** Parte de arriba del panel de la quest (crece hacia arriba si la interfaz es más alta que la antigua). */
+    private int panelTop() { return this.height - 80 - 130 - (imageHeight - OLD_IMAGE_HEIGHT); }
+    private int panelLeft() { return this.leftPos - (this.width / 8) + 90; }
+
+    // ---- Distribución dentro de la interfaz extendida (coordenadas relativas a la esquina del panel) ----
+    // Zona útil de las texturas: x 10..253, y 8..189; el letrero con el nombre ocupa hasta x≈106, y≈26.
+    /** Bordes izquierdo y derecho del contenido (dentro del marco). */
+    private static final int CONTENT_LEFT = 16;
+    private static final int CONTENT_RIGHT = 248;
+    /** Borde derecho de la fila Dificultad / Dimensión (pegada al marco). */
+    private static final int HEADER_RIGHT = 232;
+    /** Las etiquetas de dificultad y de dimensión encajan por su lado inclinado: la de dimensión empieza 48 px después. */
+    private static final int HEADER_LABELS_JOIN = 48;
+    /**
+     * Fila de Dificultad / Dimensión: arriba a la derecha, sin tocar el marco. Cada interfaz tiene la parte de arriba
+     * distinta (la cuerda de Antonio y las nubes de Oriana bajan más), así que se mide por NPC.
+     */
+    private int headerRowY() {
+        if (this.currentQuest == null) return 11;
+        return switch (this.currentQuest.getEntityType().name()) {
+            case "DRUID" -> 23;
+            case "EXPLORER" -> 18;
+            default -> 11;
+        };
+    }
+    /** Fila de las etiquetas Rewards / Task: por debajo del letrero del nombre y de la fila de Dificultad / Dimensión. */
+    private int columnsLabelY() { return Math.max(32, headerRowY() + 13 + 6); }
+    /** Separación entre los iconos (recompensas y tareas) y la descripción. */
+    private static final int DESCRIPTION_GAP = 8;
+    /** Botón Quest Incomplete/Complete y casilla Track: abajo, dentro del marco. */
+    private static final int BOTTOM_ROW_Y = 162;
+    private static final int STATE_BUTTON_X = 22;
+    private static final int STATE_BUTTON_WIDTH = 150;
+    /** Lista de quests de la izquierda: 8 botones, que ocupan el alto del panel (8 x 25 = 200). */
+    private static final int VISIBLE_QUESTS = 8;
+    private static final int QUEST_BUTTON_SPACING = 25;
     private int rewardsCenterX(int panelX) { return panelX + imageWidth / 4 + REWARDS_OFFSET_X; }
     private int taskCenterX(int panelX) { return panelX + imageWidth * 3 / 4 + TASK_OFFSET_X; }
-    private int rewardsLeftX(int panelX) { return rewardsCenterX(panelX) - LABEL_WIDTH / 2; }
-    private int taskLeftX(int panelX) { return taskCenterX(panelX) - LABEL_WIDTH / 2; }
+    /** Recompensas pegadas a la izquierda del panel (dentro del marco). */
+    private int rewardsLeftX(int panelX) { return panelX + CONTENT_LEFT + REWARDS_OFFSET_X; }
+    /** Tareas pegadas a la derecha: la barra de progreso (lo más ancho de la columna) termina en el borde del contenido. */
+    private int taskLeftX(int panelX) { return panelX + CONTENT_RIGHT - (SLOT_SIZE + TASK_BAR_GAP + TASK_BAR_WIDTH) + TASK_OFFSET_X; }
     protected int topPos;
     protected Button up;
     protected Button down;
     protected int scrolledY=0;
+
+    /** Lo más abajo que se puede bajar la lista: la última quest queda en el último botón visible. */
+    private int maxScroll() { return Math.max(0, this.quests.size() - VISIBLE_QUESTS); }
     private int entityId;
     private BteNpcType bteNpcType;
     /** Abierta desde el inventario (QuestLogScreen): solo consulta, no se puede reclamar. */
@@ -194,18 +238,18 @@ public class QuestScreen extends Screen {
         }
 
 
-        this.up = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height -80)-150,14,16,0,0,0,
+        this.up = new ImageButton((this.leftPos - (this.width / 8))+20, panelTop() - 18,14,16,0,0,0,
                 new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
             scrolledY = Math.max(0,scrolledY-1);
             this.layoutButtons();
         });
 
-        this.down = new ImageButton((this.leftPos - (this.width / 8))+20,(this.height - 80)+45,14,16,0,0,0,
+        this.down = new ImageButton((this.leftPos - (this.width / 8))+20, panelTop() + VISIBLE_QUESTS * QUEST_BUTTON_SPACING,14,16,0,0,0,
                 new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
-            scrolledY=Math.min(this.quests.size(),this.scrolledY+1);
+            scrolledY=Math.min(maxScroll(),this.scrolledY+1);
             this.layoutButtons();
         });
-        this.stateQuest = this.addRenderableWidget(new Button((this.leftPos - (this.width / 8))+137 ,(this.height - 80) + QUEST_BUTTON_OFFSET_Y,150,20,Component.translatable("gui.bte_mobs.quest.incomplete"),(p)->{
+        this.stateQuest = this.addRenderableWidget(new Button(panelLeft() + STATE_BUTTON_X, panelTop() + BOTTOM_ROW_Y, STATE_BUTTON_WIDTH, 20,Component.translatable("gui.bte_mobs.quest.incomplete"),(p)->{
             refreshButton();
             if (!this.readOnly && this.isComplete && !this.isReclaim){
                 BteMobsMod.sendToServer(new QuestActionPacket(currentQuest,0,minecraft.player.getId()));
@@ -302,10 +346,10 @@ public class QuestScreen extends Screen {
         slotRewards.clear();
         slotTask.clear();
         int i = 0;
-        int x = (int) (this.leftPos - (this.width / 8)  +90);
-        int y = (int) (this.height - 80 - 130);
+        int x = panelLeft();
+        int y = panelTop();
         for (StatTaskData data : this.quests.get(this.currentQuest).statTaskData){
-            ButtonTask buttonReward = new ButtonTask(taskLeftX(x), y+39 + HEADER_OFFSET_Y + TASK_ITEMS_GAP_Y + TASK_ROW_SPACING * i, SLOT_SIZE, SLOT_SIZE, data, minecraft);
+            ButtonTask buttonReward = new ButtonTask(taskLeftX(x), y + columnsLabelY() + 13 + HEADER_OFFSET_Y + TASK_ITEMS_GAP_Y + TASK_ROW_SPACING * i, SLOT_SIZE, SLOT_SIZE, data, minecraft);
             buttonReward.displayDescription = QuestTexts.task(this.currentQuest, i, data.description);
             slotTask.add(buttonReward);
             i++;
@@ -313,7 +357,7 @@ public class QuestScreen extends Screen {
         i = 0;
         int rewardsStartX = rewardsLeftX(x);
         for (RewardData data : this.currentQuest.getRewards()){
-            ButtonReward buttonReward = new ButtonReward(rewardsStartX + REWARD_SPACING * i, y+39 + HEADER_OFFSET_Y + REWARDS_ITEMS_GAP_Y, SLOT_SIZE, SLOT_SIZE, data, minecraft);
+            ButtonReward buttonReward = new ButtonReward(rewardsStartX + REWARD_SPACING * i, y + columnsLabelY() + 13 + HEADER_OFFSET_Y + REWARDS_ITEMS_GAP_Y, SLOT_SIZE, SLOT_SIZE, data, minecraft);
             slotRewards.add(buttonReward);
             i++;
         }
@@ -429,8 +473,8 @@ public class QuestScreen extends Screen {
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
 
-            int x = (int) (this.leftPos - (this.width / 8)  +90);
-            int y = (int) (this.height - 80 - 130);
+            int x = panelLeft();
+            int y = panelTop();
 
             GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
 
@@ -442,13 +486,16 @@ public class QuestScreen extends Screen {
             int right = left + textWidth + 10 ;
             int bottom = top + this.font.lineHeight + 2;
             int descLeft = 12 + DESCRIPTION_OFFSET_X;
-            drawWordWrap(Component.literal(translatedDesc),x + descLeft , y + 100 + DESCRIPTION_OFFSET_Y , imageWidth - descLeft - DESCRIPTION_RIGHT_MARGIN, 16777215, font, poseStack);
+            int itemsBottom = y + columnsLabelY() + 13 + HEADER_OFFSET_Y + Math.max(REWARDS_ITEMS_GAP_Y + SLOT_SIZE,
+                    TASK_ITEMS_GAP_Y + TASK_ROW_SPACING * Math.max(0, slotTask.size() - 1) + SLOT_SIZE);
+            int descY = itemsBottom + DESCRIPTION_GAP + DESCRIPTION_OFFSET_Y + 8;
+            drawWordWrap(Component.literal(translatedDesc),x + descLeft , descY , imageWidth - descLeft - DESCRIPTION_RIGHT_MARGIN, 16777215, font, poseStack);
             poseStack.pushPose();
-            renderLabel(poseStack, (int) (x + 112 -20 + LABELS_OFFSET_X), (int) (y + 11 + LABELS_OFFSET_Y), new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_dif_"+difficulty.toLowerCase()+".png"));
+            renderLabel(poseStack, x + HEADER_RIGHT - 77 - HEADER_LABELS_JOIN + LABELS_OFFSET_X, y + headerRowY() + LABELS_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_dif_"+difficulty.toLowerCase()+".png"), 56);
             poseStack.popPose();
 
             poseStack.pushPose();
-            renderLabel(poseStack, (int) (x + 174 -20 + LABELS_OFFSET_X), (int) (y + 11 + LABELS_OFFSET_Y),new ResourceLocation(BteMobsMod.MODID,"textures/gui/widget/label_world_"+this.currentQuest.getDimension().name().toLowerCase()+".png"));
+            renderLabel(poseStack, x + HEADER_RIGHT - 77 + LABELS_OFFSET_X, y + headerRowY() + LABELS_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID,"textures/gui/widget/label_world_"+this.currentQuest.getDimension().name().toLowerCase()+".png"), 77);
             poseStack.popPose();
             poseStack.pushPose();
 
@@ -459,7 +506,7 @@ public class QuestScreen extends Screen {
             fill(poseStack, left1, top1, right1, bottom1, 0x4FFF0000);
             poseStack.popPose();
             poseStack.pushPose();
-            renderLabel(poseStack, taskLeftX(x), y + 26 + HEADER_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_task.png"));
+            renderLabel(poseStack, taskLeftX(x), y + columnsLabelY() + HEADER_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_task.png"));
             int barX = taskLeftX(x) + SLOT_SIZE + TASK_BAR_GAP;
             for (ButtonTask buttonTask : slotTask){
                 int rowY = buttonTask.y;
@@ -476,7 +523,7 @@ public class QuestScreen extends Screen {
             }
 
             poseStack.popPose();
-            renderLabel(poseStack, rewardsLeftX(x), y + 26 + HEADER_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_rewards.png"));
+            renderLabel(poseStack, rewardsLeftX(x), y + columnsLabelY() + HEADER_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_rewards.png"));
             poseStack.popPose();
 
             renderButton(poseStack, mouseX, mouseY, partialTick);
@@ -674,6 +721,10 @@ public class QuestScreen extends Screen {
         poseStack.popPose();
     }
     public void renderLabel(PoseStack poseStack,int x,int y,ResourceLocation location){
+        renderLabel(poseStack, x, y, location, 73);
+    }
+
+    public void renderLabel(PoseStack poseStack,int x,int y,ResourceLocation location,int width){
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0,location);
 
@@ -681,7 +732,7 @@ public class QuestScreen extends Screen {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        GuiComponent.blit(poseStack, x , y , 0, 0,73, 13, 73, 13);
+        GuiComponent.blit(poseStack, x , y , 0, 0, width, 13, width, 13);
 
     }
     public void bar(PoseStack poseStack, StatTaskData statTaskData, int barX, int barY){
@@ -750,10 +801,11 @@ public class QuestScreen extends Screen {
 
     private void layoutButtons() {
         int x = (int) (this.leftPos - (this.width / 8) - 22);
-        int yStart = (int) (this.height - 80 - 130);
+        int yStart = panelTop();
 
+        scrolledY = Mth.clamp(scrolledY, 0, maxScroll());
         int visibleStartIndex = scrolledY;
-        int visibleEndIndex = Math.min(scrolledY + 7, quests.size());
+        int visibleEndIndex = Math.min(scrolledY + VISIBLE_QUESTS, quests.size());
 
         for (int i = 0; i < buttons.size(); i++) {
             Button button = buttons.get(i);
@@ -761,7 +813,7 @@ public class QuestScreen extends Screen {
                 int visualIndex = i - visibleStartIndex;
                 button.visible = true;
                 button.active = true;
-                button.y=yStart + visualIndex * 25;
+                button.y=yStart + visualIndex * QUEST_BUTTON_SPACING;
                 button.x=x;
             } else {
                 button.visible = false;
@@ -860,9 +912,8 @@ public class QuestScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-        if (this.quests.size()>7) {
-            int j = this.quests.size() - 7;
-            this.scrolledY = Mth.clamp((int)((double)this.scrolledY - pDelta), 0, j);
+        if (this.quests.size()>VISIBLE_QUESTS) {
+            this.scrolledY = Mth.clamp((int)((double)this.scrolledY - pDelta), 0, maxScroll());
             this.layoutButtons();
         }
         return super.mouseScrolled(pMouseX, pMouseY, pDelta);

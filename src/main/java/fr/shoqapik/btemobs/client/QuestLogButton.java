@@ -31,7 +31,9 @@ public final class QuestLogButton {
     private static final int OFFSET_Y = 30;
     private static final int SIZE = 20;
 
-    private static final ItemStack ICON = new ItemStack(Items.WRITABLE_BOOK);
+    /** Icono del botón de quests (el mismo que el botón "Quests" del diálogo de cada NPC). */
+    public static final net.minecraft.resources.ResourceLocation ICON =
+            new net.minecraft.resources.ResourceLocation(BteMobsMod.MODID, "textures/gui/quest_log/quests_icon.png");
 
     @SubscribeEvent
     public static void onInit(ScreenEvent.Init.Post event) {
@@ -57,7 +59,12 @@ public final class QuestLogButton {
             this.y = screen.getGuiTop() + OFFSET_Y;
             super.renderButton(poseStack, mouseX, mouseY, partialTick);
             Minecraft mc = Minecraft.getInstance();
-            mc.getItemRenderer().renderAndDecorateFakeItem(ICON, this.x + 2, this.y + 2);
+            com.mojang.blaze3d.systems.RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionTexShader);
+            com.mojang.blaze3d.systems.RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, ICON);
+            com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+            com.mojang.blaze3d.systems.RenderSystem.defaultBlendFunc();
+            net.minecraft.client.gui.GuiComponent.blit(poseStack, this.x + 2, this.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
             // "!" dorado si algún NPC tiene una quest lista para reclamar
             for (BteNpcType npc : BteNpcType.values()) {
                 if (QuestReadyClient.hasReady(npc)) {

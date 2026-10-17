@@ -689,5 +689,15 @@
   "toast.bte_mobs.welcome_next.portal_noah.desc": "Habla con Noah sobre los portales",
   "gui.bte_mobs.welcome.step.back_to_portal_room": "Portal Room",
   "gui.bte_mobs.welcome.objective.go_up": "▶ Vuelve a subir a la %s",
-  "toast.bte_mobs.welcome_next.back_portal_room": "Planta 2: Portal Room"
+  "toast.bte_mobs.welcome_next.back_portal_room": "Planta 2: Portal Room",
+  "gui.bte_mobs.tutorial.npc.blacksmith": "Anna Warhammer",
+  "gui.bte_mobs.tutorial.npc.explorer": "Antonio",
+  "gui.bte_mobs.tutorial.npc.warlock": "Noah",
+  "gui.bte_mobs.tutorial.npc.druid": "Oriana",
+  "gui.bte_mobs.tutorial.button": "Ver el tutorial de %s",
+  "gui.bte_mobs.tutorial.hint": "Pincha aquí si quieres ver el tutorial de %s",
+  "gui.bte_mobs.tutorial.skip.title": "¿Estás seguro de saltarte el tutorial de %s?",
+  "gui.bte_mobs.tutorial.skip.message": "Podrás volver a consultarlo en cualquier momento desde el botón de su diálogo.",
+  "gui.bte_mobs.tutorial.skip.yes": "Saltar tutorial",
+  "gui.bte_mobs.tutorial.skip.no": "Volver"
 }

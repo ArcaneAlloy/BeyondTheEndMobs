@@ -138,6 +138,7 @@ public class BteMobsMod {
         INSTANCE.registerMessage(20,fr.shoqapik.btemobs.packets.WelcomeStepPacket.class,fr.shoqapik.btemobs.packets.WelcomeStepPacket::encode,fr.shoqapik.btemobs.packets.WelcomeStepPacket::decode,fr.shoqapik.btemobs.packets.WelcomeStepPacket::handle);
         INSTANCE.registerMessage(21,fr.shoqapik.btemobs.packets.WelcomeSkipPacket.class,fr.shoqapik.btemobs.packets.WelcomeSkipPacket::encode,fr.shoqapik.btemobs.packets.WelcomeSkipPacket::decode,fr.shoqapik.btemobs.packets.WelcomeSkipPacket::handle);
         INSTANCE.registerMessage(22,fr.shoqapik.btemobs.packets.WelcomeIntroSeenPacket.class,fr.shoqapik.btemobs.packets.WelcomeIntroSeenPacket::encode,fr.shoqapik.btemobs.packets.WelcomeIntroSeenPacket::decode,fr.shoqapik.btemobs.packets.WelcomeIntroSeenPacket::handle);
+        INSTANCE.registerMessage(23,fr.shoqapik.btemobs.packets.WelcomeNpcPosPacket.class,fr.shoqapik.btemobs.packets.WelcomeNpcPosPacket::encode,fr.shoqapik.btemobs.packets.WelcomeNpcPosPacket::decode,fr.shoqapik.btemobs.packets.WelcomeNpcPosPacket::handle);
     }
     @OnlyIn(Dist.CLIENT)
     public static List<EnchantType> getEnchantType (Player player){

@@ -177,7 +177,9 @@ public final class WelcomeClient {
             revealPending = true;
             pendingTalked = msg.talked;
             pendingDone = msg.done;
-            sawScreen = false;
+            // Paso de NPC: lo completa el cliente al terminar (o saltar) su guía, ya sin el diálogo abierto, así que
+            // el siguiente paso se anuncia en cuanto no haya ninguna pantalla
+            sawScreen = isGuideStep(msg.talked & ~talked);
             revealWait = 0;
             return;
         }
@@ -283,23 +285,127 @@ public final class WelcomeClient {
             showDone();
             return;
         }
-        // Guía del NPC con el que acaba de hablar: primero se explica qué hace, luego se le manda al siguiente
-        String[] guide = guideCards(justDone);
-        if (guide != null) {
-            startCards(guide, 10, true);
-            announceAfterCards = true;
-            return;
-        }
+        // La guía del NPC ya se ha visto (o saltado) desde el botón de su diálogo: se manda al siguiente
         announceNext(mc);
     }
 
-    /** Guía ilustrada del NPC con el que se acaba de hablar, o null. */
-    private static String[] guideCards(int justDone) {
-        if ((justDone & WelcomeHandler.Step.BLACKSMITH.bit()) != 0) return ANNA_GUIDE;
-        if ((justDone & WelcomeHandler.Step.EXPLORER.bit()) != 0) return ANTONIO_GUIDE;
-        if ((justDone & WelcomeHandler.Step.WARLOCK.bit()) != 0) return NOAH_GUIDE;
-        if ((justDone & WelcomeHandler.Step.DRUID.bit()) != 0) return ORIANA_GUIDE;
-        return null;
+    // ------------------------------------------------------------------ Posición de los NPCs lejanos
+
+    /** Posición de cada NPC que manda el servidor (dimensión y punto), para el haz cuando el NPC aún no está cargado aquí. */
+    private static final java.util.Map<BteNpcType, ResourceLocation> NPC_DIM = new java.util.EnumMap<>(BteNpcType.class);
+    private static final java.util.Map<BteNpcType, Vec3> NPC_POS = new java.util.EnumMap<>(BteNpcType.class);
+
+    public static void setNpcPos(BteNpcType npc, ResourceLocation dimension, double x, double y, double z) {
+        NPC_DIM.put(npc, dimension);
+        NPC_POS.put(npc, new Vec3(x, y, z));
+    }
+
+    /** Posición del NPC que ha mandado el servidor, si está en la dimensión en la que está el jugador. */
+    private static Vec3 remoteNpcPos(ClientLevel level, BteNpcType npc) {
+        Vec3 pos = NPC_POS.get(npc);
+        return pos != null && level.dimension().location().equals(NPC_DIM.get(npc)) ? pos : null;
+    }
+
+    // ------------------------------------------------------------------ Guías de los NPCs (botón de su diálogo)
+
+    /** NPC cuya guía se está mostrando (null si no hay), y si es la del paso del tutorial que toca. */
+    private static BteNpcType guideNpc = null;
+    private static boolean guideForTutorial = false;
+
+    /** Tarjetas de la guía ilustrada de un NPC, o null si no tiene. */
+    public static String[] guideFor(BteNpcType npc) {
+        if (npc == null) return null;
+        return switch (npc) {
+            case BLACKSMITH -> ANNA_GUIDE;
+            case EXPLORER -> ANTONIO_GUIDE;
+            case WARLOCK -> NOAH_GUIDE;
+            case DRUID -> ORIANA_GUIDE;
+            default -> null;
+        };
+    }
+
+    public static boolean hasGuide(BteNpcType npc) {
+        return guideFor(npc) != null;
+    }
+
+    /** ¿Alguno de estos pasos es hablar con un NPC que tiene guía? */
+    private static boolean isGuideStep(int bits) {
+        for (WelcomeHandler.Step step : WelcomeHandler.Step.values()) {
+            if ((bits & step.bit()) != 0 && step.npc != null && hasGuide(step.npc)) return true;
+        }
+        return false;
+    }
+
+    /** El paso del tutorial que toca es este NPC: tiene que ver su guía (o confirmar que la salta). */
+    public static boolean guidePending(BteNpcType npc) {
+        if (!active || revealPending || !hasGuide(npc)) return false;
+        WelcomeHandler.Step step = WelcomeHandler.current(talked);
+        return step != null && step.npc == npc;
+    }
+
+    /** Nombre completo del NPC para los textos de su guía (p. ej. "Anna Warhammer"). */
+    public static Component guideName(BteNpcType npc) {
+        return Component.translatable("gui.bte_mobs.tutorial.npc." + npc.name().toLowerCase(java.util.Locale.ROOT));
+    }
+
+    /** Muestra la guía del NPC (botón de su diálogo). Se puede volver a ver en cualquier momento. */
+    public static void openGuide(BteNpcType npc) {
+        String[] guide = guideFor(npc);
+        if (guide == null) return;
+        guideForTutorial = guidePending(npc);
+        guideNpc = npc;
+        cardPrefix = null;
+        announceAfterCards = false;
+        startCards(guide, 10, true);
+    }
+
+    /** Fin de la guía: si era la del paso del tutorial, el paso cuenta y sale el siguiente (hablar con otro NPC...). */
+    private static void finishGuide() {
+        BteNpcType npc = guideNpc;
+        boolean tutorial = guideForTutorial;
+        guideNpc = null;
+        guideForTutorial = false;
+        if (npc != null && tutorial) completeGuideStep(npc);
+    }
+
+    /** Corta la guía que se esté mostrando. */
+    private static void stopGuide() {
+        if (guideNpc == null) return;
+        guideNpc = null;
+        guideForTutorial = false;
+        introTick = -1;
+        cardPhase = 0;
+    }
+
+    /** Avisa al servidor de que el paso de este NPC está hecho (guía vista o saltada). */
+    private static void completeGuideStep(BteNpcType npc) {
+        if (!guidePending(npc)) return;
+        BteMobsMod.sendToServer(new WelcomeStepPacket(WelcomeHandler.current(talked)));
+    }
+
+    /** ¿Se está mostrando la guía del paso del tutorial? (salir de ella pide confirmación) */
+    static boolean tutorialGuideRunning() {
+        return introRunning() && guideNpc != null && guideForTutorial && guidePending(guideNpc);
+    }
+
+    /**
+     * Ventana "¿Seguro que quieres saltarte el tutorial de ...?". Sí: el paso cuenta como hecho y sale el siguiente.
+     * No: vuelve a donde estaba (el diálogo del NPC, o la guía si se estaba viendo).
+     */
+    public static Screen skipGuideScreen(BteNpcType npc, Screen back) {
+        Minecraft mc = Minecraft.getInstance();
+        return new net.minecraft.client.gui.screens.ConfirmScreen(skip -> {
+            if (skip) {
+                stopGuide();
+                completeGuideStep(npc);
+                mc.setScreen(null);
+            } else {
+                mc.setScreen(back);
+            }
+        }, Component.translatable("gui.bte_mobs.tutorial.skip.title", guideName(npc)),
+                Component.translatable("gui.bte_mobs.tutorial.skip.message"),
+                Component.translatable("gui.bte_mobs.tutorial.skip.yes"),
+                Component.translatable("gui.bte_mobs.tutorial.skip.no"));
     }
 
     /** Aviso del paso siguiente (toast y sus títulos); el haz y el "!" salen solos con el objetivo actual. */
@@ -371,7 +477,7 @@ public final class WelcomeClient {
         if (next == null) return;
         if (next.npc != null) {
             addStepToast(next, QuestReadyToast.withFace(
-                    Component.translatable("toast.bte_mobs.welcome_next"),
+                    Component.translatable(talked == 0 ? "toast.bte_mobs.welcome_first" : "toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.desc", npcName(next.npc)),
                     next.npc));
         } else if (next == WelcomeHandler.Step.OBELISK) {
@@ -524,7 +630,7 @@ public final class WelcomeClient {
             addStepToast(next, new QuestReadyToast(
                     Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.quest_log"),
-                    new ItemStack(Items.WRITABLE_BOOK)));
+                    QuestLogButton.ICON));
         }
         // Si el paso siguiente no tenía títulos propios, salen solo los del paso completado
         startCards(new String[0], 0, false);
@@ -576,6 +682,8 @@ public final class WelcomeClient {
         announceAfterCards = false;
         doneAfterCards = false;
         introSequence = false;
+        guideNpc = null;
+        guideForTutorial = false;
         mc.player.displayClientMessage(Component.empty(), true);
         mc.getToasts().addToast(new QuestReadyToast(
                 Component.translatable("toast.bte_mobs.welcome_skipped"),
@@ -740,7 +848,8 @@ public final class WelcomeClient {
 
     /** ¿Se muestra el objetivo en el panel de seguimiento? */
     public static boolean objectiveVisible() {
-        return anyPending();
+        // El tutorial ya no se muestra como misión seguida a la izquierda (lo guían el aviso de arriba, el haz y el "!")
+        return false;
     }
 
     public static int doneCount() {
@@ -1082,8 +1191,13 @@ public final class WelcomeClient {
                             if (introSequence) {
                                 introSequence = false;
                                 BteMobsMod.sendToServer(new fr.shoqapik.btemobs.packets.WelcomeIntroSeenPacket());
+                                // Primer paso (Anna): su aviso arriba, igual que los de los otros NPCs
+                                if (active) announceNext(mc, false);
                             }
-                            if (announceAfterCards) {
+                            if (guideNpc != null) {
+                                // Fin de la guía de un NPC (botón de su diálogo)
+                                finishGuide();
+                            } else if (announceAfterCards) {
                                 // Fin de la guía del NPC: ahora sí se le manda al siguiente
                                 announceAfterCards = false;
                                 if (active) announceNext(mc);
@@ -1173,6 +1287,12 @@ public final class WelcomeClient {
                     drawBeam(level, pose, buffers, cam, partialTick, x, y, z, beamColor(target));
                     drawn = true;
                 }
+                // Aún no está cargado aquí (lejos): el haz va donde dice el servidor que está
+                Vec3 remote = drawn ? null : remoteNpcPos(level, target.npc);
+                if (remote != null) {
+                    drawBeam(level, pose, buffers, cam, partialTick, remote.x, remote.y, remote.z, beamColor(target));
+                    drawn = true;
+                }
             } else if (target == WelcomeHandler.Step.WAYSTONE || target == WelcomeHandler.Step.WAYSTONE_RENAME) {
                 BlockPos pos = findWaystone(level, level.getGameTime());
                 if (pos != null) {
@@ -1258,6 +1378,13 @@ public final class WelcomeClient {
         /** Abrir con su botón el menú de Ojos de Ender o el libro de quests (pasos que solo ve el cliente). */
         @SubscribeEvent
         public static void onWelcomeScreenOpening(ScreenEvent.Opening event) {
+            // Esc mientras se ve la guía del tutorial: se pregunta si quiere saltarla (no al perder el foco la ventana)
+            if (event.getNewScreen() instanceof net.minecraft.client.gui.screens.PauseScreen && event.getCurrentScreen() == null
+                    && tutorialGuideRunning() && com.mojang.blaze3d.platform.InputConstants.isKeyDown(
+                    Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE)) {
+                event.setNewScreen(skipGuideScreen(guideNpc, null));
+                return;
+            }
             WelcomeHandler.Step target = currentTarget();
             if (target == null || !WelcomeHandler.isClientStep(target) || revealPending) return;
             Screen screen = event.getNewScreen();
@@ -1719,7 +1846,7 @@ public final class WelcomeClient {
         }
 
         /** Marco dorado que late alrededor de un botón, con una flecha a su izquierda. */
-        private static void highlight(PoseStack pose, float partialTick, int x, int y, int w, int h) {
+        public static void highlight(PoseStack pose, float partialTick, int x, int y, int w, int h) {
             Minecraft mc = Minecraft.getInstance();
             float time = (mc.level != null ? mc.level.getGameTime() : 0) + partialTick;
             float pulse = 0.5F + 0.5F * Mth.sin(time * 0.25F);
@@ -1747,6 +1874,10 @@ public final class WelcomeClient {
             introSequence = false;
             announceAfterCards = false;
             doneAfterCards = false;
+            guideNpc = null;
+            guideForTutorial = false;
+            NPC_DIM.clear();
+            NPC_POS.clear();
             obeliskPos = null;
             waystonePos = null;
             terminalPos = null;

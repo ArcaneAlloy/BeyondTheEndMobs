@@ -52,6 +52,8 @@ public class QuestDialogScreen extends Screen {
 
     private List<Button> buttons = new ArrayList<>();
     private boolean declined;
+    /** Botón pequeño que abre la guía del NPC (su tutorial); null si el NPC no tiene guía. */
+    private TutorialGuideButton tutorialButton;
 
     public QuestDialogScreen(int entityId, BteNpcType bteNpcType, OptionDialogs quest) {
         this(entityId, bteNpcType, quest, false);
@@ -79,7 +81,10 @@ public class QuestDialogScreen extends Screen {
         int x = this.leftPos - (this.width / 8) + 254;
         int y = this.height - this.imageHeight - 40;
 
+        // Al volver de la ventana de confirmación se llama otra vez a init: no se duplican los botones
+        this.buttons.clear();
         int index = quest.getAnswers().size() > 4 ? -1 : 0;
+        int firstY = y + index * 25;
         for (QuestAnswer questAnswer : this.quest.getAnswers()) {
             if (index > 3) break;
 
@@ -107,7 +112,8 @@ public class QuestDialogScreen extends Screen {
                                 BteMobsModClient.handleClearItem(this.entityId);
                             }
                         } else {
-                            Minecraft.getInstance().setScreen(null);
+                            // "Maybe later": durante el tutorial pregunta si quiere saltarse la guía del NPC
+                            this.onClose();
                         }
 
                         if (currentDialogSound != null) {
@@ -126,6 +132,21 @@ public class QuestDialogScreen extends Screen {
             buttons.add(this.addRenderableWidget(button));
 
             index++;
+        }
+
+        // Botón de la guía del NPC: encima de la columna de respuestas, pegado a su borde derecho
+        this.tutorialButton = null;
+        if (fr.shoqapik.btemobs.client.WelcomeClient.hasGuide(bteNpcType)) {
+            TutorialGuideButton.resetTextureCache();
+            this.tutorialButton = new TutorialGuideButton(x + 100 - TutorialGuideButton.SIZE, firstY - TutorialGuideButton.SIZE - 4, p -> {
+                if (currentDialogSound != null) {
+                    Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+                    currentDialogSound = null;
+                }
+                Minecraft.getInstance().setScreen(null);
+                fr.shoqapik.btemobs.client.WelcomeClient.openGuide(bteNpcType);
+            });
+            buttons.add(this.addRenderableWidget(this.tutorialButton));
         }
         setButtonsEnabled(false);
     }
@@ -199,6 +220,23 @@ public class QuestDialogScreen extends Screen {
 
         super.render(poseStack, mouseX, mouseY, partialTick);
 
+        // Botón de la guía: durante el tutorial, marco dorado y el aviso siempre visible; si no, tooltip al pasar el ratón
+        if (tutorialButton != null && tutorialButton.visible) {
+            Component name = fr.shoqapik.btemobs.client.WelcomeClient.guideName(bteNpcType);
+            int bx = tutorialButton.x, by = tutorialButton.y;
+            if (fr.shoqapik.btemobs.client.WelcomeClient.guidePending(bteNpcType)) {
+                fr.shoqapik.btemobs.client.WelcomeClient.WelcomeForgeEvents.highlight(poseStack, partialTick, bx, by,
+                        TutorialGuideButton.SIZE, TutorialGuideButton.SIZE);
+                List<FormattedCharSequence> hint = font.split(Component.translatable("gui.bte_mobs.tutorial.hint", name), 150);
+                int w = 0;
+                for (FormattedCharSequence line : hint) w = Math.max(w, font.width(line));
+                // renderTooltip lo dibuja en (x + 12, y - 12): se deja a la izquierda del botón (y de su flecha)
+                this.renderTooltip(poseStack, hint, bx - 16 - w - 12, by + 12 + (TutorialGuideButton.SIZE - 8) / 2 - (hint.size() - 1) * 5);
+            } else if (tutorialButton.isMouseOver(mouseX, mouseY)) {
+                this.renderTooltip(poseStack, Component.translatable("gui.bte_mobs.tutorial.button", name), mouseX, mouseY);
+            }
+        }
+
         for (Button b : buttons) {
             if (b instanceof CustomButton cb && cb.isLock() && cb.visible && cb.isMouseOver(mouseX, mouseY)
                     && cb.listComponents != null && !cb.listComponents.isEmpty()) {
@@ -236,7 +274,7 @@ public class QuestDialogScreen extends Screen {
             currentLine = "";
 
         } else if (declined) {
-            Minecraft.getInstance().setScreen(null);
+            this.onClose();
 
         } else {
             return super.mouseClicked(p_94695_, p_94696_, p_94697_);
@@ -258,6 +296,23 @@ public class QuestDialogScreen extends Screen {
         }
 
         super.removed();
+    }
+
+    /**
+     * Esc o "Maybe later" mientras el tutorial pide ver la guía de este NPC: en vez de cerrar, se pregunta si de
+     * verdad quiere saltársela (si dice que no, vuelve a este diálogo).
+     */
+    @Override
+    public void onClose() {
+        if (fr.shoqapik.btemobs.client.WelcomeClient.guidePending(bteNpcType)) {
+            if (currentDialogSound != null) {
+                Minecraft.getInstance().getSoundManager().stop(currentDialogSound, SoundSource.NEUTRAL);
+                currentDialogSound = null;
+            }
+            Minecraft.getInstance().setScreen(fr.shoqapik.btemobs.client.WelcomeClient.skipGuideScreen(bteNpcType, this));
+            return;
+        }
+        super.onClose();
     }
 
     @Override
