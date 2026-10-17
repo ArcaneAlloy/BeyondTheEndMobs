@@ -96,22 +96,33 @@ public class WarlockPotionRecipe implements Recipe<SimpleContainer> {
         boolean hasSplash     = container.getItem(4).is(Items.GUNPOWDER);
         boolean hasLingering  = container.getItem(5).is(Items.DRAGON_BREATH);
 
+        // Redstone y Glowstone son excluyentes: con los dos puestos no sale nada
+        if (hasRedstone && hasGlowstone) return false;
+        // Gunpowder y Dragon's Breath también
+        if (hasSplash && hasLingering) return false;
+
         // Modifier slots must match exactly
         if (modifier == PotionModifier.REDSTONE  && !hasRedstone)              return false;
         if (modifier == PotionModifier.GLOWSTONE && !hasGlowstone)             return false;
         if (modifier == PotionModifier.NONE      && (hasRedstone || hasGlowstone)) return false;
 
-        // Output type slots must match exactly
-        if (outputType == PotionOutputType.SPLASH    && !hasSplash)              return false;
-        if (outputType == PotionOutputType.LINGERING  && !hasLingering)           return false;
-        if (outputType == PotionOutputType.NORMAL     && (hasSplash || hasLingering)) return false;
+        // Output type: las recetas NORMAL valen para las tres formas (la forma la decide el slot de
+        // Gunpowder / Dragon's Breath, ver assemble). Las recetas SPLASH/LINGERING explícitas, si las hay,
+        // siguen pidiendo su ingrediente.
+        if (outputType == PotionOutputType.SPLASH    && !hasSplash)    return false;
+        if (outputType == PotionOutputType.LINGERING && !hasLingering) return false;
 
         return true;
     }
 
     @Override
     public ItemStack assemble(SimpleContainer container) {
-        return buildResult(outputType, effect);
+        PotionOutputType type = outputType;
+        if (type == PotionOutputType.NORMAL) {
+            if (container.getItem(4).is(Items.GUNPOWDER))          type = PotionOutputType.SPLASH;
+            else if (container.getItem(5).is(Items.DRAGON_BREATH)) type = PotionOutputType.LINGERING;
+        }
+        return buildResult(type, effect);
     }
 
     @Override

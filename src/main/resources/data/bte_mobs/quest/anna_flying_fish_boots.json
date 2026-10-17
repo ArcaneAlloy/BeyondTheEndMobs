@@ -1,0 +1,26 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Entrega a Anna 2 Flying Fish para que pueda hacer las Flying Fish Boots.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 103,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 2x Flying Fish",
+      "count": 2,
+      "entityIdLocation": "alexsmobs:flying_fish"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:flying_fish_boots",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

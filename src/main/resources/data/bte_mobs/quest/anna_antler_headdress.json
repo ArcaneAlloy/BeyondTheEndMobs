@@ -1,0 +1,26 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Entrega a Anna 2 Moose Antler para que pueda hacer un Antler Headdress.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 107,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 2x Moose Antler",
+      "count": 2,
+      "entityIdLocation": "alexsmobs:moose_antler"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:moose_headgear",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

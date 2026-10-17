@@ -3,7 +3,7 @@
   "category": "ALL",
   "enchantment": "illagerrevolutionmod:insight",
   "texture": "bte_mobs:textures/enchantments/insight_4.png",
-  "eyes": 0,
+  "eyes": 19,
   "level": 4,
   "experience": 21,
   "ingredients": [

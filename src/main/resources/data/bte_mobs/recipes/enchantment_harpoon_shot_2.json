@@ -3,9 +3,9 @@
   "category": "ALL",
   "enchantment": "dungeons_gear:harpoon_shot",
   "texture": "bte_mobs:textures/enchantments/harpoon_shot_2.png",
-  "eyes": 0,
+  "eyes": 13,
   "level": 2,
-  "experience": 5,
+  "experience": 21,
   "ingredients": [
     {
       "item": "upgrade_aquatic:thrasher_tooth",

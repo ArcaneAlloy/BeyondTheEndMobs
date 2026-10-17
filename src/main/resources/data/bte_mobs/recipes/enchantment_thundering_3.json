@@ -3,9 +3,9 @@
   "category": "ALL",
   "enchantment": "dungeons_gear:thundering",
   "texture": "bte_mobs:textures/enchantments/thundering_3.png",
-  "eyes": 0,
+  "eyes": 16,
   "level": 3,
-  "experience": 5,
+  "experience": 21,
   "ingredients": [
     {
       "item": "minecraft:lightning_rod",

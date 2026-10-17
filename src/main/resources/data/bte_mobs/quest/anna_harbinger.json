@@ -1,0 +1,36 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Harbinger en la Ancient Factory.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 443,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Harbinger",
+      "count": 1,
+      "entityIdLocation": "cataclysm:the_harbinger"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:wither_assault_shoulder_weapon",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:laser_gatling",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_wither",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 50
+}

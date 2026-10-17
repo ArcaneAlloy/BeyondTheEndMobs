@@ -1378,11 +1378,18 @@ public final class WelcomeClient {
         /** Abrir con su botón el menú de Ojos de Ender o el libro de quests (pasos que solo ve el cliente). */
         @SubscribeEvent
         public static void onWelcomeScreenOpening(ScreenEvent.Opening event) {
-            // Esc mientras se ve la guía del tutorial: se pregunta si quiere saltarla (no al perder el foco la ventana)
+            // Esc mientras se ve la guía de un NPC (no al perder el foco la ventana): la salta.
+            // Si es la del paso del tutorial se pregunta antes; si solo la estaba volviendo a ver, se corta sin más.
             if (event.getNewScreen() instanceof net.minecraft.client.gui.screens.PauseScreen && event.getCurrentScreen() == null
-                    && tutorialGuideRunning() && com.mojang.blaze3d.platform.InputConstants.isKeyDown(
+                    && guideNpc != null && introRunning() && com.mojang.blaze3d.platform.InputConstants.isKeyDown(
                     Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE)) {
-                event.setNewScreen(skipGuideScreen(guideNpc, null));
+                if (tutorialGuideRunning()) {
+                    event.setNewScreen(skipGuideScreen(guideNpc, null));
+                } else {
+                    stopGuide();
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F, 0.4F));
+                    event.setCanceled(true);
+                }
                 return;
             }
             WelcomeHandler.Step target = currentTarget();
@@ -1952,7 +1959,7 @@ public final class WelcomeClient {
             dh = Math.round(image[1] * s);
         }
         int imageBlock = image != null ? dh + 12 : 0;            // imagen + hueco hasta el título
-        int hintsH = 14 + 9 + (active ? 12 : 0);                  // "continuar" (+ "saltar")
+        int hintsH = 14 + 9 + (active || guideNpc != null ? 12 : 0); // "continuar" (+ "saltar")
         int contentH = imageBlock + titleH + 8 + subH + hintsH;
 
         // Zona libre: desde arriba hasta encima de la vida, la armadura, la comida y la barra rápida
@@ -2022,7 +2029,12 @@ public final class WelcomeClient {
         int ha = Math.max(4, (int) (alpha * blink * 255)) << 24;
         Component cont = Component.translatable("gui.bte_mobs.welcome.continue", mc.options.keyAttack.getTranslatedKeyMessage());
         font.drawShadow(poseStack, cont, (screenWidth - font.width(cont)) / 2.0F, hintY, 0xFFD700 | ha);
-        if (active) {
+        if (guideNpc != null) {
+            // Guía de un NPC (también al volver a verla): Esc la salta
+            int sa = Math.max(4, (int) (alpha * 0.75F * 255)) << 24;
+            Component skip = Component.translatable("gui.bte_mobs.tutorial.skip_hint", Component.literal("Esc"), guideName(guideNpc));
+            font.drawShadow(poseStack, skip, (screenWidth - font.width(skip)) / 2.0F, hintY + 12, 0xCCCCCC | sa);
+        } else if (active) {
             int sa = Math.max(4, (int) (alpha * 0.6F * 255)) << 24;
             Component skip = Component.translatable("gui.bte_mobs.welcome.skip_hint", SKIP_KEY.getTranslatedKeyMessage());
             font.drawShadow(poseStack, skip, (screenWidth - font.width(skip)) / 2.0F, hintY + 12, 0xAAAAAA | sa);

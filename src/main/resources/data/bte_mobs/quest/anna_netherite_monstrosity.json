@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota a la Netherite Monstrosity y entrega su drop a Anna.",
+  "description": "Derrota a la Netherite Monstrosity y entrega su drop a Anna.",
   "difficult": "HARD",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",
@@ -15,6 +15,21 @@
     }
   ],
   "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "monstersandmushrooms:meangreenwand",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "monstersandmushrooms:endwand",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:infernal_forge",
+      "recipeType": "blacksmith_upgrade"
+    },
     {
       "type": "UNLOCK_RECIPES_BY_INGREDIENT",
       "ingredient": "minecraft:netherite_ingot"

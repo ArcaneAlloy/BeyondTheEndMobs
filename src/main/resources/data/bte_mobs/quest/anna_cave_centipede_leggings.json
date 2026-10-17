@@ -1,0 +1,26 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Entrega a Anna 7 Centipede Leg para que pueda hacer los Cave Centipede Leggings.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 108,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 7x Centipede Leg",
+      "count": 7,
+      "entityIdLocation": "alexsmobs:centipede_leg"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:centipede_leggings",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

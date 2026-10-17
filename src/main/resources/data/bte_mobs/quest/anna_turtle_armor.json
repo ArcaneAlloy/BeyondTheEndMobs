@@ -1,0 +1,26 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Entrega a Anna un Scute para que pueda hacer la armadura de tortuga.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 105,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Scute",
+      "count": 1,
+      "entityIdLocation": "minecraft:scute"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/turtle_armor",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

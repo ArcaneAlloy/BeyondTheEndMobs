@@ -48,13 +48,14 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
         this.addSlot(new CraftInputSlot(container, 0, 210, 18){
             @Override
             public boolean mayPlace(ItemStack itemStack) {
-                return itemStack.is(Items.REDSTONE);
+                // Redstone y Glowstone son excluyentes
+                return itemStack.is(Items.REDSTONE) && WarlockPotionMenu.this.craftSlots.getItem(1).isEmpty();
             }
         });
         this.addSlot(new CraftInputSlot(container, 1, 210, 39){
             @Override
             public boolean mayPlace(ItemStack itemStack) {
-                return itemStack.is(Items.GLOWSTONE_DUST);
+                return itemStack.is(Items.GLOWSTONE_DUST) && WarlockPotionMenu.this.craftSlots.getItem(0).isEmpty();
             }
         });
         this.addSlot(new CraftInputSlot(container, 2, 233, 23){

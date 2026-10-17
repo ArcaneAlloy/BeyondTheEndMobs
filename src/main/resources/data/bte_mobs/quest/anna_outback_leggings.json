@@ -1,0 +1,26 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Entrega a Anna 3 Kangaroo Hide para que pueda hacer los Outback Leggings.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 102,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 3x Kangaroo Hide",
+      "count": 3,
+      "entityIdLocation": "alexsmobs:kangaroo_hide"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:emu_leggings",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

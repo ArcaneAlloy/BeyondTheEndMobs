@@ -1,6 +1,6 @@
 {
   "entityType": "DRUID",
-  "description": "Oriana vela por el equilibrio de la naturaleza, y cada criatura extraordinaria puede esconder una amenaza o una pista. Enfréntate a este adversario y demuestra que estás a la altura: derrota al Mutant Jungle Zombie.",
+  "description": "Derrota al Mutant Jungle Zombie.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
@@ -15,6 +15,11 @@
     }
   ],
   "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "mutantmore:leafblower",
+      "recipeType": "blacksmith"
+    },
     {
       "type": "ITEM",
       "itemId": "create:experience_block",

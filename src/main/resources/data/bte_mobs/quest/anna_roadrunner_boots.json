@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Entrega a Anna 4 Roadrunner Feather para que pueda hacer las Roadrunner Boots.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 104,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Roadrunner Feather",
+      "count": 4,
+      "entityIdLocation": "alexsmobs:roadrunner_feather"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:boots_of_swiftness",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:roadrunner_boots",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

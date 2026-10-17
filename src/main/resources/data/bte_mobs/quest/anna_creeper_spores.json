@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "La forja de Anna puede alcanzar nuevas cotas, pero necesita materiales y conocimientos que no se encuentran en cualquier lugar. Explora, recupera lo que busca y llévaselo: consigue Creeper Spores matando a un Creeper con su propia explosión y entrégaselas a Anna.",
+  "description": "Consigue Creeper Spores matando a un Creeper con su propia explosión y entrégaselas a Anna.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
@@ -15,6 +15,11 @@
     }
   ],
   "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:battlestaff_of_terror",
+      "recipeType": "blacksmith_upgrade"
+    },
     {
       "type": "UNLOCK_RECIPE",
       "recipeId": "#bte_mobs:quest/griefer_armor",

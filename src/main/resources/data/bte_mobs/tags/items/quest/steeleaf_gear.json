@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "twilightforest:steeleaf_sword",
+    "twilightforest:steeleaf_axe",
+    "twilightforest:steeleaf_pickaxe",
+    "twilightforest:steeleaf_shovel",
+    "twilightforest:steeleaf_hoe",
+    "twilightforest:steeleaf_helmet",
+    "twilightforest:steeleaf_chestplate",
+    "twilightforest:steeleaf_leggings",
+    "twilightforest:steeleaf_boots"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Entrega a Anna 8 Crocodile Scute para que pueda hacer un Crocodile Chestplate.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 109,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 8x Crocodile Scute",
+      "count": 8,
+      "entityIdLocation": "alexsmobs:crocodile_scute"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:crocodile_chestplate",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [],
+  "experience": 10
+}

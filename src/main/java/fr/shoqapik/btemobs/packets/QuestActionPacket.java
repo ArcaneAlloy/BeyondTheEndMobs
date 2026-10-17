@@ -145,6 +145,13 @@ public class QuestActionPacket {
         cap.completeQuest(quest.id);
         cap.completeQuest(quest);
         unlockDeferredRecipes(player, cap, quest.id);
+        // Recetas del Blacksmith que dependían de un objeto que bloqueaba esta quest (p. ej. Cocktail Cutlass <- Diamond Sword)
+        List<Recipe<?>> inherited = QuestRecipeLocks.inheritedRecipesFor(
+                player.getServer().getRecipeManager(), QuestManager.getQuests(), quest);
+        if (!inherited.isEmpty()) {
+            RecipeSharing.unlockForEveryone(inherited);
+            BteMobsMod.LOGGER.info("Quest {}: desbloqueadas {} recetas que dependían de ella", quest.id, inherited.size());
+        }
         cap.checkChangedInventory();
 
         // Aviso a todo el lobby

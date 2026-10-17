@@ -241,6 +241,18 @@ public class BteMobsMod {
         List<Recipe<?>> list = new ArrayList<>(getServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_RECIPE.get()));
         list.addAll(ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(BteMobsRecipeTypes.BLACKSMITH_UPGRADE_RECIPE.get()));
 
+        // Recetas que heredan el bloqueo de una quest ya reclamada (mundos de antes de este cambio): se desbloquean ya
+        fr.shoqapik.btemobs.capability.RecipeCapability<?> unlockCap = fr.shoqapik.btemobs.capability.RecipeCapability.get(ctx.get().getSender());
+        if (unlockCap != null) {
+            java.util.Map<ResourceLocation, fr.shoqapik.btemobs.quest.Quest> inherited = fr.shoqapik.btemobs.quest.QuestRecipeLocks.inheritedLocks(
+                    getServer().getRecipeManager(), fr.shoqapik.btemobs.quest.QuestManager.getQuests());
+            for (java.util.Map.Entry<ResourceLocation, fr.shoqapik.btemobs.quest.Quest> e : inherited.entrySet()) {
+                if (ctx.get().getSender().getRecipeBook().contains(e.getKey())) continue;
+                fr.shoqapik.btemobs.capability.QuestStateData st = unlockCap.findState(e.getValue().getId());
+                if (st != null && st.isReclaim) getServer().getRecipeManager().byKey(e.getKey()).ifPresent(recipes::add);
+            }
+        }
+
         for(Recipe<?> recipe : list) {
             if(ctx.get().getSender().getRecipeBook().contains(recipe.getId())) continue;
             // Las recetas que son recompensa de una quest solo se desbloquean completándola

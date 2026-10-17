@@ -3,9 +3,9 @@
   "category": "ALL",
   "enchantment": "dragonenchants:devour",
   "texture": "bte_mobs:textures/enchantments/devour_2.png",
-  "eyes": 0,
+  "eyes": 13,
   "level": 2,
-  "experience": 5,
+  "experience": 21,
   "ingredients": [
     {
       "item": "alexsmobs:soul_heart",

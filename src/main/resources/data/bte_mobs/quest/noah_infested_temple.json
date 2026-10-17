@@ -1,6 +1,6 @@
 {
   "entityType": "WARLOCK",
-  "description": "Noah advierte que ciertas fuerzas no deben subestimarse. Prepárate para el peligro, alcanza tu objetivo y supera la amenaza: el Lich ha infestado un templo antiguo. Llega a la cima y derrótalo para abrir el portal al Twilight Forest.",
+  "description": "El Lich ha infestado un templo antiguo. Llega a la cima y derrótalo para abrir el portal al Twilight Forest.",
   "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
@@ -15,6 +15,11 @@
     }
   ],
   "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/steeleaf_gear",
+      "recipeType": "blacksmith"
+    },
     {
       "type": "UNLOCK_ZONE",
       "zoneId": "bte_mobs:the_twilight_forest"

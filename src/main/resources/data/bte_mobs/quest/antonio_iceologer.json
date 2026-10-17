@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: derrota a un Iceologer.",
+  "description": "Derrota a un Iceologer.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
@@ -15,6 +15,11 @@
     }
   ],
   "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:ice_wand",
+      "recipeType": "blacksmith"
+    },
     {
       "type": "ITEM",
       "itemId": "supplementaries:cartographers_quill",

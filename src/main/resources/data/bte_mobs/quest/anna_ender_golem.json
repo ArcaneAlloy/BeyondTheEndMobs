@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Ender Golem en el End para conseguir su Void Core.",
+  "difficult": "HARD",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 640,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Ender Golem",
+      "count": 1,
+      "entityIdLocation": "cataclysm:ender_golem"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:void_core_fragment",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 50
+}

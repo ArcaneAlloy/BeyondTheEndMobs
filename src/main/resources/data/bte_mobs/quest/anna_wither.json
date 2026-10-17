@@ -1,0 +1,25 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Invoca al Wither y derrótalo para conseguir su Nether Star.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 442,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Wither",
+      "count": 1,
+      "entityIdLocation": "minecraft:wither"
+    }
+  ],
+  "rewards": [],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 30
+}

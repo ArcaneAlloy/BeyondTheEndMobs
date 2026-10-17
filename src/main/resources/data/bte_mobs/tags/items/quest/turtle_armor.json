@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:turtle_helmet",
+    "fullturtlearmor:turtle_chestplate",
+    "fullturtlearmor:turtle_leggings",
+    "fullturtlearmor:turtle_boots"
+  ]
+}

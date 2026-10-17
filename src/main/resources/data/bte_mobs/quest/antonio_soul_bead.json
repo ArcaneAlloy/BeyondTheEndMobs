@@ -1,6 +1,6 @@
 {
   "entityType": "EXPLORER",
-  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: consigue un Soul Bead y entrégaselo a Antonio.",
+  "description": "Consigue un Soul Bead y entrégaselo a Antonio.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",
@@ -15,6 +15,17 @@
     }
   ],
   "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:lightning_rod",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:harvester",
+      "recipeType": "blacksmith",
+      "requiresQuest": "bte_mobs:anna_creeper_spores"
+    },
     {
       "type": "ITEM",
       "itemId": "supplementaries:cartographers_quill",

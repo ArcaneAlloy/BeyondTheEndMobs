@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota a un Spectre en el End.",
+  "description": "Derrota a un Spectre en el End.",
   "difficult": "HARD",
   "dimension": "END",
   "toolTip": "tooltip de ejemplo",
@@ -15,6 +15,11 @@
     }
   ],
   "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "dungeons_gear:corrupted_pumpkin",
+      "recipeType": "blacksmith"
+    },
     {
       "type": "UNLOCK_RECIPE",
       "recipeId": "dungeons_gear:sabrewing",

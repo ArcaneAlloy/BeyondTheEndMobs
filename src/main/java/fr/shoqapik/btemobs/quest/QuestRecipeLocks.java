@@ -37,11 +37,122 @@ public final class QuestRecipeLocks {
     private static Collection<Quest> cachedQuests;
     private static Set<ResourceLocation> cachedLocked;
 
+    private static RecipeManager inheritedManager;
+    private static Collection<Quest> inheritedQuests;
+    private static Map<ResourceLocation, Quest> cachedInherited;
+
     /** Invalida la caché (al recargar quests o recetas). */
     public static void invalidate() {
         cachedManager = null;
         cachedQuests = null;
         cachedLocked = null;
+        inheritedManager = null;
+        inheritedQuests = null;
+        cachedInherited = null;
+    }
+
+    /** Recetas del Blacksmith que heredan el bloqueo de su base / ingredientes. */
+    private static final List<String> BLACKSMITH_RECIPE_TYPES = List.of("blacksmith", "blacksmith_upgrade");
+
+    /**
+     * Bloqueos heredados: recetas del Blacksmith que no son recompensa de ninguna quest, pero que usan como base o
+     * ingrediente un objeto que SOLO se fabrica con recetas bloqueadas por una quest (p. ej. la Cocktail Cutlass sale
+     * de la Diamond Sword, que bloquea Carminite Giant Block). Quedan bloqueadas por esa misma quest.
+     *
+     *  - Funciona en cadena (Gauntlet of Maelstrom <- Gauntlet of Bulwark <- Bulwark of the Flame <- Netherite Shield).
+     *  - Si el objeto se puede fabricar con alguna receta no bloqueada, de cualquier tipo (mesa de crafteo, horno,
+     *    otro NPC...), no hereda nada: se puede conseguir sin la quest.
+     *  - Se desbloquean al reclamar esa quest (y, en mundos donde ya estaba reclamada, al comprobar las recetas).
+     *
+     * Devuelve receta -> quest que la bloquea.
+     */
+    public static Map<ResourceLocation, Quest> inheritedLocks(RecipeManager manager, Collection<Quest> quests) {
+        if (cachedInherited != null && inheritedManager == manager && inheritedQuests == quests) return cachedInherited;
+
+        // Receta -> quest, de los bloqueos directos y por ingrediente
+        Map<ResourceLocation, Quest> lockedBy = new HashMap<>();
+        for (Quest q : quests) {
+            for (RewardData r : q.getRewards()) {
+                if (!(r instanceof UnlockRecipeRewardData) && !(r instanceof IngredientRecipesRewardData)) continue;
+                for (Recipe<?> recipe : recipesFor(manager, quests, r)) lockedBy.putIfAbsent(recipe.getId(), q);
+            }
+        }
+
+        // Todas las recetas (de cualquier tipo) que fabrican cada objeto
+        Map<net.minecraft.world.item.Item, List<Recipe<?>>> producers = new HashMap<>();
+        for (Recipe<?> recipe : manager.getRecipes()) {
+            ItemStack result;
+            try {
+                result = recipe.getResultItem();
+            } catch (Throwable t) {
+                continue;
+            }
+            if (result == null || result.isEmpty()) continue;
+            producers.computeIfAbsent(result.getItem(), k -> new ArrayList<>()).add(recipe);
+        }
+
+        Map<ResourceLocation, Quest> inherited = new HashMap<>();
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            for (Recipe<?> recipe : manager.getRecipes()) {
+                if (!BLACKSMITH_RECIPE_TYPES.contains(recipe.getType().toString())) continue;
+                if (lockedBy.containsKey(recipe.getId())) continue;
+                Quest quest = null;
+                for (Ingredient ing : recipe.getIngredients()) {
+                    ItemStack[] items = ing.getItems();
+                    if (items.length == 0) continue;
+                    // El ingrediente solo cuenta si TODAS sus opciones están bloqueadas
+                    Quest ingQuest = null;
+                    for (ItemStack stack : items) {
+                        Quest q = itemLockedBy(stack.getItem(), producers, lockedBy);
+                        if (q == null) {
+                            ingQuest = null;
+                            break;
+                        }
+                        if (ingQuest == null) ingQuest = q;
+                    }
+                    if (ingQuest != null) {
+                        quest = ingQuest;
+                        break;
+                    }
+                }
+                if (quest != null) {
+                    lockedBy.put(recipe.getId(), quest);
+                    inherited.put(recipe.getId(), quest);
+                    changed = true;
+                }
+            }
+        }
+        inheritedManager = manager;
+        inheritedQuests = quests;
+        cachedInherited = inherited;
+        return inherited;
+    }
+
+    /** Quest que bloquea un objeto, si todas las recetas que lo fabrican están bloqueadas (null si no). */
+    private static Quest itemLockedBy(net.minecraft.world.item.Item item,
+                                      Map<net.minecraft.world.item.Item, List<Recipe<?>>> producers,
+                                      Map<ResourceLocation, Quest> lockedBy) {
+        List<Recipe<?>> list = producers.get(item);
+        if (list == null || list.isEmpty()) return null;
+        Quest quest = null;
+        for (Recipe<?> r : list) {
+            Quest q = lockedBy.get(r.getId());
+            if (q == null) return null;
+            if (quest == null) quest = q;
+        }
+        return quest;
+    }
+
+    /** Recetas heredadas que desbloquea reclamar esta quest. */
+    public static List<Recipe<?>> inheritedRecipesFor(RecipeManager manager, Collection<Quest> quests, Quest quest) {
+        List<Recipe<?>> list = new ArrayList<>();
+        for (Map.Entry<ResourceLocation, Quest> e : inheritedLocks(manager, quests).entrySet()) {
+            if (!e.getValue().getId().equals(quest.getId())) continue;
+            manager.byKey(e.getKey()).ifPresent(list::add);
+        }
+        return list;
     }
 
     public static RecipeType<?> recipeTypeFor(String name) {
@@ -123,6 +234,8 @@ public final class QuestRecipeLocks {
                 }
             }
         }
+        // Y las que heredan el bloqueo de su base / ingredientes
+        ids.addAll(inheritedLocks(manager, quests).keySet());
         cachedManager = manager;
         cachedQuests = quests;
         cachedLocked = ids;

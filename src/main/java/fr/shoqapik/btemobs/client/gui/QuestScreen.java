@@ -184,6 +184,19 @@ public class QuestScreen extends Screen {
 
     }
 
+    /** Quest que hay que dejar seleccionada (y a la vista) al abrir la pantalla; ver focusQuest. */
+    @Nullable
+    private ResourceLocation focusQuestId;
+
+    /**
+     * Abre la pantalla con esta quest ya seleccionada y la lista desplazada hasta ella (p. ej. desde una receta
+     * bloqueada de EnderEyesGUI). Se selecciona aunque esté bloqueada, para poder ver qué pide.
+     */
+    public QuestScreen focusQuest(@Nullable ResourceLocation questId) {
+        this.focusQuestId = questId;
+        return this;
+    }
+
     /** Solo consulta (botón de quests del inventario): mismas quests, pero sin poder reclamarlas. */
     public QuestScreen(BteNpcType bteNpcType, @Nullable net.minecraft.client.gui.screens.Screen parent) {
         this(-1, bteNpcType, new java.util.HashMap<>());
@@ -327,6 +340,19 @@ public class QuestScreen extends Screen {
         });
         this.addRenderableWidget(this.up);
         this.addRenderableWidget(this.down);
+        if (this.focusQuestId != null) {
+            for (int i = 0; i < sortedQuests.size() && i < buttons.size(); i++) {
+                if (!this.focusQuestId.equals(sortedQuests.get(i).getKey().getId())) continue;
+                this.currentQuest = sortedQuests.get(i).getKey();
+                for (Button b : buttons) ((CustomButton) b).isSelect = false;
+                ((CustomButton) buttons.get(i)).isSelect = true;
+                // Que quede a la vista, hacia la mitad de la lista (layoutButtons lo ajusta a los límites)
+                this.scrolledY = Math.max(0, i - VISIBLE_QUESTS / 2);
+                refreshButton();
+                break;
+            }
+            this.focusQuestId = null;
+        }
         this.layoutButtons();
         this.stateQuest.visible = false;
         this.trackBox.visible = false;
