@@ -1,0 +1,37 @@
+{
+  "entityType": "DRUID",
+  "description": "Consigue Chorus Dust de un Endergrade en el End y entrégaselo a Oriana.",
+  "difficult": "MEDIUM",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 647,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Chorus Dust",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:chorus_dust"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/chorus_dust_artifacts",
+      "recipeType": "blacksmith"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "#bte_mobs:quest/gnome_armor",
+      "recipeType": "blacksmith_upgrade",
+      "requiresQuest": "bte_mobs:anna_netherite_monstrosity"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 30
+}

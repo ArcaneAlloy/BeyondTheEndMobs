@@ -1,0 +1,42 @@
+{
+  "entityType": "DRUID",
+  "description": "Entrega a Oriana los materiales del Haunted Bell para invocar criaturas en el altar del Coliseum.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 26,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Campana",
+      "count": 1,
+      "entityIdLocation": "minecraft:bell"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Soul Bead",
+      "count": 1,
+      "entityIdLocation": "quark:soul_bead"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "altar_of_summoning:hauntedbell",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "altar_of_summoning:hauntedbell",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_gladius_compass",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

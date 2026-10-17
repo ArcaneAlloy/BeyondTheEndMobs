@@ -1,0 +1,54 @@
+{
+  "entityType": "DRUID",
+  "description": "Entrega a Oriana los materiales del Dusk Key para invocar criaturas en el altar del Coliseum.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 24,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 2x Fragmento de Amatista",
+      "count": 2,
+      "entityIdLocation": "minecraft:amethyst_shard"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 2x Piedra Negra",
+      "count": 2,
+      "entityIdLocation": "minecraft:blackstone"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Allium",
+      "count": 1,
+      "entityIdLocation": "minecraft:allium"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Mimic Key",
+      "count": 1,
+      "entityIdLocation": "mimic:mimic_key"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "altar_of_summoning:duskkey",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "altar_of_summoning:duskkey",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_gladius_compass",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

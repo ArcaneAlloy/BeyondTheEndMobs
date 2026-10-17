@@ -1,0 +1,54 @@
+{
+  "entityType": "DRUID",
+  "description": "Entrega a Oriana los materiales del Fossil Bait para invocar criaturas en el altar del Coliseum.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 25,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 4x Carne Podrida",
+      "count": 4,
+      "entityIdLocation": "minecraft:rotten_flesh"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 2x Hueso",
+      "count": 2,
+      "entityIdLocation": "minecraft:bone"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 2x Ojo de Araña",
+      "count": 2,
+      "entityIdLocation": "minecraft:spider_eye"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Pez Tropical",
+      "count": 1,
+      "entityIdLocation": "minecraft:tropical_fish"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "altar_of_summoning:fossilbait",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "altar_of_summoning:fossilbait",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_gladius_compass",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

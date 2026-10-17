@@ -119,16 +119,41 @@ public final class QuestRecipeLinks {
         return lines.size() > 1 ? new ArrayList<>(lines.subList(1, lines.size())) : List.of();
     }
 
+    /**
+     * Ids de las quests que esta quest pide completar antes (requisitos PARENT_QUEST), en el mismo orden en que
+     * aparecen en questRequirements. Sirve para saber si cada una de ellas está ya visible o aún bloqueada.
+     */
+    public static List<String> parentQuests(String questId) {
+        Map.Entry<Quest, QuestStateData> e = find(questId);
+        if (e == null || e.getValue().unlockStates == null) return List.of();
+        List<String> ids = new ArrayList<>();
+        for (fr.shoqapik.btemobs.capability.UnlockState u : e.getValue().unlockStates) {
+            if (u.type == fr.shoqapik.btemobs.quest.ConditionUnlockData.Type.PARENT_QUEST) ids.add(u.id);
+        }
+        return ids;
+    }
+
     /** ¿La quest ya está completada (aunque falte reclamarla)? */
     public static boolean isQuestComplete(String questId) {
         Map.Entry<Quest, QuestStateData> e = find(questId);
         return e != null && e.getValue().isComplete;
     }
 
+    /**
+     * ¿Se puede abrir la quest desde fuera? Solo cuando ya está disponible: si aún le falta algún requisito (otra
+     * quest, abrir un portal...) abrirla sería un spoiler (en el libro sale bloqueada).
+     */
+    public static boolean canOpenQuest(String questId) {
+        Map.Entry<Quest, QuestStateData> e = find(questId);
+        if (e == null) return false;
+        List<fr.shoqapik.btemobs.capability.UnlockState> states = e.getValue().unlockStates;
+        return states == null || states.stream().allMatch(u -> u.unlock);
+    }
+
     /** Abre la quest en el libro de quests (solo consulta). Al cerrarlo se vuelve a parent. */
     public static boolean openQuest(String questId, @Nullable Screen parent) {
         Map.Entry<Quest, QuestStateData> e = find(questId);
-        if (e == null) return false;
+        if (e == null || !canOpenQuest(questId)) return false;
         BteNpcType npc = e.getKey().getEntityType();
         Minecraft.getInstance().setScreen(new QuestScreen(npc, parent).focusQuest(e.getKey().getId()));
         return true;

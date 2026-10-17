@@ -382,7 +382,10 @@ public class QuestScreen extends Screen {
         }
         i = 0;
         int rewardsStartX = rewardsLeftX(x);
+        // Una misma receta/tag en varias recompensas (p. ej. blacksmith y blacksmith_upgrade) se muestra una sola vez
+        java.util.Set<String> shownRecipes = new java.util.HashSet<>();
         for (RewardData data : this.currentQuest.getRewards()){
+            if (data.type == RewardData.Type.UNLOCK_RECIPE && !shownRecipes.add(data.getObjectId())) continue;
             ButtonReward buttonReward = new ButtonReward(rewardsStartX + REWARD_SPACING * i, y + columnsLabelY() + 13 + HEADER_OFFSET_Y + REWARDS_ITEMS_GAP_Y, SLOT_SIZE, SLOT_SIZE, data, minecraft);
             slotRewards.add(buttonReward);
             i++;

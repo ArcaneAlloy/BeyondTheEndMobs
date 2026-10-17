@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Ender Guardian en la Ruined Citadel del End.",
+  "difficult": "HARD",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 645,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Ender Guardian",
+      "count": 1,
+      "entityIdLocation": "cataclysm:ender_guardian"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:gauntlet_of_guard",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 50
+}

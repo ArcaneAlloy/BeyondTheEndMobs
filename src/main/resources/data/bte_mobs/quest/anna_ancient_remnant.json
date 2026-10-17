@@ -1,0 +1,35 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Ancient Remnant en la Cursed Pyramid.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 646,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Ancient Remnant",
+      "count": 1,
+      "entityIdLocation": "cataclysm:ancient_remnant"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "cataclysm:gauntlet_of_maelstrom",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_ignis",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "bte_mobs:anna_ender_guardian",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 60
+}

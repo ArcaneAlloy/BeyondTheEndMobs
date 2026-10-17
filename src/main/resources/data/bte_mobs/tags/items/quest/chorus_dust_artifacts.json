@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "dungeons_gear:death_cap_mushroom",
+    "dungeons_gear:light_feather",
+    "dungeons_gear:shock_powder",
+    "dungeons_gear:totem_of_soul_protection"
+  ]
+}

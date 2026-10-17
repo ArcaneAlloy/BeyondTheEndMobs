@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "monstersandmushrooms:gnome_helmet",
+    "monstersandmushrooms:gnome_chestplate",
+    "monstersandmushrooms:gnome_leggings",
+    "monstersandmushrooms:gnome_boots"
+  ]
+}

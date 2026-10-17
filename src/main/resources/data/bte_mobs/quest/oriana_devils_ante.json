@@ -1,0 +1,42 @@
+{
+  "entityType": "DRUID",
+  "description": "Entrega a Oriana los materiales del Devil's Ante para invocar criaturas en el altar del Coliseum.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 23,
+  "tasks": [
+    {
+      "type": "COLLECT",
+      "description": "Entrega 8x Cuarzo del Nether",
+      "count": 8,
+      "entityIdLocation": "minecraft:quartz"
+    },
+    {
+      "type": "COLLECT",
+      "description": "Entrega 1x Blood Sac",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:blood_sac"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "altar_of_summoning:devilsante",
+      "count": 1
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "altar_of_summoning:devilsante",
+      "recipeType": "blacksmith"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_gladius_compass",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}
