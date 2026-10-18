@@ -1,7 +1,7 @@
 {
   "entityType": "EXPLORER",
-  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: los saqueadores guardan su fortaleza a cualquier precio. Entrega a Antonio un Tótem de la Inmortalidad y te dirá dónde está.",
-  "difficult": "HARD",
+  "description": "Los saqueadores guardan su fortaleza a cualquier precio. Entrega a Antonio un Tótem de la Inmortalidad y te dirá dónde está.",
+  "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",

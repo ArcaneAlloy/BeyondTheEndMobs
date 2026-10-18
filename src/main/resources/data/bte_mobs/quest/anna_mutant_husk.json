@@ -1,7 +1,7 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota a un Mutant Husk.",
-  "difficult": "MEDIUM",
+  "description": "Derrota a un Mutant Husk.",
+  "difficult": "HARD",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",

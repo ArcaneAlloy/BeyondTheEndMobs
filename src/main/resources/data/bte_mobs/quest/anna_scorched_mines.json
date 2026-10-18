@@ -1,7 +1,7 @@
 {
   "entityType": "BLACKSMITH",
   "description": "Encuentra el Manual de Forja Abrasado en los dormitorios de las Scorched Mines y entrégaselo a Anna.",
-  "difficult": "HARD",
+  "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "MAIN_QUEST",

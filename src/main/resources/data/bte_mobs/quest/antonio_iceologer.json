@@ -1,7 +1,7 @@
 {
   "entityType": "EXPLORER",
   "description": "Derrota a un Iceologer.",
-  "difficult": "EASY",
+  "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",

@@ -1,7 +1,7 @@
 {
   "entityType": "BLACKSMITH",
   "description": "Consigue Creeper Spores matando a un Creeper con su propia explosión y entrégaselas a Anna.",
-  "difficult": "EASY",
+  "difficult": "MEDIUM",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",
