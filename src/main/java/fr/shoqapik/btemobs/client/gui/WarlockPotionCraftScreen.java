@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPotionMenu> implements IGhostRecipe {
+public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPotionMenu> implements IGhostRecipe, JeiExtraAreas {
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/cauldron_screen_1.png");
     public static final Component ALL_RECIPES_TOOLTIP = Component.translatable("gui.recipebook.toggleRecipes.all");
     public static final Component ONLY_CRAFTABLES_TOOLTIP = Component.translatable("gui.recipebook.toggleRecipes.craftable");
@@ -414,5 +414,17 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
     @Override
     public void removed() {
         super.removed();
+    }
+
+    /** Pestanas de la izquierda (fuera del imageWidth): JEI no debe dibujar encima. */
+    @Override
+    public java.util.List<net.minecraft.client.renderer.Rect2i> getJeiExtraAreas() {
+        java.util.List<net.minecraft.client.renderer.Rect2i> areas = new java.util.ArrayList<>();
+        areas.add(new net.minecraft.client.renderer.Rect2i(this.leftPos, this.topPos, this.imageWidth, this.imageHeight));
+        for (CategoryButton tab : this.tabButtons) {
+            // La pestana seleccionada se dibuja 2 px a la izquierda
+            areas.add(new net.minecraft.client.renderer.Rect2i(tab.x - 2, tab.y, tab.getWidth() + 2, tab.getHeight()));
+        }
+        return areas;
     }
 }

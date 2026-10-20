@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> extends AbstractContainerScreen<T> implements RecipeUpdateListener {
+public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> extends AbstractContainerScreen<T> implements RecipeUpdateListener, JeiExtraAreas {
     protected final BteRecipeBookComponent recipeBookComponent = new BteRecipeBookComponent();
     protected Button craftButton;
     protected boolean widthTooNarrow;
@@ -236,5 +236,20 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
             this.searchBox.x = (this.width - 147) / 2 - 86 + 28;
             this.searchBox.y = (this.height - 166) / 2 + 14;
         }
+    }
+
+    /**
+     * Panel del recipe book y sus pestanas, a la izquierda del imageWidth: JEI no debe dibujar encima (antes los
+     * favoritos de JEI tapaban las pestanas). Misma posicion que RecipeBookComponent: el panel mide 147x166 y las
+     * pestanas salen 30 px a su izquierda.
+     */
+    @Override
+    public java.util.List<net.minecraft.client.renderer.Rect2i> getJeiExtraAreas() {
+        int xOffset = this.widthTooNarrow ? 0 : 86;
+        int panelX = (this.width - 147) / 2 - xOffset;
+        int panelY = (this.height - 166) / 2;
+        return java.util.List.of(
+                new net.minecraft.client.renderer.Rect2i(panelX - 30, panelY, 147 + 30, 166),
+                new net.minecraft.client.renderer.Rect2i(this.leftPos, this.topPos, this.imageWidth, this.imageHeight));
     }
 }

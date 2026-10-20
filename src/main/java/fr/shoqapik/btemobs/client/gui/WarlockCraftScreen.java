@@ -41,7 +41,7 @@ import java.util.List;
 import static fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.*;
 
 
-public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu>  implements IGhostRecipe {
+public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu>  implements IGhostRecipe, JeiExtraAreas {
 
     public static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/warlock_screen.png");
     private static final Component SEARCH_HINT = Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
@@ -491,5 +491,17 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
     @Override
     public void removed() {
         super.removed();
+    }
+
+    /** Pestanas de la izquierda (fuera del imageWidth): JEI no debe dibujar encima. */
+    @Override
+    public java.util.List<net.minecraft.client.renderer.Rect2i> getJeiExtraAreas() {
+        java.util.List<net.minecraft.client.renderer.Rect2i> areas = new java.util.ArrayList<>();
+        areas.add(new net.minecraft.client.renderer.Rect2i(this.leftPos, this.topPos, this.imageWidth, this.imageHeight));
+        for (CategoryButton tab : this.tabButtons) {
+            // La pestana seleccionada se dibuja 2 px a la izquierda
+            areas.add(new net.minecraft.client.renderer.Rect2i(tab.x - 2, tab.y, tab.getWidth() + 2, tab.getHeight()));
+        }
+        return areas;
     }
 }

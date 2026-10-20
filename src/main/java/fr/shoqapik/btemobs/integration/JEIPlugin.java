@@ -56,6 +56,61 @@ public class JEIPlugin implements IModPlugin {
         return true;
     }
 
+    /**
+     * Las interfaces de crafteo de los NPCs tienen panel de recetas y pestanas fuera de su imageWidth; sin esto los
+     * favoritos y la lista de ingredientes de JEI se dibujaban encima.
+     */
+    @Override
+    public void registerGuiHandlers(mezz.jei.api.registration.IGuiHandlerRegistration registration) {
+        addExtraAreas(registration, fr.shoqapik.btemobs.client.gui.BlacksmithCraftScreen.class);
+        addExtraAreas(registration, fr.shoqapik.btemobs.client.gui.ExplorerTableScreen.class);
+        addExtraAreas(registration, fr.shoqapik.btemobs.client.gui.DruidScreen.class);
+        addExtraAreas(registration, fr.shoqapik.btemobs.client.gui.WarlockCraftScreen.class);
+        addExtraAreas(registration, fr.shoqapik.btemobs.client.gui.WarlockPotionCraftScreen.class);
+    }
+
+    private static <T extends net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?>>
+    void addExtraAreas(mezz.jei.api.registration.IGuiHandlerRegistration registration, Class<T> screenClass) {
+        registration.addGuiContainerHandler(screenClass, new mezz.jei.api.gui.handlers.IGuiContainerHandler<T>() {
+            @Override
+            public List<net.minecraft.client.renderer.Rect2i> getGuiExtraAreas(T screen) {
+                return screen instanceof fr.shoqapik.btemobs.client.gui.JeiExtraAreas areas ? areas.getJeiExtraAreas() : List.of();
+            }
+        });
+        // Ademas le decimos a JEI que la interfaz empieza en el borde izquierdo de las pestanas: los favoritos
+        // (a la izquierda) y la lista de items (a la derecha) se colocan fuera de toda la interfaz, no solo
+        // fuera del panel de inventario.
+        registration.addGuiScreenHandler(screenClass, JEIPlugin::fullGuiProperties);
+    }
+
+    private static mezz.jei.api.gui.handlers.IGuiProperties fullGuiProperties(
+            net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?> screen) {
+        int left = screen.getGuiLeft();
+        int top = screen.getGuiTop();
+        int right = left + screen.getXSize();
+        int bottom = top + screen.getYSize();
+        if (screen instanceof fr.shoqapik.btemobs.client.gui.JeiExtraAreas areas) {
+            for (net.minecraft.client.renderer.Rect2i r : areas.getJeiExtraAreas()) {
+                left = Math.min(left, r.getX());
+                top = Math.min(top, r.getY());
+                right = Math.max(right, r.getX() + r.getWidth());
+                bottom = Math.max(bottom, r.getY() + r.getHeight());
+            }
+        }
+        final int guiLeft = left, guiTop = top, xSize = right - left, ySize = bottom - top;
+        final int screenWidth = screen.width, screenHeight = screen.height;
+        final Class<? extends net.minecraft.client.gui.screens.Screen> screenClass = screen.getClass();
+        return new mezz.jei.api.gui.handlers.IGuiProperties() {
+            @Override public Class<? extends net.minecraft.client.gui.screens.Screen> getScreenClass() { return screenClass; }
+            @Override public int getGuiLeft() { return guiLeft; }
+            @Override public int getGuiTop() { return guiTop; }
+            @Override public int getGuiXSize() { return xSize; }
+            @Override public int getGuiYSize() { return ySize; }
+            @Override public int getScreenWidth() { return screenWidth; }
+            @Override public int getScreenHeight() { return screenHeight; }
+        };
+    }
+
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new DruidCraftCategory(registration.getJeiHelpers().getGuiHelper()));
