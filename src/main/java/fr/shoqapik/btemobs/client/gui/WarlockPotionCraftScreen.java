@@ -93,7 +93,13 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
         this.backButton = new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true);
         this.backButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
         tabButtons.clear();
-        CategoryButton button = new CategoryButton(BteRecipeCategory.ALL);
+        // Icono de la pestana: Pocion de Curacion
+        CategoryButton button = new CategoryButton(BteRecipeCategory.ALL,
+                net.minecraft.world.item.alchemy.PotionUtils.setPotion(
+                        new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POTION),
+                        net.minecraft.world.item.alchemy.Potions.HEALING));
+        // La pocion es estrecha y se veia a la derecha del hueco visible de la pestana: 2 px a la izquierda
+        button.setIconOffsetX(-2);
         button.active=true;
         this.tabButtons.add(button);
         this.currentRecipe=null;
@@ -146,7 +152,9 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
     }
 
     private void updateTabs() {
-        int i = (this.width - 147) / 2 - 90 - 30;
+        // Esta pantalla mide 339 de ancho (las demas 329), asi que el panel empieza 5 px mas a la izquierda y tapaba
+        // parte de la pestana: la desplazamos lo mismo.
+        int i = (this.width - 147) / 2 - 90 - 30 - (this.imageWidth - 329) / 2;
         int j = (this.height - 166) / 2 + 3;
         int k = 27;
         int l = 0;

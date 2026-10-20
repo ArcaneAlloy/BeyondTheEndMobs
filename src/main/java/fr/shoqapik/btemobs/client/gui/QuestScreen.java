@@ -82,6 +82,11 @@ public class QuestScreen extends Screen {
     private int panelTop() { return this.height - 80 - 130 - (imageHeight - OLD_IMAGE_HEIGHT); }
     private int panelLeft() { return this.leftPos - (this.width / 8) + 90; }
 
+    /** Borde derecho del panel de la quest abierta, o -1 si no hay ninguna (para colocar las guías del tutorial). */
+    public int guidePanelRight() {
+        return this.currentQuest == null ? -1 : panelLeft() + imageWidth;
+    }
+
     // ---- Distribución dentro de la interfaz extendida (coordenadas relativas a la esquina del panel) ----
     // Zona útil de las texturas: x 10..253, y 8..189; el letrero con el nombre ocupa hasta x≈106, y≈26.
     /** Bordes izquierdo y derecho del contenido (dentro del marco). */

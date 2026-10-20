@@ -8,7 +8,8 @@
   "client": [
     "GhostRecipeMixin",
     "RecipeButtonMixin",
-    "RecipeCollectionMixin"
+    "RecipeCollectionMixin",
+    "RecipeBookCategoriesIconMixin"
   ],
   "injectors": {
     "defaultRequire": 1

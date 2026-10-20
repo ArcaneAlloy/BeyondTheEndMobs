@@ -93,7 +93,9 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         this.backButton = this.addRenderableWidget(new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true));
         this.backButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
         tabButtons.clear();
-        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL));
+        // Icono de la pestana: Brujula
+        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL,
+                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COMPASS)));
         this.currentRecipe=null;
 
 

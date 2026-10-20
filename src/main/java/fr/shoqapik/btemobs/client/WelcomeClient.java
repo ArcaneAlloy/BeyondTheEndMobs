@@ -524,12 +524,13 @@ public final class WelcomeClient {
                     Component.translatable("toast.bte_mobs.welcome_next.matrix"),
                     ENDER_EYES_ICON));
         } else if (next == WelcomeHandler.Step.BACKPACK_EQUIP) {
-            Component key = mc.options.keyInventory.getTranslatedKeyMessage();
+            // Basta con la mochila en la mano y clic derecho: se equipa sola en la casilla Back
+            Component use = mc.options.keyUse.getTranslatedKeyMessage();
             addStepToast(next, new QuestReadyToast(
-                    Component.translatable("toast.bte_mobs.welcome_next.ender_eyes", key),
+                    Component.translatable("toast.bte_mobs.welcome_next"),
                     Component.translatable("toast.bte_mobs.welcome_next.backpack_equip"),
                     backpackIcon()));
-            CARD_ARGS.put("backpack_equip", new Object[]{key});
+            CARD_ARGS.put("backpack_equip", new Object[]{use});
             startCards(new String[]{"backpack_equip"}, 10, false);
         } else if (next == WelcomeHandler.Step.BACKPACK_OPEN) {
             Component key = mc.options.keyInventory.getTranslatedKeyMessage();
@@ -795,7 +796,7 @@ public final class WelcomeClient {
         return switch (step) {
             case BLACKSMITH -> new float[]{1.0F, 0.55F, 0.2F};   // Anna: naranja de la forja
             case EXPLORER -> new float[]{0.35F, 0.6F, 1.0F};     // Antonio: azul
-            case WARLOCK -> new float[]{0.7F, 0.4F, 1.0F};       // Noah: morado
+            case WARLOCK -> new float[]{1.0F, 0.1F, 0.1F};       // Noah: rojo (el morado apenas se veía con shaders)
             case DRUID -> new float[]{0.4F, 1.0F, 0.45F};        // Oriana: verde
             case OBELISK -> new float[]{0.5F, 1.0F, 0.3F};       // Obelisco: verde experiencia
             case WAYSTONE, WAYSTONE_RENAME -> new float[]{0.9F, 0.5F, 1.0F}; // Waystone: rosa de sus runas
@@ -805,7 +806,7 @@ public final class WelcomeClient {
             case ALTAR -> new float[]{1.0F, 0.25F, 0.2F};        // Summoning Altar: rojo
             case HOME_ZONE -> new float[]{0.85F, 0.3F, 1.0F};    // Teletransportador: morado de sus partículas
             case ELEVATOR -> new float[]{0.4F, 0.95F, 0.9F};     // Ascensor: turquesa de sus luces
-            case PORTAL_NOAH -> new float[]{0.7F, 0.4F, 1.0F};   // Noah de la Portal Room: morado, como Noah
+            case PORTAL_NOAH -> new float[]{1.0F, 0.1F, 0.1F};   // Noah de la Portal Room: rojo, como Noah
             default -> new float[]{1.0F, 1.0F, 1.0F};
         };
     }
@@ -1387,8 +1388,14 @@ public final class WelcomeClient {
                     event.setNewScreen(skipGuideScreen(guideNpc, null));
                 } else {
                     stopGuide();
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F, 0.4F));
+                    Minecraft mc = Minecraft.getInstance();
+                    mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F, 0.4F));
                     event.setCanceled(true);
+                    // Minecraft#pauseGame pausa todos los sonidos (la música) justo después de abrir el menú de pausa,
+                    // aunque lo cancelemos; sin menú no hay nada que los reanude, así que se reanudan aquí.
+                    mc.tell(() -> {
+                        if (mc.screen == null || !mc.screen.isPauseScreen()) mc.getSoundManager().resume();
+                    });
                 }
                 return;
             }
@@ -1499,12 +1506,6 @@ public final class WelcomeClient {
                 }
                 banner = "ee_recipes_info";
                 action = "close";
-            } else if (target == WelcomeHandler.Step.BACKPACK_EQUIP && screen instanceof InventoryScreen) {
-                banner = "backpack_equip";
-                action = "backpack_curios";
-            } else if (target == WelcomeHandler.Step.BACKPACK_EQUIP && CURIOS_SCREEN.equals(name)) {
-                banner = "backpack_equip";
-                action = "backpack_back_slot";
             } else if (target == WelcomeHandler.Step.BACKPACK_OPEN && screen instanceof InventoryScreen) {
                 banner = "backpack_open";
                 action = "backpack_button";
@@ -1514,8 +1515,13 @@ public final class WelcomeClient {
                 // El primer botón pequeño de arriba es "Customize" (el segundo, las opciones)
                 AbstractWidget customise = firstWidget(screen, "MiniButton");
                 highlightWidget = wd -> wd == customise;
-            } else if (target == WelcomeHandler.Step.QUEST_LOG && (screen instanceof QuestLogScreen
-                    || screen instanceof fr.shoqapik.btemobs.client.gui.QuestScreen)) {
+            } else if (target == WelcomeHandler.Step.QUEST_LOG && screen instanceof fr.shoqapik.btemobs.client.gui.QuestScreen qs) {
+                // Quests de un NPC: a la derecha, centrado en vertical; con una quest abierta, en el hueco a su derecha
+                int panelRight = qs.guidePanelRight();
+                drawInRightGap(event.getPoseStack(), screen, panelRight < 0 ? screen.width / 2 : panelRight + 4,
+                        "quest_log_info", "close");
+                return;
+            } else if (target == WelcomeHandler.Step.QUEST_LOG && screen instanceof QuestLogScreen) {
                 banner = "quest_log_info";
                 action = "close";
             }
@@ -1715,6 +1721,29 @@ public final class WelcomeClient {
             drawPanel(pose, x, y, width, scale, title, text, todo, 0, 0);
         }
 
+        /**
+         * Panel en el hueco libre a la derecha de leftEdge, pegado al borde derecho y centrado en vertical, reducido
+         * para que quepa. Si no hay hueco suficiente, va abajo a la derecha como el resto.
+         */
+        private static void drawInRightGap(PoseStack pose, Screen screen, int leftEdge, String banner, String action) {
+            int w = screen.width, h = screen.height;
+            int room = w - leftEdge - 10;
+            if (room < 60) {
+                drawBanner(pose, screen, banner, action, true, 180);
+                return;
+            }
+            float scale = room >= 150 ? 1.0F : (room >= 100 ? 0.75F : 0.5F);
+            int width = (int) (Math.min(room, 180) / scale) - 8;
+            Component title = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".title");
+            Component text = Component.translatable("gui.bte_mobs.welcome.banner." + banner + ".text");
+            Component todo = Component.translatable("gui.bte_mobs.welcome.banner.action." + action);
+            int pw = (int) ((width + 8) * scale);
+            int ph = (int) ((panelHeight(width, text, todo) + 4) * scale);
+            int x = w - pw - 6 + (int) (4 * scale);
+            int y = Math.max(6, (h - ph) / 2) + (int) (4 * scale);
+            drawPanel(pose, x, y, width, scale, title, text, todo, 0, 0);
+        }
+
         /** ¿Taparía ese rectángulo algún botón visible de la pantalla? */
         private static boolean coversWidget(Screen screen, int x, int y, int w, int h) {
             for (GuiEventListener child : screen.children()) {
@@ -1787,9 +1816,10 @@ public final class WelcomeClient {
             Component todo = Component.translatable("gui.bte_mobs.welcome.banner.action." + action);
             int roomRight = w - 6 - (target.x + target.getWidth() + 16);
             int roomLeft = target.x - 16 - 6;
-            boolean right = roomRight >= roomLeft;
+            // A la derecha si cabe (aunque sea más pequeño): a la izquierda taparía el resto de botones
+            boolean right = roomRight >= 60 || roomRight >= roomLeft;
             int room = right ? roomRight : roomLeft;
-            float scale = room >= 150 ? 1.0F : 0.75F;
+            float scale = room >= 150 ? 1.0F : (room >= 100 ? 0.75F : 0.5F);
             int width = (int) (Math.min(Math.max(room, 60), 170) / scale) - 8;
             int ph = (int) ((panelHeight(width, text, todo) + 4) * scale);
             int centerY = target.y + target.getHeight() / 2;
@@ -1821,7 +1851,7 @@ public final class WelcomeClient {
             WelcomeHandler.Step target = currentTarget();
             if (target == null || revealPending) return;
             boolean teleportStep = target == WelcomeHandler.Step.TELEPORT || target == WelcomeHandler.Step.HOME_RETURN;
-            if (!WelcomeHandler.isClientStep(target) && !teleportStep && target != WelcomeHandler.Step.BACKPACK_EQUIP) return;
+            if (!WelcomeHandler.isClientStep(target) && !teleportStep) return;
             if (!(event.getScreen() instanceof InventoryScreen screen)) return;
             Object tomeButton = teleportStep ? forgottenTomeButton() : null;
             if (target == WelcomeHandler.Step.DIM_STORAGE_BUTTON) {
@@ -1839,8 +1869,7 @@ public final class WelcomeClient {
                 boolean isTarget = switch (target) {
                     case ENDER_EYES, MATRIX -> name.equals(ENDER_EYES_BUTTON);
                     case QUEST_LOG -> name.startsWith(QuestLogButton.class.getName());
-                    // Botón de Curios (junto al muñeco) y botón de la mochila del addon
-                    case BACKPACK_EQUIP -> widget.getClass().getSimpleName().equals("CuriosButton");
+                    // Botón de la mochila del addon
                     case BACKPACK_OPEN -> name.startsWith(BACKPACK_BUTTON);
                     case TELEPORT, HOME_RETURN -> tomeButton != null && widget == tomeButton;
                     default -> false;

@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @author shoqapik
@@ -16,9 +17,19 @@ public class CategoryButton extends SmithStateSwitchingButton{
     private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
 
     private BteRecipeCategory category;
+    /** Icono propio de la pantalla; si es null se usa el de la categoria. */
+    private final ItemStack icon;
+    /** Ajuste horizontal del icono (para iconos estrechos que se ven descentrados). */
+    private int iconOffsetX = 0;
+
     public CategoryButton(BteRecipeCategory category) {
+        this(category, null);
+    }
+
+    public CategoryButton(BteRecipeCategory category, ItemStack icon) {
         super(0, 0, 35, 27, false);
         this.category = category;
+        this.icon = icon;
         this.initTextureValues(88, 180, 35, 0, CRAFTING_TABLE_LOCATION);
     }
 
@@ -52,7 +63,12 @@ public class CategoryButton extends SmithStateSwitchingButton{
 
     private void renderIcon(ItemRenderer p_100454_) {
         int i = this.isStateTriggered ? -2 : 0;
-        p_100454_.renderAndDecorateFakeItem(category.item, this.x + 9+i, this.y + 5);
+        p_100454_.renderAndDecorateFakeItem(this.icon != null ? this.icon : category.getIcon(), this.x + 9 + i + this.iconOffsetX, this.y + 5);
+    }
+
+    public CategoryButton setIconOffsetX(int offset) {
+        this.iconOffsetX = offset;
+        return this;
     }
 
     public BteRecipeCategory getCategory() {

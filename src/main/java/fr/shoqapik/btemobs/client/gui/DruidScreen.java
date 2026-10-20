@@ -91,7 +91,11 @@ public class DruidScreen extends AbstractContainerScreen<DruidMenu> implements I
         this.backButton = new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true);
         this.backButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
         tabButtons.clear();
-        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL));
+        // Icono de la pestana: Cage de Supplementaries (mesa de crafteo si Supplementaries no esta)
+        net.minecraft.world.item.Item cage = net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(
+                new net.minecraft.resources.ResourceLocation("supplementaries", "cage"));
+        if (cage == null || cage == net.minecraft.world.item.Items.AIR) cage = net.minecraft.world.item.Items.CRAFTING_TABLE;
+        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL, new net.minecraft.world.item.ItemStack(cage)));
         this.currentRecipe=null;
         refreshButtons();
         updateTabs();

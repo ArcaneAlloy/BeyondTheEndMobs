@@ -98,7 +98,11 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
         this.backButton = new SmithStateSwitchingButton(i + 38, j + 137, 12, 17, true);
         this.backButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
         tabButtons.clear();
-        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL));
+        // Icono de la pestana: Ancient Tome de Quark (libro encantado si Quark no esta)
+        net.minecraft.world.item.Item tome = net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(
+                new net.minecraft.resources.ResourceLocation("quark", "ancient_tome"));
+        if (tome == null || tome == net.minecraft.world.item.Items.AIR) tome = net.minecraft.world.item.Items.ENCHANTED_BOOK;
+        this.tabButtons.add(new CategoryButton(BteRecipeCategory.ALL, new net.minecraft.world.item.ItemStack(tome)));
         this.currentRecipe=null;
         refreshButtons();
         updateTabs();
