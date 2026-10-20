@@ -98,8 +98,8 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
                 net.minecraft.world.item.alchemy.PotionUtils.setPotion(
                         new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POTION),
                         net.minecraft.world.item.alchemy.Potions.HEALING));
-        // La pocion es estrecha y se veia a la derecha del hueco visible de la pestana: 2 px a la izquierda
-        button.setIconOffsetX(-2);
+        // La pocion es estrecha y se veia a la derecha del hueco visible de la pestana: 1 px a la izquierda
+        button.setIconOffsetX(-1);
         button.active=true;
         this.tabButtons.add(button);
         this.currentRecipe=null;
