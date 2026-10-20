@@ -9,7 +9,8 @@
     "GhostRecipeMixin",
     "RecipeButtonMixin",
     "RecipeCollectionMixin",
-    "RecipeBookCategoriesIconMixin"
+    "RecipeBookCategoriesIconMixin",
+    "RecipeBookPageMixin"
   ],
   "injectors": {
     "defaultRequire": 1

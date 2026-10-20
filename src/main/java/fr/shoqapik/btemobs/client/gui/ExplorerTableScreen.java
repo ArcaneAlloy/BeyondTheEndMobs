@@ -86,7 +86,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         this.searchBox.setVisible(true);
         this.searchBox.setTextColor(16777215);
         this.searchBox.setValue(s);
-        this.filterButton = this.addRenderableWidget(new StateSwitchingButton(i + 105, j + 12, 26, 16, this.book.isFiltering(RecipeBookType.CRAFTING)));
+        this.filterButton = this.addRenderableWidget(new StateSwitchingButton(i + 105, j + 12, 26, 16, fr.shoqapik.btemobs.config.BteMobsClientConfig.EXPLORER_ONLY_CRAFTABLE.get()));
         this.initFilterButtonTextures();
         this.forwardButton = this.addRenderableWidget(new SmithStateSwitchingButton(i + 93, j + 137, 12, 17, false));
         this.forwardButton.initTextureValues(1, 182, 13, 18, CRAFTING_TABLE_LOCATION);
@@ -137,7 +137,7 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         if(!searchBox.getValue().isEmpty()){
             filterRecipes();
         }
-        if(this.book.isFiltering(RecipeBookType.CRAFTING)){
+        if(fr.shoqapik.btemobs.config.BteMobsClientConfig.EXPLORER_ONLY_CRAFTABLE.get()){
             updateShowRecipe();
         }else {
             reOrganize();
@@ -178,10 +178,13 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
                 Comparator.reverseOrder())).toList();
     }
 
+    /**
+     * Boton "solo crafteables": cada interfaz recuerda su propio estado en la config de cliente
+     * (antes usaba el ajuste de la mesa de crafteo vanilla, compartido y reiniciado al cerrar).
+     */
     private boolean toggleFiltering() {
-        RecipeBookType recipebooktype = RecipeBookType.CRAFTING;
-        boolean flag = !this.book.isFiltering(recipebooktype);
-        this.book.setFiltering(recipebooktype, flag);
+        boolean flag = !fr.shoqapik.btemobs.config.BteMobsClientConfig.EXPLORER_ONLY_CRAFTABLE.get();
+        fr.shoqapik.btemobs.config.BteMobsClientConfig.EXPLORER_ONLY_CRAFTABLE.set(flag);
         return flag;
     }
 
@@ -208,14 +211,6 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         for (BlackSmithRecipe recipe : toRemove){
             categoryRecipes.remove(recipe);
         }*/
-    }
-    protected void sendUpdateSettings() {
-        if (this.minecraft.getConnection() != null) {
-            RecipeBookType recipebooktype = RecipeBookType.CRAFTING;
-            boolean flag1 = this.book.getBookSettings().isFiltering(recipebooktype);
-            this.minecraft.getConnection().send(new ServerboundRecipeBookChangeSettingsPacket(recipebooktype, true, flag1));
-        }
-
     }
     private void filterRecipes(){
         List<ExplorerRecipe> toRemove = new ArrayList<>();
@@ -370,7 +365,6 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
         }else if (this.filterButton.mouseClicked(p_97748_, p_97749_, p_97750_)) {
             boolean flag = this.toggleFiltering();
             this.filterButton.setStateTriggered(flag);
-            this.sendUpdateSettings();
             this.page=0;
             refreshButtons();
             return true;
@@ -435,6 +429,5 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
     @Override
     public void removed() {
         super.removed();
-        this.book.setBookSetting(RecipeBookType.CRAFTING,false,false);
     }
 }

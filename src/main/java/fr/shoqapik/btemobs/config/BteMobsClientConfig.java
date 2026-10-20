@@ -10,6 +10,10 @@ public final class BteMobsClientConfig {
 
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec.BooleanValue BLACKSMITH_SKIP_CRAFT_ANIMATION;
+    public static final ForgeConfigSpec.BooleanValue EXPLORER_ONLY_CRAFTABLE;
+    public static final ForgeConfigSpec.BooleanValue DRUID_ONLY_CRAFTABLE;
+    public static final ForgeConfigSpec.BooleanValue WARLOCK_ENCHANT_ONLY_CRAFTABLE;
+    public static final ForgeConfigSpec.BooleanValue WARLOCK_POTION_ONLY_CRAFTABLE;
     public static final ForgeConfigSpec.IntValue TRACKER_MAX_QUESTS;
     public static final ForgeConfigSpec.BooleanValue TRACKER_VISIBLE;
     public static final ForgeConfigSpec.IntValue TRACKER_X;
@@ -24,6 +28,22 @@ public final class BteMobsClientConfig {
                 .comment("If true, the Blacksmith skips the hammering animation and the crafted item appears on the forge instantly.",
                          "Can also be toggled with the 'No Animations' checkbox in the Blacksmith crafting screen.")
                 .define("skipCraftAnimation", false);
+        builder.pop();
+
+        builder.push("crafting_screens");
+        builder.comment("'Show only craftable' button of each NPC crafting screen. Toggled in game with that button.");
+        EXPLORER_ONLY_CRAFTABLE = builder
+                .comment("Antonio (Explorer) crafting screen.")
+                .define("explorerOnlyCraftable", false);
+        DRUID_ONLY_CRAFTABLE = builder
+                .comment("Oriana (Druid) crafting screen.")
+                .define("druidOnlyCraftable", false);
+        WARLOCK_ENCHANT_ONLY_CRAFTABLE = builder
+                .comment("Warlock enchantments screen.")
+                .define("warlockEnchantOnlyCraftable", false);
+        WARLOCK_POTION_ONLY_CRAFTABLE = builder
+                .comment("Warlock potions screen.")
+                .define("warlockPotionOnlyCraftable", false);
         builder.pop();
 
         builder.push("quest_tracker");
