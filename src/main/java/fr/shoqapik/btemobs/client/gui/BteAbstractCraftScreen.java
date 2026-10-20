@@ -227,10 +227,11 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         if (this.searchBox == null) return;
         net.minecraft.client.gui.components.EditBox internalBox =
             BteRecipeBookComponent.getInternalBox(this.recipeBookComponent);
-        if (internalBox != null) {
-            this.searchBox.x = internalBox.x;
-            this.searchBox.y = internalBox.y;
-        } else {
+        // +2: donde se dibujaba antes el texto a mano, para que no cambie de sitio
+        if (internalBox != null && internalBox.x > -10000) {
+            this.searchBox.x = internalBox.x + 2;
+            this.searchBox.y = internalBox.y + 2;
+        } else if (internalBox == null) {
             // Fallback: misma formula que ExplorerTableScreen
             this.searchBox.x = (this.width - 147) / 2 - 86 + 28;
             this.searchBox.y = (this.height - 166) / 2 + 14;

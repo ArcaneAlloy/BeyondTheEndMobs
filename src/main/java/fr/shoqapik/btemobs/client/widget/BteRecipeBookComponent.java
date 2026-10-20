@@ -32,8 +32,14 @@ public class BteRecipeBookComponent extends RecipeBookComponent {
      * RecipeBookComponent.render() dibuja el hint cuando box.getValue().isEmpty().
      * Ponemos " " antes y lo restauramos despues para no afectar el filtrado.
      */
-    // Referencia a la pantalla padre para dibujar el hint dentro del pushPose/popPose
+    // Referencia a la pantalla padre para dibujar su buscador dentro del pushPose/popPose
     public fr.shoqapik.btemobs.client.gui.BteAbstractCraftScreen parentScreen = null;
+
+    /** Mismo hint que el resto de interfaces de crafteo: traducido, en cursiva y gris. */
+    private static final net.minecraft.network.chat.Component SEARCH_HINT =
+            net.minecraft.network.chat.Component.translatable("gui.recipebook.search_hint")
+                    .withStyle(net.minecraft.ChatFormatting.ITALIC)
+                    .withStyle(net.minecraft.ChatFormatting.GRAY);
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -58,17 +64,17 @@ public class BteRecipeBookComponent extends RecipeBookComponent {
         if (parentScreen != null) {
             pPoseStack.pushPose();
             pPoseStack.translate(0, 0, 100);
-            String val = parentScreen.searchBox != null ? parentScreen.searchBox.getValue() : "";
-            int hx = savedX > -1 ? savedX + 2 : 0;
-            int hy = savedY > -1 ? savedY + 2 : 0;
-            if (val.isEmpty()) {
-                net.minecraft.client.gui.GuiComponent.drawString(pPoseStack,
-                    net.minecraft.client.Minecraft.getInstance().font,
-                    "Search...", hx, hy, 0xFF808080);
-            } else {
-                net.minecraft.client.gui.GuiComponent.drawString(pPoseStack,
-                    net.minecraft.client.Minecraft.getInstance().font,
-                    val, hx, hy, 0xFFFFFF);
+            EditBox search = parentScreen.searchBox;
+            if (search != null) {
+                // Como en las demas interfaces: sin foco y vacio se ve el hint; si no, el EditBox real
+                // (con su cursor parpadeante, la seleccion y el desplazamiento del texto largo).
+                if (!search.isFocused() && search.getValue().isEmpty()) {
+                    net.minecraft.client.gui.GuiComponent.drawString(pPoseStack,
+                        net.minecraft.client.Minecraft.getInstance().font,
+                        SEARCH_HINT, search.x, search.y, -1);
+                } else {
+                    search.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                }
             }
             pPoseStack.popPose();
         }
