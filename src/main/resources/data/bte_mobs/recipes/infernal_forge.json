@@ -3,7 +3,7 @@
   "category": "WEAPONS",
   "tier": 4,
   "base": {
-    "item": "dungeons_gear:hammer_of_gravity"
+    "item": "salmonsgenesisreincarnation:warlord_hammer_item"
   },
   "ingredients": [
     {

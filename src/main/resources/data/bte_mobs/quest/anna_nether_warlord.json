@@ -1,0 +1,39 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Derrota al Nether Warlord y lleva su núcleo a la forja de Anna.",
+  "difficult": "HARD",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 442,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Nether Warlord",
+      "count": 1,
+      "entityIdLocation": "salmonsgenesisreincarnation:nether_warlord"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "salmonsgenesisreincarnation:warlord_hammer_item",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:noah_infested_temple",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "bte_mobs:oriana_shiraz_palace",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}
