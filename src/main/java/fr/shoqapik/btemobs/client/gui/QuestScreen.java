@@ -78,9 +78,29 @@ public class QuestScreen extends Screen {
     // Menos margen = líneas más largas.
     private static final int DESCRIPTION_RIGHT_MARGIN = 18;
     protected int leftPos;
-    /** Parte de arriba del panel de la quest (crece hacia arriba si la interfaz es más alta que la antigua). */
-    private int panelTop() { return this.height - 80 - 130 - (imageHeight - OLD_IMAGE_HEIGHT); }
-    private int panelLeft() { return this.leftPos - (this.width / 8) + 90; }
+    // ---- Colocacion del conjunto lista de quests + panel, centrado en pantalla con cualquier escala ----
+    // Antes la lista y el panel colgaban de width/8 y del borde de abajo, asi que se descentraban al cambiar la
+    // escala de la interfaz o el tamano de la ventana.
+    private static final int QUEST_LIST_WIDTH = 100;
+    /** Hueco entre la lista de quests y el panel. */
+    private static final int LIST_PANEL_GAP = 12;
+    /** La flecha de subir queda encima de la lista. */
+    private static final int UP_ARROW_SPACE = 18;
+    private static final int ARROW_HEIGHT = 16;
+    /** Margen minimo con los bordes de la pantalla. */
+    private static final int SCREEN_MARGIN = 2;
+
+    private int layoutWidth() { return QUEST_LIST_WIDTH + LIST_PANEL_GAP + imageWidth; }
+    private int layoutHeight() {
+        return UP_ARROW_SPACE + Math.max(imageHeight, VISIBLE_QUESTS * QUEST_BUTTON_SPACING + ARROW_HEIGHT);
+    }
+    /** Borde izquierdo de la lista de quests. */
+    private int listLeft() { return Math.max(SCREEN_MARGIN, (this.width - layoutWidth()) / 2); }
+    /** Parte de arriba del panel de la quest (y de la primera quest de la lista). */
+    private int panelTop() { return Math.max(SCREEN_MARGIN, (this.height - layoutHeight()) / 2) + UP_ARROW_SPACE; }
+    private int panelLeft() { return listLeft() + QUEST_LIST_WIDTH + LIST_PANEL_GAP; }
+    /** Las flechas de scroll, centradas sobre la lista. */
+    private int arrowsLeft() { return listLeft() + (QUEST_LIST_WIDTH - 14) / 2; }
 
     /** Borde derecho del panel de la quest abierta, o -1 si no hay ninguna (para colocar las guías del tutorial). */
     public int guidePanelRight() {
@@ -256,13 +276,13 @@ public class QuestScreen extends Screen {
         }
 
 
-        this.up = new ImageButton((this.leftPos - (this.width / 8))+20, panelTop() - 18,14,16,0,0,0,
+        this.up = new ImageButton(arrowsLeft(), panelTop() - UP_ARROW_SPACE,14,16,0,0,0,
                 new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/up.png"),14,16,(p)->{
             scrolledY = Math.max(0,scrolledY-1);
             this.layoutButtons();
         });
 
-        this.down = new ImageButton((this.leftPos - (this.width / 8))+20, panelTop() + VISIBLE_QUESTS * QUEST_BUTTON_SPACING,14,16,0,0,0,
+        this.down = new ImageButton(arrowsLeft(), panelTop() + VISIBLE_QUESTS * QUEST_BUTTON_SPACING,14,16,0,0,0,
                 new ResourceLocation(BteMobsMod.MODID,"textures/gui/buttons/explorer/down.png"),14,16,(p)->{
             scrolledY=Math.min(maxScroll(),this.scrolledY+1);
             this.layoutButtons();
@@ -834,7 +854,7 @@ public class QuestScreen extends Screen {
     }
 
     private void layoutButtons() {
-        int x = (int) (this.leftPos - (this.width / 8) - 22);
+        int x = listLeft();
         int yStart = panelTop();
 
         scrolledY = Mth.clamp(scrolledY, 0, maxScroll());

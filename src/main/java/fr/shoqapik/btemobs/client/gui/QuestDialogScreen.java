@@ -40,6 +40,19 @@ public class QuestDialogScreen extends Screen {
     protected int leftPos;
     protected int topPos;
 
+    // ---- Colocacion: panel de dialogo + columna de respuestas, centrados en horizontal con cualquier escala ----
+    // Antes colgaban de width/8, asi que se descentraban al cambiar la escala de la interfaz o la ventana.
+    private static final int ANSWER_WIDTH = 100;
+    /**
+     * Distancia del panel al borde de abajo: por encima de la barra de items (22 px), los corazones y la comida
+     * (hasta 39 px) y la armadura (hasta 49 px), para no tapar el HUD. Antes eran 25 px y lo tapaba.
+     */
+    private static final int DIALOG_BOTTOM_MARGIN = 52;
+
+    /** Borde izquierdo del panel de dialogo; las respuestas van justo a su derecha. */
+    private int dialogLeft() { return Math.max(2, (this.width - (this.imageWidth + ANSWER_WIDTH)) / 2); }
+    private int dialogTop() { return this.height - this.imageHeight - DIALOG_BOTTOM_MARGIN; }
+
     private int entityId;
     private BteNpcType bteNpcType;
     private OptionDialogs quest;
@@ -78,8 +91,8 @@ public class QuestDialogScreen extends Screen {
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
 
-        int x = this.leftPos - (this.width / 8) + 254;
-        int y = this.height - this.imageHeight - 40;
+        int x = dialogLeft() + this.imageWidth;
+        int y = dialogTop() - 15;
 
         // Al volver de la ventana de confirmación se llama otra vez a init: no se duplican los botones
         this.buttons.clear();
@@ -196,8 +209,8 @@ public class QuestDialogScreen extends Screen {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
-        int x = this.leftPos - (this.width / 8);
-        int y = this.height - this.imageHeight - 25;
+        int x = dialogLeft();
+        int y = dialogTop();
 
         GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
 

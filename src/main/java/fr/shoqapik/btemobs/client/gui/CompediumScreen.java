@@ -36,6 +36,17 @@ public class CompediumScreen extends Screen {
     private static final Logger log = LoggerFactory.getLogger(CompediumScreen.class);
     protected int imageWidth = 254;
     protected int imageHeight = 168;
+
+    // ---- Colocacion: lista (100 px) + hueco (12 px) + panel, centrados en pantalla con cualquier escala ----
+    // Antes colgaban de width/8 y del borde de abajo, asi que se descentraban al cambiar la escala o la ventana.
+    // La flecha de subir va 20 px por encima y la de bajar debajo de las 7 entradas visibles (7 x 25).
+    private static final int LAYOUT_WIDTH = 100 + 12 + 254;
+    private static final int LAYOUT_HEIGHT = 20 + 7 * 25 + 16;
+
+    /** Referencia horizontal: la lista empieza 22 px a su izquierda y el panel 90 px a su derecha. */
+    private int layoutBase() { return Math.max(2, (this.width - LAYOUT_WIDTH) / 2) + 22; }
+    /** Parte de arriba del panel y de la primera entrada de la lista. */
+    private int panelTop() { return Math.max(2, (this.height - LAYOUT_HEIGHT) / 2) + 20; }
     protected int leftPos;
     protected int topPos;
     protected Button up;
@@ -94,8 +105,8 @@ public class CompediumScreen extends Screen {
         }
 
         this.up = new ImageButton(
-                (this.leftPos - (this.width / 8)) + 20,
-                (this.height - 80) - 150,
+                (layoutBase()) + 20,
+                panelTop() - 20,
                 14, 16,
                 0, 0, 0,
                 new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/explorer/up.png"),
@@ -107,8 +118,8 @@ public class CompediumScreen extends Screen {
         );
 
         this.down = new ImageButton(
-                (this.leftPos - (this.width / 8)) + 20,
-                (this.height - 80) + 45,
+                (layoutBase()) + 20,
+                panelTop() + 175,
                 14, 16,
                 0, 0, 0,
                 new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/explorer/down.png"),
@@ -140,8 +151,8 @@ public class CompediumScreen extends Screen {
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
 
-            int x = (int) (this.leftPos - (this.width / 8) + 90);
-            int y = (int) (this.height - 80 - 130);
+            int x = (int) (layoutBase() + 90);
+            int y = (int) (panelTop());
 
             EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(
                     new ResourceLocation(
@@ -176,8 +187,8 @@ public class CompediumScreen extends Screen {
     }
 
     private void layoutButtons() {
-        int x = (int) (this.leftPos - (this.width / 8) - 22);
-        int yStart = (int) (this.height - 80 - 130);
+        int x = (int) (layoutBase() - 22);
+        int yStart = (int) (panelTop());
 
         int visibleStartIndex = scrolledY;
         int visibleEndIndex = Math.min(scrolledY + 7, rumors.size());
