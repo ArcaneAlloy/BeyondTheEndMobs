@@ -249,7 +249,9 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
         int panelX = (this.width - 147) / 2 - xOffset;
         int panelY = (this.height - 166) / 2;
         return java.util.List.of(
-                new net.minecraft.client.renderer.Rect2i(panelX - 30, panelY, 147 + 30, 166),
+                // Pestanas estrechadas (RecipeBookTabButtonMixin): empiezan SHRINK px mas a la derecha
+                new net.minecraft.client.renderer.Rect2i(panelX - 30 + fr.shoqapik.btemobs.client.widget.CategoryButton.SHRINK, panelY,
+                        147 + 30 - fr.shoqapik.btemobs.client.widget.CategoryButton.SHRINK, 166),
                 new net.minecraft.client.renderer.Rect2i(this.leftPos, this.topPos, this.imageWidth, this.imageHeight));
     }
 }

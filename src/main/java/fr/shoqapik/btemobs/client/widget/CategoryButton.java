@@ -16,6 +16,15 @@ import net.minecraft.world.item.ItemStack;
 public class CategoryButton extends SmithStateSwitchingButton{
     private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/container/explorer_screen.png");
 
+    /**
+     * Pixeles que se le quitan a lo ancho a la parte visible de las pestanas (de las de todas las interfaces de crafteo
+     * de los NPCs, tambien las vanilla de Anna, ver RecipeBookTabButtonMixin). La pestana se dibuja mas a la derecha y
+     * se recortan columnas del relleno, que es uniforme a partir de la 5; asi deja mas sitio a los favoritos de JEI.
+     */
+    public static final int SHRINK = 8;
+    /** Columnas del borde izquierdo del sprite de la pestana que se conservan. */
+    public static final int LEFT_EDGE = 5;
+
     private BteRecipeCategory category;
     /** Icono propio de la pantalla; si es null se usa el de la categoria. */
     private final ItemStack icon;
@@ -55,7 +64,9 @@ public class CategoryButton extends SmithStateSwitchingButton{
         }
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        blit(p_94631_, k, this.y, i, j, this.width, this.height, 512,512);
+        // Borde izquierdo y, a continuacion, el resto del sprite saltandose SHRINK columnas del relleno
+        blit(p_94631_, k + SHRINK, this.y, i, j, LEFT_EDGE, this.height, 512,512);
+        blit(p_94631_, k + SHRINK + LEFT_EDGE, this.y, i + LEFT_EDGE + SHRINK, j, this.width - LEFT_EDGE - SHRINK, this.height, 512,512);
         RenderSystem.enableDepthTest();
         this.renderIcon(minecraft.getItemRenderer());
 
@@ -63,7 +74,7 @@ public class CategoryButton extends SmithStateSwitchingButton{
 
     private void renderIcon(ItemRenderer p_100454_) {
         int i = this.isStateTriggered ? -2 : 0;
-        p_100454_.renderAndDecorateFakeItem(this.icon != null ? this.icon : category.getIcon(), this.x + 9 + i + this.iconOffsetX, this.y + 5);
+        p_100454_.renderAndDecorateFakeItem(this.icon != null ? this.icon : category.getIcon(), this.x + 9 + SHRINK / 2 + i + this.iconOffsetX, this.y + 5);
     }
 
     public CategoryButton setIconOffsetX(int offset) {

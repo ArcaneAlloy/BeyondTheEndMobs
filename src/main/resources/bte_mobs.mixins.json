@@ -10,7 +10,9 @@
     "RecipeButtonMixin",
     "RecipeCollectionMixin",
     "RecipeBookCategoriesIconMixin",
-    "RecipeBookPageMixin"
+    "RecipeBookPageMixin",
+    "JeiGridMinColumnsMixin",
+    "RecipeBookTabButtonMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -423,7 +423,9 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
         areas.add(new net.minecraft.client.renderer.Rect2i(this.leftPos, this.topPos, this.imageWidth, this.imageHeight));
         for (CategoryButton tab : this.tabButtons) {
             // La pestana seleccionada se dibuja 2 px a la izquierda
-            areas.add(new net.minecraft.client.renderer.Rect2i(tab.x - 2, tab.y, tab.getWidth() + 2, tab.getHeight()));
+            // Parte visible (la pestana se dibuja SHRINK px mas a la derecha)
+            areas.add(new net.minecraft.client.renderer.Rect2i(tab.x - 2 + fr.shoqapik.btemobs.client.widget.CategoryButton.SHRINK, tab.y,
+                    tab.getWidth() + 2 - fr.shoqapik.btemobs.client.widget.CategoryButton.SHRINK, tab.getHeight()));
         }
         return areas;
     }
