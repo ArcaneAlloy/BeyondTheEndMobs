@@ -1,0 +1,31 @@
+{
+  "entityType": "BLACKSMITH",
+  "description": "Reúne lo necesario para invocar al Wither: 4 Soul Stone y 3 Wither Skeleton Skull.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 440,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Consigue 4x Soul Stone",
+      "count": 4,
+      "entityIdLocation": "bygonenether:soul_stone"
+    },
+    {
+      "type": "OBTAIN",
+      "description": "Consigue 3x Wither Skeleton Skull",
+      "count": 3,
+      "entityIdLocation": "minecraft:wither_skeleton_skull"
+    }
+  ],
+  "rewards": [],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    }
+  ],
+  "experience": 20
+}

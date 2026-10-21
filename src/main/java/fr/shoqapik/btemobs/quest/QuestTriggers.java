@@ -108,15 +108,22 @@ public final class QuestTriggers {
 
     // ---------------------------------------------------------------- OBTAIN
 
-    /** Marca como completadas las tareas OBTAIN cuyo item está ahora en el inventario del jugador. */
+    /**
+     * Tareas OBTAIN: cuenta cuantos items del tipo pedido tiene el jugador en el inventario (y la mano secundaria).
+     * El progreso solo sube ("haber tenido" N a la vez): si luego los suelta o los usa, no se pierde. Con count 1 se
+     * comporta igual que antes (basta con tener uno).
+     */
     private static void checkObtain(ServerPlayer player, RecipeCapability<?> cap) {
         cap.updateTasks(TaskData.Type.OBTAIN, task -> {
+            int total = 0;
             for (ItemStack stack : player.getInventory().items) {
-                if (matchesItem(task.id, stack)) { task.count = task.maxCount; return true; }
+                if (matchesItem(task.id, stack)) total += stack.getCount();
             }
             for (ItemStack stack : player.getInventory().offhand) {
-                if (matchesItem(task.id, stack)) { task.count = task.maxCount; return true; }
+                if (matchesItem(task.id, stack)) total += stack.getCount();
             }
+            int progress = Math.min(total, task.maxCount);
+            if (progress > task.count) { task.count = progress; return true; }
             return false;
         });
     }

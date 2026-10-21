@@ -19,6 +19,10 @@
     {
       "locationId": "ender_journey:nether_portal",
       "type": "NETHER_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:anna_wither_ritual",
+      "type": "PARENT_QUEST"
     }
   ],
   "experience": 30
