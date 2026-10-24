@@ -11,8 +11,7 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a los Knight Phantom",
       "count": 1,
-      "entityIdLocation": "twilightforest:knight_phantom",
-      "advancement": "twilightforest:progress_knights"
+      "entityIdLocation": "twilightforest:knight_phantom"
     }
   ],
   "rewards": [

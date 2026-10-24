@@ -1,24 +1,12 @@
 {
-  "entityType": "DRUID",
-  "description": "Entrega a Oriana los materiales del Dusk Key para invocar criaturas en el altar del Coliseum.",
+  "entityType": "WARLOCK",
+  "description": "Entrega a Noah los materiales del Dusk Key para invocar criaturas en el altar del Coliseum.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",
-  "order": 24,
+  "order": 25,
   "tasks": [
-    {
-      "type": "COLLECT",
-      "description": "Entrega 2x Fragmento de Amatista",
-      "count": 2,
-      "entityIdLocation": "minecraft:amethyst_shard"
-    },
-    {
-      "type": "COLLECT",
-      "description": "Entrega 2x Piedra Negra",
-      "count": 2,
-      "entityIdLocation": "minecraft:blackstone"
-    },
     {
       "type": "COLLECT",
       "description": "Entrega 1x Allium",

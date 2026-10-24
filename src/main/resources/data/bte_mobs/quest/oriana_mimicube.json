@@ -1,0 +1,41 @@
+{
+  "entityType": "DRUID",
+  "description": "Derrota a un Cubo de mimi y consigue su Crema de mimi.",
+  "difficult": "MEDIUM",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 643,
+  "tasks": [
+    {
+      "type": "HUNTER",
+      "description": "Derrota a un Cubo de mimi",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:mimicube"
+    },
+    {
+      "type": "OBTAIN",
+      "description": "Obtén una Crema de mimi",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:mimicream"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "alexsmobs:hemolymph_blaster",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:oriana_warped_mosco",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    }
+  ],
+  "experience": 20
+}

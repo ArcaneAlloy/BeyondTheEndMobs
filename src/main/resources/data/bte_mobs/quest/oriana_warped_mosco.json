@@ -17,9 +17,9 @@
   ],
   "rewards": [
     {
-      "type": "UNLOCK_RECIPE",
-      "recipeId": "alexsmobs:hemolymph_blaster",
-      "recipeType": "blacksmith_upgrade"
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 6
     }
   ],
   "conditionUnlockData": [

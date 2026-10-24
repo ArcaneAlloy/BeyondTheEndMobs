@@ -210,7 +210,8 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
      * Tareas BOSS_HUNTER que se cumplen con un logro, aunque el jefe se derrotara antes de desbloquear la quest:
      *  - Si la tarea tiene "advancement" en el JSON de la quest, ese logro del propio mod (p. ej. "cataclysm:kill_ignis").
      *  - Si no, el logro oculto de bte_mobs data/bte_mobs/advancements/kills/<mod>/<entidad>.json, si existe
-     *    (jefes sin logro propio que sirva: Lich, Wither, Amethyst Crab).
+     *    (jefes sin logro propio que sirva: Lich, Wither, Amethyst Crab, y los del Twilight Forest, porque el addon
+     *    forgottentf concede los logros progress_* del Twilight Forest al conectarse).
      * Las tareas sin ninguno de los dos solo cuentan las muertes con la quest ya desbloqueada (hunterQuestUpdate).
      */
     public void checkBossKillAdvancements(ServerPlayer player) {

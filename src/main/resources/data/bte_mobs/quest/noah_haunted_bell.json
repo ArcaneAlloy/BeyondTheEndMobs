@@ -1,11 +1,11 @@
 {
-  "entityType": "DRUID",
-  "description": "Entrega a Oriana los materiales del Haunted Bell para invocar criaturas en el altar del Coliseum.",
+  "entityType": "WARLOCK",
+  "description": "Entrega a Noah los materiales del Haunted Bell para invocar criaturas en el altar del Coliseum.",
   "difficult": "MEDIUM",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",
-  "order": 26,
+  "order": 27,
   "tasks": [
     {
       "type": "COLLECT",

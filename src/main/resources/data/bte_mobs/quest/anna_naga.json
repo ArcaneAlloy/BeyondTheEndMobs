@@ -11,8 +11,7 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a la Naga",
       "count": 1,
-      "entityIdLocation": "twilightforest:naga",
-      "advancement": "twilightforest:progress_naga"
+      "entityIdLocation": "twilightforest:naga"
     }
   ],
   "rewards": [

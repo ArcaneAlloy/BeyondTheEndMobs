@@ -1,11 +1,11 @@
 {
-  "entityType": "DRUID",
-  "description": "Entrega a Oriana los materiales del Fossil Bait para invocar criaturas en el altar del Coliseum.",
+  "entityType": "WARLOCK",
+  "description": "Entrega a Noah los materiales del Fossil Bait para invocar criaturas en el altar del Coliseum.",
   "difficult": "EASY",
   "dimension": "OVERWORLD",
   "toolTip": "tooltip de ejemplo",
   "priorityQuest": "SIDE_QUEST",
-  "order": 25,
+  "order": 26,
   "tasks": [
     {
       "type": "COLLECT",

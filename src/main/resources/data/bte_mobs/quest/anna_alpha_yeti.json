@@ -11,8 +11,7 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Alpha Yeti",
       "count": 1,
-      "entityIdLocation": "twilightforest:alpha_yeti",
-      "advancement": "twilightforest:progress_yeti"
+      "entityIdLocation": "twilightforest:alpha_yeti"
     }
   ],
   "rewards": [

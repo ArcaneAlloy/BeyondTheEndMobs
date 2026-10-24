@@ -11,8 +11,7 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a la Hydra",
       "count": 1,
-      "entityIdLocation": "twilightforest:hydra",
-      "advancement": "twilightforest:progress_hydra"
+      "entityIdLocation": "twilightforest:hydra"
     }
   ],
   "rewards": [

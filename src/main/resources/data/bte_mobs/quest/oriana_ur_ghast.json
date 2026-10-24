@@ -11,8 +11,7 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Ur-Ghast",
       "count": 1,
-      "entityIdLocation": "twilightforest:ur_ghast",
-      "advancement": "twilightforest:progress_ur_ghast"
+      "entityIdLocation": "twilightforest:ur_ghast"
     }
   ],
   "rewards": [

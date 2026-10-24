@@ -79,7 +79,27 @@ public class QuestScreen extends Screen {
     private static final int DESCRIPTION_OFFSET_Y = -14;
     // Margen entre el final del texto de la descripción y el borde derecho del panel.
     // Menos margen = líneas más largas.
-    private static final int DESCRIPTION_RIGHT_MARGIN = 18;
+    private static final int DESCRIPTION_RIGHT_MARGIN = 21;
+    // ---- Scroll de la descripción ----
+    // Alto de cada línea de la descripción.
+    private static final int DESCRIPTION_LINE_HEIGHT = 11;
+    // Hueco entre el final de la descripción y el botón Misión incompleta. Positivo = la descripción acaba antes.
+    private static final int DESCRIPTION_BOTTOM_GAP = 2;
+    // Barra de scroll: a la derecha del texto, en el margen. Positivo = más a la derecha.
+    private static final int DESCRIPTION_SCROLLBAR_OFFSET_X = 2;
+    private static final int DESCRIPTION_SCROLLBAR_WIDTH = 5;
+    // Alto mínimo de la parte que se arrastra.
+    private static final int DESCRIPTION_SCROLLBAR_MIN_THUMB = 10;
+    /** Primera línea visible de la descripción. */
+    private int descScroll = 0;
+    private int descMaxScroll = 0;
+    /** Quest de la que es el scroll guardado; al cambiar de quest vuelve arriba. */
+    private ResourceLocation descQuestId = null;
+    /** Zona de la descripción (texto + barra) en pantalla, para la rueda del ratón. */
+    private int descBoxLeft, descBoxTop, descBoxRight, descBoxBottom;
+    /** Barra de scroll en pantalla (alto total y de la parte que se arrastra). */
+    private int descBarX, descBarY, descBarHeight, descThumbHeight;
+    private boolean draggingDescBar = false;
     protected int leftPos;
     // ---- Colocacion del conjunto lista de quests + panel, centrado en pantalla con cualquier escala ----
     // Antes la lista y el panel colgaban de width/8 y del borde de abajo, asi que se descentraban al cambiar la
@@ -562,7 +582,8 @@ public class QuestScreen extends Screen {
             int itemsBottom = y + columnsLabelY() + 13 + HEADER_OFFSET_Y + Math.max(REWARDS_ITEMS_GAP_Y + SLOT_SIZE,
                     TASK_ITEMS_GAP_Y + SLOT_SIZE + (slotTask.isEmpty() ? 0 : TASK_COUNT_HEIGHT));
             int descY = itemsBottom + DESCRIPTION_GAP + DESCRIPTION_OFFSET_Y + 8;
-            drawWordWrap(Component.literal(translatedDesc),x + descLeft , descY , imageWidth - descLeft - DESCRIPTION_RIGHT_MARGIN, 16777215, font, poseStack);
+            renderDescription(poseStack, translatedDesc, x + descLeft, descY, imageWidth - descLeft - DESCRIPTION_RIGHT_MARGIN,
+                    y + BOTTOM_ROW_Y - DESCRIPTION_BOTTOM_GAP, mouseX, mouseY);
             poseStack.pushPose();
             renderLabel(poseStack, x + HEADER_RIGHT - 77 - HEADER_LABELS_JOIN + LABELS_OFFSET_X, y + headerRowY() + LABELS_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_dif_"+difficulty.toLowerCase()+".png"), 56);
             poseStack.popPose();
@@ -898,6 +919,67 @@ public class QuestScreen extends Screen {
         this.stateQuest.setMessage(questStateMessage());
     }
 
+    /**
+     * Pinta la descripción dentro de su cuadro. Cada salto de línea (\n en el lang) empieza un párrafo nuevo y
+     * una línea vacía (\n\n) deja un hueco entre párrafos. Si no cabe, sale una barra de scroll a la derecha.
+     */
+    private void renderDescription(PoseStack poseStack, String text, int left, int top, int width, int bottom, int mouseX, int mouseY) {
+        if (!Objects.equals(this.currentQuest.id, this.descQuestId)) {
+            this.descQuestId = this.currentQuest.id;
+            this.descScroll = 0;
+            this.draggingDescBar = false;
+        }
+        List<FormattedCharSequence> lines = new ArrayList<>();
+        for (String paragraph : text.replace("\r", "").split("\n", -1)) {
+            if (paragraph.isBlank()) lines.add(FormattedCharSequence.EMPTY);
+            else lines.addAll(this.font.split(Component.literal(paragraph), width));
+        }
+        int visible = Math.max(1, (bottom - top + DESCRIPTION_LINE_HEIGHT - this.font.lineHeight) / DESCRIPTION_LINE_HEIGHT);
+        this.descMaxScroll = Math.max(0, lines.size() - visible);
+        this.descScroll = Mth.clamp(this.descScroll, 0, this.descMaxScroll);
+
+        this.descBarX = left + width + DESCRIPTION_SCROLLBAR_OFFSET_X;
+        this.descBarY = top - 1;
+        this.descBarHeight = visible * DESCRIPTION_LINE_HEIGHT - (DESCRIPTION_LINE_HEIGHT - this.font.lineHeight) + 1;
+        this.descBoxLeft = left;
+        this.descBoxTop = this.descBarY;
+        this.descBoxRight = this.descBarX + DESCRIPTION_SCROLLBAR_WIDTH;
+        this.descBoxBottom = this.descBarY + this.descBarHeight;
+
+        Matrix4f matrix4f = poseStack.last().pose();
+        int lineY = top;
+        for (int i = this.descScroll; i < Math.min(lines.size(), this.descScroll + visible); i++) {
+            this.font.drawInternal(lines.get(i), left, lineY, 16777215, matrix4f, false);
+            lineY += DESCRIPTION_LINE_HEIGHT;
+        }
+
+        if (this.descMaxScroll > 0) {
+            int barRight = this.descBarX + DESCRIPTION_SCROLLBAR_WIDTH;
+            this.descThumbHeight = Math.max(DESCRIPTION_SCROLLBAR_MIN_THUMB, this.descBarHeight * visible / lines.size());
+            int thumbY = this.descBarY + (this.descBarHeight - this.descThumbHeight) * this.descScroll / this.descMaxScroll;
+            boolean hover = this.draggingDescBar || (mouseX >= this.descBarX && mouseX < barRight
+                    && mouseY >= thumbY && mouseY < thumbY + this.descThumbHeight);
+            // Fondo de la barra
+            fill(poseStack, this.descBarX, this.descBarY, barRight, this.descBarY + this.descBarHeight, 0x66000000);
+            // Parte que se arrastra: borde oscuro y relleno claro
+            fill(poseStack, this.descBarX, thumbY, barRight, thumbY + this.descThumbHeight, 0xFF2B2B2B);
+            fill(poseStack, this.descBarX + 1, thumbY + 1, barRight - 1, thumbY + this.descThumbHeight - 1, hover ? 0xFFFFFFFF : 0xFFC6C6C6);
+        }
+    }
+
+    private boolean isOverDescription(double mouseX, double mouseY) {
+        return this.currentQuest != null && mouseX >= this.descBoxLeft && mouseX < this.descBoxRight
+                && mouseY >= this.descBoxTop && mouseY < this.descBoxBottom;
+    }
+
+    /** Mueve la descripción para que la parte que se arrastra quede centrada en el ratón. */
+    private void dragDescriptionBar(double mouseY) {
+        int track = this.descBarHeight - this.descThumbHeight;
+        if (track <= 0) return;
+        double t = (mouseY - this.descBarY - this.descThumbHeight / 2.0D) / track;
+        this.descScroll = Mth.clamp((int) Math.round(t * this.descMaxScroll), 0, this.descMaxScroll);
+    }
+
     public void drawWordWrap(FormattedText text, int x, int y, int width, int color, Font font, PoseStack stack) {
         Matrix4f matrix4f = stack.last().pose();
 
@@ -919,6 +1001,13 @@ public class QuestScreen extends Screen {
                     if (row >= 0) openInJei(panel.items.get(row));
                     return true;
                 }
+            }
+            // Clic en la barra de scroll de la descripción: empieza a arrastrarla
+            if (this.descMaxScroll > 0 && p_94695_ >= this.descBarX && p_94695_ < this.descBarX + DESCRIPTION_SCROLLBAR_WIDTH
+                    && p_94696_ >= this.descBarY && p_94696_ < this.descBarY + this.descBarHeight) {
+                this.draggingDescBar = true;
+                dragDescriptionBar(p_94696_);
+                return true;
             }
             // Clic en una recompensa de una sola receta: abre esa receta en JEI
             for (ButtonReward reward : slotRewards) {
@@ -980,7 +1069,29 @@ public class QuestScreen extends Screen {
 
 
     @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (this.draggingDescBar && button == 0) {
+            dragDescriptionBar(mouseY);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) this.draggingDescBar = false;
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+        // Ratón sobre la descripción: la rueda mueve el texto (una línea por paso), no la lista de quests
+        if (isOverDescription(pMouseX, pMouseY)) {
+            if (this.descMaxScroll > 0) {
+                this.descScroll = Mth.clamp(this.descScroll - (int) Math.signum(pDelta), 0, this.descMaxScroll);
+            }
+            return true;
+        }
         if (this.quests.size()>VISIBLE_QUESTS) {
             this.scrolledY = Mth.clamp((int)((double)this.scrolledY - pDelta), 0, maxScroll());
             this.layoutButtons();
