@@ -2,11 +2,11 @@
   "type": "bte_mobs:explorer_recipe",
   "ingredients": [
     {
-      "item": "minecraft:ancient_debris",
+      "item": "minecraft:nether_bricks",
       "count": 4
     },
     {
-      "item": "minecraft:nether_bricks",
+      "item": "minecraft:blaze_rod",
       "count": 1
     }
   ],

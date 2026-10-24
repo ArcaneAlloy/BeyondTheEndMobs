@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Ender Golem",
       "count": 1,
-      "entityIdLocation": "cataclysm:ender_golem"
+      "entityIdLocation": "cataclysm:ender_golem",
+      "advancement": "cataclysm:kill_ender_golem"
     }
   ],
   "rewards": [

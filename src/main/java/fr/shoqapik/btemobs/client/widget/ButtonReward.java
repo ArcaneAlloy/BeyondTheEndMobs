@@ -198,6 +198,21 @@ public class ButtonReward extends Button {
         return list;
     }
 
+    /** true si la recompensa desbloquea recetas (por item, tag o ingrediente). */
+    public boolean isRecipeReward() {
+        return data.type == RewardData.Type.UNLOCK_RECIPE || data.type == RewardData.Type.UNLOCK_RECIPES_BY_INGREDIENT;
+    }
+
+    /**
+     * Quita de la lista los items que ya muestra otra recompensa de la misma quest (p. ej. el Blood Sprayer, que usa
+     * la probóscide y el saco de sangre y salía en las dos recompensas de Crimson Mosquito).
+     */
+    public void excludeRecipeItems(java.util.Set<net.minecraft.world.item.Item> shownElsewhere) {
+        List<ItemStack> items = new ArrayList<>(getRecipeItems());
+        items.removeIf(stack -> shownElsewhere.contains(stack.getItem()));
+        this.recipeItems = items;
+    }
+
     /** true si desbloquea varias recetas (se muestran en el panel que se abre con clic). */
     public boolean hasRecipeList() {
         return getRecipeItems().size() > 1;

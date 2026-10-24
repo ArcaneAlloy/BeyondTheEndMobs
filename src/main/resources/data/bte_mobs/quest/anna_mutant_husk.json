@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a un Mutant Husk",
       "count": 1,
-      "entityIdLocation": "mutantmore:mutant_husk"
+      "entityIdLocation": "mutantmore:mutant_husk",
+      "advancement": "mutantmore:mutantmore/kill_mutant_husk"
     }
   ],
   "rewards": [

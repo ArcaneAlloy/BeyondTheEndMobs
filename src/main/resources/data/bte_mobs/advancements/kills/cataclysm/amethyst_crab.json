@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "cataclysm:the_harbinger"
+              "type": "cataclysm:amethyst_crab"
             }
           }
         ]

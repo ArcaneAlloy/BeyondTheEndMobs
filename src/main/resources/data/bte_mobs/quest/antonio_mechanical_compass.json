@@ -15,20 +15,15 @@
     },
     {
       "type": "COLLECT",
-      "description": "Entrega 1x Estrella del Nether",
+      "description": "Entrega 1x Corazón del alma",
       "count": 1,
-      "entityIdLocation": "minecraft:nether_star"
+      "entityIdLocation": "alexsmobs:soul_heart"
     }
   ],
   "rewards": [
     {
       "type": "ITEM",
       "itemId": "beyondtheendcompass:compass_cataclysm_ancient_factory",
-      "count": 1
-    },
-    {
-      "type": "ITEM",
-      "itemId": "minecraft:nether_star",
       "count": 1
     },
     {

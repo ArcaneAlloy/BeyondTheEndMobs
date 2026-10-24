@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a un Mutant Shulker",
       "count": 1,
-      "entityIdLocation": "mutantmore:mutant_shulker"
+      "entityIdLocation": "mutantmore:mutant_shulker",
+      "advancement": "mutantmore:mutantmore/kill_mutant_shulker"
     }
   ],
   "rewards": [

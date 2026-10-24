@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a un Mutant Blaze",
       "count": 1,
-      "entityIdLocation": "mutantmore:mutant_blaze"
+      "entityIdLocation": "mutantmore:mutant_blaze",
+      "advancement": "mutantmore:mutantmore/kill_mutant_blaze"
     }
   ],
   "rewards": [

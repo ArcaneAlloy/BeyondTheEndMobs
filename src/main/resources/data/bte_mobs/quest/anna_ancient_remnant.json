@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Ancient Remnant",
       "count": 1,
-      "entityIdLocation": "cataclysm:ancient_remnant"
+      "entityIdLocation": "cataclysm:ancient_remnant",
+      "advancement": "cataclysm:kill_remnant"
     }
   ],
   "rewards": [

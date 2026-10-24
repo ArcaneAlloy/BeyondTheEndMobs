@@ -9,18 +9,6 @@
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega 4x Carne Podrida",
-      "count": 4,
-      "entityIdLocation": "minecraft:rotten_flesh"
-    },
-    {
-      "type": "COLLECT",
-      "description": "Entrega 2x Hueso",
-      "count": 2,
-      "entityIdLocation": "minecraft:bone"
-    },
-    {
-      "type": "COLLECT",
       "description": "Entrega 2x Ojo de Araña",
       "count": 2,
       "entityIdLocation": "minecraft:spider_eye"

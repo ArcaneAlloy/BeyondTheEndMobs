@@ -1,0 +1,35 @@
+{
+  "entityType": "DRUID",
+  "description": "Consigue una Cápsida de un Enderófago, coloca dentro la Larva de mosquito carmesí y obtén un Gusano misterioso.",
+  "difficult": "MEDIUM",
+  "dimension": "END",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 642,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Consigue un Gusano misterioso",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:mysterious_worm"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 3
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:end_portal",
+      "type": "END_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:oriana_mosquito_larva",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 20
+}

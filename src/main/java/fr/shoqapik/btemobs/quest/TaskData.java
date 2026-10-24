@@ -8,6 +8,11 @@ public class TaskData {
     public String description;
     public int count;
     private String entityIdLocation;
+    /**
+     * Solo BOSS_HUNTER (opcional, lado servidor): logro del propio mod que cuenta como haber derrotado al jefe,
+     * p. ej. "cataclysm:kill_ignis". Se comprueba aunque el jefe se derrotara antes de desbloquear la quest.
+     */
+    private String advancement;
     public TaskData(Type type,String description,String location,int count){
         this.type = type;
         this.description = description;
@@ -29,6 +34,11 @@ public class TaskData {
 
     public String getEntityIdLocation() {
         return entityIdLocation;
+    }
+
+    /** Logro que completa la tarea BOSS_HUNTER, o null. */
+    public String getAdvancement() {
+        return advancement;
     }
 
     public enum Type {

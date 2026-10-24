@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a un Mutant Hoglin",
       "count": 1,
-      "entityIdLocation": "mutantmore:mutant_hoglin"
+      "entityIdLocation": "mutantmore:mutant_hoglin",
+      "advancement": "mutantmore:mutantmore/kill_mutant_hoglin"
     }
   ],
   "rewards": [

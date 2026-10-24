@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Mutant Frosted Zombie",
       "count": 1,
-      "entityIdLocation": "mutantmore:mutant_frozen_zombie"
+      "entityIdLocation": "mutantmore:mutant_frozen_zombie",
+      "advancement": "mutantmore:mutantmore/kill_mutant_frozen_zombie"
     }
   ],
   "rewards": [

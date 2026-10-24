@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Maledictus",
       "count": 1,
-      "entityIdLocation": "cataclysm:maledictus"
+      "entityIdLocation": "cataclysm:maledictus",
+      "advancement": "cataclysm:kill_maledictus"
     }
   ],
   "rewards": [

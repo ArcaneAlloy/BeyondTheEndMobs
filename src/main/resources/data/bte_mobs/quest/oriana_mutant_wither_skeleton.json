@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a un Mutant Wither Skeleton",
       "count": 1,
-      "entityIdLocation": "mutantmore:mutant_wither_skeleton"
+      "entityIdLocation": "mutantmore:mutant_wither_skeleton",
+      "advancement": "mutantmore:mutantmore/kill_mutant_wither_skeleton"
     }
   ],
   "rewards": [

@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Nether Warlord",
       "count": 1,
-      "entityIdLocation": "salmonsgenesisreincarnation:nether_warlord"
+      "entityIdLocation": "salmonsgenesisreincarnation:nether_warlord",
+      "advancement": "salmonsgenesisreincarnation:kill_warlord"
     }
   ],
   "rewards": [

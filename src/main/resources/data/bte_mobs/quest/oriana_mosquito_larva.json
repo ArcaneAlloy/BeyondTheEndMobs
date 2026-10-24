@@ -1,0 +1,35 @@
+{
+  "entityType": "DRUID",
+  "description": "Crea una Larva de mosquito carmesí en la interfaz de Oriana.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "SIDE_QUEST",
+  "order": 422,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Crea una Larva de mosquito carmesí con Oriana",
+      "count": 1,
+      "entityIdLocation": "alexsmobs:mosquito_larva"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 2
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "ender_journey:nether_portal",
+      "type": "NETHER_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:oriana_crimson_mosquito",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 15
+}

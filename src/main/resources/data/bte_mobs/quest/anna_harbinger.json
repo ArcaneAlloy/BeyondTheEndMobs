@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Harbinger",
       "count": 1,
-      "entityIdLocation": "cataclysm:the_harbinger"
+      "entityIdLocation": "cataclysm:the_harbinger",
+      "advancement": "cataclysm:kill_harbinger"
     }
   ],
   "rewards": [
@@ -28,7 +29,7 @@
   ],
   "conditionUnlockData": [
     {
-      "locationId": "bte_mobs:anna_wither",
+      "locationId": "bte_mobs:noah_wither",
       "type": "PARENT_QUEST"
     }
   ],

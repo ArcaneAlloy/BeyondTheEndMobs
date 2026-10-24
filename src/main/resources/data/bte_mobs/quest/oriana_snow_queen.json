@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a la Snow Queen",
       "count": 1,
-      "entityIdLocation": "twilightforest:snow_queen"
+      "entityIdLocation": "twilightforest:snow_queen",
+      "advancement": "twilightforest:progress_glacier"
     }
   ],
   "rewards": [

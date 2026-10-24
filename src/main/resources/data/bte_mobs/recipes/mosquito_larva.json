@@ -1,0 +1,17 @@
+{
+  "type": "bte_mobs:druid_recipe",
+  "ingredients": [
+    {
+      "item": "alexsmobs:maggot",
+      "count": 1
+    },
+    {
+      "item": "alexsmobs:mosquito_proboscis",
+      "count": 1
+    }
+  ],
+  "tier": 1,
+  "result": {
+    "item": "alexsmobs:mosquito_larva"
+  }
+}

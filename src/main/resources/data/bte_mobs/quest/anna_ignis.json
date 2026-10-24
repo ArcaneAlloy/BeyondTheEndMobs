@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Ignis",
       "count": 1,
-      "entityIdLocation": "cataclysm:ignis"
+      "entityIdLocation": "cataclysm:ignis",
+      "advancement": "cataclysm:kill_ignis"
     }
   ],
   "rewards": [

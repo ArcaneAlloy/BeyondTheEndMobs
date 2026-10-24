@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Ender Guardian",
       "count": 1,
-      "entityIdLocation": "cataclysm:ender_guardian"
+      "entityIdLocation": "cataclysm:ender_guardian",
+      "advancement": "cataclysm:kill_ender_guardian"
     }
   ],
   "rewards": [

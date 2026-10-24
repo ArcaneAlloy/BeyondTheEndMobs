@@ -9,15 +9,15 @@
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega 4x Escombros Ancestrales",
+      "description": "Entrega 4x Ladrillos del Nether",
       "count": 4,
-      "entityIdLocation": "minecraft:ancient_debris"
+      "entityIdLocation": "minecraft:nether_bricks"
     },
     {
       "type": "COLLECT",
-      "description": "Entrega 1x Ladrillos del Nether",
+      "description": "Entrega 1x Vara de blaze",
       "count": 1,
-      "entityIdLocation": "minecraft:nether_bricks"
+      "entityIdLocation": "minecraft:blaze_rod"
     }
   ],
   "rewards": [

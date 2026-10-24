@@ -207,23 +207,34 @@ public class RecipeCapability<T extends Recipe<?>> implements RecipePlayer<T> {
     }
 
     /**
-     * Tareas BOSS_HUNTER que se cumplen con un logro oculto de bte_mobs (data/bte_mobs/advancements/kills/<mod>/<entidad>.json).
-     * El logro se gana al matar al jefe aunque la quest aún no esté desbloqueada, así que la muerte no se pierde
-     * (p. ej. el Lich del Infested Temple, que solo aparece una vez por templo). Las tareas sin logro siguen
-     * funcionando solo con la muerte (hunterQuestUpdate).
+     * Tareas BOSS_HUNTER que se cumplen con un logro, aunque el jefe se derrotara antes de desbloquear la quest:
+     *  - Si la tarea tiene "advancement" en el JSON de la quest, ese logro del propio mod (p. ej. "cataclysm:kill_ignis").
+     *  - Si no, el logro oculto de bte_mobs data/bte_mobs/advancements/kills/<mod>/<entidad>.json, si existe
+     *    (jefes sin logro propio que sirva: Lich, Wither, Amethyst Crab).
+     * Las tareas sin ninguno de los dos solo cuentan las muertes con la quest ya desbloqueada (hunterQuestUpdate).
      */
     public void checkBossKillAdvancements(ServerPlayer player) {
         boolean changed = false;
         for (Map<Quest, QuestStateData> questMap : quests.values()) {
-            for (QuestStateData state : questMap.values()) {
+            for (Map.Entry<Quest, QuestStateData> entry : questMap.entrySet()) {
+                QuestStateData state = entry.getValue();
                 if (state.isComplete || state.isReclaim) continue;
                 boolean unlock = state.unlockStates.isEmpty() || state.unlockStates.stream().allMatch(e -> e.unlock);
                 if (!unlock) continue;
-                for (StatTaskData task : state.statTaskData) {
+                Quest def = entry.getKey() == null ? null : fr.shoqapik.btemobs.quest.QuestManager.getQuest(entry.getKey().id.toString());
+                List<TaskData> defs = def != null ? def.getTasks() : null;
+                for (int i = 0; i < state.statTaskData.size(); i++) {
+                    StatTaskData task = state.statTaskData.get(i);
                     if (task.complete || task.taskType != TaskData.Type.BOSS_HUNTER || task.id == null) continue;
-                    ResourceLocation entityId = ResourceLocation.tryParse(task.id);
-                    if (entityId == null) continue;
-                    ResourceLocation advId = new ResourceLocation(BteMobsMod.MODID, "kills/" + entityId.getNamespace() + "/" + entityId.getPath());
+                    String advSpec = defs != null && i < defs.size() ? defs.get(i).getAdvancement() : null;
+                    ResourceLocation advId;
+                    if (advSpec != null && !advSpec.isEmpty()) {
+                        advId = ResourceLocation.tryParse(advSpec);
+                    } else {
+                        ResourceLocation entityId = ResourceLocation.tryParse(task.id);
+                        advId = entityId == null ? null : new ResourceLocation(BteMobsMod.MODID, "kills/" + entityId.getNamespace() + "/" + entityId.getPath());
+                    }
+                    if (advId == null) continue;
                     net.minecraft.advancements.Advancement adv = player.getServer().getAdvancements().getAdvancement(advId);
                     if (adv != null && player.getAdvancements().getOrStartProgress(adv).isDone()) {
                         task.count = task.maxCount;

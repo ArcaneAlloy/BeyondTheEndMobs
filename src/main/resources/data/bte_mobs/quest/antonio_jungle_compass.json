@@ -12,12 +12,6 @@
       "description": "Entrega 4x Roca Musgosa",
       "count": 4,
       "entityIdLocation": "minecraft:mossy_cobblestone"
-    },
-    {
-      "type": "COLLECT",
-      "description": "Entrega 1x Semillas de Cacao",
-      "count": 1,
-      "entityIdLocation": "minecraft:cocoa_beans"
     }
   ],
   "rewards": [

@@ -1,6 +1,6 @@
 {
   "entityType": "BLACKSMITH",
-  "description": "Anna necesita materiales excepcionales para ampliar las posibilidades de su forja. Enfréntate a este poderoso enemigo y demuestra tu destreza: derrota al Void Worm en el End.",
+  "description": "Lanza el Gusano misterioso al vacío del End y derrota al Gusano abisal.",
   "difficult": "HARD",
   "dimension": "END",
   "toolTip": "tooltip de ejemplo",
@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Void Worm",
       "count": 1,
-      "entityIdLocation": "alexsmobs:void_worm"
+      "entityIdLocation": "alexsmobs:void_worm",
+      "advancement": "alexsmobs:alexsmobs/void_worm_kill"
     }
   ],
   "rewards": [
@@ -26,6 +27,10 @@
     {
       "locationId": "ender_journey:end_portal",
       "type": "END_PORTAL"
+    },
+    {
+      "locationId": "bte_mobs:oriana_capsid",
+      "type": "PARENT_QUEST"
     }
   ],
   "experience": 50

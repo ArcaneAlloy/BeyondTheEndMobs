@@ -59,10 +59,13 @@ public class QuestScreen extends Screen {
     private static final int LABEL_WIDTH = 73;       // ancho de label_rewards.png / label_task.png
     private static final int SLOT_SIZE = 20;         // tamaño del botón de cada item (el item de 16x16 va centrado dentro)
     private static final int REWARD_SPACING = 22;    // distancia entre recompensas
-    private static final int TASK_ROW_SPACING = 21;  // distancia entre filas de tareas
+    private static final int TASK_SPACING = 26;      // distancia entre tareas (en fila, como las recompensas)
+    // Debajo de cada botón: el contador (0/4) a escala 0.5.
+    private static final int TASK_COUNT_OFFSET_Y = 1;   // hueco entre el botón y el contador
+    private static final int TASK_COUNT_HEIGHT = 6;     // alto total bajo el botón
     // Separación vertical extra entre las etiquetas Rewards/Task y sus iconos. Positivo = iconos más abajo.
-    private static final int REWARDS_ITEMS_GAP_Y = 4;
-    private static final int TASK_ITEMS_GAP_Y = 4;
+    private static final int REWARDS_ITEMS_GAP_Y = 2;
+    private static final int TASK_ITEMS_GAP_Y = 2;
     private static final int TASK_BAR_GAP = 4;       // hueco entre icono y barra
     private static final int TASK_BAR_WIDTH = 58;    // ancho de la barra (115 px de textura a escala 0.5)
     // Desplazamiento propio de las etiquetas Easy/Overworld (independiente de HEADER_OFFSET_Y y de las columnas).
@@ -73,7 +76,7 @@ public class QuestScreen extends Screen {
     // Desplazamiento horizontal de la descripción de la quest. Positivo = más a la derecha.
     private static final int DESCRIPTION_OFFSET_X = 2;
     // Desplazamiento vertical de la descripción. Negativo = más arriba.
-    private static final int DESCRIPTION_OFFSET_Y = -8;
+    private static final int DESCRIPTION_OFFSET_Y = -14;
     // Margen entre el final del texto de la descripción y el borde derecho del panel.
     // Menos margen = líneas más largas.
     private static final int DESCRIPTION_RIGHT_MARGIN = 18;
@@ -129,11 +132,11 @@ public class QuestScreen extends Screen {
         };
     }
     /** Fila de las etiquetas Rewards / Task: por debajo del letrero del nombre y de la fila de Dificultad / Dimensión. */
-    private int columnsLabelY() { return Math.max(32, headerRowY() + 13 + 6); }
+    private int columnsLabelY() { return Math.max(32, headerRowY() + 13 + 2); }
     /** Separación entre los iconos (recompensas y tareas) y la descripción. */
     private static final int DESCRIPTION_GAP = 8;
     /** Botón Quest Incomplete/Complete y casilla Track: abajo, dentro del marco. */
-    private static final int BOTTOM_ROW_Y = 162;
+    private static final int BOTTOM_ROW_Y = 166;
     private static final int STATE_BUTTON_X = 22;
     private static final int STATE_BUTTON_WIDTH = 150;
     /** Lista de quests de la izquierda: 8 botones, que ocupan el alto del panel (8 x 25 = 200). */
@@ -399,8 +402,12 @@ public class QuestScreen extends Screen {
         int i = 0;
         int x = panelLeft();
         int y = panelTop();
-        for (StatTaskData data : this.quests.get(this.currentQuest).statTaskData){
-            ButtonTask buttonReward = new ButtonTask(taskLeftX(x), y + columnsLabelY() + 13 + HEADER_OFFSET_Y + TASK_ITEMS_GAP_Y + TASK_ROW_SPACING * i, SLOT_SIZE, SLOT_SIZE, data, minecraft);
+        // Las tareas empiezan alineadas con la etiqueta Task; si son muchas (4 o más) y la última se saldría del
+        // contenido, la fila entera se desplaza a la izquierda para terminar en el borde derecho.
+        List<StatTaskData> taskList = this.quests.get(this.currentQuest).statTaskData;
+        int tasksStartX = Math.min(taskLeftX(x), x + CONTENT_RIGHT - SLOT_SIZE - TASK_SPACING * Math.max(0, taskList.size() - 1));
+        for (StatTaskData data : taskList){
+            ButtonTask buttonReward = new ButtonTask(tasksStartX + TASK_SPACING * i, y + columnsLabelY() + 13 + HEADER_OFFSET_Y + TASK_ITEMS_GAP_Y, SLOT_SIZE, SLOT_SIZE, data, minecraft);
             buttonReward.displayDescription = QuestTexts.task(this.currentQuest, i, data.description);
             slotTask.add(buttonReward);
             i++;
@@ -415,6 +422,18 @@ public class QuestScreen extends Screen {
             slotRewards.add(buttonReward);
             i++;
         }
+        // Un mismo item desbloqueado por varias recompensas de recetas solo se muestra en la última (la de más a la
+        // derecha). Si una recompensa se queda sin items, se quita y las demás se recolocan.
+        java.util.Set<net.minecraft.world.item.Item> shownLater = new java.util.HashSet<>();
+        for (int r = slotRewards.size() - 1; r >= 0; r--) {
+            ButtonReward reward = slotRewards.get(r);
+            if (!reward.isRecipeReward()) continue;
+            boolean hadItems = !reward.getRecipeItems().isEmpty();
+            reward.excludeRecipeItems(shownLater);
+            if (hadItems && reward.getRecipeItems().isEmpty()) { slotRewards.remove(r); continue; }
+            reward.getRecipeItems().forEach(stack -> shownLater.add(stack.getItem()));
+        }
+        for (int r = 0; r < slotRewards.size(); r++) slotRewards.get(r).x = rewardsStartX + REWARD_SPACING * r;
         if (currentQuest!=null && minecraft.player!=null){
             isComplete = RecipeCapability.get(minecraft.player).getQuestComplete(currentQuest);
             isReclaim = RecipeCapability.get(minecraft.player).getQuestReclaim(currentQuest);
@@ -541,7 +560,7 @@ public class QuestScreen extends Screen {
             int bottom = top + this.font.lineHeight + 2;
             int descLeft = 12 + DESCRIPTION_OFFSET_X;
             int itemsBottom = y + columnsLabelY() + 13 + HEADER_OFFSET_Y + Math.max(REWARDS_ITEMS_GAP_Y + SLOT_SIZE,
-                    TASK_ITEMS_GAP_Y + TASK_ROW_SPACING * Math.max(0, slotTask.size() - 1) + SLOT_SIZE);
+                    TASK_ITEMS_GAP_Y + SLOT_SIZE + (slotTask.isEmpty() ? 0 : TASK_COUNT_HEIGHT));
             int descY = itemsBottom + DESCRIPTION_GAP + DESCRIPTION_OFFSET_Y + 8;
             drawWordWrap(Component.literal(translatedDesc),x + descLeft , descY , imageWidth - descLeft - DESCRIPTION_RIGHT_MARGIN, 16777215, font, poseStack);
             poseStack.pushPose();
@@ -561,19 +580,15 @@ public class QuestScreen extends Screen {
             poseStack.popPose();
             poseStack.pushPose();
             renderLabel(poseStack, taskLeftX(x), y + columnsLabelY() + HEADER_OFFSET_Y, new ResourceLocation(BteMobsMod.MODID, "textures/gui/widget/label_task.png"));
-            int barX = taskLeftX(x) + SLOT_SIZE + TASK_BAR_GAP;
             for (ButtonTask buttonTask : slotTask){
-                int rowY = buttonTask.y;
-                // Contador (0/15) centrado encima de la barra, a escala 0.5
+                buttonTask.render(poseStack,mouseX,mouseY,partialTick);
+                // Contador (0/4) centrado debajo del botón, a escala 0.5
                 String count = buttonTask.data.count + "/" + buttonTask.data.maxCount;
                 poseStack.pushPose();
-                poseStack.translate(barX + TASK_BAR_WIDTH / 2.0F - this.font.width(count) / 4.0F, rowY + (SLOT_SIZE - 16) / 2 + 3, 0.0D);
+                poseStack.translate(buttonTask.x + SLOT_SIZE / 2.0F - this.font.width(count) / 4.0F, buttonTask.y + SLOT_SIZE + TASK_COUNT_OFFSET_Y, 0.0D);
                 poseStack.scale(0.5F, 0.5F, 0.5F);
                 this.font.draw(poseStack, count, 0, 0, 16777215);
                 poseStack.popPose();
-                // Barra de progreso debajo del contador
-                bar(poseStack, buttonTask.data, barX, rowY + (SLOT_SIZE - 16) / 2 + 9);
-                buttonTask.render(poseStack,mouseX,mouseY,partialTick);
             }
 
             poseStack.popPose();

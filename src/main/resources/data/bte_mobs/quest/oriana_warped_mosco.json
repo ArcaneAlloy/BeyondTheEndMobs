@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota al Warped Mosco",
       "count": 1,
-      "entityIdLocation": "alexsmobs:warped_mosco"
+      "entityIdLocation": "alexsmobs:warped_mosco",
+      "advancement": "alexsmobs:alexsmobs/warped_mosco_kill"
     }
   ],
   "rewards": [

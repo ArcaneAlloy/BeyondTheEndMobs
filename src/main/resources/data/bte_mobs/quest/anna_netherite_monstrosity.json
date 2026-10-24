@@ -11,7 +11,8 @@
       "type": "BOSS_HUNTER",
       "description": "Derrota a la Netherite Monstrosity",
       "count": 1,
-      "entityIdLocation": "cataclysm:netherite_monstrosity"
+      "entityIdLocation": "cataclysm:netherite_monstrosity",
+      "advancement": "cataclysm:kill_monstrosity"
     }
   ],
   "rewards": [
