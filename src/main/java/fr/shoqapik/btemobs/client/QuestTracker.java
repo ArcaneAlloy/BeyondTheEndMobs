@@ -250,6 +250,9 @@ public final class QuestTracker {
         float scale = BteMobsClientConfig.TRACKER_SCALE.get().floatValue();
         int x = BteMobsClientConfig.TRACKER_X.get();
         int y = BteMobsClientConfig.TRACKER_Y.get();
+        // Con el Nature's Compass en la mano, su informacion va en la misma columna: el panel baja debajo de ella
+        int compassBottom = NaturesCompassHud.bottom(mc);
+        if (compassBottom > 0) y = Math.max(y, compassBottom + 6);
         // Alto disponible (en unidades del panel, ya escalado): hasta el chat de abajo a la izquierda
         int available = (int) ((screenHeight - y - BOTTOM_MARGIN) / scale);
 
