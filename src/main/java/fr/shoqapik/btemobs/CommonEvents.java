@@ -27,7 +27,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -489,35 +488,6 @@ public class CommonEvents {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         net.minecraft.world.item.ItemStack stack = event.getItemStack();
-        if (stack.getItem() == Items.STICK){
-            if (!player.isShiftKeyDown()){
-                BteMobsMod.x += 1;
-            }else {
-                BteMobsMod.x -= 1;
-            }
-        }
-        if (stack.getItem() == Items.GOLD_INGOT){
-            if (!player.isShiftKeyDown()){
-                BteMobsMod.y += 1;
-            }else {
-                BteMobsMod.y -= 1;
-            }
-        }
-        if (stack.getItem() == Items.BLAZE_ROD){
-            if (!player.isShiftKeyDown()){
-                BteMobsMod.xp += 1;
-            }else {
-                BteMobsMod.xp -= 1;
-            }
-        }
-        if (stack.getItem() == Items.IRON_INGOT){
-            if (!player.isShiftKeyDown()){
-                BteMobsMod.yp += 1;
-            }else {
-                BteMobsMod.yp -= 1;
-            }
-        }
-        BteMobsMod.LOGGER.info("X :{} , Y :{} , XP :{} , YP :{}",BteMobsMod.x,BteMobsMod.y,BteMobsMod.xp,BteMobsMod.yp);
         boolean isEnchantedBook = stack.getItem() instanceof net.minecraft.world.item.EnchantedBookItem;
         boolean isAncientTome = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem()) != null
             && net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem()).toString().equals("quark:ancient_tome");

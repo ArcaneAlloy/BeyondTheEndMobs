@@ -82,12 +82,6 @@ public class BteMobsMod {
     public static final Logger LOGGER = LogManager.getLogger();
 
     private static final String PROTOCOL_VERSION = "2";
-    public static double x=0;
-    public static double y=0;
-    public static double z=0;
-    public static double xp=0;
-    public static double yp=0;
-    public static int eyes = 0;
     public static final RecipeBookType BLACKSMITH =
             RecipeBookType.create("BLACKSMITH");
 
