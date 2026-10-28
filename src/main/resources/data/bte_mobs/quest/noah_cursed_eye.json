@@ -1,0 +1,28 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Completa las quests Quitar Maldiciones y Santuario de Noah y él te entregará el Ojo Maldito.",
+  "difficult": "MEDIUM",
+  "dimension": "NETHER",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "MAIN_QUEST",
+  "order": 344,
+  "tasks": [],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "endrem:cursed_eye",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:noah_thornborn_towers",
+      "type": "PARENT_QUEST"
+    },
+    {
+      "locationId": "bte_mobs:noah_incendium_sanctum",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}

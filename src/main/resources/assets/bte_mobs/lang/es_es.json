@@ -724,6 +724,8 @@
   "title.quest.noah_warden": "Warden",
   "desc.quest.noah_warden": "¿Te da miedo la oscuridad, Héroe? Pues mala suerte, porque tendrás que adentrarte en lo más profundo de ella si quieres obtener el Ojo de Sculk.\n\nEn la Ciudad Antigua si un ser hace el suficiente ruido puede ser capaz de despertar una temida criatura conocida como el Warden, está ciega, pero eso no la hace menos temible.\n\nDerrótala Héroe, no solo para obtener el Ojo de Sculk cuyo objetivo es vital en tu misión, si no para que Anna sea capaz de forjarte una poderosa armadura.",
   "task.quest.noah_warden.0": "Derrota al Warden",
+  "title.quest.noah_cursed_eye": "Ojo Maldito",
+  "desc.quest.noah_cursed_eye": "Gracias a ti, Héroe, he recuperado el Tomo del Santuario y el Talismán Thornborn. Con ambos por fin he podido romper la maldición que sellaba este Ojo.\n\nHace mucho tiempo, los Piglins juraron protegerlo a costa de sus vidas, pero su poder acabó volviéndose en su contra.\n\nTómalo, te pertenece. Aunque ya no esté maldito, sigue siendo un artefacto poderoso y destructivo, así que úsalo con cuidado.",
   "title.quest.anna_harbinger": "El Heraldo",
   "desc.quest.anna_harbinger": "Como sabrás, la Redstone es una piedra que transmite energía por sí misma.\n\nUna antigua civilización lo aprovechó para crear una máquina defensiva. Actualmente está apagada, con una ranura para insertar una Estrella del Nether.\n\nEnciéndela, derrótala y tráeme su fuente de poder.",
   "task.quest.anna_harbinger.0": "Derrota al Heraldo",

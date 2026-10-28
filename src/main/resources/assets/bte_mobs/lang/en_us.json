@@ -727,6 +727,8 @@
   "title.quest.noah_warden": "Warden",
   "desc.quest.noah_warden": "Are you afraid of the dark, Hero? Too bad, because you'll have to venture into its very depths if you want to obtain the Sculk Eye.\n\nIn the Ancient City, a being that makes enough noise can awaken a dreaded creature known as the Warden. It is blind, but that doesn't make it any less fearsome.\n\nDefeat it, Hero, not only to obtain the Sculk Eye, which is vital to your mission, but also so that Anna can forge you a powerful armor.",
   "task.quest.noah_warden.0": "Defeat the Warden",
+  "title.quest.noah_cursed_eye": "Cursed Eye",
+  "desc.quest.noah_cursed_eye": "Thanks to you, Hero, I have recovered the Sanctum Tome and the Thornborn Talisman. With both, I have finally been able to break the curse that sealed this Eye.\n\nLong ago, the Piglins swore to protect it at the cost of their lives, but its power ended up turning against them.\n\nTake it, it belongs to you. Even though it is no longer cursed, it is still a powerful and destructive artifact, so use it with care.",
   "title.quest.anna_harbinger": "The Harbinger",
   "desc.quest.anna_harbinger": "As you may know, Redstone is a stone that transmits energy by itself.\n\nAn ancient civilization took advantage of it to build a defensive machine. It's currently switched off, with a slot to insert a Nether Star.\n\nTurn it on, defeat it and bring me its power source.",
   "task.quest.anna_harbinger.0": "Defeat the Harbinger",
