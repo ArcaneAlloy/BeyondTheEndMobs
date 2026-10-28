@@ -1,0 +1,46 @@
+{
+  "entityType": "WARLOCK",
+  "description": "Despierta al Warden en la Ciudad Antigua y derrótalo para conseguir el Ojo de Sculk.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "MAIN_QUEST",
+  "order": 444,
+  "tasks": [
+    {
+      "type": "BOSS_HUNTER",
+      "description": "Derrota al Warden",
+      "count": 1,
+      "entityIdLocation": "minecraft:warden"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "monstersandmushrooms:warden_helmet",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "monstersandmushrooms:warden_chestplate",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "monstersandmushrooms:warden_leggings",
+      "recipeType": "blacksmith_upgrade"
+    },
+    {
+      "type": "UNLOCK_RECIPE",
+      "recipeId": "monstersandmushrooms:warden_boots",
+      "recipeType": "blacksmith_upgrade"
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:anna_netherite_monstrosity",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}
