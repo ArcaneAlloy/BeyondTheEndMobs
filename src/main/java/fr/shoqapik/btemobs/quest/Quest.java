@@ -58,16 +58,16 @@ public class Quest {
         packetBuffer.writeUtf(quest.description);
         packetBuffer.writeInt(quest.experience);
 
-        packetBuffer.writeInt(quest.tasks.size());
-        for (TaskData task : quest.tasks) {
+        packetBuffer.writeInt(quest.getTasks().size());
+        for (TaskData task : quest.getTasks()) {
             packetBuffer.writeUtf(task.type.name());
             packetBuffer.writeUtf(task.description);
             packetBuffer.writeUtf(task.getEntityIdLocation());
             packetBuffer.writeInt(task.count);
         }
 
-        packetBuffer.writeInt(quest.rewards.size());
-        for (RewardData rewardData : quest.rewards) {
+        packetBuffer.writeInt(quest.getRewards().size());
+        for (RewardData rewardData : quest.getRewards()) {
             packetBuffer.writeUtf(rewardData.type.name());
             packetBuffer.writeUtf(rewardData.getObjectId());
             if (rewardData.type == RewardData.Type.ITEM){
@@ -85,8 +85,8 @@ public class Quest {
             }
         }
 
-        packetBuffer.writeInt(quest.conditionUnlockData.size());
-        for (ConditionUnlockData conditionUnlockData1 : quest.conditionUnlockData) {
+        packetBuffer.writeInt(quest.getConditionUnlockData().size());
+        for (ConditionUnlockData conditionUnlockData1 : quest.getConditionUnlockData()) {
             packetBuffer.writeUtf(conditionUnlockData1.locationId);
             packetBuffer.writeUtf(conditionUnlockData1.type.name());
         }
@@ -194,16 +194,21 @@ public class Quest {
         return id;
     }
 
+    /**
+     * Las listas se leen del JSON con Gson (sin pasar por el constructor): si al JSON le falta "tasks", "rewards" o
+     * "conditionUnlockData" quedan en null. Los getters devuelven una lista vacía para que una quest así no rompa
+     * la entrada del jugador al mundo.
+     */
     public List<ConditionUnlockData> getConditionUnlockData() {
-        return conditionUnlockData;
+        return conditionUnlockData != null ? conditionUnlockData : java.util.Collections.emptyList();
     }
 
     public List<TaskData> getTasks() {
-        return tasks;
+        return tasks != null ? tasks : java.util.Collections.emptyList();
     }
 
     public List<RewardData> getRewards() {
-        return rewards;
+        return rewards != null ? rewards : java.util.Collections.emptyList();
     }
 
     public PriorityQuest getPriorityQuest() {
