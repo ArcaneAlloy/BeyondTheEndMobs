@@ -124,15 +124,18 @@ public class ButtonTask extends Button {
         String spec = switch (data.taskType) {
             case COLLECT, CRAFT_UNIQUE, BREW_POTION, PERSONAL_HORSE, OBTAIN, WARLOCK_ENCHANT, BLACKSMITH_CRAFT -> data.id;
             case FEED_ENTITY -> data.id.contains("|") ? data.id.substring(data.id.indexOf('|') + 1) : "";
-            case ACTIVATE_WAYSTONE -> data.id.contains("|") ? data.id.substring(0, data.id.indexOf('|')) : data.id;
+            case ACTIVATE_WAYSTONE, HAS_EFFECT -> data.id.contains("|") ? data.id.substring(0, data.id.indexOf('|')) : data.id;
             default -> "";
         };
         return iconFor(spec);
     }
 
-    /** "mod:item" -> ese item; "#mod:tag" -> primer item del tag. */
+    /** "mod:item" -> ese item; "#mod:tag" -> primer item del tag; "minecraft:ominous_banner" -> Bandera de los Illager. */
     private static ItemStack iconFor(String spec) {
         if (spec == null || spec.isEmpty()) return ItemStack.EMPTY;
+        if (fr.shoqapik.btemobs.quest.QuestTriggers.OMINOUS_BANNER.equals(spec)) {
+            return net.minecraft.world.entity.raid.Raid.getLeaderBannerInstance();
+        }
         if (spec.startsWith("#")) {
             ResourceLocation tagId = ResourceLocation.tryParse(spec.substring(1));
             if (tagId == null || ForgeRegistries.ITEMS.tags() == null) return ItemStack.EMPTY;

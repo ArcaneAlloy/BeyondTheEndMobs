@@ -35,14 +35,29 @@ import java.util.List;
  *  OBTAIN         -> tickPlayer            (revisa el inventario cada segundo)
  *  WARLOCK_ENCHANT-> onWarlockEnchant      (al sacar el item encantado de la interfaz del Warlock)
  *  ACTIVATE_WAYSTONE -> tickPlayer         (waystones activadas fuera del Lobby, cada 2 segundos)
+ *  HAS_EFFECT     -> tickPlayer            (efecto activo en el jugador, cada segundo)
  */
 public final class QuestTriggers {
 
     private QuestTriggers() {}
 
-    /** true si el stack cumple la especificación: "mod:item" o "#mod:tag". */
+    /**
+     * Id especial para la Bandera de los Illager (Ominous Banner). No es un item propio: es un minecraft:white_banner
+     * con nombre y patrones, así que se reconoce por su nombre traducible, igual que la que sueltan los capitanes.
+     */
+    public static final String OMINOUS_BANNER = "minecraft:ominous_banner";
+
+    /** true si el stack es una Bandera de los Illager. */
+    public static boolean isOminousBanner(ItemStack stack) {
+        if (!stack.is(net.minecraft.world.item.Items.WHITE_BANNER)) return false;
+        return stack.getHoverName().getContents() instanceof net.minecraft.network.chat.contents.TranslatableContents t
+                && "block.minecraft.ominous_banner".equals(t.getKey());
+    }
+
+    /** true si el stack cumple la especificación: "mod:item", "#mod:tag" o "minecraft:ominous_banner". */
     public static boolean matchesItem(String spec, ItemStack stack) {
         if (spec == null || spec.isEmpty() || stack.isEmpty()) return false;
+        if (OMINOUS_BANNER.equals(spec)) return isOminousBanner(stack);
         if (spec.startsWith("#")) {
             ResourceLocation tag = ResourceLocation.tryParse(spec.substring(1));
             return tag != null && stack.is(ItemTags.create(tag));
@@ -128,6 +143,26 @@ public final class QuestTriggers {
         });
     }
 
+    // ---------------------------------------------------------------- HAS_EFFECT
+
+    /**
+     * Tareas HAS_EFFECT ("item_icono|mod:efecto"): se completan cuando el jugador tiene ese efecto activo.
+     * P. ej. Bad Omen, que con Savage and Ravage solo se consigue quemando una Bandera de los Illager,
+     * o Hero of the Village, que se recibe al ganar una Raid.
+     */
+    private static void checkEffects(ServerPlayer player, RecipeCapability<?> cap) {
+        cap.updateTasks(TaskData.Type.HAS_EFFECT, task -> {
+            if (task.id == null) return false;
+            int bar = task.id.indexOf('|');
+            ResourceLocation effectId = ResourceLocation.tryParse(bar >= 0 ? task.id.substring(bar + 1) : task.id);
+            if (effectId == null) return false;
+            net.minecraft.world.effect.MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(effectId);
+            if (effect == null || !player.hasEffect(effect)) return false;
+            task.count = task.maxCount;
+            return true;
+        });
+    }
+
     // ---------------------------------------------------------------- FEED_ENTITY
 
     /** Llamado desde PlayerInteractEvent.EntityInteract (antes de que la entidad procese el clic). */
@@ -165,6 +200,7 @@ public final class QuestTriggers {
         cap.checkAdvancementConditions(player);
         cap.checkBossKillAdvancements(player);
         if (cap.hasPendingTask(TaskData.Type.OBTAIN)) checkObtain(player, cap);
+        if (cap.hasPendingTask(TaskData.Type.HAS_EFFECT)) checkEffects(player, cap);
         QuestReadyNotifier.tick(player, cap);
         if (player.tickCount % 40 != 0) return;
         if (cap.hasPendingTask(TaskData.Type.ACTIVATE_WAYSTONE)) checkWaystones(player, cap);

@@ -64,6 +64,11 @@ public class TaskData {
          * Tener activada una waystone (mod Waystones) fuera del Lobby (the_forgotten_realm).
          * entityIdLocation: "item_icono" (cualquier waystone) o "item_icono|mod:estructura" (solo si está dentro de esa estructura).
          */
-        ACTIVATE_WAYSTONE
+        ACTIVATE_WAYSTONE,
+        /**
+         * Tener activo un efecto. entityIdLocation: "item_icono|mod:efecto",
+         * p. ej. "minecraft:flint_and_steel|minecraft:bad_omen".
+         */
+        HAS_EFFECT
     }
 }

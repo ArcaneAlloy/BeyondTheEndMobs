@@ -1,0 +1,25 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Consigue una Bandera de los Illager en uno de sus asentamientos.",
+  "difficult": "MEDIUM",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "MAIN_QUEST",
+  "order": 14,
+  "tasks": [
+    {
+      "type": "OBTAIN",
+      "description": "Obtén una Bandera de los Illager",
+      "count": 1,
+      "entityIdLocation": "minecraft:ominous_banner"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "create:experience_block",
+      "count": 3
+    }
+  ],
+  "experience": 30
+}

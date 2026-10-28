@@ -1,0 +1,37 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Quema la Bandera de los Illager cerca de una aldea, defiéndela de la Raid y consigue el Ojo Malvado.",
+  "difficult": "HARD",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "MAIN_QUEST",
+  "order": 15,
+  "tasks": [
+    {
+      "type": "HAS_EFFECT",
+      "description": "Quema una Bandera de los Illager cerca de una aldea",
+      "count": 1,
+      "entityIdLocation": "minecraft:flint_and_steel|minecraft:bad_omen"
+    },
+    {
+      "type": "HAS_EFFECT",
+      "description": "Defiende la aldea y gana la Raid",
+      "count": 1,
+      "entityIdLocation": "minecraft:bell|minecraft:hero_of_the_village"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "endrem:evil_eye",
+      "count": 1
+    }
+  ],
+  "conditionUnlockData": [
+    {
+      "locationId": "bte_mobs:antonio_steal_banner",
+      "type": "PARENT_QUEST"
+    }
+  ],
+  "experience": 30
+}
