@@ -27,6 +27,12 @@ public class EntityPage {
     final ResourceLocation bg;
 
     final EntityType<?> type;
+    /**
+     * Entidad que se dibuja. Se crea una sola vez (antes se creaba una nueva en cada frame) y con todos los giros a
+     * 0: LivingEntity nace con un giro aleatorio en la cabeza (yHeadRot), así que cada frame la cabeza apuntaba a
+     * otro sitio y temblaba (p. ej. el caballo).
+     */
+    private Entity entity;
     public <T extends Entity> EntityPage() {
         this.type = null;
         this.bg = BACKGROUND;
@@ -42,7 +48,8 @@ public class EntityPage {
 
     @OnlyIn(Dist.CLIENT)
     public void render(PageCompendium page, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
-        Entity e = type.create(Minecraft.getInstance().level);
+        Entity e = getEntity();
+        if (e == null) return;
 
         EntityRenderer<? super Entity> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(e);
 
@@ -65,6 +72,26 @@ public class EntityPage {
         buf.endLastBatch();
         Lighting.setupFor3DItems();
         mStack.popPose();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private Entity getEntity() {
+        if (entity == null && type != null && Minecraft.getInstance().level != null) {
+            entity = type.create(Minecraft.getInstance().level);
+            if (entity != null) {
+                entity.setYRot(0.0F);
+                entity.yRotO = 0.0F;
+                entity.setXRot(0.0F);
+                entity.xRotO = 0.0F;
+                if (entity instanceof net.minecraft.world.entity.LivingEntity living) {
+                    living.yBodyRot = 0.0F;
+                    living.yBodyRotO = 0.0F;
+                    living.yHeadRot = 0.0F;
+                    living.yHeadRotO = 0.0F;
+                }
+            }
+        }
+        return entity;
     }
 
     @OnlyIn(Dist.CLIENT)

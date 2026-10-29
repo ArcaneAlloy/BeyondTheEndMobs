@@ -14,7 +14,6 @@ import fr.shoqapik.btemobs.packets.*;
 import fr.shoqapik.btemobs.option_dialogs.OptionDialogsManager;
 import fr.shoqapik.btemobs.quest.QuestManager;
 import fr.shoqapik.btemobs.recipe.api.IGhostRecipe;
-import fr.shoqapik.btemobs.rumors.RumorsManager;
 import fr.shoqapik.btemobs.registry.BteMobsBlockEntities;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
 import fr.shoqapik.btemobs.registry.BteMobsEntities;
@@ -52,8 +51,7 @@ public class BteMobsModClient {
 
     @SubscribeEvent
     public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        BteMobsMod.LOGGER.info("[BteMobs] registerClientReloadListeners fired — registering RumorsManager, PagesManager, OptionDialogsManager");
-        event.registerReloadListener(new RumorsManager());
+        BteMobsMod.LOGGER.info("[BteMobs] registerClientReloadListeners fired — registering PagesManager, OptionDialogsManager");
         event.registerReloadListener(new PagesManager());
         event.registerReloadListener(new QuestManager());
         event.registerReloadListener(new OptionDialogsManager());
@@ -82,14 +80,9 @@ public class BteMobsModClient {
         Minecraft.getInstance().setScreen(new QuestDialogScreen(msg.entityId, msg.bteNpcType, msg.quest, msg.muteSound));
     }
 
+    /** Acción "rumor" de los diálogos: solo la usa Oriana, para abrir su Compendio (Antonio ya no tiene rumores). */
     public static void handleRumorsPacket(int id) {
-        BteMobsMod.LOGGER.info("[BteMobs] handleRumorsPacket — rumors={}, pages={}", RumorsManager.getRumors().size(), PagesManager.getPages().size());
-        BteAbstractEntity entity = (BteAbstractEntity) Minecraft.getInstance().level.getEntity(id);
-        if(entity instanceof ExplorerEntity){
-            Minecraft.getInstance().setScreen(new RumorsScreen(id, BteNpcType.EXPLORER, RumorsManager.getRumors()));
-        } else {
-            Minecraft.getInstance().setScreen(new CompediumScreen(id, BteNpcType.DRUID, PagesManager.getPages()));
-        }
+        Minecraft.getInstance().setScreen(new CompediumScreen(id, BteNpcType.DRUID, PagesManager.getPages()));
     }
 
     public static void handleClearItem(int id) {

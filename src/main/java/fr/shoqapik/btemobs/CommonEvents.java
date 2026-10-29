@@ -17,7 +17,6 @@ import fr.shoqapik.btemobs.option_dialogs.OptionDialogsManager;
 import fr.shoqapik.btemobs.quest.Quest;
 import fr.shoqapik.btemobs.quest.QuestManager;
 import fr.shoqapik.btemobs.rumors.Rumor;
-import fr.shoqapik.btemobs.rumors.RumorsManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -479,7 +478,6 @@ public class CommonEvents {
     public static void addQuestsData(AddReloadListenerEvent event){
         event.addListener(new OptionDialogsManager());
         event.addListener(new QuestManager());
-        event.addListener(new RumorsManager());
         event.addListener(new PagesManager());
     }
 

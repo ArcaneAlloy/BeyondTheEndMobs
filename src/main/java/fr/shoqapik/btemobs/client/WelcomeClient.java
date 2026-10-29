@@ -73,7 +73,7 @@ public final class WelcomeClient {
      * Cada tarjeta lleva encima la imagen textures/gui/guide/<clave>.png (ancho y alto del PNG en CARD_IMAGES).
      */
     private static final String[] ANNA_GUIDE = {"anna_1", "anna_2", "anna_3", "anna_4", "anna_5", "anna_6", "anna_7"};
-    private static final String[] ANTONIO_GUIDE = {"antonio_1", "antonio_4", "antonio_5", "antonio_6", "antonio_2", "antonio_3"};
+    private static final String[] ANTONIO_GUIDE = {"antonio_1", "antonio_4", "antonio_5", "antonio_6"};
     private static final String[] NOAH_GUIDE = {"noah_1", "noah_2", "noah_3", "noah_4",
             "noah_5", "noah_6", "noah_7", "noah_10", "noah_8", "noah_9"};
     private static final String[] ORIANA_GUIDE = {"oriana_1", "oriana_2", "oriana_3", "oriana_4", "oriana_5", "oriana_6"};
@@ -86,8 +86,6 @@ public final class WelcomeClient {
             java.util.Map.entry("anna_6", new int[]{640, 328}),
             java.util.Map.entry("anna_7", new int[]{480, 453}),
             java.util.Map.entry("antonio_1", new int[]{224, 224}),
-            java.util.Map.entry("antonio_2", new int[]{640, 322}),
-            java.util.Map.entry("antonio_3", new int[]{640, 308}),
             java.util.Map.entry("antonio_4", new int[]{640, 339}),
             java.util.Map.entry("antonio_5", new int[]{640, 320}),
             java.util.Map.entry("antonio_6", new int[]{453, 493}),

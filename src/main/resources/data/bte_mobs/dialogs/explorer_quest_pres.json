@@ -17,10 +17,6 @@
       "action": "quests"
     },
     {
-      "formattedText": "answer.bte.explorer_quest_pres.2",
-      "action": "rumor"
-    },
-    {
       "formattedText": "answer.bte.explorer_quest_pres.3",
       "action": "wip"
     }

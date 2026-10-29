@@ -93,6 +93,11 @@ public class QuestDialogScreen extends Screen {
 
         int x = dialogLeft() + this.imageWidth;
         int y = dialogTop() - 15;
+        // Antonio tiene 3 opciones (ya no tiene "Guide me!"): se bajan para que la última quede a la misma altura
+        // que la de los NPC con 4 y no quede un hueco debajo
+        if (bteNpcType == BteNpcType.EXPLORER && quest.getAnswers().size() < 4) {
+            y += (4 - quest.getAnswers().size()) * 25;
+        }
 
         // Al volver de la ventana de confirmación se llama otra vez a init: no se duplican los botones
         this.buttons.clear();

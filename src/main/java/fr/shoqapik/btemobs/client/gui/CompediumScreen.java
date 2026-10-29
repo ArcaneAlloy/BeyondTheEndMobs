@@ -34,14 +34,16 @@ public class CompediumScreen extends Screen {
 
     public static final ResourceLocation DIALOGS_LOCATION = new ResourceLocation(BteMobsMod.MODID, "textures/gui/default.png");
     private static final Logger log = LoggerFactory.getLogger(CompediumScreen.class);
-    protected int imageWidth = 254;
-    protected int imageHeight = 168;
+    // Tamaño real del panel en druid_tdialogo_extendido.png (antes 254 x 168: se cortaba por la derecha y por abajo)
+    protected int imageWidth = 261;
+    protected int imageHeight = 195;
 
     // ---- Colocacion: lista (100 px) + hueco (12 px) + panel, centrados en pantalla con cualquier escala ----
     // Antes colgaban de width/8 y del borde de abajo, asi que se descentraban al cambiar la escala o la ventana.
     // La flecha de subir va 20 px por encima y la de bajar debajo de las 7 entradas visibles (7 x 25).
-    private static final int LAYOUT_WIDTH = 100 + 12 + 254;
-    private static final int LAYOUT_HEIGHT = 20 + 7 * 25 + 16;
+    private static final int LAYOUT_WIDTH = 100 + 12 + 261;
+    // El panel (195 px) baja un poco más que la lista y su flecha (7 x 25 + 16)
+    private static final int LAYOUT_HEIGHT = 20 + Math.max(7 * 25 + 16, 195);
 
     /** Referencia horizontal: la lista empieza 22 px a su izquierda y el panel 90 px a su derecha. */
     private int layoutBase() { return Math.max(2, (this.width - LAYOUT_WIDTH) / 2) + 22; }
@@ -57,6 +59,8 @@ public class CompediumScreen extends Screen {
     private List<PageCompendium> rumors;
     private PageCompendium currentPageCompendium = null;
     private List<Button> buttons = new ArrayList<>();
+    /** Entidad de cada página, creada una sola vez (ver EntityPage). */
+    private final java.util.Map<String, EntityPage> entityPages = new java.util.HashMap<>();
 
     public CompediumScreen(int entityId, BteNpcType bteNpcType, List<PageCompendium> rumors) {
         super(Component.literal(bteNpcType.name().toLowerCase(Locale.ROOT)));
@@ -163,7 +167,7 @@ public class CompediumScreen extends Screen {
 
             if (type != null) {
 
-                EntityPage page = new EntityPage(type);
+                EntityPage page = entityPages.computeIfAbsent(this.currentPageCompendium.getEntityId(), id -> new EntityPage(type));
 
                 GuiComponent.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
 
@@ -179,8 +183,6 @@ public class CompediumScreen extends Screen {
 
                 page.render(this.currentPageCompendium, poseStack, x + 210, y - 80, mouseX, mouseY);
             }
-
-            poseStack.popPose();
         }
 
         super.render(poseStack, mouseX, mouseY, partialTick);
