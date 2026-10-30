@@ -47,8 +47,15 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
         }
 
         List<Quest> loaded = new ArrayList<>();
+        int disabled = 0;
         for (Map.Entry<ResourceLocation, JsonElement> entry : p_10793_.entrySet()) {
             ResourceLocation resourcelocation = entry.getKey();
+            // Quests de la granja (granja_*): desactivadas. No se cargan, así que no salen en el libro ni en el
+            // tracker ni lanzan el aviso de "quest lista". En los mundos que ya las tenían desaparecen al cargar.
+            if (isDisabled(resourcelocation)) {
+                disabled++;
+                continue;
+            }
             try {
                 Quest quest = GSON.fromJson(entry.getValue(), Quest.class);
                 if (quest == null) {
@@ -63,9 +70,16 @@ public class QuestManager extends SimpleJsonResourceReloadListener {
         }
         // Se sustituye la lista entera (no clear+add) para no dejar a otro hilo leyendo una lista a medias
         quests = loaded;
-        LOGGER.info("[QuestManager] Loaded {} quest", quests.size());
+        LOGGER.info("[QuestManager] Loaded {} quest ({} farm quests disabled)", quests.size(), disabled);
         QuestRecipeLocks.invalidate();
         generation++;
+    }
+
+    /** Prefijo de las quests de la granja, desactivadas por ahora. */
+    private static final String DISABLED_PREFIX = "granja_";
+
+    private static boolean isDisabled(ResourceLocation id) {
+        return id.getPath().startsWith(DISABLED_PREFIX);
     }
 
     public static List<Quest> getQuests() {
