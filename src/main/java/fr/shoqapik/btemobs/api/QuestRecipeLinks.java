@@ -139,6 +139,12 @@ public final class QuestRecipeLinks {
         return e != null && e.getValue().isComplete;
     }
 
+    /** ¿La quest ya está reclamada (recompensas entregadas)? */
+    public static boolean isQuestClaimed(String questId) {
+        Map.Entry<Quest, QuestStateData> e = find(questId);
+        return e != null && e.getValue().isReclaim;
+    }
+
     /**
      * ¿Se puede abrir la quest desde fuera? Solo cuando ya está disponible: si aún le falta algún requisito (otra
      * quest, abrir un portal...) abrirla sería un spoiler (en el libro sale bloqueada).
