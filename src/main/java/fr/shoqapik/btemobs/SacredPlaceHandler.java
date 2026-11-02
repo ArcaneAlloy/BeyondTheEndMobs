@@ -54,11 +54,7 @@ public final class SacredPlaceHandler {
             ensureEffect(player, MobEffects.DAMAGE_RESISTANCE, 99);
             ensureEffect(player, MobEffects.SATURATION, 99);
         } else {
-            MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
-            if (sacred != null) player.removeEffect(sacred);
-            player.removeEffect(MobEffects.MOVEMENT_SPEED);
-            player.removeEffect(MobEffects.DAMAGE_RESISTANCE);
-            player.removeEffect(MobEffects.SATURATION);
+            removeLobbyEffects(player);
         }
     }
 
@@ -66,15 +62,38 @@ public final class SacredPlaceHandler {
     public static void onDimChange(PlayerChangedDimensionEvent e) {
         if (e.getTo().equals(FORGOTTEN_REALM)) return;
 
+        removeLobbyEffects(e.getEntity());
+    }
+
+    /**
+     * Quita los efectos del Lobby al salir de él. Solo los que pone este handler (ambientales y sin partículas, ver
+     * ensureEffect): antes se quitaban Velocidad, Resistencia y Saturación vinieran de donde vinieran, así que el
+     * jugador perdía las pociones que se hubiera tomado (o la Resistencia de cualquier otro mod) al salir del Lobby, y
+     * en el Realm fuera del Lobby se le quitaban en cada tick. Un faro también da efectos ambientales, pero con
+     * partículas, así que tampoco se toca.
+     */
+    private static void removeLobbyEffects(Player player) {
         MobEffect sacred = ForgeRegistries.MOB_EFFECTS.getValue(SACRED_PLACE_ID);
-        if (sacred != null) e.getEntity().removeEffect(sacred);
-        e.getEntity().removeEffect(MobEffects.MOVEMENT_SPEED);
-        e.getEntity().removeEffect(MobEffects.DAMAGE_RESISTANCE);
-        e.getEntity().removeEffect(MobEffects.SATURATION);
+        if (sacred != null) removeIfLobby(player, sacred);
+        removeIfLobby(player, MobEffects.MOVEMENT_SPEED);
+        removeIfLobby(player, MobEffects.DAMAGE_RESISTANCE);
+        removeIfLobby(player, MobEffects.SATURATION);
+    }
+
+    private static void removeIfLobby(Player player, MobEffect effect) {
+        MobEffectInstance current = player.getEffect(effect);
+        if (current != null && isLobbyEffect(current)) player.removeEffect(effect);
+    }
+
+    /** ¿Lo ha puesto el Lobby? ensureEffect los crea ambientales y sin partículas; las pociones no son ambientales. */
+    private static boolean isLobbyEffect(MobEffectInstance instance) {
+        return instance.isAmbient() && !instance.isVisible();
     }
 
     private static void ensureEffect(Player player, MobEffect effect, int amplifier) {
         MobEffectInstance current = player.getEffect(effect);
+        // Si el jugador ya tiene ese efecto por su cuenta (una poción...) igual o más fuerte, se le deja el suyo
+        if (current != null && !isLobbyEffect(current) && current.getAmplifier() >= amplifier) return;
         if (current == null || current.getAmplifier() != amplifier || current.getDuration() <= REFRESH_THRESHOLD) {
             player.addEffect(new MobEffectInstance(effect, DURATION_TICKS, amplifier, true, false, true));
         }
