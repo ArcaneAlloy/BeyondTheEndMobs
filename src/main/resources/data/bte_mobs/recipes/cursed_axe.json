@@ -1,6 +1,6 @@
 {
     "type": "bte_mobs:blacksmith_upgrade",
-    "category": "TOOLS",
+    "category": "WEAPONS",
     "tier": 4,
     "base": {
       "item": "dungeons_gear:whirlwind"

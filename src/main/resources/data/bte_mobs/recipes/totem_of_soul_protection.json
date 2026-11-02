@@ -1,7 +1,7 @@
 {
   "type": "bte_mobs:blacksmith",
   "category": "ARTIFACTS",
-  "tier": 3,
+  "tier": 5,
   "ingredients": [
     {
       "type": "bte_mobs:item",

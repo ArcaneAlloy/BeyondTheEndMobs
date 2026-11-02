@@ -5,11 +5,6 @@
   "ingredients": [
     {
       "type": "bte_mobs:item",
-      "item": "minecraft:potion",
-      "count": 4
-    },
-    {
-      "type": "bte_mobs:item",
       "item": "minecraft:leather",
       "count": 4
     },
