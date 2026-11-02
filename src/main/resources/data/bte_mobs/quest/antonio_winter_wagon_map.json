@@ -1,0 +1,42 @@
+{
+  "entityType": "EXPLORER",
+  "description": "Antonio conoce rutas que pocos exploradores se atreven a recorrer. Sigue sus indicaciones, adéntrate en la región señalada y completa el encargo: encuentra una aldea y Antonio te dará un mapa hasta una Caravana Invernal.",
+  "difficult": "EASY",
+  "dimension": "OVERWORLD",
+  "toolTip": "tooltip de ejemplo",
+  "priorityQuest": "MAIN_QUEST",
+  "order": 16,
+  "tasks": [
+    {
+      "type": "EXPLORING",
+      "description": "Encuentra una aldea",
+      "count": 1,
+      "entityIdLocation": "minecraft:bell|#bte_mobs:quest/villages"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "ITEM",
+      "itemId": "supplementaries:cartographers_quill",
+      "count": 1,
+      "nbt": {
+        "targetStructure": "idas:winter_wagon",
+        "display": {
+          "Name": "{\"translate\":\"item.bte_mobs.quill.name\",\"with\":[{\"translate\":\"structure.bte_mobs.winter_wagon\"}],\"italic\":false,\"color\":\"gold\"}",
+          "Lore": [
+            "{\"translate\":\"item.bte_mobs.quill.lore\",\"with\":[{\"translate\":\"structure.bte_mobs.winter_wagon\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.dimension\",\"with\":[{\"translate\":\"dimension.bte_mobs.overworld\",\"color\":\"green\"}],\"italic\":false,\"color\":\"gray\"}",
+            "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
+          ]
+        },
+        "decoration": "minecraft:red_x"
+      }
+    }
+  ],
+  "conditionUnlockData": [],
+  "reclaim": {
+    "itemId": "minecraft:skeleton_skull",
+    "count": 1
+  },
+  "experience": 10
+}

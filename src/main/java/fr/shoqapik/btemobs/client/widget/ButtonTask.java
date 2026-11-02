@@ -124,7 +124,7 @@ public class ButtonTask extends Button {
         String spec = switch (data.taskType) {
             case COLLECT, CRAFT_UNIQUE, BREW_POTION, PERSONAL_HORSE, OBTAIN, WARLOCK_ENCHANT, BLACKSMITH_CRAFT -> data.id;
             case FEED_ENTITY -> data.id.contains("|") ? data.id.substring(data.id.indexOf('|') + 1) : "";
-            case ACTIVATE_WAYSTONE, HAS_EFFECT -> data.id.contains("|") ? data.id.substring(0, data.id.indexOf('|')) : data.id;
+            case ACTIVATE_WAYSTONE, HAS_EFFECT, EXPLORING -> data.id.contains("|") ? data.id.substring(0, data.id.indexOf('|')) : data.id;
             default -> "";
         };
         return iconFor(spec);

@@ -44,6 +44,10 @@ public class TaskData {
     public enum Type {
         HUNTER,
         COLLECT,
+        /**
+         * Encontrar una estructura: estar dentro de una de sus piezas. entityIdLocation: "item_icono|mod:estructura"
+         * o "item_icono|#mod:tag" (tag de estructuras, p. ej. todas las aldeas, también las de otros mods).
+         */
         EXPLORING,
         BOSS_HUNTER,
         /** Craftear N items DISTINTOS. entityIdLocation: id de item o tag ("#mod:tag"). */

@@ -20,6 +20,7 @@ public class ClientForgeEvents {
     // refleje las recetas bte_mobs:* reales, sin depender de ningun archivo generado a mano.
     @SubscribeEvent
     public static void onRecipesUpdated(net.minecraftforge.client.event.RecipesUpdatedEvent event) {
+        fr.shoqapik.btemobs.quest.QuestRecipeLocks.invalidate(event.getRecipeManager());
         CommonEvents.rebuildItemUsage(event.getRecipeManager());
     }
 

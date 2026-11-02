@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:village",
+    {
+      "id": "terralith:fortified_village",
+      "required": false
+    },
+    {
+      "id": "terralith:fortified_desert_village",
+      "required": false
+    }
+  ]
+}

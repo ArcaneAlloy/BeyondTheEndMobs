@@ -120,6 +120,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        fr.shoqapik.btemobs.integration.warlock_enchant_jei.WarlockEnchantCategory.clearEnchantableCache();
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 
         List<DruidRecipe> recipeDruid = rm.getAllRecipesFor(BteMobsRecipeTypes.DRUID_RECIPE_TYPE.get());

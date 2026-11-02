@@ -36,6 +36,7 @@ import java.util.List;
  *  WARLOCK_ENCHANT-> onWarlockEnchant      (al sacar el item encantado de la interfaz del Warlock)
  *  ACTIVATE_WAYSTONE -> tickPlayer         (waystones activadas fuera del Lobby, cada 2 segundos)
  *  HAS_EFFECT     -> tickPlayer            (efecto activo en el jugador, cada segundo)
+ *  EXPLORING      -> tickPlayer            (dentro de una estructura o de una del tag, cada 2 segundos)
  */
 public final class QuestTriggers {
 
@@ -204,12 +205,48 @@ public final class QuestTriggers {
         QuestReadyNotifier.tick(player, cap);
         if (player.tickCount % 40 != 0) return;
         if (cap.hasPendingTask(TaskData.Type.ACTIVATE_WAYSTONE)) checkWaystones(player, cap);
+        if (cap.hasPendingTask(TaskData.Type.EXPLORING)) checkExploring(player, cap);
         if (cap.hasPendingTask(TaskData.Type.PERSONAL_HORSE) && hasPersonalHorse(player)) {
             cap.updateTasks(TaskData.Type.PERSONAL_HORSE, task -> {
                 task.count = task.maxCount;
                 return true;
             });
         }
+    }
+
+    // ---------------------------------------------------------------- EXPLORING
+
+    /**
+     * Tareas EXPLORING ("item_icono|mod:estructura" o "item_icono|#mod:tag"): se completan cuando el jugador está dentro
+     * de una pieza de esa estructura (o de cualquiera del tag). Se mira con el chunk ya cargado, que es donde está el
+     * jugador.
+     */
+    private static void checkExploring(ServerPlayer player, RecipeCapability<?> cap) {
+        ServerLevel level = player.getLevel();
+        BlockPos pos = player.blockPosition();
+        cap.updateTasks(TaskData.Type.EXPLORING, task -> {
+            if (task.id == null) return false;
+            int bar = task.id.indexOf('|');
+            String target = bar >= 0 ? task.id.substring(bar + 1) : task.id;
+            if (!isInsideStructureOrTag(level, pos, target)) return false;
+            task.count = task.maxCount;
+            return true;
+        });
+    }
+
+    /** ¿Está pos dentro de una pieza de la estructura "mod:id" o de alguna del tag "#mod:tag"? */
+    private static boolean isInsideStructureOrTag(ServerLevel level, BlockPos pos, String target) {
+        if (target == null || target.isEmpty()) return false;
+        if (target.startsWith("#")) {
+            ResourceLocation tagId = ResourceLocation.tryParse(target.substring(1));
+            if (tagId == null) return false;
+            net.minecraft.tags.TagKey<Structure> tag = net.minecraft.tags.TagKey.create(Registry.STRUCTURE_REGISTRY, tagId);
+            return level.structureManager().getStructureWithPieceAt(pos, tag).isValid();
+        }
+        ResourceLocation id = ResourceLocation.tryParse(target);
+        if (id == null) return false;
+        Structure structure = level.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY).get(id);
+        return structure != null && level.structureManager().getStructureWithPieceAt(pos, structure).isValid();
     }
 
     // ---------------------------------------------------------------- ACTIVATE_WAYSTONE

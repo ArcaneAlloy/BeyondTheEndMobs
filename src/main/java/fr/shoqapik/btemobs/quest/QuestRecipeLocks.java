@@ -41,6 +41,17 @@ public final class QuestRecipeLocks {
     private static Collection<Quest> inheritedQuests;
     private static Map<ResourceLocation, Quest> cachedInherited;
 
+    // manager.getRecipes() monta un Set nuevo con las ~10.000 recetas en cada llamada, y se llamaba una vez por
+    // cada recompensa de cada quest (y otra vez por quest en cada recompensa por ingrediente). Se guarda una copia
+    // por RecipeManager; recorrerla da las mismas recetas en el mismo orden.
+    private static RecipeManager recipesManager;
+    private static List<Recipe<?>> cachedRecipes;
+    private static Map<RecipeType<?>, List<Recipe<?>>> cachedByType;
+
+    private static RecipeManager directManager;
+    private static Collection<Quest> directQuests;
+    private static Set<ResourceLocation> cachedDirect;
+
     /** Invalida la caché (al recargar quests o recetas). */
     public static void invalidate() {
         cachedManager = null;
@@ -49,6 +60,42 @@ public final class QuestRecipeLocks {
         inheritedManager = null;
         inheritedQuests = null;
         cachedInherited = null;
+        recipesManager = null;
+        cachedRecipes = null;
+        cachedByType = null;
+        directManager = null;
+        directQuests = null;
+        cachedDirect = null;
+    }
+
+    /**
+     * El cliente reutiliza el mismo RecipeManager cuando el servidor le reenvia las recetas (/reload), asi que
+     * la comparacion por identidad no basta: se borra lo cacheado de ese manager (RecipesUpdatedEvent).
+     */
+    public static void invalidate(RecipeManager manager) {
+        if (recipesManager == manager) { recipesManager = null; cachedRecipes = null; cachedByType = null; }
+        if (directManager == manager) { directManager = null; directQuests = null; cachedDirect = null; }
+        if (cachedManager == manager) { cachedManager = null; cachedQuests = null; cachedLocked = null; }
+        if (inheritedManager == manager) { inheritedManager = null; inheritedQuests = null; cachedInherited = null; }
+    }
+
+    /** Todas las recetas del manager, en el orden de manager.getRecipes(). */
+    private static List<Recipe<?>> allRecipes(RecipeManager manager) {
+        if (cachedRecipes == null || recipesManager != manager) {
+            List<Recipe<?>> list = new ArrayList<>(manager.getRecipes());
+            Map<RecipeType<?>, List<Recipe<?>>> byType = new HashMap<>();
+            for (Recipe<?> r : list) byType.computeIfAbsent(r.getType(), k -> new ArrayList<>()).add(r);
+            recipesManager = manager;
+            cachedRecipes = list;
+            cachedByType = byType;
+        }
+        return cachedRecipes;
+    }
+
+    /** Recetas de un tipo, en el mismo orden relativo que en allRecipes. */
+    private static List<Recipe<?>> recipesOfType(RecipeManager manager, RecipeType<?> type) {
+        allRecipes(manager);
+        return cachedByType.getOrDefault(type, List.of());
     }
 
     /** Recetas del Blacksmith que heredan el bloqueo de su base / ingredientes. */
@@ -80,7 +127,7 @@ public final class QuestRecipeLocks {
 
         // Todas las recetas (de cualquier tipo) que fabrican cada objeto
         Map<net.minecraft.world.item.Item, List<Recipe<?>>> producers = new HashMap<>();
-        for (Recipe<?> recipe : manager.getRecipes()) {
+        for (Recipe<?> recipe : allRecipes(manager)) {
             ItemStack result;
             try {
                 result = recipe.getResultItem();
@@ -95,7 +142,7 @@ public final class QuestRecipeLocks {
         boolean changed = true;
         while (changed) {
             changed = false;
-            for (Recipe<?> recipe : manager.getRecipes()) {
+            for (Recipe<?> recipe : allRecipes(manager)) {
                 if (!BLACKSMITH_RECIPE_TYPES.contains(recipe.getType().toString())) continue;
                 if (lockedBy.containsKey(recipe.getId())) continue;
                 Quest quest = null;
@@ -188,14 +235,15 @@ public final class QuestRecipeLocks {
         List<Recipe<?>> list = new ArrayList<>();
         RecipeType<?> type = recipeTypeFor(data.recipeType);
         if (type == null) return list;
-        for (Recipe<?> r : manager.getRecipes()) {
-            if (r.getType() == type && resultMatches(r, data.recipeId)) list.add(r);
+        for (Recipe<?> r : recipesOfType(manager, type)) {
+            if (resultMatches(r, data.recipeId)) list.add(r);
         }
         return list;
     }
 
     /** Ids de receta que desbloquean las recompensas UNLOCK_RECIPE de todas las quests. */
     private static Set<ResourceLocation> directlyLocked(RecipeManager manager, Collection<Quest> quests) {
+        if (cachedDirect != null && directManager == manager && directQuests == quests) return cachedDirect;
         Set<ResourceLocation> ids = new HashSet<>();
         for (Quest q : quests) {
             for (RewardData r : q.getRewards()) {
@@ -204,6 +252,9 @@ public final class QuestRecipeLocks {
                 }
             }
         }
+        directManager = manager;
+        directQuests = quests;
+        cachedDirect = ids;
         return ids;
     }
 
@@ -213,7 +264,7 @@ public final class QuestRecipeLocks {
         if (reward instanceof IngredientRecipesRewardData d) {
             Set<ResourceLocation> excluded = directlyLocked(manager, quests);
             List<Recipe<?>> list = new ArrayList<>();
-            for (Recipe<?> r : manager.getRecipes()) {
+            for (Recipe<?> r : allRecipes(manager)) {
                 if (!NPC_RECIPE_TYPES.contains(r.getType().toString())) continue;
                 if (excluded.contains(r.getId())) continue;
                 if (usesIngredient(r, d.ingredientId)) list.add(r);

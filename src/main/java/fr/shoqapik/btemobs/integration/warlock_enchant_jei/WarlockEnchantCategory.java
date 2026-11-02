@@ -78,6 +78,28 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
 
     }
 
+    /**
+     * Items (en el orden del registro) a los que se puede aplicar cada encantamiento.
+     * Hay ~585 recetas del Warlock y solo ~174 encantamientos distintos: antes cada receta
+     * recorria todo el registro de items llamando a canEnchant (caro con Fabrication y
+     * Dungeons Gear), ~1,4 s al entrar al mundo. Se vacia en JEIPlugin.registerRecipes.
+     */
+    private static final java.util.Map<net.minecraft.world.item.enchantment.Enchantment, List<net.minecraft.world.item.Item>> ENCHANTABLE = new java.util.HashMap<>();
+
+    public static void clearEnchantableCache() {
+        ENCHANTABLE.clear();
+    }
+
+    private static List<net.minecraft.world.item.Item> enchantableItems(net.minecraft.world.item.enchantment.Enchantment enchantment) {
+        return ENCHANTABLE.computeIfAbsent(enchantment, e -> {
+            List<net.minecraft.world.item.Item> list = new ArrayList<>();
+            for (net.minecraft.world.item.Item item : net.minecraftforge.registries.ForgeRegistries.ITEMS.getValues()) {
+                if (e.canEnchant(new ItemStack(item))) list.add(item);
+            }
+            return list;
+        });
+    }
+
     @Override
     public void setRecipe(IRecipeLayoutBuilder iRecipeLayoutBuilder, WarlockRecipe explorerRecipe, IFocusGroup iFocusGroup) {
         List<Ingredient> ingredients = explorerRecipe.getIngredients();
@@ -120,9 +142,9 @@ public class WarlockEnchantCategory implements IRecipeCategory<WarlockRecipe> {
                 // Nivel normal - resultado es item encantado o libro encantado
                 List<ItemStack> sinEncantar = new ArrayList<>();
                 List<ItemStack> encantados = new ArrayList<>();
-                for (net.minecraft.world.item.Item item : net.minecraftforge.registries.ForgeRegistries.ITEMS.getValues()) {
+                for (net.minecraft.world.item.Item item : enchantableItems(enchantment)) {
                     ItemStack stack = new ItemStack(item);
-                    if (enchantment.canEnchant(stack)) {
+                    { // canEnchant ya comprobado en enchantableItems
                         sinEncantar.add(stack.copy());
                         ItemStack enchanted = stack.copy();
                         enchanted.enchant(enchantment, explorerRecipe.getLevel());
