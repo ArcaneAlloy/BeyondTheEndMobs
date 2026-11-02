@@ -9,9 +9,9 @@
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega la Válvula del Pipeline",
+      "description": "Entrega la Esencia Flamígera",
       "count": 1,
-      "entityIdLocation": "kubejs:pipeline_valve"
+      "entityIdLocation": "kubejs:blazing_essence"
     }
   ],
   "rewards": [

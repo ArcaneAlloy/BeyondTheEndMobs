@@ -9,9 +9,9 @@
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega el Núcleo del Reactor",
+      "description": "Entrega la Amalgama de Almas",
       "count": 1,
-      "entityIdLocation": "kubejs:reactor_core"
+      "entityIdLocation": "kubejs:soul_amalgam"
     }
   ],
   "rewards": [

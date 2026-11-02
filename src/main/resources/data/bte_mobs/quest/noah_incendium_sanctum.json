@@ -1,6 +1,6 @@
 {
   "entityType": "WARLOCK",
-  "description": "Los conocimientos de Noah pueden ayudarte a sobrevivir a la amenaza que se cierne sobre este mundo. Explora el lugar indicado y recupera aquello que necesita: adéntrate en el Sanctum y trae a Noah la reliquia que guarda en una de sus torres.",
+  "description": "Los conocimientos de Noah pueden ayudarte a sobrevivir a la amenaza que se cierne sobre este mundo. Explora el lugar indicado y recupera aquello que necesita: adéntrate en el Sanctum y trae a Noah el tomo que guarda en una de sus torres.",
   "difficult": "HARD",
   "dimension": "NETHER",
   "toolTip": "tooltip de ejemplo",
@@ -9,9 +9,9 @@
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega la Reliquia del Sanctum",
+      "description": "Entrega el Tomo del Santuario",
       "count": 1,
-      "entityIdLocation": "kubejs:sanctum_relic"
+      "entityIdLocation": "kubejs:sanctum_tome"
     }
   ],
   "rewards": [

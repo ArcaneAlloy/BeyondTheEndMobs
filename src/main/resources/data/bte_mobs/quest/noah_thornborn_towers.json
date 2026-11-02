@@ -9,9 +9,9 @@
   "tasks": [
     {
       "type": "COLLECT",
-      "description": "Entrega la Corona Thornborn",
+      "description": "Entrega el Talismán Thornborn",
       "count": 1,
-      "entityIdLocation": "kubejs:thornborn_crown"
+      "entityIdLocation": "kubejs:thornborn_talisman"
     }
   ],
   "rewards": [
