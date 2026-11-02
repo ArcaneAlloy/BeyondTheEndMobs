@@ -663,6 +663,7 @@
   "gui.bte_mobs.tutorial.skip.yes": "Skip tutorial",
   "gui.bte_mobs.tutorial.skip.no": "Go back",
   "gui.bte_mobs.tutorial.skip_hint": "Press [%s] to skip %s's tutorial",
+  "gui.bte_mobs.repair.locked": "Requires:",
   "title.quest.noah_wither_ritual": "The Wither Ritual",
   "desc.quest.noah_wither_ritual": "The Wither, a creature revered by the Wither Skeletons of the Nether.\n\nTo summon it you'll need 3 Wither Skeleton Skulls, which you'll get by defeating those creatures.\n\nYou'll also need 4 Soul Stones; a good place to find them is the Catacombs.\n\nAsk Antonio how to get there, Hero.",
   "task.quest.noah_wither_ritual.0": "Get 4x Soul Stone",

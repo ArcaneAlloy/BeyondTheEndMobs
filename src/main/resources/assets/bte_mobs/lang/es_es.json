@@ -660,6 +660,7 @@
   "gui.bte_mobs.tutorial.skip.yes": "Saltar tutorial",
   "gui.bte_mobs.tutorial.skip.no": "Volver",
   "gui.bte_mobs.tutorial.skip_hint": "Pulsa [%s] para saltar el tutorial de %s",
+  "gui.bte_mobs.repair.locked": "Requiere:",
   "title.quest.noah_wither_ritual": "El ritual del Wither",
   "desc.quest.noah_wither_ritual": "El Wither, una criatura venerada por los Esqueletos Wither del Nether.\n\nPara invocarlo necesitarás 3 Calaveras de esqueleto del Wither, que obtendrás derrotando a esas criaturas.\n\nPor otro lado, necesitarás 4 Piedras de almas; un buen sitio para encontrarlas son las Catacumbas.\n\nPregúntale a Antonio cómo llegar a ese lugar, Héroe.",
   "task.quest.noah_wither_ritual.0": "Consigue 4x Piedra de almas",

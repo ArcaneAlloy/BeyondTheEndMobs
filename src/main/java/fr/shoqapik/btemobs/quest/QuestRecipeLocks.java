@@ -65,6 +65,8 @@ public final class QuestRecipeLocks {
         cachedByType = null;
         directManager = null;
         directQuests = null;
+        repairManager = null;
+        repairLocks = null;
         cachedDirect = null;
     }
 
@@ -75,6 +77,7 @@ public final class QuestRecipeLocks {
     public static void invalidate(RecipeManager manager) {
         if (recipesManager == manager) { recipesManager = null; cachedRecipes = null; cachedByType = null; }
         if (directManager == manager) { directManager = null; directQuests = null; cachedDirect = null; }
+        if (repairManager == manager) { repairManager = null; repairLocks = null; }
         if (cachedManager == manager) { cachedManager = null; cachedQuests = null; cachedLocked = null; }
         if (inheritedManager == manager) { inheritedManager = null; inheritedQuests = null; cachedInherited = null; }
     }
@@ -298,5 +301,61 @@ public final class QuestRecipeLocks {
         net.minecraft.server.MinecraftServer server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
         if (server == null) return false;
         return lockedRecipes(server.getRecipeManager(), QuestManager.getQuests()).contains(recipe.getId());
+    }
+
+    // ── Reparaciones de la herrera ───────────────────────────────────────────────────────────────────────────────
+
+    private static RecipeManager repairManager;
+    private static long repairQuestsKey;
+    private static Map<net.minecraft.world.item.Item, List<Quest>> repairLocks;
+
+    /**
+     * Quests que bloquean reparar este objeto en la herrera: las mismas que bloquean TODAS las recetas que lo
+     * fabrican (de cualquier tipo: NPC, mesa de crafteo, horno...). Lista vacía si se puede reparar libremente:
+     * no tiene ninguna receta, o alguna de sus recetas no está bloqueada por ninguna quest (p. ej. las Shears).
+     *
+     * Basta con reclamar CUALQUIERA de las quests devueltas para poder repararlo (igual que basta con desbloquear
+     * una de sus recetas para poder fabricarlo).
+     */
+    public static List<Quest> repairLocks(RecipeManager manager, Collection<Quest> quests, net.minecraft.world.item.Item item) {
+        long key = quests.size();
+        for (Quest q : quests) key = key * 31 + q.getId().hashCode();
+        if (repairLocks == null || repairManager != manager || repairQuestsKey != key) {
+            Map<ResourceLocation, Quest> lockedBy = new HashMap<>();
+            for (Quest q : quests) {
+                for (RewardData r : q.getRewards()) {
+                    if (!(r instanceof UnlockRecipeRewardData) && !(r instanceof IngredientRecipesRewardData)) continue;
+                    for (Recipe<?> recipe : recipesFor(manager, quests, r)) lockedBy.putIfAbsent(recipe.getId(), q);
+                }
+            }
+            for (Map.Entry<ResourceLocation, Quest> e : inheritedLocks(manager, quests).entrySet()) {
+                lockedBy.putIfAbsent(e.getKey(), e.getValue());
+            }
+            Map<net.minecraft.world.item.Item, List<Quest>> map = new HashMap<>();
+            Set<net.minecraft.world.item.Item> free = new HashSet<>();
+            for (Recipe<?> recipe : allRecipes(manager)) {
+                ItemStack result;
+                try {
+                    result = recipe.getResultItem();
+                } catch (Throwable t) {
+                    continue;
+                }
+                if (result == null || result.isEmpty()) continue;
+                net.minecraft.world.item.Item out = result.getItem();
+                if (free.contains(out)) continue;
+                Quest q = lockedBy.get(recipe.getId());
+                if (q == null) {
+                    free.add(out);
+                    map.remove(out);
+                    continue;
+                }
+                List<Quest> list = map.computeIfAbsent(out, k -> new ArrayList<>());
+                if (!list.contains(q)) list.add(q);
+            }
+            repairManager = manager;
+            repairQuestsKey = key;
+            repairLocks = map;
+        }
+        return repairLocks.getOrDefault(item, List.of());
     }
 }

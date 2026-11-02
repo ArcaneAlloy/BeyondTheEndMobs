@@ -19,6 +19,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 import com.patataprojects.anvilchanges.repairs.RepairConfig;
 
+import fr.shoqapik.btemobs.capability.RecipeCapability;
+import fr.shoqapik.btemobs.quest.Quest;
+import fr.shoqapik.btemobs.quest.QuestManager;
+import fr.shoqapik.btemobs.quest.QuestRecipeLocks;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +33,8 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
 
     public int repairItemCountCost;
     private String itemName;
+    /** Quest que hay que reclamar para poder reparar el objeto de la casilla 0 (null si se puede reparar). */
+    public Quest repairLockedBy;
 
     public BlacksmithRepairMenu(int pContainerId, Inventory pPlayerInventory) {
         super(BteMobsContainers.BLACKSMITH_REPAIR_MENU.get(), pContainerId, pPlayerInventory, ContainerLevelAccess.NULL);
@@ -72,11 +80,17 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
 
             if (itemstack.isEmpty()) {
                 this.resultSlots.setItem(0, ItemStack.EMPTY);
+                this.repairLockedBy = null;
             } else {
                 ItemStack itemstack1 = itemstack.copy();
                 ItemStack itemstack2 = this.inputSlots.getItem(1);
 
-                if (!itemstack2.isEmpty()) {
+                this.repairLockedBy = itemstack2.isEmpty() ? null : repairLock(itemstack);
+                if (this.repairLockedBy != null) {
+                    // La receta del objeto sigue bloqueada por una quest: no se puede reparar (ni con material ni
+                    // juntando dos iguales) hasta reclamarla.
+                    itemstack1 = ItemStack.EMPTY;
+                } else if (!itemstack2.isEmpty()) {
                     if (itemstack.isDamageableItem() && repairRules.containsKey(itemstack1.getDescriptionId()) && repairRules.get(itemstack1.getDescriptionId()).get(0).equals(ForgeRegistries.ITEMS.getKey(itemstack2.getItem()).toString())){
 
                         double percentage = 0.33;
@@ -142,6 +156,33 @@ public class BlacksmithRepairMenu extends ItemCombinerMenu {
                 this.broadcastChanges();
             }
     }
+    /**
+     * Quest que bloquea reparar este objeto: si TODAS sus recetas estan bloqueadas por quests y el jugador no ha
+     * reclamado ninguna de ellas. Si alguna receta es libre (p. ej. las Shears) o no tiene receta, se repara sin mas.
+     */
+    private Quest repairLock(ItemStack stack) {
+        RecipeCapability<?> cap = RecipeCapability.get(this.player);
+        if (cap == null) return null;
+        Collection<Quest> quests;
+        if (this.player.level.isClientSide) {
+            // En el cliente las quests vienen sincronizadas en el capability
+            List<Quest> list = new ArrayList<>();
+            for (Map<Quest, ?> perNpc : cap.quests.values()) {
+                if (perNpc != null) list.addAll(perNpc.keySet());
+            }
+            quests = list;
+        } else {
+            quests = QuestManager.getQuests();
+        }
+        if (quests.isEmpty()) return null;
+        List<Quest> locks = QuestRecipeLocks.repairLocks(this.player.level.getRecipeManager(), quests, stack.getItem());
+        if (locks.isEmpty()) return null;
+        for (Quest quest : locks) {
+            if (cap.getQuestReclaim(quest)) return null;
+        }
+        return locks.get(0);
+    }
+
     private int calculateRepairCost(ItemStack tool, ItemStack material, double percentage) {
         int maxDamage = tool.getMaxDamage();
         int damage = tool.getDamageValue();
