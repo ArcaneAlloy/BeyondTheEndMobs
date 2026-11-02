@@ -14,12 +14,13 @@ import net.minecraft.resources.ResourceLocation;
  * Botón pequeño del diálogo de un NPC que abre su guía ilustrada (el tutorial de ese NPC).
  *
  * Si existe la textura textures/gui/buttons/tutorial.png (SIZE x SIZE; la mitad de abajo, si la imagen mide el doble de
- * alto, se usa al pasar el ratón) se dibuja esa imagen; si no, el icono "?" del botón "Guide me!" de Antonio
+ * alto, se usa al pasar el ratón; si no, al pasar el ratón el icono crece un poco) se dibuja esa imagen; si no, el icono "?" del botón "Guide me!" de Antonio
  * (textures/gui/buttons/explorer/rumor.png), con un brillo suave al pasar el ratón.
  */
 public class TutorialGuideButton extends Button {
 
-    public static final int SIZE = 20;
+    /** Tamaño del botón: el de la textura tutorial.png (23 x 23). */
+    public static final int SIZE = 23;
     public static final ResourceLocation TEXTURE = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/tutorial.png");
     /** Icono "?" del botón "Guide me!" de Antonio (15 x 15). */
     public static final ResourceLocation ICON = new ResourceLocation(BteMobsMod.MODID, "textures/gui/buttons/explorer/rumor.png");
@@ -58,8 +59,20 @@ public class TutorialGuideButton extends Button {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        int v = this.isHoveredOrFocused() && textureHeight >= SIZE * 2 ? SIZE : 0;
-        GuiComponent.blit(poseStack, this.x, this.y, 0, v, SIZE, SIZE, SIZE, textureHeight);
+        boolean hover = this.isHoveredOrFocused();
+        if (textureHeight >= SIZE * 2) {
+            // Textura con su propio estado "hover" en la mitad de abajo
+            GuiComponent.blit(poseStack, this.x, this.y, 0, hover ? SIZE : 0, SIZE, SIZE, SIZE, textureHeight);
+            return;
+        }
+        // Una sola imagen: al pasar el ratón crece un poco desde el centro
+        poseStack.pushPose();
+        float scale = hover ? 1.1F : 1.0F;
+        poseStack.translate(this.x + SIZE / 2.0F, this.y + SIZE / 2.0F, 0);
+        poseStack.scale(scale, scale, 1.0F);
+        poseStack.translate(-SIZE / 2.0F, -SIZE / 2.0F, 0);
+        GuiComponent.blit(poseStack, 0, 0, 0, 0, SIZE, SIZE, SIZE, textureHeight);
+        poseStack.popPose();
     }
 
     /** Icono "?" centrado en el botón; al pasar el ratón, un halo claro detrás y el icono un poco más grande. */
