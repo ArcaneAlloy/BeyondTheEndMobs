@@ -23,8 +23,13 @@
   "rewards": [
     {
       "type": "ITEM",
-      "itemId": "endrem:evil_eye",
-      "count": 1
+      "itemId": "create:experience_block",
+      "count": 9
+    },
+    {
+      "type": "ITEM",
+      "itemId": "minecraft:skeleton_skull",
+      "count": 3
     }
   ],
   "conditionUnlockData": [
