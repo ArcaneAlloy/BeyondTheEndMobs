@@ -37,7 +37,7 @@ public class ExplorerCraftCategory implements IRecipeCategory<ExplorerRecipe> {
     private final IDrawable icon;
 
     public ExplorerCraftCategory(IGuiHelper helper){
-        this.background = BteMobsMod.getPartialDrawable(helper,TEXTURE);
+        this.background = fr.shoqapik.btemobs.integration.QuestLockStrip.extend(BteMobsMod.getPartialDrawable(helper,TEXTURE));
 
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BteMobsBlocks.EXPLORER_TABLE.get()));
     }
@@ -77,5 +77,26 @@ public class ExplorerCraftCategory implements IRecipeCategory<ExplorerRecipe> {
             System.out.println("⚠️ Advertencia: La receta " + explorerRecipe.getId() + " tiene un resultado vacío.");
         }
 
+    }
+
+    // ── Aviso de receta bloqueada por una quest (franja "Requiere:" debajo de la receta) ──
+
+    @javax.annotation.Nullable
+    private static String lockQuest(ExplorerRecipe recipe) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.questForRecipe(recipe.getId());
+    }
+
+    @Override
+    public void draw(ExplorerRecipe recipe, mezz.jei.api.gui.ingredient.IRecipeSlotsView recipeSlotsView,
+                     com.mojang.blaze3d.vertex.PoseStack poseStack, double mouseX, double mouseY) {
+        fr.shoqapik.btemobs.integration.QuestLockStrip.draw(poseStack, lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean handleInput(ExplorerRecipe recipe, double mouseX, double mouseY,
+                               com.mojang.blaze3d.platform.InputConstants.Key input) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.handleInput(lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY, input);
     }
 }

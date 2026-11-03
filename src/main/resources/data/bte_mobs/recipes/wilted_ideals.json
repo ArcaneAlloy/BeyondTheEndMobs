@@ -1,0 +1,25 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "OTHERS",
+  "tier": 4,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:string",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:black_dye",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "meetyourfight:violet_bloom",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "meetyourfight:wilted_ideals"
+  }
+}

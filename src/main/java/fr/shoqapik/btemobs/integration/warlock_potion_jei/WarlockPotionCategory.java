@@ -31,7 +31,7 @@ public class WarlockPotionCategory implements IRecipeCategory<WarlockPotionRecip
     private final IDrawable icon;
 
     public WarlockPotionCategory(IGuiHelper helper){
-        this.background = getPartialDrawable(helper,TEXTURE);
+        this.background = fr.shoqapik.btemobs.integration.QuestLockStrip.extend(getPartialDrawable(helper,TEXTURE));
 
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.POTION));
     }
@@ -84,5 +84,26 @@ public class WarlockPotionCategory implements IRecipeCategory<WarlockPotionRecip
         } else {
             System.out.println("⚠️ Advertencia: La receta " + explorerRecipe.getId() + " tiene un resultado vacío.");
         }
+    }
+
+    // ── Aviso de receta bloqueada por una quest (franja "Requiere:" debajo de la receta) ──
+
+    @javax.annotation.Nullable
+    private static String lockQuest(WarlockPotionRecipe recipe) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.questForRecipe(recipe.getId());
+    }
+
+    @Override
+    public void draw(WarlockPotionRecipe recipe, mezz.jei.api.gui.ingredient.IRecipeSlotsView recipeSlotsView,
+                     com.mojang.blaze3d.vertex.PoseStack poseStack, double mouseX, double mouseY) {
+        fr.shoqapik.btemobs.integration.QuestLockStrip.draw(poseStack, lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean handleInput(WarlockPotionRecipe recipe, double mouseX, double mouseY,
+                               com.mojang.blaze3d.platform.InputConstants.Key input) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.handleInput(lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY, input);
     }
 }

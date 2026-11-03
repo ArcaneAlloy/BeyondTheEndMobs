@@ -38,7 +38,7 @@ public class AnvilRepairCategory implements IRecipeCategory<AnvilRepairRecipe> {
 
     public AnvilRepairCategory(IGuiHelper helper) {
         // Crop 176x70: shows the hammer decoration and the 3 slots, no inventory rows
-        this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 70);
+        this.background = fr.shoqapik.btemobs.integration.QuestLockStrip.extend(helper.createDrawable(TEXTURE, 0, 0, 176, 70));
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.ANVIL));
     }
 
@@ -95,5 +95,26 @@ public class AnvilRepairCategory implements IRecipeCategory<AnvilRepairRecipe> {
         } else {
             System.out.println("⚠️ AnvilRepair: resultado vacío para " + recipe.getId());
         }
+    }
+
+    // ── Aviso de receta bloqueada por una quest (franja "Requiere:" debajo de la receta) ──
+
+    @javax.annotation.Nullable
+    private static String lockQuest(AnvilRepairRecipe recipe) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.questForRepair(recipe.getBase().getItem());
+    }
+
+    @Override
+    public void draw(AnvilRepairRecipe recipe, mezz.jei.api.gui.ingredient.IRecipeSlotsView recipeSlotsView,
+                     com.mojang.blaze3d.vertex.PoseStack poseStack, double mouseX, double mouseY) {
+        fr.shoqapik.btemobs.integration.QuestLockStrip.draw(poseStack, lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean handleInput(AnvilRepairRecipe recipe, double mouseX, double mouseY,
+                               com.mojang.blaze3d.platform.InputConstants.Key input) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.handleInput(lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY, input);
     }
 }

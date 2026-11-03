@@ -36,7 +36,7 @@ public class BlacksmithUpgradeCategory implements IRecipeCategory<BlacksmithUpgr
     private final IDrawable icon;
 
     public BlacksmithUpgradeCategory(IGuiHelper helper){
-        this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 85);
+        this.background = fr.shoqapik.btemobs.integration.QuestLockStrip.extend(helper.createDrawable(TEXTURE, 0, 0, 176, 85));
 
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.DAMAGED_ANVIL));
     }
@@ -76,5 +76,26 @@ public class BlacksmithUpgradeCategory implements IRecipeCategory<BlacksmithUpgr
             System.out.println("⚠️ Advertencia: La receta " + blacksmithRecipe.getId() + " tiene un resultado vacío.");
         }
 
+    }
+
+    // ── Aviso de receta bloqueada por una quest (franja "Requiere:" debajo de la receta) ──
+
+    @javax.annotation.Nullable
+    private static String lockQuest(BlacksmithUpgradeRecipe recipe) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.questForRecipe(recipe.getId());
+    }
+
+    @Override
+    public void draw(BlacksmithUpgradeRecipe recipe, mezz.jei.api.gui.ingredient.IRecipeSlotsView recipeSlotsView,
+                     com.mojang.blaze3d.vertex.PoseStack poseStack, double mouseX, double mouseY) {
+        fr.shoqapik.btemobs.integration.QuestLockStrip.draw(poseStack, lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean handleInput(BlacksmithUpgradeRecipe recipe, double mouseX, double mouseY,
+                               com.mojang.blaze3d.platform.InputConstants.Key input) {
+        return fr.shoqapik.btemobs.integration.QuestLockStrip.handleInput(lockQuest(recipe), this.background.getWidth(),
+                this.background.getHeight() - fr.shoqapik.btemobs.integration.QuestLockStrip.EXTRA_HEIGHT, mouseX, mouseY, input);
     }
 }

@@ -98,6 +98,26 @@ public final class QuestRecipeLinks {
         return quest == null ? null : quest.getId().toString();
     }
 
+    /**
+     * Id de la quest que el jugador aún tiene que reclamar para poder reparar este objeto en la herrera, o null si
+     * ya se puede reparar (no está bloqueado, o ya reclamó alguna de las quests que lo desbloquean).
+     */
+    @Nullable
+    public static String questForRepair(net.minecraft.world.item.Item item) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return null;
+        List<Map.Entry<Quest, QuestStateData>> entries = clientQuests();
+        if (entries.isEmpty()) return null;
+        List<Quest> quests = new ArrayList<>();
+        for (Map.Entry<Quest, QuestStateData> e : entries) quests.add(e.getKey());
+        List<Quest> locks = QuestRecipeLocks.repairLocks(mc.level.getRecipeManager(), quests, item);
+        if (locks.isEmpty()) return null;
+        for (Quest quest : locks) {
+            if (isQuestClaimed(quest.getId().toString())) return null;
+        }
+        return locks.get(0).getId().toString();
+    }
+
     /** Título de la quest con su NPC: "Jungle Compass (Antonio)". */
     @Nullable
     public static Component questTitle(String questId) {

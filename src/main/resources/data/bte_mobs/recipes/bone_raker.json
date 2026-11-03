@@ -1,0 +1,25 @@
+{
+  "type": "bte_mobs:blacksmith",
+  "category": "OTHERS",
+  "tier": 3,
+  "ingredients": [
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:iron_ingot",
+      "count": 5
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "minecraft:bone",
+      "count": 3
+    },
+    {
+      "type": "bte_mobs:item",
+      "item": "meetyourfight:mossy_tooth",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "meetyourfight:bone_raker"
+  }
+}
