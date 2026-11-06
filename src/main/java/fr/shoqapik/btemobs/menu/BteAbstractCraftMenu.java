@@ -269,16 +269,24 @@ public abstract class BteAbstractCraftMenu extends RecipeBookMenu<BteAbstractCra
         // antes de fiarnos de la receta que llega del cliente.
         Recipe recipe = null;
 
+        // La Herrera ya esta trabajando o tiene en el bloque un objeto sin
+        // recoger: no se craftea. El boton solo se activa con el bloque vacio,
+        // pero otro jugador podia tener la ventana abierta de antes y su
+        // crafteo sobrescribia o hacia perder el objeto. Los ingredientes se
+        // quedan en las casillas y vuelven al cerrar la ventana.
+        BteAbstractEntity npc = (BteAbstractEntity) serverPlayer.level.getEntity(this.entityId);
+        if (npc == null || !npc.isWorkBlockEmpty()) return;
+
         if (clickedRecipe.isPresent()) {
             Recipe<?> candidate = clickedRecipe.get();
-            boolean slotsEmpty = this.craftSlots.isEmpty();
             boolean matchesSlots = candidate instanceof BteAbstractRecipe bteCandidate
                     && bteCandidate.matches(craftSlots, serverPlayer.getLevel());
 
-            if (slotsEmpty || matchesSlots) {
-                // Slots vacios (posible carrera de paquetes; mantenemos el
-                // comportamiento previo de confiar en el cliente) o la receta
-                // coincide con el contenido real: la usamos tal cual.
+            if (matchesSlots) {
+                // La receta coincide con el contenido real: la usamos tal cual.
+                // Con las casillas vacias ya no se confia en el cliente: daba
+                // el objeto sin gastar nada (los ingredientes siempre llegan a
+                // las casillas antes que este paquete).
                 recipe = candidate;
             }
             // Si los slots NO estan vacios pero la receta del cliente NO

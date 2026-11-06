@@ -172,6 +172,8 @@ public abstract class BteAbstractCraftScreen<T extends BteAbstractCraftMenu> ext
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        // Clic sobre un ingrediente de previsualizacion: abre sus recetas en JEI
+        if (GhostJeiLink.click(this, this.recipeBookComponent.getGhostRecipe(), this.leftPos, this.topPos, pMouseX, pMouseY, pButton)) return true;
         if (this.searchBox.mouseClicked(pMouseX, pMouseY, pButton)) {
             this.setFocused(this.searchBox);
             return true;

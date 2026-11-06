@@ -43,10 +43,14 @@ public class StartCraftingItemPacket {
 
     public static void handlePlaceRecipePacket(StartCraftingItemPacket msg, Supplier<NetworkEvent.Context> ctx){
         Entity entity = ctx.get().getSender().level.getEntity(msg.id);
+        // Si el NPC ya esta crafteando (otro jugador le encargo algo con la ventana abierta a la vez), no se empieza
+        // otro crafteo ni se gastan los ingredientes: si no, el encargo anterior se sobrescribia y se perdia
         if(entity instanceof ExplorerEntity explorer){
+            if(explorer.isCrafting()) return;
             explorer.startCrafting(msg.result);
         }
         if(entity instanceof DruidEntity druid){
+            if(druid.isCrafting()) return;
             druid.startCrafting(msg.result);
             druid.clearContent();
         }

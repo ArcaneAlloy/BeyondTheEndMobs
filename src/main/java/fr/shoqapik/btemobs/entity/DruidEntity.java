@@ -6,6 +6,7 @@ import fr.shoqapik.btemobs.block.OrianaOakBlock;
 import fr.shoqapik.btemobs.menu.DruidMenu;
 import fr.shoqapik.btemobs.menu.WarlockUpgradeMenu;
 import fr.shoqapik.btemobs.packets.DirectionPacket;
+import fr.shoqapik.btemobs.packets.PartItemPacket;
 import fr.shoqapik.btemobs.registry.BteMobsBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -63,6 +64,8 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     public ItemStack resultItem=ItemStack.EMPTY;
     public IdleAnim anim = IdleAnim.SIT_1;
     public ItemPart craftingItem;
+    /** Objeto que se estaba crafteando cuando se guardo el mundo; se le pone en la mano en el primer tick. */
+    private ItemStack pendingResult = ItemStack.EMPTY;
     public ItemPart sample1;
     public ItemPart sample2;
     public ItemPart sample3;
@@ -243,6 +246,17 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
             }
         }
 
+        if(!this.level.isClientSide && !this.pendingResult.isEmpty()){
+            ItemStack pending = this.pendingResult;
+            this.pendingResult = ItemStack.EMPTY;
+            if(hasResultItem()){
+                this.spawnAtLocation(pending);
+            }else{
+                this.craftingItem.startCreationItem(pending);
+                this.syncResultItem(null);
+            }
+        }
+
         if(this.tablePos!=null){
             this.setPos(this.tablePos.getX()+0.26F,this.tablePos.getY()+2.7755575615628914E-17,this.tablePos.getZ()+0.26F);
         }
@@ -253,7 +267,34 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
     }
 
     public void startCreationCrafting(){
+        // Si nadie recogio el objeto anterior (otro jugador encargo uno nuevo), se suelta al suelo en vez de perderse
+        if(!this.level.isClientSide && hasResultItem() && this.craftingItem.item != this.resultItem){
+            this.spawnAtLocation(this.craftingItem.item.copy());
+        }
         this.craftingItem.startCreationItem(this.resultItem);
+    }
+
+    /** ¿Tiene en la mano un objeto terminado sin recoger? */
+    public boolean hasResultItem(){
+        return this.craftingItem != null && this.craftingItem.item != null && !this.craftingItem.item.isEmpty();
+    }
+
+    /**
+     * Envia el objeto terminado (o que ya no hay ninguno) a un jugador, o a todos los que ven al Druida si player es
+     * null. Antes solo lo veia el jugador que lo crafteo, y tras recargar el mundo no lo veia nadie.
+     */
+    public void syncResultItem(@Nullable ServerPlayer player){
+        if(this.level.isClientSide || this.craftingItem == null) return;
+        PartItemPacket packet = new PartItemPacket(hasResultItem() ? this.craftingItem.item : ItemStack.EMPTY,
+                this.getId(), 0, this.craftingItem.name);
+        if(player != null) BteMobsMod.sendToClient(packet, player);
+        else BteMobsMod.sendToAllTracking(packet, this);
+    }
+
+    @Override
+    public void startSeenByPlayer(ServerPlayer player){
+        super.startSeenByPlayer(player);
+        if(hasResultItem()) syncResultItem(player);
     }
 
     private void startNextIdleAnim(int nextIdleAnim) {
@@ -377,6 +418,15 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
 
             p_21484_.put("Items", listtag);
         }
+        // El objeto terminado sin recoger (antes se perdia al recargar el mundo) y el que se estaba crafteando
+        if(hasResultItem()){
+            p_21484_.put("ResultItem", this.craftingItem.item.save(new CompoundTag()));
+        }
+        ItemStack pending = !this.pendingResult.isEmpty() ? this.pendingResult
+                : (this.isCrafting() && this.craftingTime > 175 && this.resultItem != null ? this.resultItem : ItemStack.EMPTY);
+        if(!pending.isEmpty()){
+            p_21484_.put("PendingResult", pending.save(new CompoundTag()));
+        }
         if(this.tablePos!=null){
             p_21484_.putInt("x",this.tablePos.getX());
             p_21484_.putInt("y",this.tablePos.getY());
@@ -401,6 +451,12 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
                     this.inventory.setItem(j, ItemStack.of(compoundtag));
                 }
             }
+        }
+        if(p_21450_.contains("ResultItem") && this.craftingItem != null){
+            this.craftingItem.startCreationItem(ItemStack.of(p_21450_.getCompound("ResultItem")));
+        }
+        if(p_21450_.contains("PendingResult")){
+            this.pendingResult = ItemStack.of(p_21450_.getCompound("PendingResult"));
         }
         if(p_21450_.contains("x") && p_21450_.contains("y") && p_21450_.contains("z")){
             this.tablePos = new BlockPos(p_21450_.getInt("x"),
@@ -477,10 +533,12 @@ public class DruidEntity extends BteAbstractEntity implements WorldlyContainer,C
 
 
     public void clearOrSpawnItem(Player player){
-        if(this.craftingItem.item != null){
-            if(player.getInventory().add(this.craftingItem.item.copy())){
-                this.craftingItem.item = null;
-            }
+        if(hasResultItem()){
+            // placeItemBackInInventory suelta al suelo lo que no quepa: con el inventario lleno el objeto se quedaba en
+            // el Druida y se perdia al craftear otro
+            player.getInventory().placeItemBackInInventory(this.craftingItem.item.copy());
+            this.craftingItem.item = null;
+            this.syncResultItem(null);
         }
     }
 

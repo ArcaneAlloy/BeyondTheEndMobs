@@ -15,6 +15,11 @@ public class BteRecipeBookComponent extends RecipeBookComponent {
 
     private static Field internalBoxField = null;
 
+    /** Receta fantasma (previsualizacion) que muestra el libro; la usa la ventana para abrir JEI al hacer clic. */
+    public net.minecraft.client.gui.screens.recipebook.GhostRecipe getGhostRecipe() {
+        return this.ghostRecipe;
+    }
+
     public static EditBox getInternalBox(RecipeBookComponent instance) {
         try {
             if (internalBoxField == null) {

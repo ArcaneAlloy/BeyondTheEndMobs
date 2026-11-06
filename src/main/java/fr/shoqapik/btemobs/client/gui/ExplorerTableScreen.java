@@ -350,6 +350,8 @@ public class ExplorerTableScreen extends AbstractContainerScreen<TableExplorerMe
 
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int p_97750_) {
+        // Clic sobre un ingrediente de previsualizacion: abre sus recetas en JEI
+        if (GhostJeiLink.click(this, this.ghostRecipe, this.leftPos, this.topPos, p_97748_, p_97749_, p_97750_)) return true;
         if(this.searchBox.mouseClicked(p_97748_, p_97749_, p_97750_)){
             return true;
         }else if(forwardButton.mouseClicked(p_97748_, p_97749_, p_97750_)){

@@ -80,12 +80,15 @@ public class ExplorerTableBlock extends BaseEntityBlock {
             ExplorerTableBlockEntity table=this.getTableEntity(p_48707_, p_48708_, p_48709_);
             if(table!=null){
                 if(p_48706_.getValue(HALF)==DoubleBlockHalf.LOWER &&
-                        !table.getItem().isEmpty() &&
-                        p_48709_.getInventory().add(table.getItem().copy())){
-                    // FIX: setItem() llama setChanged() -> sendBlockUpdated(flag=3)
-                    // que envia ClientboundBlockEntityDataPacket a TODOS los clientes
-                    // cercanos. BlockUpdatePacket solo llegaba al jugador A.
-                    table.setItem(ItemStack.EMPTY);
+                        !table.getItem().isEmpty()){
+                    ItemStack rest = table.getItem().copy();
+                    if(p_48709_.getInventory().add(rest)){
+                        // FIX: setItem() llama setChanged() -> sendBlockUpdated(flag=3)
+                        // que envia ClientboundBlockEntityDataPacket a TODOS los clientes
+                        // cercanos. BlockUpdatePacket solo llegaba al jugador A.
+                        // add() devuelve true aunque solo quepa una parte: lo que no cabe se queda en la mesa
+                        table.setItem(rest.isEmpty() ? ItemStack.EMPTY : rest);
+                    }
                 }
             }
             return InteractionResult.CONSUME;

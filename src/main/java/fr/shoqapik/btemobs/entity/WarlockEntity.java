@@ -249,7 +249,16 @@ public class WarlockEntity extends BteAbstractEntity implements WorldlyContainer
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new WarlockPotionMenu(pContainerId,pPlayerInventory,this.inventory,this.dataAccess);
+        // Cada jugador tiene sus propias casillas de pociones. Antes eran el inventario de Noah y todos los jugadores
+        // compartían las mismas: el primero que cerraba la ventana se llevaba también los ingredientes de los demás.
+        // Lo que quedara en el inventario de Noah de versiones anteriores se suelta a sus pies para que no se pierda.
+        if (!this.level.isClientSide && this.inventory != null && !this.inventory.isEmpty()) {
+            for (int i = 0; i < this.inventory.getContainerSize(); i++) {
+                ItemStack stack = this.inventory.removeItemNoUpdate(i);
+                if (!stack.isEmpty() && i != 6) this.spawnAtLocation(stack);
+            }
+        }
+        return new WarlockPotionMenu(pContainerId,pPlayerInventory,new SimpleContainer(7),this.dataAccess);
     }
     @Override
     public int getContainerSize() {

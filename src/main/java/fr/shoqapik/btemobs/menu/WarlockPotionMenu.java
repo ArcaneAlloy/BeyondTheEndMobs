@@ -232,6 +232,10 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player pPlayer) {
         super.removed(pPlayer);
+        // La casilla 6 solo muestra la poción que saldría con los ingredientes puestos: no es un objeto del jugador.
+        // Hay que vaciarla antes de devolver el contenido, o al cerrar la ventana se devolvían los ingredientes y
+        // además la poción.
+        craftSlots.removeItemNoUpdate(6);
         clearContainer(pPlayer, craftSlots);
     }
 
@@ -263,13 +267,16 @@ public class WarlockPotionMenu extends AbstractContainerMenu {
                 .findFirst());
         ItemStack stack1 = craftSlots.getItem(3);
         ItemStack bottle = craftSlots.getItem(2);
+        // Devolver al jugador lo que hubiera en las casillas del ingrediente y del frasco antes de colocar la receta.
+        // El frasco se quedaba también en su casilla (se duplicaba) y, con el inventario lleno, add() perdía los
+        // objetos: placeItemBackInInventory los suelta al suelo si no caben.
         if(!stack1.isEmpty()){
-            player.getInventory().add(stack1.copy());
             craftSlots.setItem(3,ItemStack.EMPTY);
+            player.getInventory().placeItemBackInInventory(stack1.copy());
         }
         if(!bottle.isEmpty()){
-            player.getInventory().add(bottle.copy());
-            craftSlots.setItem(2,bottle.copy());
+            craftSlots.setItem(2,ItemStack.EMPTY);
+            player.getInventory().placeItemBackInInventory(bottle.copy());
         }
 
         if(optionalRecipe.isPresent()){

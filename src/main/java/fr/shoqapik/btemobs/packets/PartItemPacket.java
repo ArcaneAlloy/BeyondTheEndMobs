@@ -30,6 +30,12 @@ public class PartItemPacket {
                     assert Minecraft.getInstance().level!=null;
                     Entity entity = Minecraft.getInstance().level.getEntity(msg.id);
                     if(entity instanceof DruidEntity druid){
+                        // Objeto terminado del Druida: aparece con su efecto de creacion, o desaparece si se recogio
+                        if(druid.craftingItem != null && druid.craftingItem.name.equals(msg.name)){
+                            if(msg.result.isEmpty()) druid.craftingItem.item = null;
+                            else druid.craftingItem.startCreationItem(msg.result);
+                            return;
+                        }
                         ItemPart part=null;
                         for (ItemPart part1 : druid.samplesItems){
                             if(part1.name.equals(msg.name)){

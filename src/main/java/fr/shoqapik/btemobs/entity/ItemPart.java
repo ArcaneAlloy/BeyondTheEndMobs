@@ -144,9 +144,12 @@ public class ItemPart extends PartEntity<DruidEntity> {
 
     @Override
     public InteractionResult interactAt(Player pPlayer, Vec3 pVec, InteractionHand pHand) {
-        if(this.item!=null && !this.isSampleItem){
-            if(pPlayer.getInventory().add(this.item.copy())){
-                this.item=null;
+        if(this.item!=null && !this.item.isEmpty() && !this.isSampleItem){
+            ItemStack rest = this.item.copy();
+            if(pPlayer.getInventory().add(rest)){
+                // add() devuelve true aunque solo quepa una parte: lo que no cabe se queda en el Druida
+                this.item = rest.isEmpty() ? null : rest;
+                this.getParent().syncResultItem(null);
             }
         }
         return super.interactAt(pPlayer, pVec, pHand);

@@ -341,6 +341,8 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
     }
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int p_97750_) {
+        // Clic sobre un ingrediente de previsualizacion: abre sus recetas en JEI
+        if (GhostJeiLink.click(this, this.ghostRecipe, this.leftPos, this.topPos, p_97748_, p_97749_, p_97750_)) return true;
         if(this.searchBox.mouseClicked(p_97748_, p_97749_, p_97750_)){
             return true;
         }else if(forwardButton.mouseClicked(p_97748_, p_97749_, p_97750_)){
@@ -377,8 +379,10 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
                 }else {
                     Recipe<?> recipe = button.getRecipe();
                     if (recipe != null ) {
+                        // Sin los ingredientes: el servidor devuelve lo que haya en las casillas y manda la receta
+                        // fantasma (frasco + ingrediente) para previsualizarla, como en las demás ventanas de los NPCs
                         this.ghostRecipe.clear();
-                        //BteMobsMod.sendToServer(new PlaceGhostRecipePacket(this.menu.containerId,recipe));
+                        BteMobsMod.sendToServer(new PlaceItemRecipePacket(((WarlockPotionRecipe) recipe).getIngredientPrimary()));
                     }
                 }
             }

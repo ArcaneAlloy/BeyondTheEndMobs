@@ -1016,6 +1016,21 @@ public class QuestScreen extends Screen {
                     return true;
                 }
             }
+            // Clic en una recompensa de item: abre sus recetas en JEI
+            for (ButtonReward reward : slotRewards) {
+                if (reward.data.type == fr.shoqapik.btemobs.quest.RewardData.Type.ITEM && !reward.item.isEmpty()
+                        && reward.isMouseOver(p_94695_, p_94696_)) {
+                    openInJei(reward.item);
+                    return true;
+                }
+            }
+            // Clic en una tarea de un solo item: abre sus recetas en JEI
+            for (ButtonTask task : slotTask) {
+                if (!task.hasItemList() && !task.item.isEmpty() && task.isMouseOver(p_94695_, p_94696_)) {
+                    openInJei(task.item);
+                    return true;
+                }
+            }
             // Clic en una recompensa de recetas: abre su panel, o lo cierra si ya estaba abierto
             for (int i = 0; i < slotRewards.size(); i++) {
                 ButtonReward reward = slotRewards.get(i);

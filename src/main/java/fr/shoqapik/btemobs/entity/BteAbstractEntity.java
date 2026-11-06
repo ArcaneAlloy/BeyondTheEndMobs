@@ -131,6 +131,12 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
             this.lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(workBlock.getX(), workBlock.getY(), workBlock.getZ()));
         }
 
+        // Si el mundo se guardo a mitad de la animacion, el objeto se quedaba dentro de la Herrera (no se guarda que
+        // estaba crafteando) y ya no se podia craftear nada mas: al cargar se pone en el bloque de trabajo
+        if(!this.level.isClientSide && workBlock != null && !isCrafting() && !getCraftItem().isEmpty()) {
+            placeCraftItemOnWorkBlock();
+        }
+
         // TODO: Most probably this will have to be moved to the specific entity. As different entities have different ways of crafting.
         if(isCrafting()) {
             if(workBlock!=null){
@@ -142,11 +148,7 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
                 }
 
                 if(animationTickCount == 115) {
-                    BlockEntity blockEntity = this.level.getBlockEntity(this.workBlock);
-                    if(blockEntity instanceof BteAbstractWorkBlockEntity) {
-                        blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve().get().insertItem(0, getCraftItem().copy(), false);
-                    }
-                    setCraftItem(ItemStack.EMPTY);
+                    placeCraftItemOnWorkBlock();
                 }
 
                 if(animationTickCount >= 173) {
@@ -214,6 +216,31 @@ public abstract class BteAbstractEntity extends Mob implements IAnimatable {
         this.setCraftItem(ItemStack.of((CompoundTag) pCompound.get("craftItem")));
         ListTag listTag = pCompound.getList("interacted", Tag.TAG_STRING);
         interactedPlayers = new ArrayList<>(listTag.stream().map(tag -> UUID.fromString(tag.getAsString())).toList());
+    }
+
+    /**
+     * Pone en el bloque de trabajo el objeto crafteado. Lo que no quepa (bloque ocupado con otro objeto) o si no hay
+     * bloque se suelta encima en vez de perderse.
+     */
+    private void placeCraftItemOnWorkBlock() {
+        ItemStack rest = getCraftItem().copy();
+        if(this.workBlock != null && this.level.getBlockEntity(this.workBlock) instanceof BteAbstractWorkBlockEntity blockEntity) {
+            Optional<IItemHandler> handler = blockEntity.getCapability(BteAbstractWorkBlockEntity.ITEM_HANDLER).resolve();
+            if(handler.isPresent()) {
+                rest = handler.get().insertItem(0, rest, false);
+            }
+            if(!this.level.isClientSide) {
+                blockEntity.setChanged();
+            }
+        }
+        if(!this.level.isClientSide && !rest.isEmpty()) {
+            if(this.workBlock != null) {
+                Block.popResource(this.level, this.workBlock.above(), rest);
+            } else {
+                this.spawnAtLocation(rest);
+            }
+        }
+        setCraftItem(ItemStack.EMPTY);
     }
 
     public boolean isWorkBlockEmpty() {

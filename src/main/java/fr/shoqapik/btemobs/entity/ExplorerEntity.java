@@ -61,6 +61,8 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     public int animIdle=0;
     private BlockPos tablePos = null;
     public ItemStack resultItem=ItemStack.EMPTY;
+    /** Objeto que se estaba crafteando cuando se guardo el mundo; se pone en la mesa en el primer tick. */
+    private ItemStack pendingResult=ItemStack.EMPTY;
     public IdleAnim anim= IdleAnim.SIT_1;
     static final Vector3f FORWARD = Util.make(() -> {
         Vec3i vec3i = Direction.SOUTH.getNormal();
@@ -100,6 +102,11 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
             }
         }
         if(!this.level.isClientSide){
+            if(!this.pendingResult.isEmpty()){
+                this.resultItem=this.pendingResult;
+                this.pendingResult=ItemStack.EMPTY;
+                this.finishCrafting();
+            }
             if(this.tablePos!=null){
                 if(this.level.getBlockEntity(this.tablePos) instanceof ExplorerTableBlockEntity table){
                     if(this.getId()!=table.getData(0)){
@@ -119,6 +126,12 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
         if(this.getTablePos()==null)return;
         BlockEntity blockentity = this.level.getBlockEntity(this.getTablePos());
         if (blockentity instanceof ExplorerTableBlockEntity table) {
+            // El objeto terminado que siga en la mesa se le da al jugador antes de abrir (lo que no quepa cae al suelo):
+            // si no, al craftear otro se sobrescribia y se perdia
+            if (!table.getItem().isEmpty()) {
+                player.getInventory().placeItemBackInInventory(table.getItem().copy());
+                table.setItem(ItemStack.EMPTY);
+            }
             NetworkHooks.openScreen(player, table, buf -> {
                 buf.writeBlockPos(table.getBlockPos());
             });
@@ -141,8 +154,18 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     }
 
     public void finishCrafting(){
-        if(this.tablePos!=null && this.level.getBlockEntity(this.tablePos) instanceof ExplorerTableBlockEntity table){
-            table.setItem(this.resultItem);
+        if(this.resultItem!=null && !this.resultItem.isEmpty()){
+            if(this.tablePos!=null && this.level.getBlockEntity(this.tablePos) instanceof ExplorerTableBlockEntity table){
+                // Si nadie recogio el objeto anterior (otro jugador encargo uno nuevo), se suelta al suelo en vez de
+                // sobrescribirlo
+                if(!this.level.isClientSide && !table.getItem().isEmpty()){
+                    this.spawnAtLocation(table.getItem().copy());
+                }
+                table.setItem(this.resultItem);
+            }else if(!this.level.isClientSide){
+                // Sin mesa: el objeto se suelta al suelo en vez de perderse
+                this.spawnAtLocation(this.resultItem.copy());
+            }
         }
         this.resultItem=null;
     }
@@ -247,6 +270,12 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     @Override
     public void addAdditionalSaveData(CompoundTag p_21484_) {
         super.addAdditionalSaveData(p_21484_);
+        // Crafteo a medias: el estado de crafteo no se guarda, asi que se guarda el resultado para no perderlo
+        ItemStack pending = !this.pendingResult.isEmpty() ? this.pendingResult
+                : (this.isCrafting() && this.resultItem!=null ? this.resultItem : ItemStack.EMPTY);
+        if(!pending.isEmpty()){
+            p_21484_.put("PendingResult", pending.save(new CompoundTag()));
+        }
         p_21484_.putByte("AttachFace", (byte)this.getAttachFace().get3DDataValue());
         if(this.tablePos!=null){
             p_21484_.putInt("x",this.tablePos.getX());
@@ -258,6 +287,9 @@ public class ExplorerEntity extends BteAbstractEntity implements IAnimatable {
     @Override
     public void readAdditionalSaveData(CompoundTag p_21450_) {
         super.readAdditionalSaveData(p_21450_);
+        if(p_21450_.contains("PendingResult")){
+            this.pendingResult = ItemStack.of(p_21450_.getCompound("PendingResult"));
+        }
         this.setAttachFace(Direction.from3DDataValue(p_21450_.getByte("AttachFace")));
         if(p_21450_.contains("x") && p_21450_.contains("y") && p_21450_.contains("z")){
             this.tablePos = new BlockPos(p_21450_.getInt("x"),
