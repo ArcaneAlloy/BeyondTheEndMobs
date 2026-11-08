@@ -331,6 +331,7 @@ public class WarlockPotionCraftScreen extends AbstractContainerScreen<WarlockPot
 
     public void renderGhostRecipe(PoseStack pPoseStack, int pLeftPos, int pTopPos, boolean p_100326_, float pPartialTick) {
         this.ghostRecipe.render(pPoseStack, this.minecraft, pLeftPos, pTopPos, p_100326_, pPartialTick);
+        GhostRecipeCounts.render(pPoseStack, this.minecraft, this.ghostRecipe, pLeftPos, pTopPos);
     }
     @Override
     protected void slotClicked(Slot pSlot, int pSlotId, int pMouseButton, ClickType pType) {

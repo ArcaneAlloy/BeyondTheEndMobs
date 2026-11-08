@@ -20,6 +20,13 @@ public class BteRecipeBookComponent extends RecipeBookComponent {
         return this.ghostRecipe;
     }
 
+    /** Tambien las cantidades del resto de ingredientes fantasma (vanilla solo dibuja la del primero). */
+    @Override
+    public void renderGhostRecipe(PoseStack pPoseStack, int pLeftPos, int pTopPos, boolean p_100326_, float pPartialTick) {
+        super.renderGhostRecipe(pPoseStack, pLeftPos, pTopPos, p_100326_, pPartialTick);
+        fr.shoqapik.btemobs.client.gui.GhostRecipeCounts.render(pPoseStack, this.minecraft, this.ghostRecipe, pLeftPos, pTopPos);
+    }
+
     public static EditBox getInternalBox(RecipeBookComponent instance) {
         try {
             if (internalBoxField == null) {
