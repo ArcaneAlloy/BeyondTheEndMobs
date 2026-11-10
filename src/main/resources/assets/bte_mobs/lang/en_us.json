@@ -285,6 +285,7 @@
   "item.bte_mobs.quill.lore": "Draws a map to: %s",
   "item.bte_mobs.quill.dimension": "Use it in: %s",
   "item.bte_mobs.quill.use": "Right-click to search for the structure",
+  "item.bte_mobs.quill_map.name": "Map to %s",
   "dimension.bte_mobs.overworld": "Overworld",
   "dimension.bte_mobs.nether": "Nether",
   "structure.bte_mobs.snowy_temple": "Snowy Temple",

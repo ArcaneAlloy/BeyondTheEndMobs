@@ -29,7 +29,8 @@
             "{\"translate\":\"item.bte_mobs.quill.use\",\"italic\":true,\"color\":\"dark_gray\"}"
           ]
         },
-        "decoration": "minecraft:red_x"
+        "decoration": "minecraft:red_x",
+        "name": "{\"translate\":\"item.bte_mobs.quill_map.name\",\"with\":[{\"translate\":\"structure.bte_mobs.ancient_mines\"}],\"italic\":false}"
       }
     }
   ],

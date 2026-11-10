@@ -7,7 +7,7 @@ plugins {
 }
 
 
-version = '1.11.53'
+version = '1.11.55'
 group = 'fr.shoqapik.btemobs'
 archivesBaseName = 'BeyondTheEndMobs'
 

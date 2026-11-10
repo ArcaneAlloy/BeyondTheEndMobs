@@ -280,6 +280,7 @@
   "item.bte_mobs.quill.lore": "Traza un mapa hasta: %s",
   "item.bte_mobs.quill.dimension": "Úsala en: %s",
   "item.bte_mobs.quill.use": "Clic derecho para buscar la estructura",
+  "item.bte_mobs.quill_map.name": "Mapa hacia %s",
   "dimension.bte_mobs.overworld": "Overworld",
   "dimension.bte_mobs.nether": "Nether",
   "structure.bte_mobs.snowy_temple": "Templo Nevado",
