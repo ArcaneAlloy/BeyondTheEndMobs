@@ -27,6 +27,11 @@
       "count": 1
     },
     {
+      "type": "ITEM",
+      "itemId": "minecraft:brush",
+      "count": 1
+    },
+    {
       "type": "UNLOCK_RECIPE",
       "recipeId": "beyondtheendcompass:compass_cataclysm_cursed_pyramid",
       "recipeType": "explorer_recipe_type"
