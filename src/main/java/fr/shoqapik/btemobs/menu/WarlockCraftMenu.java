@@ -65,10 +65,9 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                         .stream()
                         .filter(e -> e.matches(WarlockCraftMenu.this.craftSlots, WarlockCraftMenu.this.level))
                         .max(java.util.Comparator.comparingInt(WarlockRecipe::getLevel));
+                // Libros no: Noah no crea libros encantados (la casilla base tampoco los admite, WarlockBaseSlot)
                 if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()
-                        && ( canEnchantItem(optional.get().getEnchantment(),baseSlots.getItem(0))
-                            || baseSlots.getItem(0).is(Items.BOOK)
-                            || baseSlots.getItem(0).is(Items.ENCHANTED_BOOK))){
+                        && canEnchantItem(optional.get(), baseSlots.getItem(0))){
 
                     WarlockCraftMenu.this.clickedRecipe = optional;
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
@@ -95,12 +94,24 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
         }
     }
 
-    private boolean canEnchantItem(Enchantment enchantment, ItemStack item) {
-        if(!enchantment.canEnchant(item)){
+    /**
+     * Se puede encantar si el objeto admite el encantamiento, no es un libro, y el encantamiento es compatible con los
+     * que ya tiene. Si el objeto ya tiene ese mismo encantamiento, se puede subir de nivel (p. ej. Unbreaking I a
+     * Unbreaking III) pero nunca dejarlo igual ni bajarlo. Antes no se podia: un encantamiento nunca es "compatible"
+     * consigo mismo (Enchantment.checkCompatibility devuelve this != other).
+     */
+    private boolean canEnchantItem(WarlockRecipe recipe, ItemStack item) {
+        Enchantment enchantment = recipe.getEnchantment();
+        if(item.is(Items.BOOK) || item.is(Items.ENCHANTED_BOOK) || !enchantment.canEnchant(item)){
             return false;
         }
-        for (Enchantment e : EnchantmentHelper.getEnchantments(item).keySet()){
-            if (!enchantment.isCompatibleWith(e)){
+        Map<Enchantment,Integer> current = EnchantmentHelper.getEnchantments(item);
+        Integer currentLevel = current.get(enchantment);
+        if (currentLevel != null && currentLevel >= recipe.getLevel()){
+            return false;
+        }
+        for (Enchantment e : current.keySet()){
+            if (e != enchantment && !enchantment.isCompatibleWith(e)){
                 return false;
             }
         }
@@ -170,7 +181,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
             WarlockRecipe warlockRecipe = (WarlockRecipe) recipe;
             ItemStack base = this.baseSlots.getItem(0).copy();
 
-            if(base.isEmpty() || !warlockRecipe.getEnchantment().canEnchant(base)) return ItemStack.EMPTY;
+            if(base.isEmpty() || !canEnchantItem(warlockRecipe, base)) return ItemStack.EMPTY;
             base.setCount(1);
             Map<Enchantment,Integer> map = EnchantmentHelper.getEnchantments(base);
             map.put(warlockRecipe.getEnchantment(), warlockRecipe.getLevel());

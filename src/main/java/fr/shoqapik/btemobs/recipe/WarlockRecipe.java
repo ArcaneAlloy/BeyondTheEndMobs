@@ -93,23 +93,21 @@ public class WarlockRecipe implements Recipe<SimpleContainer> {
         return hasItems(pContainer);
     }
 
+    /**
+     * Encanta el objeto base (casilla 3). Noah no crea libros encantados: con un libro o un libro encantado no da nada.
+     * Si el objeto ya tiene el encantamiento, lo sube al nivel de la receta (se sustituye la entrada, sin duplicarla);
+     * si ya lo tiene al mismo nivel o mas alto, no da nada.
+     */
     @Override
     public ItemStack assemble(SimpleContainer pContainer) {
-        ItemStack result = pContainer.getItem(3).is(Items.BOOK) ? new ItemStack(Items.ENCHANTED_BOOK) : pContainer.getItem(3).copy();
-        if (result.is(Items.ENCHANTED_BOOK)){
-            EnchantedBookItem.addEnchantment(result,new EnchantmentInstance(enchantment,level));
-        }else {
-            int oldLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment,result);
-
-            if(oldLevel>level){
-                return ItemStack.EMPTY;
-            }else if(oldLevel>0){
-                result.enchant(enchantment, level);
-            }else {
-                result.enchant(enchantment, level);
-            }
-        }
-
+        ItemStack base = pContainer.getItem(3);
+        if (base.isEmpty() || base.is(Items.BOOK) || base.is(Items.ENCHANTED_BOOK)) return ItemStack.EMPTY;
+        ItemStack result = base.copy();
+        java.util.Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(result);
+        Integer oldLevel = map.get(enchantment);
+        if (oldLevel != null && oldLevel >= level) return ItemStack.EMPTY;
+        map.put(enchantment, level);
+        EnchantmentHelper.setEnchantments(map, result);
         return result;
     }
     public static CompoundTag getTagEnchantment(Enchantment pEnchantment, ItemStack pStack) {
