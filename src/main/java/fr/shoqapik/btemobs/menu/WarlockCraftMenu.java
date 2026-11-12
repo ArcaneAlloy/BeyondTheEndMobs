@@ -11,6 +11,7 @@ import fr.shoqapik.btemobs.recipe.WarlockRecipe;
 import fr.shoqapik.btemobs.recipe.api.BteAbstractRecipe;
 import fr.shoqapik.btemobs.registry.BteMobsContainers;
 import fr.shoqapik.btemobs.registry.BteMobsRecipeTypes;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -38,6 +39,14 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
     protected BteAbstractCraftContainer baseSlots;
     public ResultContainer resultSlots;
     public final DataSlot experience;
+    /** Motivo por el que no hay resultado (ver REASON_*), sincronizado con el cliente para mostrarlo en la pantalla. */
+    public final DataSlot reason;
+    /** Id de registro + 1 del encantamiento que choca (0 = ninguno), para nombrarlo en el mensaje. */
+    public final DataSlot conflict;
+    public static final int REASON_NONE = 0;
+    public static final int REASON_INCOMPATIBLE = 1;
+    public static final int REASON_ALREADY_HAS = 2;
+    public static final int REASON_CANNOT_APPLY = 3;
     public final Level level;
     public Optional<? extends Recipe<?>> clickedRecipe = Optional.empty();
     public final int entityId;
@@ -47,6 +56,10 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
         this.initCraftingSlot();
         this.experience = DataSlot.standalone();
         this.addDataSlot(this.experience);
+        this.reason = DataSlot.standalone();
+        this.addDataSlot(this.reason);
+        this.conflict = DataSlot.standalone();
+        this.addDataSlot(this.conflict);
         this.entityId = entityId;
         this.addSlotListener(new ContainerListener() {
             @Override
@@ -54,6 +67,7 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                 if(menu != WarlockCraftMenu.this) return;
                 if(WarlockCraftMenu.this.craftSlots.isEmpty()){
                     WarlockCraftMenu.this.clickedRecipe = Optional.empty();
+                    WarlockCraftMenu.this.setProblem(REASON_NONE, null);
                     menu.getSlot(4).set(ItemStack.EMPTY);
                     return;
                 }
@@ -66,8 +80,11 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
                         .filter(e -> e.matches(WarlockCraftMenu.this.craftSlots, WarlockCraftMenu.this.level))
                         .max(java.util.Comparator.comparingInt(WarlockRecipe::getLevel));
                 // Libros no: Noah no crea libros encantados (la casilla base tampoco los admite, WarlockBaseSlot)
-                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty()
-                        && canEnchantItem(optional.get(), baseSlots.getItem(0))){
+                Enchantment[] clash = new Enchantment[1];
+                int problem = optional.isPresent() && !baseSlots.getItem(0).isEmpty()
+                        ? enchantProblem(optional.get(), baseSlots.getItem(0), clash) : REASON_NONE;
+                WarlockCraftMenu.this.setProblem(problem, clash[0]);
+                if(optional.isPresent() && !baseSlots.getItem(0).isEmpty() && problem == REASON_NONE){
 
                     WarlockCraftMenu.this.clickedRecipe = optional;
                     WarlockCraftMenu.this.experience.set(optional.get().getExperience());
@@ -101,21 +118,41 @@ public class WarlockCraftMenu extends AbstractContainerMenu {
      * consigo mismo (Enchantment.checkCompatibility devuelve this != other).
      */
     private boolean canEnchantItem(WarlockRecipe recipe, ItemStack item) {
+        return enchantProblem(recipe, item, new Enchantment[1]) == REASON_NONE;
+    }
+
+    /**
+     * Devuelve REASON_NONE si se puede encantar, o el motivo por el que no. Si el motivo es REASON_INCOMPATIBLE, deja en
+     * clashOut[0] el encantamiento del objeto que choca con el de la receta.
+     */
+    private int enchantProblem(WarlockRecipe recipe, ItemStack item, Enchantment[] clashOut) {
         Enchantment enchantment = recipe.getEnchantment();
         if(item.is(Items.BOOK) || item.is(Items.ENCHANTED_BOOK) || !enchantment.canEnchant(item)){
-            return false;
+            return REASON_CANNOT_APPLY;
         }
         Map<Enchantment,Integer> current = EnchantmentHelper.getEnchantments(item);
         Integer currentLevel = current.get(enchantment);
         if (currentLevel != null && currentLevel >= recipe.getLevel()){
-            return false;
+            return REASON_ALREADY_HAS;
         }
         for (Enchantment e : current.keySet()){
             if (e != enchantment && !enchantment.isCompatibleWith(e)){
-                return false;
+                clashOut[0] = e;
+                return REASON_INCOMPATIBLE;
             }
         }
-        return true;
+        return REASON_NONE;
+    }
+
+    private void setProblem(int problem, Enchantment clash) {
+        this.reason.set(problem);
+        this.conflict.set(clash == null ? 0 : Registry.ENCHANTMENT.getId(clash) + 1);
+    }
+
+    /** Encantamiento que choca, leido en el cliente desde el DataSlot sincronizado; null si no hay. */
+    public Enchantment getConflict() {
+        int id = this.conflict.get();
+        return id <= 0 ? null : Registry.ENCHANTMENT.byId(id - 1);
     }
 
     public void initCraftingSlot() {

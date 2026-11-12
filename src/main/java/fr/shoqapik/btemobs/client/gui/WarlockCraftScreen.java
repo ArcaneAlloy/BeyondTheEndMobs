@@ -382,7 +382,40 @@ public class WarlockCraftScreen extends AbstractContainerScreen<WarlockCraftMenu
                 this.font.drawShadow(pPoseStack, component, (float)k, 69.0F, j);
             }
         }
+        this.renderEnchantProblem(pPoseStack);
         RenderSystem.enableBlend();
+    }
+
+    /**
+     * Explica por que no hay resultado cuando los ingredientes forman una receta pero el objeto de la casilla base no se
+     * puede encantar con ella (encantamiento incompatible, ya lo tiene a ese nivel, o no se puede aplicar). Se pinta
+     * en rojo donde iria el coste, a la derecha; si no cabe sin pisar la casilla de ingrediente, se parte en dos lineas.
+     */
+    private void renderEnchantProblem(PoseStack poseStack) {
+        if (this.menu.getSlot(4).hasItem()) return;
+        Component message;
+        switch (this.menu.reason.get()) {
+            case WarlockCraftMenu.REASON_INCOMPATIBLE -> {
+                net.minecraft.world.item.enchantment.Enchantment clash = this.menu.getConflict();
+                message = clash == null
+                        ? Component.translatable("gui.bte_mobs.warlock.incompatible_any")
+                        : Component.translatable("gui.bte_mobs.warlock.incompatible", Component.translatable(clash.getDescriptionId()));
+            }
+            case WarlockCraftMenu.REASON_ALREADY_HAS -> message = Component.translatable("gui.bte_mobs.warlock.already_has");
+            case WarlockCraftMenu.REASON_CANNOT_APPLY -> message = Component.translatable("gui.bte_mobs.warlock.cannot_apply");
+            default -> { return; }
+        }
+        int right = this.imageWidth - 8;
+        int maxWidth = 106;
+        List<net.minecraft.util.FormattedCharSequence> lines = this.font.split(message, maxWidth);
+        if (lines.size() > 2) lines = lines.subList(0, 2);
+        int y = 69 - (lines.size() - 1) * 10;
+        for (net.minecraft.util.FormattedCharSequence line : lines) {
+            int x = right - this.font.width(line) - 2;
+            fill(poseStack, x - 2, y - 2, right, y + 10, 1325400064);
+            this.font.drawShadow(poseStack, line, (float)x, (float)y, 16736352);
+            y += 10;
+        }
     }
 
     @Override
